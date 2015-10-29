@@ -1,0 +1,46 @@
+package {{package}};
+
+import java.io.IOException;
+
+import org.springframework.extensions.webscripts.AbstractWebScript;
+import org.springframework.extensions.webscripts.WebScriptException;
+import org.springframework.extensions.webscripts.WebScriptRequest;
+import org.springframework.extensions.webscripts.WebScriptResponse;
+import org.json.JSONException;
+import org.json.JSONObject;
+import eu.xenit.apix.webscripts.AnnotationWebScriptBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import eu.xenit.apix.webscripts.AnnotationWebScript;
+import javax.annotation.PostConstruct;
+
+// From template v1.0
+public class {{id}}{{#method}}{{toUpperCase}}{{/method}} extends AbstractWebScript
+{
+    AnnotationWebScriptBuilder builder;
+
+    {{fullclassname}} webscript;
+
+    AnnotationWebScript annotatedWebscript;
+
+    public {{id}}{{#method}}{{toUpperCase}}{{/method}}(AnnotationWebScriptBuilder builder, {{fullclassname}} webscript) {
+        this.builder = builder;
+        this.webscript = webscript;
+    }
+
+    public void init()
+    {
+        try {
+            annotatedWebscript = builder.createWebscriptForMethod("{{targetmethodname}}",webscript);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException("Cannot create webscript adapter for webscript {{id}}{{#method}}{{toUpperCase}}{{/method}},"
+                    + " for class '{{fullclassname}}' and method '{{targetmethodname}}'",e);
+        }
+    }
+
+    public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException
+    {
+        annotatedWebscript.execute(req,res);
+    }
+
+
+}

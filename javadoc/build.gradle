@@ -1,0 +1,36 @@
+buildscript {
+    repositories {
+        maven {
+            url 'https://artifactory.xenit.eu/artifactory/plugins-release-local'
+            credentials {
+                username property("eu.xenit.artifactory.username")
+                password property("eu.xenit.artifactory.password")
+            }
+        }
+    }
+    dependencies {
+        classpath group: 'com.github.dynamicextensionsalfresco', name: 'gradle-plugin', version: '1.4.+'
+    }
+}
+
+apply plugin: 'alfresco-dynamic-extension'
+apply plugin: 'ampde' // creation of an amp from an Dynamic Extension jar.
+
+dependencies {
+    compile group: 'org.apache.felix', name: 'org.apache.felix.framework', version: '4.2.1'
+}
+
+alfrescoDynamicExtensions {
+    repository {
+        endpoint {
+            host = project.hasProperty('host') ? project.host : 'localhost'
+            port = project.hasProperty('port') ? project.port : '8080'
+            protocol = project.hasProperty('protocol') ? project.protocol : 'http'
+            serviceUrl = '/alfresco/service'
+        }
+        authentication {
+            username = project.hasProperty('username') ? project.username : 'admin'
+            password = project.hasProperty('password') ? project.password : 'admin'
+        }
+    }
+}

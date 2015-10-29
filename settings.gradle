@@ -1,0 +1,41 @@
+rootProject.name = 'apix'
+
+include ':apix-interface'
+include ':apix-rest-v1'
+include ':apix-webscripts-runtime'
+include ':de-swagger-reader'
+include ':developer-documentation:examples'
+include ':javadoc'
+
+include ':apix-impl'
+include ':apix-impl:apix-impl-42'
+include ':apix-impl:apix-impl-50'
+include ':apix-impl:apix-impl-51'
+include ':apix-impl:apix-impl-52'
+
+include ':apix-docker'
+include ':apix-docker:docker-42'
+include ':apix-docker:docker-50'
+include ':apix-docker:docker-51'
+include ':apix-docker:docker-52'
+
+include ':apix-integrationtests'
+include ':apix-integrationtests:test-42'
+include ':apix-integrationtests:test-50'
+include ':apix-integrationtests:test-51'
+include ':apix-integrationtests:test-52'
+include ':apix-integrationtests-model-amp'
+
+
+project(':apix-impl:apix-impl-42').projectDir = "$rootDir/apix-impl/42" as File
+project(':apix-impl:apix-impl-50').projectDir = "$rootDir/apix-impl/50" as File
+project(':apix-impl:apix-impl-51').projectDir = "$rootDir/apix-impl/51" as File
+project(':apix-impl:apix-impl-52').projectDir = "$rootDir/apix-impl/52" as File
+project(':apix-docker:docker-42').projectDir = "$rootDir/apix-docker/42" as File
+project(':apix-docker:docker-50').projectDir = "$rootDir/apix-docker/50" as File
+project(':apix-docker:docker-51').projectDir = "$rootDir/apix-docker/51" as File
+project(':apix-docker:docker-52').projectDir = "$rootDir/apix-docker/52" as File
+project(':apix-integrationtests:test-42').projectDir = "$rootDir/apix-integrationtests/42" as File
+project(':apix-integrationtests:test-50').projectDir = "$rootDir/apix-integrationtests/50" as File
+project(':apix-integrationtests:test-51').projectDir = "$rootDir/apix-integrationtests/51" as File
+project(':apix-integrationtests:test-52').projectDir = "$rootDir/apix-integrationtests/52" as File

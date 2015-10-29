@@ -1,0 +1,45 @@
+{
+    "noderefs": {
+        "workspace://SpacesStore/3c73aace-9f54-420d-a1c0-c54b6a116dcf": [
+            {
+                "field": "cm:content",
+                "snippets": [
+                    "\nProject Milestones\n\n\nThis wiki page has a list of project milestones\n\n\n\n\n\n\nPhase\n\n\n\nDescription\n\n\n\n\nTarget\n\nDate\n\n\n\n\n\nActual\n\nDate\n\n\n\n\n\n1\n\n\nProject Initiation\n\n\n10th January 2011\n\n\n10th January 2011\n \n\n\n\n\n2\n\n\nProject scope set\n\n\n12th January 2011\n\n\n13th January 2011\n\n\n\n\n3\n\n\nProvisional !PREFIX!budget!SUFFIX! set"
+                ]
+            }
+        ],
+        "workspace://SpacesStore/f3bb5d08-9fd1-46da-a94a-97f20f1ef208": [
+            {
+                "field": "cm:content",
+                "snippets": [
+                    ":\n\n\tAction\n\tAction Owner\n\tDate\n\n\tDraft requirements document\n\tMike Jackson\n\t3rd February 2011\n\n\tConfirm !PREFIX!budget!SUFFIX!\n\tBenjamin Scobell\n\tNext meeting\n\n\t\n\t\n\t\n\n\t\n\t\n\t\n\n\t\n\t\n\t\n\n\nKey Decisions\n\nSelected design number 2\n\nSet !PREFIX!budget!SUFFIX! for images\n\nReworked project timeline\nDiscussion\n\nLorem ipsum dolor sit amet, consectetuer"
+                ]
+            }
+        ],
+        "workspace://SpacesStore/a8290263-4178-48f5-a0b0-be155a424828": [
+            {
+                "field": "cm:content",
+                "snippets": [
+                    "\n\tNext meeting\n\n\tModify !PREFIX!budget!SUFFIX! spread sheet\n\tMike Jackson\n\t20th February 2011\n\n\t\n\t\n\t\n\n\t\n\t\n\t\n\n\nKey Decisions\n\nDecided to included TCO calculator in phase 1\n\nDecided to include localization in phase 1\n\nAdjusted !PREFIX!budgets!SUFFIX! inline with new additions\n\nDiscussion\n\nLorem ipsum dolor sit amet, consectetuer adipiscing elit"
+                ]
+            }
+        ],
+        "workspace://SpacesStore/1373739a-2849-4647-9e97-7a4e05cc5841": [
+            {
+                "field": "cm:content",
+                "snippets": [
+                    "This wiki page has a summary of project meetings\n\nMeeting: 2011-01-27 \nKey Decisions:\n\nSelected design number 2\nSet !PREFIX!budget!SUFFIX! for images\nReworked",
+                    "\nDecided to include localisation in phase 1\nAdjusted !PREFIX!budgets!SUFFIX! inline with new additions\n  \n\nFull meeting report is here\n "
+                ]
+            }
+        ],
+        "workspace://SpacesStore/5fa74ad3-9b5b-461b-9df5-de407f1f4fe7": [
+            {
+                "field": "cm:content",
+                "snippets": [
+                    "!PREFIX!budget!SUFFIX!\n\tNew Web Site Design Costs\n\t\n\t\t\t\tEstimate\t\tActual\n\tAgency fees\n\t\tCreative / Research\t\t$10,000.00\t\t$8,500.00\n\t\tConceptual design\t\t$5,000.00\n\t\tProduction design\t\t$5,000.00\n\t\tDocument preparation\t\t$1,000.00\n\t\n\tImages Costs\n\t\tIcon creation\t\t$15,000.00\n\t\tProduct images\t\t$9,500.00\n\t\tNavigation images"
+                ]
+            }
+        ]
+    }
+}

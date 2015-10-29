@@ -1,0 +1,18 @@
+group = 'eu.xenit.swagger'
+description = 'Xenit Dynamic-extensions Swagger Reader'
+
+apply plugin: 'osgi'
+
+dependencies {
+    compile group: 'commons-io', name: 'commons-io', version: '2.0.1'
+    compile(group: 'io.swagger', name: 'swagger-core', version: swagger_version) {
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+    }
+    compileOnly group: 'org.slf4j', name: 'slf4j-api', version: '1.7.22'
+    compile group: 'io.swagger', name: 'swagger-annotations', version: swagger_version
+    compileOnly(group: 'eu.xenit.de', name: 'annotations', version: de_version) {
+        transitive = false
+    }
+    compileOnly(group: 'org.springframework', name: 'spring-core', version: '3.2.10.RELEASE')
+    compileOnly(group: 'org.springframework.extensions.surf', name: 'spring-webscripts', version: '5.0.d')
+}

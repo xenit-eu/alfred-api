@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <beans xmlns="http://www.springframework.org/schema/beans"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:aop="http://www.springframework.org/schema/aop"
+           xmlns:context="http://www.springframework.org/schema/context"
+           xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/aop
+http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <context:annotation-config/>
+    <context:component-scan base-package="eu.xenit.apix.webscripts" />
+    <!--<context:component-scan base-package="eu.xenit" />-->
+    <bean class="eu.xenit.apix.webscripts.TestDEWebscript1" id="TestDEWebscript1"/>
+    <!--<bean id="webscripts.builder" class="com.github.dynamicextensionsalfresco.webscripts.AnnotationWebScriptBuilder">-->
+        <!--<constructor-arg ref="webscripts.argumentsResolver"/>-->
+    <!--</bean>-->
+    <bean id="NamespaceService" class="com.github.dynamicextensionsalfresco.spring.MockFactoryBean">
+        <property name="class" value="org.alfresco.service.namespace.NamespacePrefixResolver" />
+    </bean>
+
+</beans>

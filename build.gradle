@@ -1,0 +1,120 @@
+def bundleClassPath(configuration) {
+    def list = ['.']
+    configuration.each {
+        list += 'lib/' + it.name
+    }
+    return list.join(',')
+}
+
+def includeResource(configuration) {
+    def list = []
+    configuration.each {
+        list += 'lib/' + it.name + "=" + it.path
+    }
+    return list.join(',')
+}
+
+def getVersionQualifier(String branch_name) {
+    if (branch_name.startsWith('release'))
+        return ''
+    if (branch_name == 'master')
+        return '-SNAPSHOT'
+    return '-' + branch_name + '-SNAPSHOT'
+}
+
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url "http://maven.alfresco.com/nexus/content/groups/public"
+
+        }
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven {
+            url 'https://artifactory.xenit.eu/artifactory/libs-snapshot'
+            credentials {
+                username property("eu.xenit.artifactory.username")
+                password property("eu.xenit.artifactory.password")
+            }
+        }
+        maven {
+            url 'https://artifactory.xenit.eu/artifactory/libs-release'
+            credentials {
+                username property("eu.xenit.artifactory.username")
+                password property("eu.xenit.artifactory.password")
+            }
+        }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.moowork.gradle:gradle-node-plugin:1.2.0'
+        classpath 'org.apache.httpcomponents:httpclient:4.5.3'
+        classpath 'org.apache.httpcomponents:httpmime:4.5.3'
+        classpath 'org._10ne.gradle:rest-gradle-plugin:0.4.2'
+        classpath 'eu.xenit.de:gradle-plugin:1.7.5'
+        classpath 'eu.xenit.gradle:ampde-plugin:2.0.0-SNAPSHOT'
+        classpath 'org.codehaus.groovy.modules.http-builder:http-builder:0.7'
+        classpath 'org.dm.gradle:gradle-bundle-plugin:0.10.0'
+        classpath 'eu.xenit.gradle:alfresco-docker-plugin:4.0.2'
+    }
+}
+
+ext {
+    versionWithoutQualifier = '1.20.0'
+    
+    jackson_version = '2.6.3'
+    swagger_version = "1.5.7"
+    de_version = "1.7.5"
+
+    http_core_version = "4.3.3"
+    http_version = "4.3.3"
+
+    alfresco_4_version = "4.2.f"
+    alfresco_50_version = "5.0.d"
+    alfresco_51_version = "5.1.f"
+    alfresco_52_version = "5.2.f"
+
+    // The introduction of hit highlights in search 52 required general versions bump to 5.2.f
+    // Additionally, an explicit dependency on the data-model was required, however
+    // alfresco-data-model might have a different version number than the main war it's included in
+    // ref: https://bitbucket.org/xenit/alfresco-bom/src/master/repo/eu/xenit/alfresco/ for the bom of vanilla alfrescp
+    alfresco_4_dm_version = "4.2.f"
+    alfresco_50_dm_version = "5.0.d"
+    alfresco_51_dm_version = "5.1.f"
+    alfresco_52_dm_version = "6.16"
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
+    
+    group = 'eu.xenit.apix'
+    version = versionWithoutQualifier + getVersionQualifier(System.env.BRANCH_NAME ?: 'local')
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+
+    repositories {
+        mavenLocal()
+        maven { url "http://repo.maven.apache.org/maven2" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+        maven { url "https://artifacts.alfresco.com/nexus/content/groups/public" }
+        maven { url "http://repo.springsource.org/release" }
+        maven { url "http://jcenter.bintray.com" }
+        maven {
+            url "https://artifactory.xenit.eu/artifactory/libs-release"
+            credentials {
+                username property("eu.xenit.artifactory.username")
+                password property("eu.xenit.artifactory.password")
+            }
+        }
+        maven {
+            name 'alfresco-private-repository'
+            url 'https://artifacts.alfresco.com/nexus/content/repositories/activiti-enterprise-releases'
+            credentials {
+                username property("org.alfresco.maven.nexus.username")
+                password property("org.alfresco.maven.nexus.password")
+            }
+        }
+    }
+}

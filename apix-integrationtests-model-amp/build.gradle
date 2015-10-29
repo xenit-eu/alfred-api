@@ -1,0 +1,12 @@
+plugins {
+    id 'eu.xenit.alfresco' version "0.1.3"
+    id 'eu.xenit.amp' version "0.1.3"
+}
+
+configurations {
+    ampArchives
+}
+
+artifacts {
+    ampArchives amp
+}

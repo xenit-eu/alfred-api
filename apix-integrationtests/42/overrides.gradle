@@ -1,0 +1,14 @@
+ext {
+    subproject_alfresco_version = "42"
+    alfresco_version = alfresco_4_version
+    alfresco_dm_version = alfresco_4_dm_version
+}
+
+sourceSets {
+    main {
+        java {
+            // Exclude Alfresco 5+ dependent class from compile classpath
+            exclude "**/eu/xenit/apix/tests/search/SearchService5xTest.java"
+        }
+    }
+}

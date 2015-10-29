@@ -1,0 +1,48 @@
+[
+  {
+    "Id": "search-date-fields",
+    "Evaluator": "string-compare",
+    "Fields": [
+      {
+        "Id": "@{http://www.alfresco.org/model/content/1.0}modified.date"
+      }
+    ]
+  },
+  {
+    "Id": "search",
+    "Evaluator": "string-compare",
+    "Forms": [
+      {
+        "Id": "default-facets",
+        "sets": [
+          {
+            "Id": "",
+            "Fields": [
+              {
+                "Id": "TYPE"
+              },
+              {
+                "Id": "@{claims.model}thirdParty.__.u"
+              },
+              {
+                "Id": "@{claims.model}derivedDocumentType.__.u"
+              },
+              {
+                "Id": "@{claims.model}subType.__.u"
+              },
+              {
+                "Id": "@{claims.model}administrator.__.u"
+              },
+              {
+                "Id": "@{http://test.apix.xenit.eu/model/content}language.__.u"
+              },
+              {
+                "Id": "@{http://test.apix.xenit.eu/model/content}documentStatus.__.u"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--WARNING THIS IS A DUPLICATE OF THE integrationtests-50 version! EACH INTEGRATIONTESTS should have this file-->
+<model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.alfresco.org/model/dictionary/1.0 http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD/root/projects/repository/config/alfresco/model/modelSchema.xsd" xmlns="http://www.alfresco.org/model/dictionary/1.0" name="apixtest:model">
+    <description>APIX integration tests Metadata Model</description>
+    <author>gb</author>
+    <version>1</version>
+    <imports>
+        <import uri="http://www.alfresco.org/model/dictionary/1.0" prefix="d"/>
+        <import uri="http://www.alfresco.org/model/content/1.0" prefix="cm"/>
+    </imports>
+    <namespaces>
+        <namespace uri="http://test.apix.xenit.eu/model/content" prefix="apixtest"/>
+    </namespaces>
+    <constraints>
+        <constraint type="LIST" name="apixtest:languageConstraint">
+            <parameter name="allowedValues">
+                <list>
+                    <value>English</value>
+                    <value>French</value>
+                    <value>Dutch</value>
+                    <value>German</value>
+                </list>
+            </parameter>
+        </constraint>
+        <constraint type="LIST" name="apixtest:documentStatusConstraint">
+            <parameter name="allowedValues">
+                <list>
+                    <value>Draft</value>
+                    <value>Final</value>
+                    <value>Archived</value>
+                    <value>Unknown</value>
+                </list>
+            </parameter>
+        </constraint>
+    </constraints>
+    <types>
+        <type name="apixtest:withAspectsDocument">
+            <title>Type with aspects</title>
+            <description>Type with aspects</description>
+            <parent>cm:content</parent>
+            <mandatory-aspects>
+                <aspect>apixtest:hasAuthor</aspect>
+                <aspect>apixtest:hasLanguage</aspect>
+            </mandatory-aspects>
+        </type>
+        <type name="apixtest:withMandatoryPropDocument">
+            <title>Type with mandatory properties</title>
+            <parent>cm:content</parent>
+            <properties>
+                <property name="apixtest:documentStatus">
+                    <title>documentStatus</title>
+                    <description>documentStatus</description>
+                    <type>d:text</type>
+                    <mandatory enforced="true">true</mandatory>
+                    <index enabled="true">
+                        <tokenised>false</tokenised>
+                    </index>
+                    <constraints>
+                        <constraint ref="apixtest:documentStatusConstraint"/>
+                    </constraints>
+                </property>
+                <property name="apixtest:sender">
+                    <title>sender</title>
+                    <description>sender</description>
+                    <type>d:text</type>
+                    <mandatory enforced="true">false</mandatory>
+                    <index enabled="true">
+                        <tokenised>false</tokenised>
+                    </index>
+                </property>                
+            </properties>
+        </type>
+    </types>
+    <aspects>
+        <aspect name="apixtest:hasLanguage">
+            <properties>
+                <property name="apixtest:language">
+                    <title>language</title>
+                    <description>language</description>
+                    <type>d:text</type>
+                    <mandatory enforced="true">true</mandatory>
+                    <multiple>true</multiple>
+                    <index enabled="true">
+                        <tokenised>false</tokenised>
+                    </index>
+                    <constraints>
+                        <constraint ref="apixtest:languageConstraint"/>
+                    </constraints>
+                </property>
+            </properties>
+        </aspect>
+        <aspect name="apixtest:hasAuthor">
+            <properties>
+                <property name="apixtest:author">
+                    <title>author</title>
+                    <description>author</description>
+                    <type>d:text</type>
+                    <mandatory enforced="true">false</mandatory>
+                    <index enabled="true">
+                        <tokenised>false</tokenised>
+                    </index>
+                </property>
+            </properties>
+        </aspect>
+    </aspects>
+</model>

@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+<beans>
+    {{#webscripts}}
+    <bean id="webscript.{{package}}.{{id}}.{{method}}"
+          class="{{package}}.{{id}}{{#method}}{{toUpperCase}}{{/method}}"
+          parent="webscript"
+          init-method="init" autowire="constructor">
+    </bean>
+    {{/webscripts}}
+</beans>

@@ -1,0 +1,137 @@
+import com.github.dynamicextensionsalfresco.gradle.configuration.BaseConfig
+import com.github.dynamicextensionsalfresco.gradle.tasks.InstallBundle
+
+subprojects {
+    apply plugin: 'org.dm.bundle'
+    apply from: "${project.projectDir}/overrides.gradle"
+
+    sourceSets {
+        main {
+            java {
+                srcDirs = ['src/integration-test/java-shared', 'src/main/java']
+                // This is needed because client side, these dependencies are not really provided
+                runtimeClasspath += configurations.compileOnly
+            }
+            resources {
+                srcDir "${project.parent.projectDir}/src/integration-test/resources"
+            }
+        }
+    }
+
+    configurations {
+        integrationJar
+        compileOnly.extendsFrom(integrationJar)
+    }
+
+    dependencies {
+        compileOnly project(":apix-rest-v1")
+        compileOnly project(":apix-interface")
+        compileOnly project(":apix-impl:apix-impl-${subproject_alfresco_version}")
+
+        compileOnly(group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_version) {
+            exclude group: 'maven-plugins'
+        }
+        compileOnly(group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_version) {
+            transitive = false
+        }
+        compileOnly group: 'org.alfresco', name: 'alfresco-data-model', version: alfresco_dm_version
+        compileOnly group: 'eu.xenit.de', name: 'annotations', version: de_version
+        compileOnly group: 'org.osgi', name: 'org.osgi.core', version: '4.3.1'
+
+        integrationJar group: 'eu.xenit.testing', name: 'integration-testing', version: '1.1.0'
+
+        compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: http_version
+        compile group: 'org.apache.httpcomponents', name: 'httpclient', version: http_version
+        compile group: 'org.apache.httpcomponents', name: 'httpcore', version: http_core_version
+        compile group: 'org.apache.httpcomponents', name: 'httpmime', version: http_version
+        compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
+        compile group: 'commons-logging', name: 'commons-logging', version: '1.1.3'
+        compile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.13'
+        compile group: 'org.codehaus.jackson', name: 'jackson-core-asl', version: '1.9.13'
+        compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: jackson_version
+        compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-joda', version: jackson_version
+    }
+
+    bundle {
+        instruction 'Export-Package', 'eu.xenit.apix.tests.*,eu.xenit.apix.rest.*.tests.*'
+        instruction 'Include-Resource', includeResource(configurations.compile)
+        instruction 'Bundle-ClassPath', bundleClassPath(configurations.compile)
+        instruction "Alfresco-Dynamic-Extension", "true"
+        instruction 'Import-Package',
+                'net.sf.cglib.core,' +
+                        'net.sf.cglib.proxy,net.sf.cglib.reflect,' +
+                        "!com.google.errorprone.annotations.concurrent," +
+                        '!org.joda.convert,' +
+                        '!org.apache.log,' +
+                        '*'
+    }
+
+    def projectDocker = project(":apix-docker:docker-${subproject_alfresco_version}")
+    def composeUpTask = projectDocker.tasks.getByName("composeUp")
+    def composeDownTask = projectDocker.tasks.getByName("composeDown")
+
+    project.extensions.add("alfrescoDynamicExtensions", new BaseConfig())
+
+    task configureDE {
+        dependsOn composeUpTask
+        doLast {
+            def serviceInfo = composeUpTask.servicesInfos.get("alfresco-core")
+            def port = serviceInfo.ports[8080]
+            def host = serviceInfo.getHost()
+            alfrescoDynamicExtensions.repository.endpoint.port = port
+            alfrescoDynamicExtensions.repository.endpoint.host = host
+        }
+    }
+
+    task configureDELocal {
+        doLast {
+            alfrescoDynamicExtensions.repository.endpoint.protocol = project.hasProperty('protocol') ? project.protocol : 'http'
+            alfrescoDynamicExtensions.repository.endpoint.port = project.hasProperty('port') ? project.port : '8080'
+            alfrescoDynamicExtensions.repository.endpoint.host = project.hasProperty('host') ? project.host : 'localhost'
+        }
+    }
+
+    task installIntegrationJar(type: InstallBundle) {
+        dependsOn configureDE
+        configuration = configurations.integrationJar { transitive = false }
+    }
+
+    task installTestsOnDocker(type: InstallBundle) {
+        dependsOn installIntegrationJar
+        dependsOn jar
+    }
+
+    task installTestsLocal(type: InstallBundle) {
+        dependsOn configureDELocal
+        dependsOn jar
+    }
+
+    task integrationTest(type: Test) {
+        dependsOn installTestsOnDocker
+        testClassesDirs = sourceSets.main.output.classesDirs
+        classpath = sourceSets.main.runtimeClasspath
+
+        doFirst {
+            def serviceInfo = composeUpTask.servicesInfos.get("alfresco-core")
+            def port = serviceInfo.ports[8080]
+            def host = serviceInfo.getHost()
+            systemProperty("alfresco.url", "http://admin:admin@" + host + ":" + port + "/alfresco")
+        }
+        outputs.upToDateWhen { false }
+
+        // After the tests, the docker setup should be stopped
+        finalizedBy(composeDownTask)
+    }
+
+    task integrationTestLocal(type: Test) {
+        dependsOn installTestsLocal
+        testClassesDirs = sourceSets.main.output.classesDirs
+        classpath = sourceSets.main.runtimeClasspath
+        def host = project.hasProperty('host') ? project.host : 'localhost'
+        def port = project.hasProperty('port') ? project.port : '8080'
+        def protocol = project.hasProperty('protocol') ? project.protocol : 'http'
+        systemProperty("alfresco.url", "$protocol://admin:admin@" + host + ":" + port + "/alfresco")
+
+        outputs.upToDateWhen { false }
+    }
+}

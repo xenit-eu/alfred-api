@@ -1,0 +1,9 @@
+description = "Xenit API-X Implementation alfresco 5.2"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+ext {
+    alfresco_version = alfresco_52_version
+    alfresco_dm_version = alfresco_52_dm_version
+}

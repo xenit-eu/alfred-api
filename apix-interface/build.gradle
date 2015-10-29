@@ -1,0 +1,43 @@
+description = 'Xenit API-X Java interface'
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            name 'snapshot'
+            url 'https://artifactory.xenit.eu/artifactory/libs-snapshot-local'
+            credentials {
+                username property("eu.xenit.artifactory.username")
+                password property("eu.xenit.artifactory.password")
+            }
+        }
+        maven {
+            name 'release'
+            url 'https://artifactory.xenit.eu/artifactory/libs-release-local'
+            credentials {
+                username property("eu.xenit.artifactory.username")
+                password property("eu.xenit.artifactory.password")
+            }
+        }
+    }
+}
+
+dependencies {
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: jackson_version
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: jackson_version
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jackson_version
+    compile group: 'io.swagger', name: 'swagger-annotations', version: swagger_version
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+task generateJavadocs(type: Javadoc) {
+    source = sourceSets.main.allJava
+    //destinationDir = file("${projectDir}/javadoc/src/main/resources/eu/xenit/apix/javadoc/apix-interface") //file("${rootProject.projectDir}/javadoc/apix-interface")
+    options.memberLevel = JavadocMemberLevel.PROTECTED
+    options.setOutputLevel(JavadocOutputLevel.VERBOSE)
+    failOnError = false
+}

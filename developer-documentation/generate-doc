@@ -1,0 +1,8 @@
+#!/bin/sh
+# Generate developer documentation PDF
+
+INPUT_FILENAME=*.md
+OUTPUT_FILENAME=Alfred-API-Developer-Guide.pdf
+CONTAINER_WORKDIR=/guide
+
+docker run --rm --tty --volume="$(pwd):${CONTAINER_WORKDIR}" --workdir="${CONTAINER_WORKDIR}" hub.xenit.eu/xenit-markdowntopdf:latest ${INPUT_FILENAME} --output ${OUTPUT_FILENAME}

@@ -1,0 +1,17 @@
+subprojects {
+    apply plugin: 'eu.xenit.docker-alfresco'
+
+    dockerAlfresco {
+        // leanImage speeds up build (see https://bitbucket.org/xenit/xenit-gradle-plugins/src/master/README.md)
+        leanImage = true
+    }
+
+    // Isolate the version number ("docker-52" -> "52"). We should find a cleaner way
+    def subproject_alfresco_version = project.name.substring(project.name.length() - 2)
+
+    dependencies {
+        alfrescoAmp project(path: ":apix-impl:apix-impl-${subproject_alfresco_version}", configuration: 'ampArtifact')
+        alfrescoAmp project(path: ':apix-integrationtests-model-amp', configuration: 'ampArchives')
+        alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo:${de_version}@amp"
+    }
+}
