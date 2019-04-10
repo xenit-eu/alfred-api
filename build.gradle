@@ -44,6 +44,10 @@ buildscript {
                 password property("eu.xenit.artifactory.password")
             }
         }
+        // Dynamic Extensions
+        maven {
+            url 'https://oss.sonatype.org/content/repositories/snapshot/'
+        }
         mavenCentral()
     }
     dependencies {
@@ -64,7 +68,8 @@ ext {
     
     jackson_version = '2.6.3'
     swagger_version = "1.5.7"
-    de_version = "1.7.5"
+    //de_version = "1.7.5"
+    de_version = "2.0.0-SNAPSHOT"
 
     http_core_version = "4.3.3"
     http_version = "4.3.3"
@@ -73,6 +78,7 @@ ext {
     alfresco_50_version = "5.0.d"
     alfresco_51_version = "5.1.f"
     alfresco_52_version = "5.2.f"
+    alfresco_60_version = "6.0" //TODO: Should this be 6.0.0.2? See https://bitbucket.org/xenit/alfresco-bom/src/master/repo/eu/xenit/alfresco/alfresco-enterprise-bom/6.0.0.2/alfresco-enterprise-bom-6.0.0.2.pom
 
     // The introduction of hit highlights in search 52 required general versions bump to 5.2.f
     // Additionally, an explicit dependency on the data-model was required, however
@@ -82,6 +88,7 @@ ext {
     alfresco_50_dm_version = "5.0.d"
     alfresco_51_dm_version = "5.1.f"
     alfresco_52_dm_version = "6.16"
+    alfresco_60_dm_version = "8.9"
 }
 
 subprojects {

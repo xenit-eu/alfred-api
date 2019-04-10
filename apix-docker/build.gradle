@@ -12,6 +12,8 @@ subprojects {
     dependencies {
         alfrescoAmp project(path: ":apix-impl:apix-impl-${subproject_alfresco_version}", configuration: 'ampArtifact')
         alfrescoAmp project(path: ':apix-integrationtests-model-amp', configuration: 'ampArchives')
-        alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo:${de_version}@amp"
+        // TODO: Might not work for 42
+        //alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo:${de_version}@amp"
+        alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${subproject_alfresco_version}:${de_version}@amp"
     }
 }
