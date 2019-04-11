@@ -7,8 +7,11 @@ dependencies {
     }
     compileOnly project(':apix-interface')
 
+    // The REST API use one call from DE annotations-runtime for the bulk endpoint
+    // although annotations-runtime is internal. Until this is fixed (for example by making it public)
+    // we will use the lowest possible Alfresco-specific version here:
+    compileOnly("eu.xenit.de:annotations-runtime-50:${de_version}") { transitive = false }
     compileOnly("eu.xenit.de:annotations:${de_version}") { transitive = false }
-    compileOnly("eu.xenit.de:annotations-runtime:${de_version}") { transitive = false }
     compileOnly("eu.xenit.de:webscripts:${de_version}") { transitive = false }
 
     compile(project(':de-swagger-reader'))
@@ -21,6 +24,6 @@ dependencies {
     testCompile group: 'org.springframework', name: 'spring-core', version: '3.2.10.RELEASE'
     testCompile group: 'org.springframework', name: 'spring-test', version: '3.2.10.RELEASE'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
-    testCompile group: 'eu.xenit.de', name: 'annotations', version: de_version    
+    testCompile group: 'eu.xenit.de', name: 'annotations', version: de_version
     testCompile group: 'eu.xenit.testing', name: 'integration-testing', version: '1.1.0'
 }

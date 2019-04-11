@@ -68,16 +68,13 @@ subprojects {
         compile(project(":apix-rest-v1")) {
             exclude group: 'org.alfresco'
         }
-
         compileOnly("eu.xenit.de:annotations:${de_version}") {
-            transitive = false
-        }
-        compileOnly("eu.xenit.de:annotations-runtime:${de_version}") {
             transitive = false
         }
         compileOnly("eu.xenit.de:webscripts:${de_version}") {
             transitive = false
         }
+
         compileOnly(group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_version) {
             exclude group: 'maven-plugins'
         }
@@ -96,6 +93,7 @@ subprojects {
         }
 
         testCompile group: 'eu.xenit.de', name: 'annotations', version: de_version
+
         testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
         testCompile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
         testCompile group: 'eu.xenit.testing', name: 'integration-testing', version: '1.1.0'
