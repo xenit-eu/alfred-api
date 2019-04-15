@@ -4,7 +4,9 @@
 ## 1.20.0 (2019-04-17)
 
 ### Added
+* [ALFREDAPI-355](https://xenitsupport.jira.com/browse/ALFREDAPI-355): Alfresco 6.0 support
 * [ALFREDAPI-291](https://xenitsupport.jira.com/browse/ALFREDAPI-291): Expose Java MimetypeService
+ 
 
 ### Changed
 * [ALFREDAPI-361](https://xenitsupport.jira.com/browse/ALFREDAPI-361): Create multiple release branches
