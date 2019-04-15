@@ -117,6 +117,14 @@ public class Version {
     }
     compileJava.dependsOn generateVersionFile
 
+    test {
+        // Always run unit tests
+        outputs.upToDateWhen { false }
+
+        // Show test results when running from the CLI
+        testLogging { events "PASSED", "FAILED", "SKIPPED" }
+    }
+
     bundle {
         instruction 'Export-Package', 'eu.xenit.apix.*'
         instruction 'Include-Resource', includeResource(configurations.compile)
