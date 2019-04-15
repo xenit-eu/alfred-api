@@ -57,13 +57,13 @@ subprojects {
         instruction 'Include-Resource', includeResource(configurations.compile)
         instruction 'Bundle-ClassPath', bundleClassPath(configurations.compile)
         instruction "Alfresco-Dynamic-Extension", "true"
-        instruction 'Import-Package',
-                'net.sf.cglib.core,' +
-                        'net.sf.cglib.proxy,net.sf.cglib.reflect,' +
-                        "!com.google.errorprone.annotations.concurrent," +
-                        '!org.joda.convert,' +
-                        '!org.apache.log,' +
-                        '*'
+        instruction 'Import-Package', ('net.sf.cglib.core,'
+                + 'net.sf.cglib.proxy,'
+                + 'net.sf.cglib.reflect,'
+                + "!com.google.errorprone.annotations.concurrent,"
+                + '!org.joda.convert,'
+                + '!org.apache.log,'
+                + '*')
     }
 
     def projectDocker = project(":apix-docker:docker-${subproject_alfresco_version}")
