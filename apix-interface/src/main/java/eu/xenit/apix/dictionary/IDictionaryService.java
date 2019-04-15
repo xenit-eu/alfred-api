@@ -20,6 +20,6 @@ public interface IDictionaryService extends IPropertyService, ITypeService, IAsp
     /**
      * @return The namespaces of the content model.
      */
-    public Namespaces getNamespaces();
+    Namespaces getNamespaces();
 
 }
