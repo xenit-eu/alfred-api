@@ -121,22 +121,22 @@ public class Version {
         instruction 'Export-Package', 'eu.xenit.apix.*'
         instruction 'Include-Resource', includeResource(configurations.compile)
         instruction 'Bundle-ClassPath', bundleClassPath(configurations.compile)
-        instruction "Bundle-Description", "APIX Impl + REST API"
-        instruction "Alfresco-Dynamic-Extension", "true"
+        instruction 'Bundle-Description', 'APIX Impl + REST API'
+        instruction 'Alfresco-Dynamic-Extension', 'true'
         instruction 'Import-Package',
-                ('org.springframework.beans.factory,' +
+                ('org.springframework.beans.factory,'
                         // Different cglib dependency for 42
-                        (subproject_alfresco_version.equals("42") ?
-                                'net.sf.cglib.core,' +
-                                        "net.sf.cglib.proxy," +
-                                        "net.sf.cglib.reflect," :
-                                // dependencies for other then 42
-                                "org.springframework.cglib.core," +
-                                        "org.springframework.cglib.proxy,")
-                        +
-                        "!com.google.errorprone.annotations.concurrent," +
-                        '!org.joda.convert,' +
-                        '*')
+                        + (subproject_alfresco_version.equals('42')
+                        ? 'net.sf.cglib.core,'
+                        + 'net.sf.cglib.proxy,'
+                        + 'net.sf.cglib.reflect,'
+                        // Dependencies for other then 42
+                        : 'org.springframework.cglib.core,'
+                        + 'org.springframework.cglib.proxy,')
+                        + '!org.codehaus.jackson.map,'
+                        + '!com.google.errorprone.annotations.concurrent,'
+                        + '!org.joda.convert,'
+                        + '*')
     }
 
     project.extensions.add("alfrescoDynamicExtensions", new BaseConfig())
