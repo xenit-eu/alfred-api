@@ -78,7 +78,7 @@ ext {
     alfresco_50_version = "5.0.d"
     alfresco_51_version = "5.1.f"
     alfresco_52_version = "5.2.f"
-    alfresco_60_version = "6.0" //TODO: Should this be 6.0.0.2? See https://bitbucket.org/xenit/alfresco-bom/src/master/repo/eu/xenit/alfresco/alfresco-enterprise-bom/6.0.0.2/alfresco-enterprise-bom-6.0.0.2.pom
+    alfresco_60_version = "6.0"
 
     // The introduction of hit highlights in search 52 required general versions bump to 5.2.f
     // Additionally, an explicit dependency on the data-model was required, however
