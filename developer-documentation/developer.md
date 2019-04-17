@@ -23,10 +23,10 @@ versions, providing a stable interface to Alfresco on which client-side applicat
  
 Currently Alfred supports the following Alfresco versions:
 
-* 4.2
 * 5.0
 * 5.1
 * 5.2
+* 6.0
 
 Alfred API is composed of two components. Artifacts for both components are published 
 to the [Xenit artifactory](https://artifactory.xenit.eu).  
@@ -50,7 +50,7 @@ Installation instructions for can be found
 ### Development scenario
 For development use only Alfred API can be deployed as JAR (which is actually an OSGi *Bundle*). 
 File format of this JAR is `apix-impl-{ALFRESCO-VERSION}-{APIX-VERSION}.jar`, where `ALFRESCO-VERSION` 
-is one of *(42|50|51|52)*. This JAR can be deployed through the Dynamic Extensions web interface.
+is one of *(50|51|52|60)*. This JAR can be deployed through the Dynamic Extensions web interface.
  
 When installing the JAR through DE, you have to install beforehand those modules:
 
@@ -70,13 +70,13 @@ Alfred API is also distributed as an Alfresco Module Package (AMP), which should
 production installations.
 
 File format of the AMP is `apix-impl-{ALFRESCO-VERSION}-{APIX-VERSION}.amp`, where `ALFRESCO-VERSION`
-is one of *(42|50|51|52)*.
+is one of *(50|51|52|60)*.
   
 To install the AMP, follow the Alfresco AMP installation guidelines your version of Alfresco:
-[4.2](https://docs.alfresco.com/4.2/tasks/amp-install.html), 
 [5.0](https://docs.alfresco.com/5.0/tasks/amp-install.html), 
-[5.1](https://docs.alfresco.com/5.1/tasks/amp-install.html) or
-[5.2](https://docs.alfresco.com/5.2/tasks/amp-install.html).
+[5.1](https://docs.alfresco.com/5.1/tasks/amp-install.html),
+[5.2](https://docs.alfresco.com/5.2/tasks/amp-install.html) or
+[6.0](https://docs.alfresco.com/6.0/tasks/amp-install.html).
 
 
 
