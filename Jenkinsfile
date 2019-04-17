@@ -43,9 +43,6 @@ node {
                 sh "${gradleCommand} :apix-interface:publishMavenJavaPublicationTo${publishingRepo}Repository"
             }
         }
-        stage("Build 42") {
-            BuildVersionX(publishingRepo, "42")
-        }
         stage("Build 50") {
             BuildVersionX(publishingRepo, "50")
         }
