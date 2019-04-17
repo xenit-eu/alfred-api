@@ -3,6 +3,11 @@
 
 ## 2.0.0 (unreleased)
 
+### Added
+* [ALFREDAPI-355](https://xenitsupport.jira.com/browse/ALFREDAPI-355): Added Alfresco 6.0 support
+
+## Deleted
+* [ALFREDAPI-355](https://xenitsupport.jira.com/browse/ALFREDAPI-355): Removed Alfresco 4.2 support
 
 
 ## 1.20.0 (2019-04-17)
