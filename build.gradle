@@ -68,13 +68,11 @@ ext {
     
     jackson_version = '2.6.3'
     swagger_version = "1.5.7"
-    //de_version = "1.7.5"
     de_version = "2.0.0-SNAPSHOT"
 
     http_core_version = "4.3.3"
     http_version = "4.3.3"
 
-    alfresco_4_version = "4.2.f"
     alfresco_50_version = "5.0.d"
     alfresco_51_version = "5.1.f"
     alfresco_52_version = "5.2.f"
@@ -83,8 +81,7 @@ ext {
     // The introduction of hit highlights in search 52 required general versions bump to 5.2.f
     // Additionally, an explicit dependency on the data-model was required, however
     // alfresco-data-model might have a different version number than the main war it's included in
-    // ref: https://bitbucket.org/xenit/alfresco-bom/src/master/repo/eu/xenit/alfresco/ for the bom of vanilla alfrescp
-    alfresco_4_dm_version = "4.2.f"
+    // ref: https://bitbucket.org/xenit/alfresco-bom/src/master/repo/eu/xenit/alfresco/ for the bom of vanilla alfresco
     alfresco_50_dm_version = "5.0.d"
     alfresco_51_dm_version = "5.1.f"
     alfresco_52_dm_version = "6.16"
