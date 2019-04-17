@@ -1,10 +1,14 @@
 # Alfred API - Changelog
 
 
-## 1.20.0 (unreleased)
+## 1.20.0 (2019-04-17)
 
 ### Added
 * [ALFREDAPI-291](https://xenitsupport.jira.com/browse/ALFREDAPI-291): Expose Java MimetypeService
+
+### Changed
+* [ALFREDAPI-361](https://xenitsupport.jira.com/browse/ALFREDAPI-361): Create multiple release branches
+
 
 ## 1.19.0 (2019-03-26)
 
