@@ -1,10 +1,9 @@
 package eu.xenit.apix.tests.helperClasses.alfresco.entities;
 
-import eu.xenit.apix.data.NodeRef;
-import eu.xenit.apix.data.QName;
-
 import java.util.List;
 import java.util.Map;
+import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.namespace.QName;
 
 public class Node {
 

@@ -23,7 +23,9 @@ dependencies {
 
     testCompile group: 'org.springframework', name: 'spring-core', version: '3.2.10.RELEASE'
     testCompile group: 'org.springframework', name: 'spring-test', version: '3.2.10.RELEASE'
-    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
+//    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.9.0'
+    testCompile group: 'org.mockito', name: 'mockito-inline', version: '2.9.0'
     testCompile group: 'eu.xenit.de', name: 'annotations', version: de_version
     testCompile group: 'eu.xenit.testing', name: 'integration-testing', version: '1.1.0'
 }
