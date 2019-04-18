@@ -1,7 +1,4 @@
-description = "Xenit API-X Implementation alfresco 5.1"
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+description = "Xenit API-X implementation Alfresco 5.1"
 
 ext {
     alfresco_version = alfresco_51_version
