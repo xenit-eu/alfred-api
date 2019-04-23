@@ -311,7 +311,7 @@ public class NodeService implements INodeService {
         return this.getMetadata(noderef);
     }
 
-    protected void cleanupAspects(eu.xenit.apix.data.NodeRef nodeRef, eu.xenit.apix.data.QName oldTypeQName,
+    public void cleanupAspects(eu.xenit.apix.data.NodeRef nodeRef, eu.xenit.apix.data.QName oldTypeQName,
             eu.xenit.apix.data.QName newTypeQName, boolean cleanUp) {
         if (!cleanUp || !dictionaryService
                 .isSubClass(c.alfresco(oldTypeQName), c.alfresco(newTypeQName))) {
@@ -740,5 +740,13 @@ public class NodeService implements INodeService {
         logger.debug("Extracting metadata for {}", alfrescoNodeRef);
         serviceRegistry.getActionService()
                 .executeAction(serviceRegistry.getActionService().createAction("extract-metadata"), alfrescoNodeRef);
+    }
+
+    public org.alfresco.service.cmr.repository.NodeService getNodeService() {
+        return nodeService;
+    }
+
+    public void setNodeService(org.alfresco.service.cmr.repository.NodeService nodeService) {
+        this.nodeService = nodeService;
     }
 }
