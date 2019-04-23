@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -16,6 +17,7 @@ import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.dictionary.aspects.AspectDefinition;
 import eu.xenit.apix.dictionary.types.TypeDefinition;
+import eu.xenit.apix.node.INodeService;
 import eu.xenit.apix.node.MetadataChanges;
 import eu.xenit.apix.node.NodeMetadata;
 import eu.xenit.apix.properties.PropertyDefinition;
@@ -157,13 +159,13 @@ public class SetMetadataUnitTest {
         when(typeDef3Mock.getTitle(any(MessageLookup.class))).thenReturn("");
         when(typeDef3Mock.getProperties()).thenReturn(new HashMap<>());
 
-        org.alfresco.service.cmr.dictionary.TypeDefinition typeDef4Mock = mock(
-                org.alfresco.service.cmr.dictionary.TypeDefinition.class);
-        when(typeDef4Mock.getName()).thenReturn(org.alfresco.service.namespace.QName.createQName(BASE_TYPE));
-        when(typeDef4Mock.getParentName()).thenReturn(null);
-        when(typeDef4Mock.getDescription(any(MessageLookup.class))).thenReturn("");
-        when(typeDef4Mock.getTitle(any(MessageLookup.class))).thenReturn("");
-        when(typeDef4Mock.getProperties()).thenReturn(new HashMap<>());
+//        org.alfresco.service.cmr.dictionary.TypeDefinition typeDef4Mock = mock(
+//                org.alfresco.service.cmr.dictionary.TypeDefinition.class);
+//        when(typeDef4Mock.getName()).thenReturn(org.alfresco.service.namespace.QName.createQName(BASE_TYPE));
+//        when(typeDef4Mock.getParentName()).thenReturn(null);
+//        when(typeDef4Mock.getDescription(any(MessageLookup.class))).thenReturn("");
+//        when(typeDef4Mock.getTitle(any(MessageLookup.class))).thenReturn("");
+//        when(typeDef4Mock.getProperties()).thenReturn(new HashMap<>());
 
         DictionaryService dictionaryServiceMock = mock(DictionaryService.class);
         when(dictionaryServiceMock.isSubClass(eq(org.alfresco.service.namespace.QName.createQName(INITIAL_TYPE)), eq(
@@ -171,7 +173,7 @@ public class SetMetadataUnitTest {
         when(dictionaryServiceMock.getType(org.alfresco.service.namespace.QName.createQName(INITIAL_TYPE))).thenReturn(typeDef1Mock);
         when(dictionaryServiceMock.getType(org.alfresco.service.namespace.QName.createQName(PARENT_TYPE))).thenReturn(typeDef2Mock);
         when(dictionaryServiceMock.getType(org.alfresco.service.namespace.QName.createQName(GRAND_PARENT_TYPE))).thenReturn(typeDef3Mock);
-        when(dictionaryServiceMock.getType(org.alfresco.service.namespace.QName.createQName(BASE_TYPE))).thenReturn(typeDef4Mock);
+//        when(dictionaryServiceMock.getType(org.alfresco.service.namespace.QName.createQName(BASE_TYPE))).thenReturn(typeDef4Mock);
 
         Mockito.when(serviceRegistryMock.getDictionaryService()).thenReturn(dictionaryServiceMock);
 
@@ -245,7 +247,7 @@ public class SetMetadataUnitTest {
         //Getting initial type
         org.alfresco.service.namespace.QName initialType = testNode.getType();
         DictionaryService dictionaryService = serviceRegistryMock.getDictionaryService();
-        typeService = new TypeService(dictionaryService, apixAlfrescoConverter);
+//        typeService = new TypeService(dictionaryService, apixAlfrescoConverter);
 //        TypeDefinition initialTypeDef = typeService.GetTypeDefinition(initialType);
         org.alfresco.service.cmr.dictionary.TypeDefinition intialTypeDef = dictionaryService.getType(initialType);
         //Choosing target type
@@ -263,22 +265,25 @@ public class SetMetadataUnitTest {
         testNodeRefSet.add(testNode.getNodeRef());
         NodeRef apixTestNodeRef = apixAlfrescoConverter.apixNodeRefs(testNodeRefSet).iterator().next();
         NodeMetadata initialNodeMetadata = nodeService.getMetadata(apixTestNodeRef);
-        QName initialNodeType = initialNodeMetadata.type;
-        List<QName> initialNodeAspects = initialNodeMetadata.aspects;
-
-        Assert.assertEquals(new QName(INITIAL_TYPE), initialNodeType);
-        Assert.assertEquals(3, initialNodeAspects.size());
-        Assert.assertTrue(initialNodeAspects.contains(new QName(ASPECT1)));
-        Assert.assertTrue(initialNodeAspects.contains(new QName(ASPECT2)));
-        Assert.assertTrue(initialNodeAspects.contains(new QName(ASPECT3)));
+//        QName initialNodeType = initialNodeMetadata.type;
+//        List<QName> initialNodeAspects = initialNodeMetadata.aspects;
+//
+//        Assert.assertEquals(new QName(INITIAL_TYPE), initialNodeType);
+//        Assert.assertEquals(3, initialNodeAspects.size());
+//        Assert.assertTrue(initialNodeAspects.contains(new QName(ASPECT1)));
+//        Assert.assertTrue(initialNodeAspects.contains(new QName(ASPECT2)));
+//        Assert.assertTrue(initialNodeAspects.contains(new QName(ASPECT3)));
 
         //Setting the node type to the target type. We initially have 3 aspects (aspect1, aspect2 and aspect3).
         //After generalizing the type we expect:
         //- aspect1 is removed because it is part of the initial type definition but it no long part of the target type definition
         //- aspect2 still exists because it is part of the initial type definition and the target type definition
         //- aspect3 still exists because it isn't part of either type definition
-        NodeMetadata finalNodeMetadata = nodeService.setMetadata(apixTestNodeRef, changes);
-        verify(nodeService.getNodeService()).setType(any(org.alfresco.service.cmr.repository.NodeRef.class), any(org.alfresco.service.namespace.QName.class));
+        NodeService nodeServiceSpy = spy(nodeService);
+        NodeMetadata finalNodeMetadata = nodeServiceSpy.setMetadata(apixTestNodeRef, changes);
+        verify(nodeServiceSpy.getNodeService()).setType(any(org.alfresco.service.cmr.repository.NodeRef.class), any(org.alfresco.service.namespace.QName.class));
+        verify(nodeServiceSpy).cleanupAspects(any(), any(), any(), anyBoolean());
+
 //        NodeService nodserv = mock(NodeService.class);
 //        nodserv.setMetadata(apixTestNodeRef, changes);
 //        verify(nodserv).cleanupAspects(any(NodeRef.class), any(QName.class), any(QName.class), anyBoolean());
