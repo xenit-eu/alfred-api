@@ -9,7 +9,6 @@ import eu.xenit.apix.node.NodeAssociation;
 import eu.xenit.apix.node.NodeAssociations;
 import eu.xenit.apix.node.NodeMetadata;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -611,7 +610,7 @@ public class NodeService implements INodeService {
     @Override
     public eu.xenit.apix.data.ContentData createContentWithMimetypeGuess(InputStream inputStream, String fileName,
             String encoding) {
-        //Making copy of original inputstream because we want an inputstream that definitely supports mark/reset
+        // Making copy of original inputstream because we want an inputstream that definitely supports mark/reset
         InputStream inputStreamCopy = null;
         try {
             inputStreamCopy = cloneInputStreamWithMarkSupported(inputStream);
@@ -623,9 +622,9 @@ public class NodeService implements INodeService {
             writer.putContent(inputStreamCopy);
             return new eu.xenit.apix.data.ContentData(
                     writer.getContentUrl(),
-                    writer.getMimetype(),
+                    mimeType,
                     writer.getSize(),
-                    writer.getEncoding(),
+                    encoding,
                     writer.getLocale());
         } catch (IOException ioException) {
             logger.error("Error handling the io-streams:", ioException);
@@ -643,11 +642,12 @@ public class NodeService implements INodeService {
      * stream read pointer and by using mark/reset we keep stream usable.
      */
     protected InputStream cloneInputStreamWithMarkSupported(InputStream stream) throws IOException {
-        File tmpFile = null;
         try {
             // Write stream to file using Alfrescos temp file provider. Will clean up all temp files after set period (default 1h)
-            tmpFile = TempFileProvider.createTempFile(stream, "Apix_NodeService_cloneInputstreamWithMarkSupported_", "_tmpFile");
-            return new ByteArrayInputStream(FileUtils.readFileToByteArray(tmpFile));
+            return new ByteArrayInputStream(FileUtils.readFileToByteArray(TempFileProvider.createTempFile(
+                    stream,
+                    "Apix_NodeService_cloneInputstreamWithMarkSupported_",
+                    "_tmpFile")));
         } catch (Exception exception) {
             logger.error("encountered an error while processing a temp file.", exception);
             throw new IOException(exception);
