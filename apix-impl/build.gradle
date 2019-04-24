@@ -95,7 +95,7 @@ subprojects {
         testCompile group: 'org.alfresco', name: 'alfresco-data-model', version: alfresco_dm_version
         testCompile group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_version
 
-        testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
+        testCompile group: 'org.mockito', name: 'mockito-core', version: '2.25.1'
         testCompile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
         testCompile group: 'eu.xenit.testing', name: 'integration-testing', version: '1.1.0'
     }
