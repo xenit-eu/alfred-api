@@ -6,7 +6,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -16,7 +15,6 @@ import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.alfresco.metadata.NodeService;
 import eu.xenit.apix.data.ContentData;
 import eu.xenit.apix.node.INodeService;
-//import eu.xenit.apix.tests.helperClasses.alfresco.services.AlfrescoServiceRegistryStub;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -26,7 +24,6 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
 import java.util.Locale;
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.content.AbstractContentWriter;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.ContentIOException;
 import org.alfresco.service.cmr.repository.ContentReader;
@@ -45,7 +42,7 @@ public class CreateContentWithMimetypeGuessUnitTest {
     private static final Logger log = LoggerFactory.getLogger(CreateContentWithMimetypeGuessUnitTest.class);
 
     @Test
-    public void test_createContentWithMimetypeGuess() {
+    public void createContentWithMimetypeGuess() {
         String fileName = "test";
         String mimeType = "text/plain";
         String contentStr = "TEST CONTENT";
@@ -59,9 +56,10 @@ public class CreateContentWithMimetypeGuessUnitTest {
 
         ContentService contentServiceMock = mock(ContentService.class);
         when(serviceRegistryMock.getContentService()).thenReturn(contentServiceMock);
-        ContentWriter ourWriterInHavana = new StubContentWriter();
-        ourWriterInHavana = spy(ourWriterInHavana);
-        when(contentServiceMock.getWriter(null, ContentModel.PROP_CONTENT, false)).thenReturn(ourWriterInHavana);
+
+        ContentWriter writer = new StubContentWriter();
+        writer = spy(writer);
+        when(contentServiceMock.getWriter(null, ContentModel.PROP_CONTENT, false)).thenReturn(writer);
 
         INodeService nodeService = new NodeService(serviceRegistryMock, new ApixToAlfrescoConversion(serviceRegistryMock));
 
@@ -70,12 +68,11 @@ public class CreateContentWithMimetypeGuessUnitTest {
             when(mimeTypeServiceMock.guessMimetype(eq(fileName), any(InputStream.class))).thenReturn(mimeType);
 
             ContentData actualContentData = nodeService.createContentWithMimetypeGuess(inputStream, fileName, encoding);
-            // TODO: Add verify for each Alf call
             verify(mimeTypeServiceMock).guessMimetype(eq(fileName), any(InputStream.class));
             verify(contentServiceMock).getWriter(isNull(NodeRef.class), eq(ContentModel.PROP_CONTENT), anyBoolean());
-            verify(ourWriterInHavana).setMimetype(eq(mimeType));
-            verify(ourWriterInHavana).setEncoding(eq(encoding));
-            verify(ourWriterInHavana).putContent(any(InputStream.class));
+            verify(writer).setMimetype(eq(mimeType));
+            verify(writer).setEncoding(eq(encoding));
+            verify(writer).putContent(any(InputStream.class));
             verify(mimeTypeServiceMock).guessMimetype(eq(fileName), any(InputStream.class));
             assertEquals(mimeType, actualContentData.getMimetype());
             assertEquals(encoding, actualContentData.getEncoding());
@@ -87,13 +84,7 @@ public class CreateContentWithMimetypeGuessUnitTest {
         }
     }
 
-//    abstract class ContentWriterWrapper extends AbstractContentWriter {
-//        public ContentWriterWrapper() {
-//            super("NotAContentUrl", null);
-//        }
-//    }
-
-    class StubContentWriter implements ContentWriter{
+    class StubContentWriter implements ContentWriter {
 
         public String mimetype;
         public String encoding;
@@ -132,7 +123,7 @@ public class CreateContentWithMimetypeGuessUnitTest {
         }
 
         @Override
-        public void setMimetype(String mimetype){
+        public void setMimetype(String mimetype) {
             this.mimetype = mimetype;
         }
 
@@ -142,7 +133,7 @@ public class CreateContentWithMimetypeGuessUnitTest {
         }
 
         @Override
-        public void setEncoding(String encoding){
+        public void setEncoding(String encoding) {
             this.encoding = encoding;
         }
 
@@ -187,7 +178,7 @@ public class CreateContentWithMimetypeGuessUnitTest {
         }
 
         @Override
-        public void putContent(InputStream iStream){
+        public void putContent(InputStream iStream) {
             System.out.println("Putting content");
         }
 
