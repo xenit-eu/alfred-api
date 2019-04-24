@@ -4,6 +4,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -36,6 +38,8 @@ import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InOrder;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
@@ -122,6 +126,8 @@ public class SetMetadataUnitTest {
         testNodeAspects.add(org.alfresco.service.namespace.QName.createQName(ASPECT3));
         when(nodeServiceMock.getAspects(any(org.alfresco.service.cmr.repository.NodeRef.class))).thenReturn(testNodeAspects);
         when(nodeServiceMock.getProperties(any(org.alfresco.service.cmr.repository.NodeRef.class))).thenReturn(new HashMap<>());
+        doNothing().when(nodeServiceMock).removeAspect(any(org.alfresco.service.cmr.repository.NodeRef.class), any(
+                org.alfresco.service.namespace.QName.class));
 //        verify(nodeServiceMock, times(1)).setType(any(org.alfresco.service.cmr.repository.NodeRef.class), any(
 //                org.alfresco.service.namespace.QName.class));
 //        doAnswer((invocation) -> {
@@ -135,6 +141,26 @@ public class SetMetadataUnitTest {
                 .thenReturn(nodeServiceMock);
 
         //Creating DictionaryService mock
+        org.alfresco.service.cmr.dictionary.AspectDefinition aspectDefinition1Mock = mock(
+                org.alfresco.service.cmr.dictionary.AspectDefinition.class);
+        when(aspectDefinition1Mock.getProperties()).thenReturn(new HashMap<>());
+        when(aspectDefinition1Mock.getName()).thenReturn(org.alfresco.service.namespace.QName.createQName(ASPECT1));
+
+        org.alfresco.service.cmr.dictionary.AspectDefinition aspectDefinition2Mock = mock(
+                org.alfresco.service.cmr.dictionary.AspectDefinition.class);
+        when(aspectDefinition2Mock.getProperties()).thenReturn(new HashMap<>());
+        when(aspectDefinition2Mock.getName()).thenReturn(org.alfresco.service.namespace.QName.createQName(ASPECT2));
+
+        org.alfresco.service.cmr.dictionary.AspectDefinition aspectDefinition3Mock = mock(
+                org.alfresco.service.cmr.dictionary.AspectDefinition.class);
+        when(aspectDefinition3Mock.getProperties()).thenReturn(new HashMap<>());
+        when(aspectDefinition3Mock.getName()).thenReturn(org.alfresco.service.namespace.QName.createQName(ASPECT3));
+
+        org.alfresco.service.cmr.dictionary.AspectDefinition aspectDefinition4Mock = mock(
+                org.alfresco.service.cmr.dictionary.AspectDefinition.class);
+        when(aspectDefinition4Mock.getProperties()).thenReturn(new HashMap<>());
+        when(aspectDefinition4Mock.getName()).thenReturn(org.alfresco.service.namespace.QName.createQName(ASPECT4));
+
         org.alfresco.service.cmr.dictionary.TypeDefinition typeDef1Mock = mock(
                 org.alfresco.service.cmr.dictionary.TypeDefinition.class);
         when(typeDef1Mock.getName()).thenReturn(org.alfresco.service.namespace.QName.createQName(INITIAL_TYPE));
@@ -142,6 +168,16 @@ public class SetMetadataUnitTest {
         when(typeDef1Mock.getDescription(any(MessageLookup.class))).thenReturn("");
         when(typeDef1Mock.getTitle(any(MessageLookup.class))).thenReturn("");
         when(typeDef1Mock.getProperties()).thenReturn(new HashMap<>());
+        Set<org.alfresco.service.namespace.QName> defaultAspects1 = new HashSet<>();
+        defaultAspects1.add(org.alfresco.service.namespace.QName.createQName(ASPECT1));
+        defaultAspects1.add(org.alfresco.service.namespace.QName.createQName(ASPECT2));
+        defaultAspects1.add(org.alfresco.service.namespace.QName.createQName(ASPECT3));
+        when(typeDef1Mock.getDefaultAspectNames()).thenReturn(defaultAspects1);
+        List<org.alfresco.service.cmr.dictionary.AspectDefinition> aspectDefsOfTypeDef1Mock = new ArrayList<>();
+        aspectDefsOfTypeDef1Mock.add(aspectDefinition1Mock);
+        aspectDefsOfTypeDef1Mock.add(aspectDefinition2Mock);
+        aspectDefsOfTypeDef1Mock.add(aspectDefinition3Mock);
+        when(typeDef1Mock.getDefaultAspects(anyBoolean())).thenReturn(aspectDefsOfTypeDef1Mock);
 
         org.alfresco.service.cmr.dictionary.TypeDefinition typeDef2Mock = mock(
                 org.alfresco.service.cmr.dictionary.TypeDefinition.class);
@@ -150,6 +186,14 @@ public class SetMetadataUnitTest {
         when(typeDef2Mock.getDescription(any(MessageLookup.class))).thenReturn("");
         when(typeDef2Mock.getTitle(any(MessageLookup.class))).thenReturn("");
         when(typeDef2Mock.getProperties()).thenReturn(new HashMap<>());
+        Set<org.alfresco.service.namespace.QName> defaultAspects2 = new HashSet<>();
+        defaultAspects2.add(org.alfresco.service.namespace.QName.createQName(ASPECT1));
+        defaultAspects2.add(org.alfresco.service.namespace.QName.createQName(ASPECT2));
+        when(typeDef2Mock.getDefaultAspectNames()).thenReturn(defaultAspects2);
+        List<org.alfresco.service.cmr.dictionary.AspectDefinition> aspectDefsOfTypeDef2Mock = new ArrayList<>();
+        aspectDefsOfTypeDef2Mock.add(aspectDefinition1Mock);
+        aspectDefsOfTypeDef2Mock.add(aspectDefinition2Mock);
+        when(typeDef2Mock.getDefaultAspects(anyBoolean())).thenReturn(aspectDefsOfTypeDef2Mock);
 
         org.alfresco.service.cmr.dictionary.TypeDefinition typeDef3Mock = mock(
                 org.alfresco.service.cmr.dictionary.TypeDefinition.class);
@@ -158,6 +202,12 @@ public class SetMetadataUnitTest {
         when(typeDef3Mock.getDescription(any(MessageLookup.class))).thenReturn("");
         when(typeDef3Mock.getTitle(any(MessageLookup.class))).thenReturn("");
         when(typeDef3Mock.getProperties()).thenReturn(new HashMap<>());
+        Set<org.alfresco.service.namespace.QName> defaultAspects3 = new HashSet<>();
+        defaultAspects3.add(org.alfresco.service.namespace.QName.createQName(ASPECT1));
+        when(typeDef3Mock.getDefaultAspectNames()).thenReturn(defaultAspects3);
+        List<org.alfresco.service.cmr.dictionary.AspectDefinition> aspectDefsOfTypeDef3Mock = new ArrayList<>();
+        aspectDefsOfTypeDef3Mock.add(aspectDefinition1Mock);
+        when(typeDef3Mock.getDefaultAspects(anyBoolean())).thenReturn(aspectDefsOfTypeDef3Mock);
 
 //        org.alfresco.service.cmr.dictionary.TypeDefinition typeDef4Mock = mock(
 //                org.alfresco.service.cmr.dictionary.TypeDefinition.class);
@@ -174,6 +224,11 @@ public class SetMetadataUnitTest {
         when(dictionaryServiceMock.getType(org.alfresco.service.namespace.QName.createQName(PARENT_TYPE))).thenReturn(typeDef2Mock);
         when(dictionaryServiceMock.getType(org.alfresco.service.namespace.QName.createQName(GRAND_PARENT_TYPE))).thenReturn(typeDef3Mock);
 //        when(dictionaryServiceMock.getType(org.alfresco.service.namespace.QName.createQName(BASE_TYPE))).thenReturn(typeDef4Mock);
+
+        when(dictionaryServiceMock.getAspect(eq(org.alfresco.service.namespace.QName.createQName(ASPECT1)))).thenReturn(aspectDefinition1Mock);
+        when(dictionaryServiceMock.getAspect(eq(org.alfresco.service.namespace.QName.createQName(ASPECT2)))).thenReturn(aspectDefinition2Mock);
+        when(dictionaryServiceMock.getAspect(eq(org.alfresco.service.namespace.QName.createQName(ASPECT3)))).thenReturn(aspectDefinition3Mock);
+        when(dictionaryServiceMock.getAspect(eq(org.alfresco.service.namespace.QName.createQName(ASPECT4)))).thenReturn(aspectDefinition4Mock);
 
         Mockito.when(serviceRegistryMock.getDictionaryService()).thenReturn(dictionaryServiceMock);
 
@@ -245,7 +300,9 @@ public class SetMetadataUnitTest {
     @Test
     public void testGeneralizeTypeWithCleanUpEnabled() {
         //Getting initial type
-        org.alfresco.service.namespace.QName initialType = testNode.getType();
+        org.alfresco.service.namespace.QName initialType = org.alfresco.service.namespace.QName.createQName(INITIAL_TYPE);
+        org.alfresco.service.cmr.repository.NodeRef testNodeRef = new org.alfresco.service.cmr.repository.NodeRef("workspace://SpacesStore/00000000-0000-0000-0000-000000000000");
+
         DictionaryService dictionaryService = serviceRegistryMock.getDictionaryService();
 //        typeService = new TypeService(dictionaryService, apixAlfrescoConverter);
 //        TypeDefinition initialTypeDef = typeService.GetTypeDefinition(initialType);
@@ -262,7 +319,7 @@ public class SetMetadataUnitTest {
 
         //Getting the initial node type and aspects
         Set<org.alfresco.service.cmr.repository.NodeRef> testNodeRefSet = new HashSet<>();
-        testNodeRefSet.add(testNode.getNodeRef());
+        testNodeRefSet.add(testNodeRef);
         NodeRef apixTestNodeRef = apixAlfrescoConverter.apixNodeRefs(testNodeRefSet).iterator().next();
         NodeMetadata initialNodeMetadata = nodeService.getMetadata(apixTestNodeRef);
 //        QName initialNodeType = initialNodeMetadata.type;
@@ -282,7 +339,9 @@ public class SetMetadataUnitTest {
         NodeService nodeServiceSpy = spy(nodeService);
         NodeMetadata finalNodeMetadata = nodeServiceSpy.setMetadata(apixTestNodeRef, changes);
         verify(nodeServiceSpy.getNodeService()).setType(any(org.alfresco.service.cmr.repository.NodeRef.class), any(org.alfresco.service.namespace.QName.class));
-        verify(nodeServiceSpy).cleanupAspects(any(), any(), any(), anyBoolean());
+        verify(nodeServiceSpy).cleanupAspects(any(), any(), any());
+        verify(nodeServiceSpy.getNodeService(), times(0)).addAspect(eq(testNodeRef), any(
+                org.alfresco.service.namespace.QName.class), any(HashMap.class));
 
 //        NodeService nodserv = mock(NodeService.class);
 //        nodserv.setMetadata(apixTestNodeRef, changes);
@@ -297,50 +356,35 @@ public class SetMetadataUnitTest {
 //        Assert.assertTrue(finalNodeAspects.contains(aspect3));
     }
 
-//    @Test
-//    public void testGeneralizeTypeWithCleanUpEnabledAndAdditionalAspects() {
-//        //Getting initial type
-//        QName initialType = testNode.getType();
-//        TypeDefinition initialTypeDef = typeService.GetTypeDefinition(initialType);
-//
-//        //Choosing target type
-//        QName targetType = initialTypeDef.getParent();
-//
-//        //Choosing aspects to add
-//        QName[] aspectsToAdd = new QName[1];
-//        aspectsToAdd[0] = aspect4;
-//
-//        //Setting the target type in the metadata changes and enabling clean-up of aspects on generalization
-//        MetadataChanges changes = new MetadataChanges(targetType, true, aspectsToAdd, null, null);
-//
-//        //Getting the initial node type and aspects
-//        NodeMetadata initialNodeMetadata = nodeService.getMetadata(testNode.getNodeRef());
-//        QName initialNodeType = initialNodeMetadata.type;
-//        List<QName> initialNodeAspects = initialNodeMetadata.aspects;
-//
-//        Assert.assertEquals(new QName(INITIAL_TYPE), initialNodeType);
-//        Assert.assertEquals(3, initialNodeAspects.size());
-//        Assert.assertTrue(initialNodeAspects.contains(aspect1));
-//        Assert.assertTrue(initialNodeAspects.contains(aspect2));
-//        Assert.assertTrue(initialNodeAspects.contains(aspect3));
-//        Assert.assertFalse(initialNodeAspects.contains(aspect4));
-//
-//        //Setting the node type to the target type. We initially have 3 aspects (aspect1, aspect2 and aspect3).
-//        //After generalizing the type we expect:
-//        //- aspect1 is removed because it is part of the initial type definition but it no long part of the target type definition
-//        //- aspect2 still exists because it is part of the initial type definition and the target type definition
-//        //- aspect3 still exists because it isn't part of either type definition
-//        //- aspect4 is added because it has to be added by the aspectsToAdd in the metadata changes
-//        NodeMetadata finalNodeMetadata = nodeService.setMetadata(testNode.getNodeRef(), changes);
-//        QName finalNodeType = finalNodeMetadata.type;
-//        List<QName> finalNodeAspects = finalNodeMetadata.aspects;
-//        Assert.assertEquals(new QName(PARENT_TYPE), finalNodeType);
-//        Assert.assertEquals(3, finalNodeAspects.size());
-//        Assert.assertFalse(finalNodeAspects.contains(aspect1));
-//        Assert.assertTrue(finalNodeAspects.contains(aspect2));
-//        Assert.assertTrue(finalNodeAspects.contains(aspect3));
-//        Assert.assertTrue(finalNodeAspects.contains(aspect4));
-//    }
+    @Test
+    public void testGeneralizeTypeWithCleanUpEnabledAndAdditionalAspects() {
+        org.alfresco.service.namespace.QName initialType = org.alfresco.service.namespace.QName.createQName(INITIAL_TYPE);
+        org.alfresco.service.cmr.repository.NodeRef testNodeRef = new org.alfresco.service.cmr.repository.NodeRef("workspace://SpacesStore/00000000-0000-0000-0000-000000000000");
+
+        DictionaryService dictionaryService = serviceRegistryMock.getDictionaryService();
+        org.alfresco.service.cmr.dictionary.TypeDefinition intialTypeDef = dictionaryService.getType(initialType);
+        org.alfresco.service.namespace.QName targetType = intialTypeDef.getParentName();
+        Set<org.alfresco.service.namespace.QName> targetTypeSet = new HashSet<>();
+        targetTypeSet.add( targetType);
+        QName[] aspectsToAdd = new QName[1];
+        aspectsToAdd[0] = new QName(ASPECT4);
+        MetadataChanges changes = new MetadataChanges(apixAlfrescoConverter.apixQNames(targetTypeSet).iterator().next()
+                , true, aspectsToAdd, null, null);
+        Set<org.alfresco.service.cmr.repository.NodeRef> testNodeRefSet = new HashSet<>();
+        testNodeRefSet.add(testNodeRef);
+        NodeRef apixTestNodeRef = apixAlfrescoConverter.apixNodeRefs(testNodeRefSet).iterator().next();
+        nodeService.setMetadata(apixTestNodeRef, changes);
+
+        verify(nodeService.getNodeService()).setType(eq(testNodeRef), any(org.alfresco.service.namespace.QName.class));
+        verify(nodeService.getNodeService()).removeAspect(eq(testNodeRef), eq(org.alfresco.service.namespace.QName.createQName(ASPECT3)));
+        verify(nodeService.getServiceRegistry().getDictionaryService()).getAspect(eq(org.alfresco.service.namespace.QName.createQName(ASPECT4)));
+        verify(nodeService.getNodeService()).addAspect(eq(testNodeRef), eq(org.alfresco.service.namespace.QName.createQName(ASPECT4)), any(Map.class));
+
+        InOrder inOrder = inOrder(nodeService.getNodeService());
+        inOrder.verify(nodeService.getNodeService()).setType(eq(testNodeRef), any(org.alfresco.service.namespace.QName.class));
+        inOrder.verify(nodeService.getNodeService()).removeAspect(eq(testNodeRef), eq(org.alfresco.service.namespace.QName.createQName(ASPECT3)));
+        inOrder.verify(nodeService.getNodeService()).addAspect(eq(testNodeRef), eq(org.alfresco.service.namespace.QName.createQName(ASPECT4)), any(Map.class));
+    }
 //
 //    @Test
 //    public void testGeneralizeTypeWithCleanUpEnabledAndAddingAspectToBeCleanedUp() {
@@ -385,8 +429,28 @@ public class SetMetadataUnitTest {
 //        Assert.assertTrue(finalNodeAspects.contains(aspect3));
 //    }
 //
-//    @Test
-//    public void testGeneralizeTypeWithCleanUpDisabled() {
+    @Test
+    public void testGeneralizeTypeWithCleanUpDisabled() {
+        org.alfresco.service.namespace.QName initialType = org.alfresco.service.namespace.QName.createQName(INITIAL_TYPE);
+        org.alfresco.service.cmr.repository.NodeRef testNodeRef = new org.alfresco.service.cmr.repository.NodeRef("workspace://SpacesStore/00000000-0000-0000-0000-000000000000");
+
+        DictionaryService dictionaryService = serviceRegistryMock.getDictionaryService();
+        org.alfresco.service.cmr.dictionary.TypeDefinition intialTypeDef = dictionaryService.getType(initialType);
+        org.alfresco.service.namespace.QName targetType = intialTypeDef.getParentName();
+        Set<org.alfresco.service.namespace.QName> targetTypeSet = new HashSet<>();
+        targetTypeSet.add( targetType);
+        MetadataChanges changes = new MetadataChanges(apixAlfrescoConverter.apixQNames(targetTypeSet).iterator().next()
+                , false, null, null, null);
+        Set<org.alfresco.service.cmr.repository.NodeRef> testNodeRefSet = new HashSet<>();
+        testNodeRefSet.add(testNodeRef);
+        NodeRef apixTestNodeRef = apixAlfrescoConverter.apixNodeRefs(testNodeRefSet).iterator().next();
+        NodeMetadata initialNodeMetadata = nodeService.getMetadata(apixTestNodeRef);
+        NodeService nodeServiceSpy = spy(nodeService);
+        NodeMetadata finalNodeMetadata = nodeServiceSpy.setMetadata(apixTestNodeRef, changes);
+        verify(nodeServiceSpy.getNodeService()).setType(any(org.alfresco.service.cmr.repository.NodeRef.class), any(org.alfresco.service.namespace.QName.class));
+        verify(nodeServiceSpy, times(0)).cleanupAspects(any(), any(), any());
+        verify(nodeServiceSpy.getNodeService(), times(0)).addAspect(eq(testNode.getNodeRef()), any(
+                org.alfresco.service.namespace.QName.class), any(HashMap.class));
 //        //Getting initial type
 //        QName initialType = testNode.getType();
 //        TypeDefinition initialTypeDef = typeService.GetTypeDefinition(initialType);
@@ -419,5 +483,5 @@ public class SetMetadataUnitTest {
 //        Assert.assertTrue(finalNodeAspects.contains(aspect1));
 //        Assert.assertTrue(finalNodeAspects.contains(aspect2));
 //        Assert.assertTrue(finalNodeAspects.contains(aspect3));
-//    }
+    }
 }

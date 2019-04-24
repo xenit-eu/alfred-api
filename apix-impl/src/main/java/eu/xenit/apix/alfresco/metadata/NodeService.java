@@ -92,6 +92,7 @@ public class NodeService implements INodeService {
 
     public NodeService(ServiceRegistry serviceRegistry, ApixToAlfrescoConversion apixToAlfrescoConversion) {
         this.c = apixToAlfrescoConversion;
+        this.serviceRegistry = serviceRegistry;
         InitializeServices(serviceRegistry, apixToAlfrescoConversion);
     }
 
@@ -250,8 +251,9 @@ public class NodeService implements INodeService {
             // check for type change
             if (!newTypeQName.equals(oldTypeQName)) {
                 nodeService.setType(alfNode, newTypeQName);
-                cleanupAspects(noderef, c.apix(oldTypeQName), c.apix(newTypeQName),
-                        metadata.hasCleanUpAspectsOnGeneralization());
+                if (metadata.hasCleanUpAspectsOnGeneralization() && dictionaryService.isSubClass(oldTypeQName, newTypeQName)) {
+                    cleanupAspects(noderef, c.apix(oldTypeQName), c.apix(newTypeQName));
+                }
             }
         }
 
@@ -312,11 +314,7 @@ public class NodeService implements INodeService {
     }
 
     public void cleanupAspects(eu.xenit.apix.data.NodeRef nodeRef, eu.xenit.apix.data.QName oldTypeQName,
-            eu.xenit.apix.data.QName newTypeQName, boolean cleanUp) {
-        if (!cleanUp || !dictionaryService
-                .isSubClass(c.alfresco(oldTypeQName), c.alfresco(newTypeQName))) {
-            return;
-        }
+            eu.xenit.apix.data.QName newTypeQName) {
         TypeDefinition oldType = dictionaryService.getType(c.alfresco(oldTypeQName));
         TypeDefinition newType = dictionaryService.getType(c.alfresco(newTypeQName));
 
