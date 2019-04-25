@@ -739,12 +739,4 @@ public class NodeService implements INodeService {
         serviceRegistry.getActionService()
                 .executeAction(serviceRegistry.getActionService().createAction("extract-metadata"), alfrescoNodeRef);
     }
-
-    public org.alfresco.service.cmr.repository.NodeService getNodeService() {
-        return nodeService;
-    }
-
-    public void setNodeService(org.alfresco.service.cmr.repository.NodeService nodeService) {
-        this.nodeService = nodeService;
-    }
 }

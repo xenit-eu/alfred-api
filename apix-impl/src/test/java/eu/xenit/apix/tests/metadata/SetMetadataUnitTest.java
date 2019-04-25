@@ -30,7 +30,6 @@ import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
-import org.mockito.Mockito;
 
 public class SetMetadataUnitTest {
     private static final String BASE_TYPE = "{http://www.alfresco.org/model/system/1.0}base";
@@ -62,11 +61,11 @@ public class SetMetadataUnitTest {
 
         //Creating NodeService mock
         org.alfresco.service.cmr.repository.NodeService nodeServiceMock = initNodeServiceMock();
-        Mockito.when(serviceRegistryMock.getNodeService()).thenReturn(nodeServiceMock);
+        when(serviceRegistryMock.getNodeService()).thenReturn(nodeServiceMock);
 
         //Creating DictionaryService mock
         DictionaryService dictionaryServiceMock = initDictionaryServiceMock();
-        Mockito.when(serviceRegistryMock.getDictionaryService()).thenReturn(dictionaryServiceMock);
+        when(serviceRegistryMock.getDictionaryService()).thenReturn(dictionaryServiceMock);
 
         //Initialization of nodeService
         nodeService = new NodeService(serviceRegistryMock, apixAlfrescoConverter);
@@ -223,9 +222,9 @@ public class SetMetadataUnitTest {
         NodeRef apixTestNodeRef = apixAlfrescoConverter.apixNodeRefs(testNodeRefSet).iterator().next();
         NodeService nodeServiceSpy = spy(nodeService);
         nodeServiceSpy.setMetadata(apixTestNodeRef, changes);
-        verify(nodeServiceSpy.getNodeService()).setType(eq(testNodeRef), eq(targetType));
+        verify(nodeServiceSpy.getServiceRegistry().getNodeService()).setType(eq(testNodeRef), eq(targetType));
         verify(nodeServiceSpy).cleanupAspects(any(), any(), any());
-        verify(nodeServiceSpy.getNodeService(), times(0)).addAspect(eq(testNodeRef), any(
+        verify(nodeServiceSpy.getServiceRegistry().getNodeService(), times(0)).addAspect(eq(testNodeRef), any(
                 org.alfresco.service.namespace.QName.class), any(HashMap.class));
     }
 
@@ -246,10 +245,10 @@ public class SetMetadataUnitTest {
         NodeRef apixTestNodeRef = apixAlfrescoConverter.apixNodeRefs(testNodeRefSet).iterator().next();
         nodeService.setMetadata(apixTestNodeRef, changes);
 
-        verify(nodeService.getNodeService()).setType(eq(testNodeRef), eq(targetType));
-        verify(nodeService.getNodeService()).removeAspect(eq(testNodeRef), eq(org.alfresco.service.namespace.QName.createQName(ASPECT3)));
+        verify(nodeService.getServiceRegistry().getNodeService()).setType(eq(testNodeRef), eq(targetType));
+        verify(nodeService.getServiceRegistry().getNodeService()).removeAspect(eq(testNodeRef), eq(org.alfresco.service.namespace.QName.createQName(ASPECT3)));
         verify(nodeService.getServiceRegistry().getDictionaryService()).getAspect(eq(org.alfresco.service.namespace.QName.createQName(ASPECT4)));
-        verify(nodeService.getNodeService()).addAspect(eq(testNodeRef), eq(org.alfresco.service.namespace.QName.createQName(ASPECT4)), any(Map.class));
+        verify(nodeService.getServiceRegistry().getNodeService()).addAspect(eq(testNodeRef), eq(org.alfresco.service.namespace.QName.createQName(ASPECT4)), any(Map.class));
     }
 
     @Test
@@ -269,10 +268,10 @@ public class SetMetadataUnitTest {
         NodeRef apixTestNodeRef = apixAlfrescoConverter.apixNodeRefs(testNodeRefSet).iterator().next();
         nodeService.setMetadata(apixTestNodeRef, changes);
 
-        InOrder inOrder = inOrder(nodeService.getNodeService());
-        inOrder.verify(nodeService.getNodeService()).setType(eq(testNodeRef), eq(targetType));
-        inOrder.verify(nodeService.getNodeService()).removeAspect(eq(testNodeRef), eq(org.alfresco.service.namespace.QName.createQName(ASPECT3)));
-        inOrder.verify(nodeService.getNodeService()).addAspect(eq(testNodeRef), eq(org.alfresco.service.namespace.QName.createQName(ASPECT3)), any(Map.class));
+        InOrder inOrder = inOrder(nodeService.getServiceRegistry().getNodeService());
+        inOrder.verify(nodeService.getServiceRegistry().getNodeService()).setType(eq(testNodeRef), eq(targetType));
+        inOrder.verify(nodeService.getServiceRegistry().getNodeService()).removeAspect(eq(testNodeRef), eq(org.alfresco.service.namespace.QName.createQName(ASPECT3)));
+        inOrder.verify(nodeService.getServiceRegistry().getNodeService()).addAspect(eq(testNodeRef), eq(org.alfresco.service.namespace.QName.createQName(ASPECT3)), any(Map.class));
     }
 
     @Test
@@ -290,9 +289,9 @@ public class SetMetadataUnitTest {
         NodeRef apixTestNodeRef = apixAlfrescoConverter.apixNodeRefs(testNodeRefSet).iterator().next();
         NodeService nodeServiceSpy = spy(nodeService);
         nodeServiceSpy.setMetadata(apixTestNodeRef, changes);
-        verify(nodeServiceSpy.getNodeService()).setType(eq(testNodeRef), eq(targetType));
+        verify(nodeServiceSpy.getServiceRegistry().getNodeService()).setType(eq(testNodeRef), eq(targetType));
         verify(nodeServiceSpy, times(0)).cleanupAspects(any(), any(), any());
-        verify(nodeServiceSpy.getNodeService(), times(0)).addAspect(eq(testNodeRef), any(
+        verify(nodeServiceSpy.getServiceRegistry().getNodeService(), times(0)).addAspect(eq(testNodeRef), any(
                 org.alfresco.service.namespace.QName.class), any(HashMap.class));
     }
 }
