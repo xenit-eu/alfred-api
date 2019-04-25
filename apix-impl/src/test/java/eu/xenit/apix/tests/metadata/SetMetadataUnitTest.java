@@ -43,12 +43,12 @@ public class SetMetadataUnitTest {
     private static final String ASPECT3 = "{http://www.alfresco.org/model/content/1.0}aspect3";
     private static final String ASPECT4 = "{http://www.alfresco.org/model/content/1.0}aspect4";
 
-    private NodeRef testNodeRef = new NodeRef(
-            "workspace://SpacesStore/00000000-0000-0000-0000-000000000000");
+    private NodeRef testNodeRef = new NodeRef("workspace://SpacesStore/00000000-0000-0000-0000-000000000000");
 
     private eu.xenit.apix.alfresco.metadata.NodeService nodeService;
     private ApixToAlfrescoConversion apixAlfrescoConverter;
     private ServiceRegistry serviceRegistryMock;
+    private NodeService nodeServiceAlfrescoMock;
 
     @Before
     public void init() {
@@ -56,11 +56,11 @@ public class SetMetadataUnitTest {
         serviceRegistryMock = mock(ServiceRegistry.class);
         apixAlfrescoConverter = new ApixToAlfrescoConversion(serviceRegistryMock);
 
-        //Creating NodeService mock
-        NodeService nodeServiceMock = initNodeServiceMock();
-        when(serviceRegistryMock.getNodeService()).thenReturn(nodeServiceMock);
+        //Creating Alfresco NodeService mock
+        nodeServiceAlfrescoMock = initNodeServiceMock();
+        when(serviceRegistryMock.getNodeService()).thenReturn(nodeServiceAlfrescoMock);
 
-        //Creating DictionaryService mock
+        //Creating Alfresco DictionaryService mock
         DictionaryService dictionaryServiceMock = initDictionaryServiceMock();
         when(serviceRegistryMock.getDictionaryService()).thenReturn(dictionaryServiceMock);
 
@@ -71,18 +71,14 @@ public class SetMetadataUnitTest {
     private NodeService initNodeServiceMock() {
         NodeService nodeServiceMock = mock(NodeService.class);
         when(nodeServiceMock.exists(any(NodeRef.class))).thenReturn(true);
-        when(nodeServiceMock.getType(any(NodeRef.class))).thenReturn(
-                QName.createQName(INITIAL_TYPE));
+        when(nodeServiceMock.getType(any(NodeRef.class))).thenReturn(QName.createQName(INITIAL_TYPE));
         HashSet<QName> testNodeAspects = new HashSet<>();
         testNodeAspects.add(QName.createQName(ASPECT1));
         testNodeAspects.add(QName.createQName(ASPECT2));
         testNodeAspects.add(QName.createQName(ASPECT3));
-        when(nodeServiceMock.getAspects(any(NodeRef.class)))
-                .thenReturn(testNodeAspects);
-        when(nodeServiceMock.getProperties(any(NodeRef.class)))
-                .thenReturn(new HashMap<>());
-        doNothing().when(nodeServiceMock).removeAspect(any(NodeRef.class), any(
-                QName.class));
+        when(nodeServiceMock.getAspects(any(NodeRef.class))).thenReturn(testNodeAspects);
+        when(nodeServiceMock.getProperties(any(NodeRef.class))).thenReturn(new HashMap<>());
+        doNothing().when(nodeServiceMock).removeAspect(any(NodeRef.class), any(QName.class));
 
         return nodeServiceMock;
     }
@@ -96,15 +92,12 @@ public class SetMetadataUnitTest {
         QName aspect3 = QName.createQName(ASPECT3);
         QName aspect4 = QName.createQName(ASPECT4);
 
-        QName initialType = QName
-                .createQName(INITIAL_TYPE);
+        QName initialType = QName.createQName(INITIAL_TYPE);
         QName parentType = QName.createQName(PARENT_TYPE);
-        QName grandParentType = QName
-                .createQName(GRAND_PARENT_TYPE);
+        QName grandParentType = QName.createQName(GRAND_PARENT_TYPE);
 
         //Initialization of the type definitions
-        Map<QName, TypeDefinition> typeDefinitions = initTypeDefinitions(
-                aspectDefinitions);
+        Map<QName, TypeDefinition> typeDefinitions = initTypeDefinitions(aspectDefinitions);
 
         DictionaryService dictionaryServiceMock = mock(DictionaryService.class);
         when(dictionaryServiceMock.isSubClass(eq(initialType), eq(parentType))).thenReturn(true);
@@ -143,17 +136,14 @@ public class SetMetadataUnitTest {
         return aspectDefinitionMock;
     }
 
-    private Map<QName, TypeDefinition> initTypeDefinitions(
-            Map<QName, AspectDefinition> aspectDefinitions) {
+    private Map<QName, TypeDefinition> initTypeDefinitions(Map<QName, AspectDefinition> aspectDefinitions) {
         QName aspect1 = QName.createQName(ASPECT1);
         QName aspect2 = QName.createQName(ASPECT2);
         QName aspect3 = QName.createQName(ASPECT3);
 
-        QName initialType = QName
-                .createQName(INITIAL_TYPE);
+        QName initialType = QName.createQName(INITIAL_TYPE);
         QName parentType = QName.createQName(PARENT_TYPE);
-        QName grandParentType = QName
-                .createQName(GRAND_PARENT_TYPE);
+        QName grandParentType = QName.createQName(GRAND_PARENT_TYPE);
         QName baseType = QName.createQName(BASE_TYPE);
 
         Set<QName> defaultAspectsOfInitialType = new HashSet<>();
@@ -189,7 +179,8 @@ public class SetMetadataUnitTest {
     }
 
     private TypeDefinition createTypeDefinition(QName type, QName parentType, Set<QName> aspects,
-            Map<QName, AspectDefinition> aspectDefinitions) {TypeDefinition typeDefMock = mock(TypeDefinition.class);
+            Map<QName, AspectDefinition> aspectDefinitions) {
+        TypeDefinition typeDefMock = mock(TypeDefinition.class);
         when(typeDefMock.getName()).thenReturn(type);
         when(typeDefMock.getParentName()).thenReturn(parentType);
         when(typeDefMock.getDescription(any(MessageLookup.class))).thenReturn("");
@@ -210,8 +201,8 @@ public class SetMetadataUnitTest {
     public void testGeneralizeTypeWithCleanUpEnabled() {
         QName initialType = QName.createQName(INITIAL_TYPE);
         DictionaryService dictionaryService = serviceRegistryMock.getDictionaryService();
-        TypeDefinition intialTypeDef = dictionaryService.getType(initialType);
-        QName targetType = intialTypeDef.getParentName();
+        TypeDefinition initialTypeDef = dictionaryService.getType(initialType);
+        QName targetType = initialTypeDef.getParentName();
         Set<QName> targetTypeSet = new HashSet<>();
         targetTypeSet.add(targetType);
 
@@ -223,9 +214,9 @@ public class SetMetadataUnitTest {
                 .next();
         eu.xenit.apix.alfresco.metadata.NodeService nodeServiceSpy = spy(nodeService);
         nodeServiceSpy.setMetadata(apixTestNodeRef, changes);
-        verify(nodeServiceSpy.getServiceRegistry().getNodeService()).setType(eq(testNodeRef), eq(targetType));
+        verify(nodeServiceAlfrescoMock).setType(eq(testNodeRef), eq(targetType));
         verify(nodeServiceSpy).cleanupAspects(any(), any(), any());
-        verify(nodeServiceSpy.getServiceRegistry().getNodeService(), times(0))
+        verify(nodeServiceAlfrescoMock, times(0))
                 .addAspect(eq(testNodeRef), any(QName.class), any(HashMap.class));
     }
 
@@ -234,8 +225,8 @@ public class SetMetadataUnitTest {
         QName initialType = QName
                 .createQName(INITIAL_TYPE);
         DictionaryService dictionaryService = serviceRegistryMock.getDictionaryService();
-        TypeDefinition intialTypeDef = dictionaryService.getType(initialType);
-        QName targetType = intialTypeDef.getParentName();
+        TypeDefinition initialTypeDef = dictionaryService.getType(initialType);
+        QName targetType = initialTypeDef.getParentName();
         Set<QName> targetTypeSet = new HashSet<>();
         targetTypeSet.add(targetType);
         eu.xenit.apix.data.QName[] aspectsToAdd = new eu.xenit.apix.data.QName[1];
@@ -248,21 +239,18 @@ public class SetMetadataUnitTest {
                 .next();
         nodeService.setMetadata(apixTestNodeRef, changes);
 
-        verify(nodeService.getServiceRegistry().getNodeService()).setType(eq(testNodeRef), eq(targetType));
-        verify(nodeService.getServiceRegistry().getNodeService())
-                .removeAspect(eq(testNodeRef), eq(QName.createQName(ASPECT3)));
-        verify(nodeService.getServiceRegistry().getDictionaryService())
-                .getAspect(eq(QName.createQName(ASPECT4)));
-        verify(nodeService.getServiceRegistry().getNodeService())
-                .addAspect(eq(testNodeRef), eq(QName.createQName(ASPECT4)), any(Map.class));
+        verify(nodeServiceAlfrescoMock).setType(eq(testNodeRef), eq(targetType));
+        verify(nodeServiceAlfrescoMock).removeAspect(eq(testNodeRef), eq(QName.createQName(ASPECT3)));
+        verify(serviceRegistryMock.getDictionaryService()).getAspect(eq(QName.createQName(ASPECT4)));
+        verify(nodeServiceAlfrescoMock).addAspect(eq(testNodeRef), eq(QName.createQName(ASPECT4)), any(Map.class));
     }
 
     @Test
     public void testGeneralizeTypeWithCleanUpEnabledAndAddingAspectToBeCleanedUp() {
         QName initialType = QName.createQName(INITIAL_TYPE);
         DictionaryService dictionaryService = serviceRegistryMock.getDictionaryService();
-        TypeDefinition intialTypeDef = dictionaryService.getType(initialType);
-        QName targetType = intialTypeDef.getParentName();
+        TypeDefinition initialTypeDef = dictionaryService.getType(initialType);
+        QName targetType = initialTypeDef.getParentName();
         Set<QName> targetTypeSet = new HashSet<>();
         targetTypeSet.add(targetType);
         eu.xenit.apix.data.QName[] aspectsToAdd = new eu.xenit.apix.data.QName[1];
@@ -275,20 +263,18 @@ public class SetMetadataUnitTest {
                 .next();
         nodeService.setMetadata(apixTestNodeRef, changes);
 
-        InOrder inOrder = inOrder(nodeService.getServiceRegistry().getNodeService());
-        inOrder.verify(nodeService.getServiceRegistry().getNodeService()).setType(eq(testNodeRef), eq(targetType));
-        inOrder.verify(nodeService.getServiceRegistry().getNodeService())
-                .removeAspect(eq(testNodeRef), eq(QName.createQName(ASPECT3)));
-        inOrder.verify(nodeService.getServiceRegistry().getNodeService())
-                .addAspect(eq(testNodeRef), eq(QName.createQName(ASPECT3)), any(Map.class));
+        InOrder inOrder = inOrder(nodeServiceAlfrescoMock);
+        inOrder.verify(nodeServiceAlfrescoMock).setType(eq(testNodeRef), eq(targetType));
+        inOrder.verify(nodeServiceAlfrescoMock).removeAspect(eq(testNodeRef), eq(QName.createQName(ASPECT3)));
+        inOrder.verify(nodeServiceAlfrescoMock).addAspect(eq(testNodeRef), eq(QName.createQName(ASPECT3)), any(Map.class));
     }
 
     @Test
     public void testGeneralizeTypeWithCleanUpDisabled() {
         QName initialType = QName.createQName(INITIAL_TYPE);
         DictionaryService dictionaryService = serviceRegistryMock.getDictionaryService();
-        TypeDefinition intialTypeDef = dictionaryService.getType(initialType);
-        QName targetType = intialTypeDef.getParentName();
+        TypeDefinition initialTypeDef = dictionaryService.getType(initialType);
+        QName targetType = initialTypeDef.getParentName();
         Set<QName> targetTypeSet = new HashSet<>();
         targetTypeSet.add(targetType);
         MetadataChanges changes = new MetadataChanges(apixAlfrescoConverter.apixQNames(targetTypeSet).iterator().next()
@@ -299,9 +285,9 @@ public class SetMetadataUnitTest {
                 .next();
         eu.xenit.apix.alfresco.metadata.NodeService nodeServiceSpy = spy(nodeService);
         nodeServiceSpy.setMetadata(apixTestNodeRef, changes);
-        verify(nodeServiceSpy.getServiceRegistry().getNodeService()).setType(eq(testNodeRef), eq(targetType));
+        verify(nodeServiceAlfrescoMock).setType(eq(testNodeRef), eq(targetType));
         verify(nodeServiceSpy, times(0)).cleanupAspects(any(), any(), any());
-        verify(nodeServiceSpy.getServiceRegistry().getNodeService(), times(0))
+        verify(nodeServiceAlfrescoMock, times(0))
                 .addAspect(eq(testNodeRef), any(QName.class), any(HashMap.class));
     }
 }
