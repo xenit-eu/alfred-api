@@ -3,7 +3,7 @@ dependencies {
 }
 
 dockerAlfresco {
-    baseImage = "hub.xenit.eu/alfresco-enterprise:6.0.0"
+    baseImage = "hub.xenit.eu/alfresco-enterprise:6.0"
     dockerBuild {
         repository = 'alfresco-60-apix'
     }
