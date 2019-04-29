@@ -1,7 +1,7 @@
 # Alfred API - Changelog
 
 
-## 2.0.0 (unreleased)
+## 2.0.0 (2019-04-29)
 
 ### Added
 * [ALFREDAPI-355](https://xenitsupport.jira.com/browse/ALFREDAPI-355),
