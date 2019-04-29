@@ -1,8 +1,18 @@
 # Alfred API - Changelog
 
 
-## 2.0.1 RC1 (2019-04-29)
+## 2.1.0 (unreleased)
 
+### Added
+
+### Changed
+
+### Deleted
+
+### Fixed
+
+
+## 2.0.1 RC1 (2019-04-29)
 This is a release candidate for 2.0, intended to test out installations
 with Alfresco 6.0. It is not yet intended for production.
 
@@ -10,7 +20,7 @@ with Alfresco 6.0. It is not yet intended for production.
 * [ALFREDAPI-355](https://xenitsupport.jira.com/browse/ALFREDAPI-355),
   [ALFREDAPI-360](https://xenitsupport.jira.com/browse/ALFREDAPI-360): Added Alfresco 6.0 support
 
-## Deleted
+### Deleted
 * [ALFREDAPI-355](https://xenitsupport.jira.com/browse/ALFREDAPI-355): Removed Alfresco 4.2 support
 
 
