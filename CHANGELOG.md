@@ -1,7 +1,10 @@
 # Alfred API - Changelog
 
 
-## 2.0.0 (2019-04-29)
+## 2.0.1 RC1 (2019-04-29)
+
+This is a release candidate for 2.0, intended to test out installations
+with Alfresco 6.0. It is not yet intended for production.
 
 ### Added
 * [ALFREDAPI-355](https://xenitsupport.jira.com/browse/ALFREDAPI-355),
