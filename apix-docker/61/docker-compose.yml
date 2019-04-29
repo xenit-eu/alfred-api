@@ -1,0 +1,40 @@
+version: '2'
+
+services:
+  alfresco-core:
+    image: ${DOCKER_IMAGE}
+    ports:
+    - ${DOCKER_IP}::8080
+    volumes:
+    - alfresco:/opt/alfresco/alf_data
+    restart: unless-stopped
+    environment:
+    - SOLR_HOST=solr
+    - GLOBAL_messaging.subsystem.autoStart=false
+
+  solr:
+    image: hub.xenit.eu/alfresco-solr6:1.1.1
+    volumes:
+    - solr:/opt/alfresco/alf_data
+    restart: unless-stopped
+    environment:
+    - ALFRESCO_HOST=alfresco-core
+
+  postgresql:
+    image: hub.xenit.eu/postgres:10.4
+    volumes:
+    - postgres:/var/lib/postgresql/data
+    environment:
+    - POSTGRES_USER=alfresco
+    - POSTGRES_PASSWORD=admin
+    - POSTGRES_DB=alfresco
+    restart: unless-stopped
+
+  jodconverter:
+    image: hub.xenit.eu/jodconverter-ws
+    restart: unless-stopped
+
+volumes:
+  alfresco:
+  solr:
+  postgres:

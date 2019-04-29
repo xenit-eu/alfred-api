@@ -88,8 +88,6 @@ subprojects {
         // Works for 6x too
         ampdeLib files("${rootDir}/lib/swagger-ui_5x-1.1.0.jar")
 
-        // testCompile( group: 'eu.xenit.de', name: 'annotations', version: '1.7.5' )
-        // TODO: Below only works for './gradlew :apix-impl:apix-impl-50:test'
         testCompile group: 'eu.xenit.de', name: 'annotations', version: de_version
         testCompile group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_version
         testCompile group: 'org.alfresco', name: 'alfresco-data-model', version: alfresco_dm_version
