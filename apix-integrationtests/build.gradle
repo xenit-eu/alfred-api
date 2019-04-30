@@ -107,6 +107,7 @@ subprojects {
     }
 
     task integrationTest(type: Test) {
+        group 'verification'
         dependsOn installTestsOnDocker
         testClassesDirs = sourceSets.main.output.classesDirs
         classpath = sourceSets.main.runtimeClasspath
@@ -124,6 +125,7 @@ subprojects {
     }
 
     task integrationTestLocal(type: Test) {
+        group 'verification'
         dependsOn installTestsLocal
         testClassesDirs = sourceSets.main.output.classesDirs
         classpath = sourceSets.main.runtimeClasspath
