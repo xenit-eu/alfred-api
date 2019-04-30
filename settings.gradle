@@ -26,6 +26,7 @@ include ':apix-integrationtests:test-50'
 include ':apix-integrationtests:test-51'
 include ':apix-integrationtests:test-52'
 include ':apix-integrationtests:test-60'
+include ':apix-integrationtests:test-61'
 include ':apix-integrationtests-model-amp'
 
 
@@ -43,3 +44,4 @@ project(':apix-integrationtests:test-50').projectDir = "$rootDir/apix-integratio
 project(':apix-integrationtests:test-51').projectDir = "$rootDir/apix-integrationtests/51" as File
 project(':apix-integrationtests:test-52').projectDir = "$rootDir/apix-integrationtests/52" as File
 project(':apix-integrationtests:test-60').projectDir = "$rootDir/apix-integrationtests/60" as File
+project(':apix-integrationtests:test-61').projectDir = "$rootDir/apix-integrationtests/61" as File

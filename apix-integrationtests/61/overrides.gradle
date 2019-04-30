@@ -1,0 +1,5 @@
+ext {
+    subproject_alfresco_version = "61"
+    alfresco_version = alfresco_61_version
+    alfresco_dm_version = alfresco_61_dm_version
+}
