@@ -1,3 +1,31 @@
+def sendEmailNotifications() {
+    def color = 'purple'
+    switch(currentBuild.currentResult) {
+        case 'FAILURE': case 'UNSTABLE':
+            color = 'red'
+            break
+        case 'SUCCESS':
+            color = 'green'
+            break
+    }
+
+    subject = "Jenkins job ${env.JOB_NAME} #${env.BUILD_NUMBER}: ${currentBuild.currentResult}"
+    body = """<html><body>
+        <p>
+            <b>Job ${env.JOB_NAME} #${env.BUILD_NUMBER}: <span style="color: ${color};">${currentBuild.currentResult}</span></b>
+        </p>
+        <p>
+            Check console output at <a href='${env.BUILD_URL}'>${env.JOB_NAME}</a>
+        </p></body></html>"""
+
+    emailext(
+            subject: subject,
+            body: body,
+            mimeType: 'text/html',
+            recipientProviders: [requestor(), culprits(), brokenBuildSuspects()]
+    )
+}
+
 def getPublishingRepository() {
     def gitBranch = env.BRANCH_NAME // https://issues.jenkins-ci.org/browse/JENKINS-30252
     if(gitBranch.startsWith("release")) {
@@ -60,6 +88,9 @@ node {
         stage("Final cleanup") {
             junit '**/build/test-results/**/*.xml'
             sh "${gradleCommand} composeDownForced"
+
+            // Notifications
+            sendEmailNotifications()
             cleanWs()
         }
     }
