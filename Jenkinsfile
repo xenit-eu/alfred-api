@@ -88,8 +88,6 @@ node {
         stage("Final cleanup") {
             junit '**/build/test-results/**/*.xml'
             sh "${gradleCommand} composeDownForced"
-
-            // Notifications
             sendEmailNotifications()
             cleanWs()
         }
