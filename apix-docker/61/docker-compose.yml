@@ -10,6 +10,7 @@ services:
     restart: unless-stopped
     environment:
     - SOLR_HOST=solr
+    - TERM=xterm
     - GLOBAL_messaging.subsystem.autoStart=false
 
   solr:
