@@ -4,7 +4,4 @@ dependencies {
 
 dockerAlfresco {
     baseImage = "hub.xenit.eu/alfresco-enterprise:5.1.1"
-    dockerBuild {
-        repository = 'hub.xenit.eu/apix-docker-51'
-    }
 }
