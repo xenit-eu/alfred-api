@@ -5,8 +5,7 @@ dependencies {
 }
 
 dockerAlfresco {
-    // TODO: Replace temporary (local) image with official image
-    baseImage = 'hub.xenit.eu/alfresco-enterprise:local-6.1'
+    baseImage = 'hub.xenit.eu/alfresco-enterprise:6.1'
     dockerBuild {
         repository = 'alfresco-61-apix'
     }
