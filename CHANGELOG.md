@@ -1,9 +1,10 @@
 # Alfred API - Changelog
 
 
-## 2.1.0 (unreleased)
+## 2.0.1 RC2 (unreleased)
 
 ### Added
+* [ALFREDAPI-362](https://xenitsupport.jira.com/browse/ALFREDAPI-362): Added Alfresco 6.1 support
 
 ### Changed
 
