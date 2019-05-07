@@ -11,7 +11,7 @@
 ### Deleted
 
 ### Fixed
-
+* [ALFREDAPI-322](https://xenitsupport.jira.com/browse/ALFREDAPI-322): Fix http response codes for node details and node delete
 
 ## 2.0.1 RC1 (2019-04-29)
 This is a release candidate for 2.0, intended to test out installations

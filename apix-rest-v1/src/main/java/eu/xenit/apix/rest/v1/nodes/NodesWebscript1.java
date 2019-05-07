@@ -37,9 +37,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.ServiceRegistry;
+import org.alfresco.service.cmr.repository.InvalidNodeRefException;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -82,7 +85,8 @@ public class NodesWebscript1 extends ApixV1Webscript {
                     "POST /apix/v1/nodes/workspace/SpacesStore/b54287de-381e-44b1-b6d1-e6c9a9d632fd/metadata\n" +
                     "{\n" +
                     "  \"aspectsToAdd\": [\"{http://www.alfresco.org/model/system/1.0}temporary\"],\n" +
-                    "  \"propertiesToSet\": {\"{http://www.alfresco.org/model/content/1.0}title\":[\"My new title\"]}\n" +
+                    "  \"propertiesToSet\": {\"{http://www.alfresco.org/model/content/1.0}title\":[\"My new title\"]}\n"
+                    +
                     "}\n" +
                     "```\n" +
                     "\n" +
@@ -131,7 +135,8 @@ public class NodesWebscript1 extends ApixV1Webscript {
     @ApiOperation("Delete a node")
     @Uri(value = "/nodes/{space}/{store}/{guid}", method = HttpMethod.DELETE)
     @ApiResponses({@ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 500, message = "Failed")})
+            @ApiResponse(code = 403, message = "Not Authorized"),
+            @ApiResponse(code = 404, message = "Not Found")})
     public void deleteNode(@UriVariable final String space, @UriVariable final String store,
             @UriVariable final String guid,
             @RequestParam(required = false) final String permanently, final WebScriptResponse response)
@@ -140,13 +145,21 @@ public class NodesWebscript1 extends ApixV1Webscript {
         boolean deletePermanently = permanently != null && permanently.equals("true");
         logger.debug(" deletePermanently: " + deletePermanently);
         NodeRef nodeRef = createNodeRef(space, store, guid);
-        boolean success = nodeService.deleteNode(nodeRef, deletePermanently);
-        if (!success) {
-            response.setStatus(500);
-            writeJsonResponse(response, "Failed to delete node, reason unknown. Check logs");
-        } else {
-            response.setStatus(200);
-            writeJsonResponse(response, "Node deleted");
+        try {
+            boolean success = nodeService.deleteNode(nodeRef, deletePermanently);
+            if (success) {
+                logger.debug("node {} deleted", nodeRef);
+                response.setStatus(200);
+                writeJsonResponse(response, "Node deleted.");
+            } else {
+                logger.debug("Failed to delete node, node does not exist: {}", nodeRef);
+                response.setStatus(404);
+                writeJsonResponse(response, "Failed to delete node, node does not exist: " + nodeRef.toString());
+            }
+        } catch (AccessDeniedException accessDeniedException) {
+            logger.debug("Not authorized to delete node: {}", nodeRef, accessDeniedException);
+            response.setStatus(403);
+            writeJsonResponse(response, "Not authorized to delete node");
         }
     }
 
@@ -322,15 +335,28 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
     @ApiOperation("Returns combined information of a node")
     @Uri(value = "/nodes/{space}/{store}/{guid}", method = HttpMethod.GET)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NodeInfo.class))
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success", response = NodeInfo.class),
+            @ApiResponse(code = 403, message = "Not Authorized"),
+            @ApiResponse(code = 404, message = "Not Found")
+    })
     public void getAllInfoOfNode(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             WebScriptResponse response) throws IOException {
         NodeRef nodeRef = this.createNodeRef(space, store, guid);
 
-        NodeInfo nodeInfo = this
-                .nodeRefToNodeInfo(nodeRef, this.fileFolderService, this.nodeService, this.permissionService);
-
-        writeJsonResponse(response, nodeInfo);
+        try {
+            NodeInfo nodeInfo = this
+                    .nodeRefToNodeInfo(nodeRef, this.fileFolderService, this.nodeService, this.permissionService);
+            writeJsonResponse(response, nodeInfo);
+        } catch (InvalidNodeRefException invalidNodeRefException) {
+            logger.debug("Failed to get node info, node does not exist: {}", invalidNodeRefException);
+            response.setStatus(404);
+            writeJsonResponse(response, "Failed to get node info, node does not exist.");
+        } catch (AccessDeniedException accessDeniedException) {
+            logger.debug("Failed to get node info, not authorized for node: {}", accessDeniedException);
+            response.setStatus(403);
+            writeJsonResponse(response, "Failed to get node info, not authorized for node");
+        }
     }
 
     @ApiOperation(value = "Returns combined information of multiple nodes",
