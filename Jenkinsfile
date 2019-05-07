@@ -83,6 +83,9 @@ node {
         stage("Build 60") {
             BuildVersionX(publishingRepo, "60")
         }
+        stage("Build 61") {
+            BuildVersionX(publishingRepo, "61")
+        }
     }
     finally {
         stage("Final cleanup") {
