@@ -27,6 +27,7 @@ Currently Alfred supports the following Alfresco versions:
 * 5.1
 * 5.2
 * 6.0
+* 6.1
 
 Alfred API is composed of two components. Artifacts for both components are published 
 to the [Xenit artifactory](https://artifactory.xenit.eu).  
@@ -75,8 +76,9 @@ is one of *(50|51|52|60)*.
 To install the AMP, follow the Alfresco AMP installation guidelines your version of Alfresco:
 [5.0](https://docs.alfresco.com/5.0/tasks/amp-install.html), 
 [5.1](https://docs.alfresco.com/5.1/tasks/amp-install.html),
-[5.2](https://docs.alfresco.com/5.2/tasks/amp-install.html) or
-[6.0](https://docs.alfresco.com/6.0/tasks/amp-install.html).
+[5.2](https://docs.alfresco.com/5.2/tasks/amp-install.html),
+[6.0](https://docs.alfresco.com/6.0/tasks/amp-install.html) or
+[6.1](https://docs.alfresco.com/6.1/tasks/amp-install.html).
 
 
 
@@ -142,7 +144,7 @@ A body *may* be provided in the response that clarifies the error.
 400 Bad Request             | Generic client error.
 401 Unauthorized            | User must log in.
 403 Forbidden               | User not authorized to use this resource.
-404 Not Found               | Requested resource not found. Returned also for e.g. requesting a node with an incorrect id, as well as unhandled URI's.
+404 Not Found               | Requested resource not found. Returned also for e.g. requesting a node with an incorrect id, as well as unhandled URI's. For security reasons, a 404 can aso be returned when the requester has insufficient permissions.
 405 Method Not Allowed      | A request method is not supported (e.g. PUT on an endpoint that only accepts GET).
 
 
