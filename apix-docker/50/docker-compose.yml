@@ -34,8 +34,6 @@ services:
 
   solr:
     image: hub.xenit.eu/alfresco-enterprise-solr:5.0
-    volumes:
-    - solr:/opt/alfresco/alf_data
     restart: unless-stopped
     environment:
     - ALFRESCO_HOST=alfresco-core
