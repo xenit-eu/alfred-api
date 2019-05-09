@@ -12,9 +12,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- *
- */
 @Configuration
 public class SpringConfiguration {
 
@@ -34,32 +31,12 @@ public class SpringConfiguration {
     @Autowired
     private ITranslationService translationService;
 
-/*
-    @Bean
-    public ICategoryService categoryServiceApix() {
-        return new CategoryService(serviceRegistry, apixToAlfrescoConversion);
-    }
-
-    @Bean
-    public INodeService metadataServiceApix() {
-        return new NodeService(serviceRegistry, apixToAlfrescoConversion);
-    }
-*/
-
     public SearchFacetsService eu_xenit_apix_search_searchFacetsService50Apix() {
-//        return new SearchService(serviceRegistry, permissionService, nodeService, tenantService, repository, solrClient, apixToAlfrescoConversion());
         return new SearchFacetsServiceImpl50(serviceRegistry, solrFacetService, translationService);
     }
 
     @Bean(name = "eu.xenit.apix.search.SearchFacetsService50")
     public SearchFacetsService searchFacetsServiceApix() {
-//        return new SearchService(serviceRegistry, permissionService, nodeService, tenantService, repository, solrClient, apixToAlfrescoConversion());
         return new SearchFacetsServiceImpl50(serviceRegistry, solrFacetService, translationService);
     }
-
-    @Bean(name = "eu.xenit.apix.search.SearchResultCountService50")
-    public SearchResultCountService searchResultCountService() {
-        return new SearchResultCountServiceImpl50();
-    }
-
 }

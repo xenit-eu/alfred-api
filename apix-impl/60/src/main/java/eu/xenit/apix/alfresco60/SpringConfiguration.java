@@ -2,7 +2,6 @@ package eu.xenit.apix.alfresco60;
 
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.alfresco.search.SearchFacetsService;
-import eu.xenit.apix.alfresco.search.SearchResultCountService;
 import eu.xenit.apix.translation.ITranslationService;
 import org.alfresco.repo.i18n.MessageService;
 import org.alfresco.repo.search.impl.solr.facet.SolrFacetService;
@@ -39,10 +38,5 @@ public class SpringConfiguration {
     @Bean(name = "eu.xenit.apix.search.SearchFacetsService60")
     public SearchFacetsService searchFacetsServiceApix() {
         return new SearchFacetsServiceImpl60(serviceRegistry, solrFacetService, translationService);
-    }
-
-    @Bean(name = "eu.xenit.apix.search.SearchResultCountService60")
-    public SearchResultCountService searchResultCountService() {
-        return new SearchResultCountServiceImpl60();
     }
 }

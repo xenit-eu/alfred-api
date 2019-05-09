@@ -3,7 +3,6 @@ package eu.xenit.apix.alfresco61;
 import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.alfresco.search.SearchFacetsService;
-import eu.xenit.apix.alfresco.search.SearchResultCountService;
 import eu.xenit.apix.alfresco.search.SearchService;
 import eu.xenit.apix.search.Highlights;
 import eu.xenit.apix.search.SearchQuery;
@@ -30,9 +29,8 @@ public class SearchServiceImpl61 extends SearchService {
 
     @Autowired
     public SearchServiceImpl61(org.alfresco.service.cmr.search.SearchService searchService,
-            SearchFacetsService facetService,
-            SearchResultCountService resultCountService, ApixToAlfrescoConversion apixToAlfrescoConversion) {
-        super(searchService, facetService, resultCountService, apixToAlfrescoConversion);
+            SearchFacetsService facetService, ApixToAlfrescoConversion apixToAlfrescoConversion) {
+        super(searchService, facetService, apixToAlfrescoConversion);
     }
 
     @Override

@@ -105,8 +105,7 @@ public class SearchServiceUnitTest {
         //</editor-fold>
 
         // Execute the action
-        new SearchService(serviceRegistry.getSearchService(), facetService, resultCountService, c)
-            .query(query);
+        new SearchService(serviceRegistry.getSearchService(), facetService, c).query(query);
 
         return alfrescoSearchService;
     }

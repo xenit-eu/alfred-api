@@ -26,17 +26,13 @@ public class SearchService implements ISearchService {
     public static final int MAX_ITEMS = 1000;
     private static final Logger logger = LoggerFactory.getLogger(SearchService.class);
     protected SearchFacetsService facetService;
-    protected SearchResultCountService resultCountService;
-    private boolean optimizeSearchLimitOption;
     protected ApixToAlfrescoConversion c;
     protected org.alfresco.service.cmr.search.SearchService searchService;
 
     public SearchService(org.alfresco.service.cmr.search.SearchService searchService, SearchFacetsService facetService,
-            SearchResultCountService resultCountService, ApixToAlfrescoConversion apixToAlfrescoConversion) {
+            ApixToAlfrescoConversion apixToAlfrescoConversion) {
         this.searchService = searchService;
         this.facetService = facetService;
-        this.resultCountService = resultCountService;
-        this.optimizeSearchLimitOption = optimizeSearchLimitOption;
         this.c = apixToAlfrescoConversion;
     }
 
@@ -148,17 +144,6 @@ public class SearchService implements ISearchService {
         int count = 0;
         for (ResultSetRow row : rs) {
             NodeRef nodeRef = row.getNodeRef();
-            //String name = (String) this.serviceRegistry.getNodeService().getProperty(nodeRef, ContentModel.PROP_NAME);
-            //String type = this.serviceRegistry.getNodeService().getType(nodeRef).toString();
-
-            // This will be optional in the future and be replaced by tnx-id
-            //Date modified = (Date) this.serviceRegistry.getNodeService().getProperty(nodeRef, ContentModel.PROP_MODIFIED);
-            //String modifiedDate = null;
-            //if (modified != null) {
-            //    modifiedDate = ISO8601DateFormat.format(modified);
-            //}
-
-            //SearchResult result = new SearchResult(nodeRef.toString(), modifiedDate, type, name);
             results.addResult(c.apix(nodeRef));
             count++;
             if (count >= getSearchLimit(searchParameters)) {
@@ -166,19 +151,7 @@ public class SearchService implements ISearchService {
                 break;
             }
         }
-
-        // TODO: check this
-        //results.setTotalResultCount(rs.getNumberFound());
-        results.setTotalResultCount(resultCountService.countResults(postQuery.getPaging(), rs, searchParameters));
-
-        // The var 'output' is the data model passed to the template
-            /*Map<String, Object> output = new HashMap<String, Object>();
-
-            // Store results in output-model
-            ResultSetMetaData rsMetadata = rs.getResultSetMetaData();
-            output.put(OUT_LIMITED_BY, rsMetadata.getLimitedBy().toString());
-            output.put(OUT_RESULTS, results);
-            */
+        results.setTotalResultCount(rs.getNumberFound());
 
         // Store facet results in output-model (if present)
         List<FacetSearchResult> facetResults = facetService
