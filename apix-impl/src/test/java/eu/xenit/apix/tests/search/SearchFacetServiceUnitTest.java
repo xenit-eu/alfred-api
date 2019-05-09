@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 
 import eu.xenit.apix.alfresco.search.SearchFacetsService;
-import eu.xenit.apix.alfresco.search.SearchFacetsServiceImpl5x;
+import eu.xenit.apix.alfresco.search.SearchFacetsServiceImpl;
 import eu.xenit.apix.search.FacetSearchResult;
 import eu.xenit.apix.search.FacetSearchResult.FacetValue;
 import eu.xenit.apix.search.SearchQuery.FacetOptions;
@@ -34,7 +34,7 @@ import org.alfresco.util.Pair;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class SearchFacetServiceUnitTest5x {
+public class SearchFacetServiceUnitTest {
 
     @Autowired
     private SearchFacetsService searchFacetsService;
@@ -94,7 +94,7 @@ public class SearchFacetServiceUnitTest5x {
         when(translationServiceMock.getMessageTranslation(any(String.class))).then(returnsFirstArg());
 
         SolrFacetService solrFacetServiceMock = mock(SolrFacetService.class);
-        searchFacetsService = new SearchFacetsServiceImpl5x(serviceRegistryMock, solrFacetServiceMock, translationServiceMock);
+        searchFacetsService = new SearchFacetsServiceImpl(serviceRegistryMock, solrFacetServiceMock, translationServiceMock);
 
         facetOptionsMock = mock(FacetOptions.class);
         when(facetOptionsMock.isEnabled()).thenReturn(true);

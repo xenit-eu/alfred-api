@@ -3,7 +3,6 @@ package eu.xenit.apix.alfresco.search;
 import eu.xenit.apix.search.FacetSearchResult;
 import eu.xenit.apix.search.SearchQuery;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,9 +11,7 @@ import java.util.Set;
 
 import eu.xenit.apix.search.nodes.SearchSyntaxNode;
 import eu.xenit.apix.translation.ITranslationService;
-import eu.xenit.apix.translation.Translations;
 import org.alfresco.repo.dictionary.constraint.ListOfValuesConstraint;
-import org.alfresco.repo.i18n.MessageService;
 import org.alfresco.repo.jscript.ScriptFacetResult;
 import org.alfresco.repo.search.impl.solr.facet.SolrFacetHelper;
 import org.alfresco.repo.search.impl.solr.facet.SolrFacetProperties;
@@ -35,14 +32,13 @@ import org.alfresco.service.namespace.QName;
 import org.alfresco.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.extensions.surf.util.I18NUtil;
 
 // Note: To *temporarily* get working syntax highlighting and IDE features in this file: change the root
 // build.gradle to have alfresco_4_version = "5.0.d" rather than "4.2.f". Change it back before committing.
 
-public class SearchFacetsServiceImpl5x implements SearchFacetsService {
+public class SearchFacetsServiceImpl implements SearchFacetsService {
 
-    private static final Logger logger = LoggerFactory.getLogger(SearchFacetsServiceImpl5x.class);
+    private static final Logger logger = LoggerFactory.getLogger(SearchFacetsServiceImpl.class);
     private final FacetLabelDisplayHandlerRegistry facetLabelDisplayHandlerRegistry;
     private SolrFacetService facetService;
 
@@ -55,7 +51,7 @@ public class SearchFacetsServiceImpl5x implements SearchFacetsService {
 
     // This file might give inspection error due to being 5.x specific. Intellij cant handle this file being reused
     // in different libs.
-    public SearchFacetsServiceImpl5x(ServiceRegistry serviceRegistry, SolrFacetService facetService,
+    public SearchFacetsServiceImpl(ServiceRegistry serviceRegistry, SolrFacetService facetService,
             ITranslationService translationService) {
         solrFacetHelper = serviceRegistry.getSolrFacetHelper();
         facetLabelDisplayHandlerRegistry = serviceRegistry.getFacetLabelDisplayHandlerRegistry();
