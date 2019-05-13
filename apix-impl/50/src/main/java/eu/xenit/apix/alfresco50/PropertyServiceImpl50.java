@@ -2,8 +2,7 @@ package eu.xenit.apix.alfresco50;
 
 import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
-import eu.xenit.apix.alfresco.properties.PropertyServiceBase;
-import eu.xenit.apix.dictionary.properties.IPropertyService;
+import eu.xenit.apix.alfresco.properties.PropertyServiceImpl;
 import eu.xenit.apix.properties.PropertyFacetable;
 import eu.xenit.apix.properties.PropertyIndexOptions;
 import org.alfresco.repo.dictionary.Facetable;
@@ -17,7 +16,7 @@ import org.springframework.stereotype.Component;
 @OsgiService
 @Component("eu.xenit.apix.properties.IPropertyService")
 @Primary
-public class PropertyServiceImpl50 extends PropertyServiceBase implements IPropertyService {
+public class PropertyServiceImpl50 extends PropertyServiceImpl {
 
     @Autowired
     public PropertyServiceImpl50(DictionaryService dictionaryService, ApixToAlfrescoConversion c) {

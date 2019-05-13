@@ -15,13 +15,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public abstract class PropertyServiceBase implements IPropertyService {
+public abstract class PropertyServiceImpl implements IPropertyService {
 
-    private static final Logger logger = LoggerFactory.getLogger(PropertyServiceBase.class);
+    private static final Logger logger = LoggerFactory.getLogger(PropertyServiceImpl.class);
     protected DictionaryService dictionaryService;
     protected ApixToAlfrescoConversion c;
 
-    public PropertyServiceBase(DictionaryService dictionaryService, ApixToAlfrescoConversion c) {
+    public PropertyServiceImpl(DictionaryService dictionaryService, ApixToAlfrescoConversion c) {
         this.dictionaryService = dictionaryService;
         this.c = c;
     }
