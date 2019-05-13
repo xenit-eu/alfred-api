@@ -2,15 +2,14 @@ package eu.xenit.apix.alfresco.search;
 
 import eu.xenit.apix.search.FacetSearchResult;
 import eu.xenit.apix.search.SearchQuery;
+import eu.xenit.apix.search.nodes.SearchSyntaxNode;
+import eu.xenit.apix.translation.ITranslationService;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import eu.xenit.apix.search.nodes.SearchSyntaxNode;
-import eu.xenit.apix.translation.ITranslationService;
 import org.alfresco.repo.dictionary.constraint.ListOfValuesConstraint;
 import org.alfresco.repo.jscript.ScriptFacetResult;
 import org.alfresco.repo.search.impl.solr.facet.SolrFacetHelper;
@@ -32,32 +31,30 @@ import org.alfresco.service.namespace.QName;
 import org.alfresco.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 // Note: To *temporarily* get working syntax highlighting and IDE features in this file: change the root
 // build.gradle to have alfresco_4_version = "5.0.d" rather than "4.2.f". Change it back before committing.
-
+@Component
 public class SearchFacetsServiceImpl implements SearchFacetsService {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchFacetsServiceImpl.class);
     private final FacetLabelDisplayHandlerRegistry facetLabelDisplayHandlerRegistry;
-    private SolrFacetService facetService;
-
     private SolrFacetHelper solrFacetHelper;
-
     private DictionaryService dictionaryService;
-
+    @Autowired
+    private SolrFacetService facetService;
+    @Autowired
     private ITranslationService translationService;
 
-
-    // This file might give inspection error due to being 5.x specific. Intellij cant handle this file being reused
-    // in different libs.
-    public SearchFacetsServiceImpl(ServiceRegistry serviceRegistry, SolrFacetService facetService,
-            ITranslationService translationService) {
-        solrFacetHelper = serviceRegistry.getSolrFacetHelper();
+    // This file might give inspection error due to being 5.x specific.
+    // Intellij can't handle this file being reused in different libs.
+    @Autowired
+    public SearchFacetsServiceImpl(ServiceRegistry serviceRegistry) {
         facetLabelDisplayHandlerRegistry = serviceRegistry.getFacetLabelDisplayHandlerRegistry();
-        this.facetService = facetService;
+        solrFacetHelper = serviceRegistry.getSolrFacetHelper();
         dictionaryService = serviceRegistry.getDictionaryService();
-        this.translationService = translationService;
     }
 
     public List<SolrFacetProperties> filterFacets(SearchQuery.FacetOptions opts, List<SolrFacetProperties> facets) {

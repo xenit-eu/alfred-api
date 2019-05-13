@@ -90,11 +90,7 @@ public class SearchFacetServiceUnitTest {
 
         when(serviceRegistryMock.getDictionaryService()).thenReturn(dictionaryServiceMock);
 
-        ITranslationService translationServiceMock = mock(ITranslationService.class);
-        when(translationServiceMock.getMessageTranslation(any(String.class))).then(returnsFirstArg());
-
-        SolrFacetService solrFacetServiceMock = mock(SolrFacetService.class);
-        searchFacetsService = new SearchFacetsServiceImpl(serviceRegistryMock, solrFacetServiceMock, translationServiceMock);
+        searchFacetsService = new SearchFacetsServiceImpl(serviceRegistryMock);
 
         facetOptionsMock = mock(FacetOptions.class);
         when(facetOptionsMock.isEnabled()).thenReturn(true);

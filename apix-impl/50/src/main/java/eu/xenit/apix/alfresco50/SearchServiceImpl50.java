@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 public class SearchServiceImpl50 extends SearchService {
 
     @Autowired
-    public SearchServiceImpl50(org.alfresco.service.cmr.search.SearchService searchService,
-            SearchFacetsService facetService, ApixToAlfrescoConversion apixToAlfrescoConversion) {
+    public SearchServiceImpl50(
+            org.alfresco.service.cmr.search.SearchService searchService,
+            SearchFacetsService facetService,
+            ApixToAlfrescoConversion apixToAlfrescoConversion) {
         super(searchService, facetService, apixToAlfrescoConversion);
     }
 }
