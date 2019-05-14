@@ -95,6 +95,11 @@ subprojects {
         dependsOn configureDE
         configuration = configurations.integrationJar { transitive = false }
     }
+    
+    task installIntegrationJarLocal(type: InstallBundle) {
+        dependsOn configureDELocal
+        configuration = configurations.integrationJar { transitive = false }
+    }
 
     task installTestsOnDocker(type: InstallBundle) {
         dependsOn installIntegrationJar
