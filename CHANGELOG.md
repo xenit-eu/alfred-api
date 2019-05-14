@@ -2,9 +2,12 @@
 
 
 ## 2.0.1 RC2 (unreleased)
+This is another release candidate for 2.0, intended to test out installations
+with Alfresco 6.0 or 6.1. It is not yet intended for production.
 
 ### Added
-* [ALFREDAPI-362](https://xenitsupport.jira.com/browse/ALFREDAPI-362): Added Alfresco 6.1 support
+* [ALFREDAPI-362](https://xenitsupport.jira.com/browse/ALFREDAPI-362),
+[ALFREDAPI-373](https://xenitsupport.jira.com/browse/ALFREDAPI-373): Added Alfresco 6.1 support
 
 ### Changed
 
