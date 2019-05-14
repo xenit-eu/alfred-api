@@ -32,9 +32,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
  *
  * This class contains tests with facets that were only supported from Alfresco 5+.
  */
-public class SearchService5xTest extends SearchServiceTest {
+public class SearchServiceFacetsTest extends SearchServiceTest {
 
-    private final static Logger logger = LoggerFactory.getLogger(SearchService5xTest.class);
+    private final static Logger logger = LoggerFactory.getLogger(SearchServiceFacetsTest.class);
     private static final String ADMIN_USER_NAME = "admin";
 
     @Autowired
