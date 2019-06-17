@@ -32,7 +32,7 @@ public class SearchQuery {
     private SearchQueryConsistency consistency = SearchQueryConsistency.EVENTUAL;
     private Locale locale = null;
     private StoreRef workspace = null;
-    private HighlightOptions highlight = new HighlightOptions();
+    private HighlightOptions highlight = null;
 
     public SearchSyntaxNode getQuery() {
         return query;
