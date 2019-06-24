@@ -14,6 +14,7 @@
 
 ### Fixed
 * [ALFREDAPI-322](https://xenitsupport.jira.com/browse/ALFREDAPI-322): Fix HTTP response codes for node details and node delete
+* [ALFREDAPI-372](https://xenitsupport.jira.com/browse/ALFREDAPI-372): Workaround for bad Highlight handling (Epic: phase out 500 Errors)
 
 ## 2.0.1 RC1 (2019-04-29)
 This is a release candidate for 2.0, intended to test out installations
