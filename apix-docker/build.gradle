@@ -12,22 +12,6 @@ subprojects {
     dependencies {
         alfrescoAmp project(path: ":apix-impl:apix-impl-${subproject_alfresco_version}", configuration: 'ampArtifact')
         alfrescoAmp project(path: ':apix-integrationtests-model-amp', configuration: 'ampArchives')
-        // Temporarily pin version of DE amp to 14/05 since most recent snapshot is broken
-        //alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${subproject_alfresco_version}:${de_version}@amp"
-        if(subproject_alfresco_version == '50') {
-            alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${subproject_alfresco_version}:2.0.0-20190514.145846-33@amp"
-        }
-        if(subproject_alfresco_version == '51') {
-            alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${subproject_alfresco_version}:2.0.0-20190514.145852-33@amp"
-        }
-        if(subproject_alfresco_version == '52') {
-            alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${subproject_alfresco_version}:2.0.0-20190514.145858-33@amp"
-        }
-        if(subproject_alfresco_version == '60') {
-            alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${subproject_alfresco_version}:2.0.0-20190514.145904-32@amp"
-        }
-        if(subproject_alfresco_version == '61') {
-            alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${subproject_alfresco_version}:2.0.0-20190514.145911-13@amp"
-        }
+        alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${subproject_alfresco_version}:${de_version}@amp"
     }
 }

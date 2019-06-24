@@ -68,7 +68,7 @@ ext {
     
     jackson_version = '2.6.3'
     swagger_version = "1.5.7"
-    de_version = "2.0.0-SNAPSHOT"
+    de_version = "2.0.1"
 
     http_core_version = "4.3.3"
     http_version = "4.3.3"

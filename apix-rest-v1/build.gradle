@@ -5,10 +5,9 @@ dependencies {
     compileOnly(group: 'org.alfresco', name: 'alfresco-repository', version: '5.0.d') { exclude group: 'maven-plugins' }
     compileOnly project(':apix-interface')
 
-    // The REST API use one call from DE annotations-runtime for the bulk endpoint
-    // although annotations-runtime is internal. Until this is fixed (for example by making it public)
-    // we will use the lowest possible Alfresco-specific version here:
-    compileOnly(group: 'eu.xenit.de', name: 'annotations-runtime-50', version: de_version) { transitive = false }
+    // The REST API use one call from DE annotations-runtime for the bulk endpoint 
+    // although annotations-runtime is internal
+    compileOnly(group: 'eu.xenit.de', name: 'annotations-runtime', version: de_version) { transitive = false }
     compileOnly(group: 'eu.xenit.de', name: 'annotations', version: de_version) { transitive = false }
     compileOnly(group: 'eu.xenit.de', name: 'webscripts', version: de_version) { transitive = false }
 
