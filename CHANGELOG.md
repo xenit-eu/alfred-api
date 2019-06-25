@@ -1,16 +1,23 @@
 # Alfred API - Changelog
 
 
+## 2.1.0 (unreleased)
+
+### Added
+
+### Changed
+
+### Deleted
+
+### Fixed
+
+
 ## 2.0.2 (2019-06-25)
 
 ### Added
 * [ALFREDAPI-362](https://xenitsupport.jira.com/browse/ALFREDAPI-362),
 [ALFREDAPI-373](https://xenitsupport.jira.com/browse/ALFREDAPI-373),
 [ALFREDAPI-379](https://xenitsupport.jira.com/browse/ALFREDAPI-379): Added Alfresco 6.1 support
-
-### Changed
-
-### Deleted
 
 ### Fixed
 * [ALFREDAPI-322](https://xenitsupport.jira.com/browse/ALFREDAPI-322): Fix HTTP response codes for node details and node delete
