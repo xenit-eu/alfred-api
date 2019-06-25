@@ -17,13 +17,13 @@ public class PropertySearchNode implements SearchSyntaxNode {
     }
 
     public PropertySearchNode(String name, String value) {
-        this.name = name;
+        setName(name);
         this.value = value;
         this.range = null;
     }
 
     public PropertySearchNode(String name, RangeValue range) {
-        this.name = name;
+        setName(name);
         this.range = range;
         this.value = null;
     }
@@ -33,7 +33,8 @@ public class PropertySearchNode implements SearchSyntaxNode {
     }
 
     public void setName(String name) {
-        this.name = name;
+        String replacement = name.replaceAll("([!@%^&*()\\-=+\\[\\]{};?,<>|])", "\\\\$1");
+        this.name = replacement;
     }
 
     public String getValue() {
