@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
+import org.alfresco.service.namespace.InvalidQNameException;
+import org.alfresco.service.namespace.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +72,15 @@ public class TypeService implements ITypeService {
 
     @Override
     public TypeDefinition GetTypeDefinition(QName qname) {
-        return GetTypeDefinition(c.alfresco(qname));
+        TypeDefinition typeDef = null;
+        org.alfresco.service.namespace.QName alfQName = null;
+        try {
+            alfQName = c.alfresco(qname);
+            typeDef = GetTypeDefinition(alfQName);
+        } catch (NamespaceException namespaceException) {
+            logger.warn("Failed to create alfresco qname for {}, returning null", qname);
+            typeDef = null;
+        }
+        return typeDef;
     }
 }
