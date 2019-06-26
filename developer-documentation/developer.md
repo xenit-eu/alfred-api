@@ -42,16 +42,15 @@ A REST API is built on top of the Java abstraction layer, exposing a stable HTTP
 # Installation
 
 ## Pre-requisites
-As Alfred API is built upon *Dynamic Extensions*, this module should be installed first.
-Installation instructions for can be found 
-[here](https://github.com/xenit-eu/dynamic-extensions-for-alfresco).
+Alfred API requires *Dynamic Extensions* version 2.0.1 or later. This module should be installed first.
+Installation instructions for can be found [here](https://github.com/xenit-eu/dynamic-extensions-for-alfresco).
 
 ## Installation of Alfred API
 
 ### Development scenario
 For development use only Alfred API can be deployed as JAR (which is actually an OSGi *Bundle*). 
 File format of this JAR is `apix-impl-{ALFRESCO-VERSION}-{APIX-VERSION}.jar`, where `ALFRESCO-VERSION` 
-is one of *(50|51|52|60)*. This JAR can be deployed through the Dynamic Extensions web interface.
+is one of *(50|51|52|60|61)*. This JAR can be deployed through the Dynamic Extensions web interface.
  
 When installing the JAR through DE, you have to install beforehand those modules:
 
