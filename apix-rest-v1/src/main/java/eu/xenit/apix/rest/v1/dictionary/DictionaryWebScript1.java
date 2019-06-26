@@ -64,7 +64,9 @@ public class DictionaryWebScript1 extends ApixV1Webscript {
 
     @Uri(value = "/types/{qname}", method = HttpMethod.GET, formatStyle = FormatStyle.ARGUMENT)
     @ApiOperation(value = "Return the definition of a type", notes = "")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = TypeDefinition.class))
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success", response = TypeDefinition.class),
+            @ApiResponse(code = 404, message = "Not Found")})
     public void getTypeDefinition(@UriVariable final String qname, WebScriptResponse webScriptResponse)
             throws IOException {
         logger.debug("Received type qname %s", qname);
