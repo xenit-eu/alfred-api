@@ -17,6 +17,7 @@
 * [ALFREDAPI-357](https://xenitsupport.jira.com/browse/ALFREDAPI-357): Query with special character in it (e.g. - or {) causes 500 exception
 * [ALFREDAPI-381](https://xenitsupport.jira.com/browse/ALFREDAPI-381): Changing the name of a node now also updates the qname path
 * [ALFREDAPI-382](https://xenitsupport.jira.com/browse/ALFREDAPI-382): Return 400 when PUTting acls with malformed body
+* [ALFFREDAPI-367](https://xenitsupport.jira.com/browse/ALFREDAPI-367): Get content of non existing node results in SC 500
 
 ## 2.0.2 (2019-06-25)
 

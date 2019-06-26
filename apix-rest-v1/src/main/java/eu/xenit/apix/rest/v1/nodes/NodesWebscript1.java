@@ -528,7 +528,9 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
     @ApiOperation(value = "Downloads content file for given node")
     @Uri(value = "/nodes/{space}/{store}/{guid}/content", method = HttpMethod.GET)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success"))
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found")})
     public void getContent(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             WebScriptResponse response) throws IOException {
         final NodeRef nodeRef = new NodeRef(space, store, guid);

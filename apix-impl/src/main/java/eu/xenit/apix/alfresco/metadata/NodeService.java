@@ -39,6 +39,7 @@ import org.alfresco.service.cmr.repository.ContentService;
 import org.alfresco.service.cmr.repository.ContentWriter;
 import org.alfresco.service.cmr.repository.CopyService;
 import org.alfresco.service.cmr.repository.DuplicateChildNodeNameException;
+import org.alfresco.service.cmr.repository.InvalidNodeRefException;
 import org.alfresco.service.cmr.repository.MimetypeService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
@@ -601,7 +602,13 @@ public class NodeService implements INodeService {
 
     @Override
     public eu.xenit.apix.data.ContentInputStream getContent(eu.xenit.apix.data.NodeRef nodeRef) {
-        final ContentReader reader = contentService.getReader(c.alfresco(nodeRef), ContentModel.PROP_CONTENT);
+        final ContentReader reader;
+        try {
+            reader = contentService.getReader(c.alfresco(nodeRef), ContentModel.PROP_CONTENT);
+        } catch (InvalidNodeRefException invalidNoderefException) {
+            logger.warn("Supplied noderef {} is found to be invalid", nodeRef);
+            return null;
+        }
         if (reader == null) {
             return null;
         }
