@@ -33,7 +33,10 @@ public class PropertySearchNode implements SearchSyntaxNode {
     }
 
     public void setName(String name) {
-        String replacement = name.replaceAll("([!@%^&*()\\-=+\\[\\]{};?,<>|])", "\\\\$1");
+        // Solr queries where the property name contains any of the characters in the regex below trigger an error
+        // in solr. This error is propagated through alfresco and apix. To prevent this, we escape the characters
+        // before the terms enter solr.
+        String replacement = name.replaceAll("([!@%^&*()\\-=+\\[\\];?,<>|])", "\\\\$1");
         this.name = replacement;
     }
 
