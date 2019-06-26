@@ -10,7 +10,7 @@
 ### Deleted
 
 ### Fixed
-
+* [ALFREDAPI-357](https://xenitsupport.jira.com/browse/ALFREDAPI-357): Query with special character in it (e.g. - or {) causes 500 exception
 
 ## 2.0.2 (2019-06-25)
 
