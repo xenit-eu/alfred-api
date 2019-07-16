@@ -123,13 +123,21 @@ public class SearchWebScript1 extends ApixV1Webscript {
           + "    }\n"
           + "}\n"
           + "```")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = SearchQueryResult.class))
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success", response = SearchQueryResult.class),
+            @ApiResponse(code = 400, message = "Failure")})
     @ApiImplicitParams({
             @ApiImplicitParam(dataType = "eu.xenit.apix.search.SearchQuery", paramType = "body", name = "body")})
     public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
         ObjectMapper m = new SearchNodeJsonParser().getObjectMapper();
         InputStream stream = webScriptRequest.getContent().getInputStream();
-        SearchQueryResult result = service.query(m.readValue(stream, SearchQuery.class));
+        SearchQueryResult result = null;
+        try {
+            result = service.query(m.readValue(stream, SearchQuery.class));
+        } catch (Exception exception) {
+            webScriptResponse.setStatus(400);
+            webScriptResponse.getWriter().write(exception.getMessage());
+        }
         writeJsonResponse(webScriptResponse, result);
     }
 }

@@ -1,6 +1,7 @@
 package eu.xenit.apix.alfresco.search;
 
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
+import eu.xenit.apix.alfresco.dictionary.PropertyService;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.search.FacetSearchResult;
 import eu.xenit.apix.search.ISearchService;
@@ -8,7 +9,9 @@ import eu.xenit.apix.search.SearchQuery;
 import eu.xenit.apix.search.SearchQueryConsistency;
 import eu.xenit.apix.search.SearchQueryResult;
 import eu.xenit.apix.utils.java8.Optional;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.QueryConsistency;
@@ -28,12 +31,14 @@ public class SearchService implements ISearchService {
     protected SearchFacetsService facetService;
     protected ApixToAlfrescoConversion c;
     protected org.alfresco.service.cmr.search.SearchService searchService;
+    protected PropertyService propertyService;
 
     public SearchService(org.alfresco.service.cmr.search.SearchService searchService, SearchFacetsService facetService,
-            ApixToAlfrescoConversion apixToAlfrescoConversion) {
+            ApixToAlfrescoConversion apixToAlfrescoConversion, PropertyService propertyService) {
         this.searchService = searchService;
         this.facetService = facetService;
         this.c = apixToAlfrescoConversion;
+        this.propertyService = propertyService;
     }
 
     public String toFtsQuery(SearchQuery q) {
@@ -89,6 +94,7 @@ public class SearchService implements ISearchService {
         // Set query
         searchParameters.setQuery(query);
         if (!postQuery.getOrderBy().isEmpty()) {
+            List<QName> multivaluePropertiesInOrdering = new ArrayList<>();
             for (int i = 0; i < postQuery.getOrderBy().size(); i++) {
                 SearchQuery.OrderBy orderBy = postQuery.getOrderBy().get(i);
                 boolean ascending = false;
@@ -97,12 +103,21 @@ public class SearchService implements ISearchService {
                 }
                 QName property = orderBy.getProperty();
                 org.alfresco.service.namespace.QName alfProperty = c.alfresco(property);
+                if (propertyService.GetPropertyDefinition(property).isMultiValued()) {
+                    multivaluePropertiesInOrdering.add(property);
+                    continue;
+                };
                 SortDefinition sortDefinition = new SortDefinition(SortType.FIELD, "@" + alfProperty.toString(),
                         ascending);
                 if (alfProperty.getNamespaceURI().isEmpty()) {
                     sortDefinition = new SortDefinition(SortType.FIELD, property.getValue(), ascending);
                 }
                 searchParameters.addSort(sortDefinition);
+            }
+            if (!multivaluePropertiesInOrdering.isEmpty()) {
+                String message = "Search ordering cannot contain multivalue properties. Searchrequest rejected because of orderby on ";
+                message += multivaluePropertiesInOrdering.stream().map(QName::toString).collect(Collectors.joining(", "));
+                throw new IllegalArgumentException(message);
             }
         }
 
