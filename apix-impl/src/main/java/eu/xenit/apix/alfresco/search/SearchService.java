@@ -41,6 +41,22 @@ public class SearchService implements ISearchService {
         this.propertyService = propertyService;
     }
 
+    public org.alfresco.service.cmr.search.SearchService getSearchService() {
+        return searchService;
+    }
+
+    public void setSearchService(org.alfresco.service.cmr.search.SearchService searchService) {
+        this.searchService = searchService;
+    }
+
+    public PropertyService getPropertyService() {
+        return propertyService;
+    }
+
+    public void setPropertyService(PropertyService propertyService) {
+        this.propertyService = propertyService;
+    }
+
     public String toFtsQuery(SearchQuery q) {
         FtsNodeVisitor ftsNodeVisitor = new FtsNodeVisitor();
         return ftsNodeVisitor.visit(q.getQuery());
@@ -94,7 +110,7 @@ public class SearchService implements ISearchService {
         // Set query
         searchParameters.setQuery(query);
         if (!postQuery.getOrderBy().isEmpty()) {
-            List<QName> multivaluePropertiesInOrdering = new ArrayList<>();
+            List<QName> multivaluePropertiesInOrderBy = new ArrayList<>();
             for (int i = 0; i < postQuery.getOrderBy().size(); i++) {
                 SearchQuery.OrderBy orderBy = postQuery.getOrderBy().get(i);
                 boolean ascending = false;
@@ -104,7 +120,7 @@ public class SearchService implements ISearchService {
                 QName property = orderBy.getProperty();
                 org.alfresco.service.namespace.QName alfProperty = c.alfresco(property);
                 if (propertyService.GetPropertyDefinition(property).isMultiValued()) {
-                    multivaluePropertiesInOrdering.add(property);
+                    multivaluePropertiesInOrderBy.add(property);
                     continue;
                 };
                 SortDefinition sortDefinition = new SortDefinition(SortType.FIELD, "@" + alfProperty.toString(),
@@ -114,9 +130,9 @@ public class SearchService implements ISearchService {
                 }
                 searchParameters.addSort(sortDefinition);
             }
-            if (!multivaluePropertiesInOrdering.isEmpty()) {
+            if (!multivaluePropertiesInOrderBy.isEmpty()) {
                 String message = "Search ordering cannot contain multivalue properties. Searchrequest rejected because of orderby on ";
-                message += multivaluePropertiesInOrdering.stream().map(QName::toString).collect(Collectors.joining(", "));
+                message += multivaluePropertiesInOrderBy.stream().map(QName::toString).collect(Collectors.joining(", "));
                 throw new IllegalArgumentException(message);
             }
         }
