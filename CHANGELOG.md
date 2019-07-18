@@ -10,6 +10,7 @@
 ### Deleted
 
 ### Fixed
+* [ALFREDAPI-325](https://xenitsupport.jira.com/browse/ALFREDAPI-325): HTTP 500 when requesting a dictionary definition with unregisterd namespace 
 * [ALFREDAPI-349](https://xenitsupport.jira.com/browse/ALFREDAPI-349): 500 Internal Error upon order by parties
 * [ALFREDAPI-357](https://xenitsupport.jira.com/browse/ALFREDAPI-357): Query with special character in it (e.g. - or {) causes 500 exception
 
