@@ -30,6 +30,7 @@ import org.alfresco.service.cmr.lock.LockService;
 import org.alfresco.service.cmr.lock.LockStatus;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
+import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.ContentData;
@@ -40,6 +41,7 @@ import org.alfresco.service.cmr.repository.CopyService;
 import org.alfresco.service.cmr.repository.DuplicateChildNodeNameException;
 import org.alfresco.service.cmr.repository.MimetypeService;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PermissionService;
@@ -305,12 +307,30 @@ public class NodeService implements INodeService {
         }
 
         if (propertiesToSet != null) {
-            for (Map.Entry<QName, Serializable> pair : propertiesToSet.entrySet()) {
-                nodeService.setProperty(alfNode, pair.getKey(), pair.getValue());
+            Serializable namePropValue = propertiesToSet.remove(ContentModel.PROP_NAME);
+            if (namePropValue != null){
+                renameNode(alfNode, DefaultTypeConverter.INSTANCE.convert(String.class, namePropValue));
             }
+            nodeService.addProperties(alfNode, propertiesToSet);
         }
 
         return this.getMetadata(noderef);
+    }
+
+    private void renameNode(NodeRef nodeRef, String newName){
+        QName nodeType = nodeService.getType(nodeRef);
+        if ((dictionaryService.isSubClass(nodeType, ContentModel.TYPE_FOLDER) &&
+                !dictionaryService.isSubClass(nodeType, ContentModel.TYPE_SYSTEM_FOLDER)) ||
+                dictionaryService.isSubClass(nodeType, ContentModel.TYPE_CONTENT)){
+            try {
+                fileFolderService.rename(nodeRef, newName);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        else{
+            nodeService.setProperty(nodeRef, ContentModel.PROP_NAME, newName);
+        }
     }
 
     public void cleanupAspects(eu.xenit.apix.data.NodeRef nodeRef, eu.xenit.apix.data.QName oldTypeQName,
