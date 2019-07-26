@@ -8,6 +8,7 @@
 ### Changed
 
 ### Deleted
+* [ALFREDAPI-380](https://xenitsupport.jira.com/browse/ALFREDAPI-380): Disable archiving of Jenkins artefacts
 
 ### Fixed
 * [ALFREDAPI-325](https://xenitsupport.jira.com/browse/ALFREDAPI-325): HTTP 500 when requesting a dictionary definition with unregisterd namespace 
