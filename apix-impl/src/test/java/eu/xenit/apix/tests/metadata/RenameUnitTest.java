@@ -11,6 +11,7 @@ import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.node.MetadataChanges;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import org.alfresco.model.ContentModel;
@@ -21,6 +22,7 @@ import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.verification.VerificationMode;
 
 public class RenameUnitTest {
     private ServiceRegistry serviceRegistry;
@@ -58,8 +60,9 @@ public class RenameUnitTest {
     }
 
     @Test
-    public void testRenameChangesQNamePath(){
+    public void testSetNameCallsRenameOfFileFolderService(){
         FileFolderService alfrescoFileFolderService = serviceRegistry.getFileFolderService();
+        NodeService alfrescoNodeService = serviceRegistry.getNodeService();
 
         NodeRef nodeRef = new NodeRef(NODEREF_STRING);
         org.alfresco.service.cmr.repository.NodeRef alfrescoNodeRef = new org.alfresco.service.cmr.repository.NodeRef(nodeRef.toString());
@@ -79,5 +82,7 @@ public class RenameUnitTest {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
+        
     }
 }
