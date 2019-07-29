@@ -253,7 +253,8 @@ public class NodeService implements INodeService {
             // check for type change
             if (!newTypeQName.equals(oldTypeQName)) {
                 nodeService.setType(alfNode, newTypeQName);
-                if (metadata.hasCleanUpAspectsOnGeneralization() && dictionaryService.isSubClass(oldTypeQName, newTypeQName)) {
+                if (metadata.hasCleanUpAspectsOnGeneralization() && dictionaryService
+                        .isSubClass(oldTypeQName, newTypeQName)) {
                     cleanupAspects(noderef, c.apix(oldTypeQName), c.apix(newTypeQName));
                 }
             }
@@ -308,7 +309,7 @@ public class NodeService implements INodeService {
 
         if (propertiesToSet != null) {
             Serializable namePropValue = propertiesToSet.remove(ContentModel.PROP_NAME);
-            if (namePropValue != null){
+            if (namePropValue != null) {
                 renameNode(alfNode, DefaultTypeConverter.INSTANCE.convert(String.class, namePropValue));
             }
             nodeService.addProperties(alfNode, propertiesToSet);
@@ -317,18 +318,17 @@ public class NodeService implements INodeService {
         return this.getMetadata(noderef);
     }
 
-    private void renameNode(NodeRef nodeRef, String newName){
+    private void renameNode(NodeRef nodeRef, String newName) {
         QName nodeType = nodeService.getType(nodeRef);
         if ((dictionaryService.isSubClass(nodeType, ContentModel.TYPE_FOLDER) &&
                 !dictionaryService.isSubClass(nodeType, ContentModel.TYPE_SYSTEM_FOLDER)) ||
-                dictionaryService.isSubClass(nodeType, ContentModel.TYPE_CONTENT)){
+                dictionaryService.isSubClass(nodeType, ContentModel.TYPE_CONTENT)) {
             try {
                 fileFolderService.rename(nodeRef, newName);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-        }
-        else{
+        } else {
             nodeService.setProperty(nodeRef, ContentModel.PROP_NAME, newName);
         }
     }

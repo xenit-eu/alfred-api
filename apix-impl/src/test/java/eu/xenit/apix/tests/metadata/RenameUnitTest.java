@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 public class RenameUnitTest {
+
     private ServiceRegistry serviceRegistry;
     private ApixToAlfrescoConversion apixAlfrescoConverter;
 
@@ -34,7 +35,8 @@ public class RenameUnitTest {
     public void init() {
         //Initializing node service
         NodeService nodeServiceMock = mock(NodeService.class);
-        when(nodeServiceMock.getType(any(org.alfresco.service.cmr.repository.NodeRef.class))).thenReturn(ContentModel.TYPE_CONTENT);
+        when(nodeServiceMock.getType(any(org.alfresco.service.cmr.repository.NodeRef.class)))
+                .thenReturn(ContentModel.TYPE_CONTENT);
 
         //Initializing file folder service
         FileFolderService fileFolderServiceMock = mock(FileFolderService.class);
@@ -59,12 +61,13 @@ public class RenameUnitTest {
     }
 
     @Test
-    public void testSetNameCallsRenameOfFileFolderService(){
+    public void testSetNameCallsRenameOfFileFolderService() {
         FileFolderService alfrescoFileFolderService = serviceRegistry.getFileFolderService();
         NodeService alfrescoNodeService = serviceRegistry.getNodeService();
 
         NodeRef nodeRef = new NodeRef(NODEREF_STRING);
-        org.alfresco.service.cmr.repository.NodeRef alfrescoNodeRef = new org.alfresco.service.cmr.repository.NodeRef(nodeRef.toString());
+        org.alfresco.service.cmr.repository.NodeRef alfrescoNodeRef = new org.alfresco.service.cmr.repository.NodeRef(
+                nodeRef.toString());
         QName[] aspectsToAdd = new QName[0];
         QName[] aspectsToRemove = new QName[0];
         Map<QName, String[]> propertiesToSet = new HashMap<QName, String[]>();
@@ -73,7 +76,8 @@ public class RenameUnitTest {
         propertiesToSet.put(nameProperty, namePropertyValue);
         MetadataChanges metadataChanges = new MetadataChanges(null, aspectsToAdd, aspectsToRemove, propertiesToSet);
 
-        eu.xenit.apix.alfresco.metadata.NodeService apixNodeService = new eu.xenit.apix.alfresco.metadata.NodeService(serviceRegistry, apixAlfrescoConverter);
+        eu.xenit.apix.alfresco.metadata.NodeService apixNodeService = new eu.xenit.apix.alfresco.metadata.NodeService(
+                serviceRegistry, apixAlfrescoConverter);
         apixNodeService.setMetadata(nodeRef, metadataChanges);
 
         //We have to make sure that the rename method of the file folder service was called once.
