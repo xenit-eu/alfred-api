@@ -105,7 +105,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
                     "}\n" +
                     "```\n" +
                     "\n" +
-                    "Changing the name property will also update the qname path of the node so it is in sync with it.\n"+
+                    "Changing the cm:name property will also update the qname path of the node so it is in sync with it.\n"+
                     "This only applies to nodes of type or subtype cm:content or cm:folder but not of type or subtype of cm:systemfolder.")
     @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NodeMetadata.class))
     public void setMetadata(@UriVariable final String space, @UriVariable final String store,
