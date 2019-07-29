@@ -22,6 +22,8 @@ import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 import org.mockito.verification.VerificationMode;
 
 public class RenameUnitTest {
@@ -76,6 +78,9 @@ public class RenameUnitTest {
 
         eu.xenit.apix.alfresco.metadata.NodeService apixNodeService = new eu.xenit.apix.alfresco.metadata.NodeService(serviceRegistry, apixAlfrescoConverter);
         apixNodeService.setMetadata(nodeRef, metadataChanges);
+
+        //We have to make sure that the rename method of the file folder service was called once.
+        //That way we know that the qname path was also changed.
         try {
             verify(alfrescoFileFolderService, times(1))
                     .rename(eq(alfrescoNodeRef), eq(namePropertyValue[0]));
@@ -83,6 +88,10 @@ public class RenameUnitTest {
             e.printStackTrace();
         }
 
-        
+        //We also have to make sure that the name property was removed from the remaining properties to add.
+        //Otherwise the name of the node will be changed twice and this can trigger a behaviour twice.
+        ArgumentCaptor<Map> captor = ArgumentCaptor.forClass(Map.class);
+        verify(alfrescoNodeService, times(1)).addProperties(eq(alfrescoNodeRef), captor.capture());
+        assert 0 == captor.getValue().size();
     }
 }
