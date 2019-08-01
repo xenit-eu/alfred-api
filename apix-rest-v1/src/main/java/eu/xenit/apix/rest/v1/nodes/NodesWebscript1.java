@@ -314,6 +314,11 @@ public class NodesWebscript1 extends ApixV1Webscript {
         permissions.setInheritFromParent(changeAclsOptions.isInheritFromParent());
         Set<NodePermission.Access> accessList = new HashSet<>();
         permissions.setOwnAccessList(accessList);
+        Set<ChangeAclsOptions.Access> ownAccessList = changeAclsOptions.getOwnAccessList();
+        if(ownAccessList == null){
+            response.setStatus(400);
+            return;
+        }
         for (Access access : changeAclsOptions.getOwnAccessList()) {
             NodePermission.Access a = new NodePermission.Access();
             accessList.add(a);
