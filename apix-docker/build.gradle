@@ -1,3 +1,4 @@
+import eu.xenit.gradle.JenkinsUtil;
 subprojects {
     apply plugin: 'eu.xenit.docker-alfresco'
 
@@ -13,5 +14,10 @@ subprojects {
         alfrescoAmp project(path: ":apix-impl:apix-impl-${subproject_alfresco_version}", configuration: 'ampArtifact')
         alfrescoAmp project(path: ':apix-integrationtests-model-amp', configuration: 'ampArchives')
         alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${subproject_alfresco_version}:${de_version}@amp"
+    }
+    
+    dockerCompose {
+        useComposeFiles = ["docker-compose.yml"] +
+                (JenkinsUtil.buildId == null ? ["debug-extension.docker-compose.yml"] : [])
     }
 }

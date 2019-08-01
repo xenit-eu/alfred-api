@@ -5,12 +5,10 @@ services:
     image: ${DOCKER_IMAGE}
     ports:
     - ${DOCKER_IP}::8080
-    - "8000:8000"
     volumes:
     - alfresco:/opt/alfresco/alf_data
     restart: unless-stopped
     environment:
-    - DEBUG=true
     - SOLR_HOST=solr
     - TERM=xterm
 
