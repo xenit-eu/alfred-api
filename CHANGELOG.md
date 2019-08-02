@@ -6,6 +6,7 @@
 ### Added
 
 ### Changed
+* [ALFREDAPI-382](https://xenitsupport.jira.com/browse/ALFREDAPI-382): Configure docker project to run with debug enabled locally, but regularly on Jenkins
 
 ### Deleted
 * [ALFREDAPI-380](https://xenitsupport.jira.com/browse/ALFREDAPI-380): Disable archiving of Jenkins artefacts
@@ -15,6 +16,7 @@
 * [ALFREDAPI-349](https://xenitsupport.jira.com/browse/ALFREDAPI-349): 500 Internal Error upon order by parties
 * [ALFREDAPI-357](https://xenitsupport.jira.com/browse/ALFREDAPI-357): Query with special character in it (e.g. - or {) causes 500 exception
 * [ALFREDAPI-381](https://xenitsupport.jira.com/browse/ALFREDAPI-381): Changing the name of a node now also updates the qname path
+* [ALFREDAPI-382](https://xenitsupport.jira.com/browse/ALFREDAPI-382): Return 400 when PUTting acls with malformed body
 
 ## 2.0.2 (2019-06-25)
 
