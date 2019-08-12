@@ -25,6 +25,7 @@ import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.coci.CheckOutCheckInService;
 import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
+import org.alfresco.service.cmr.dictionary.InvalidTypeException;
 import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.cmr.lock.LockService;
 import org.alfresco.service.cmr.lock.LockStatus;
@@ -606,7 +607,10 @@ public class NodeService implements INodeService {
         try {
             reader = contentService.getReader(c.alfresco(nodeRef), ContentModel.PROP_CONTENT);
         } catch (InvalidNodeRefException invalidNoderefException) {
-            logger.warn("Supplied noderef {} is found to be invalid", nodeRef);
+            logger.warn("Noderef {} is invalid", nodeRef);
+            return null;
+        } catch (InvalidTypeException invalidTypeException) {
+            logger.warn("Noderef {} is not of type 'Content'. Cannot return contentReader", nodeRef);
             return null;
         }
         if (reader == null) {
