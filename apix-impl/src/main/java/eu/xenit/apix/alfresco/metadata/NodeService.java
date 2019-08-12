@@ -607,7 +607,7 @@ public class NodeService implements INodeService {
         try {
             reader = contentService.getReader(c.alfresco(nodeRef), ContentModel.PROP_CONTENT);
         } catch (InvalidNodeRefException invalidNoderefException) {
-            logger.warn("Noderef {} is invalid", nodeRef);
+            logger.warn("Noderef {} is invalid. Noderef might be malformed or node does not exist.", nodeRef);
             return null;
         } catch (InvalidTypeException invalidTypeException) {
             logger.warn("Noderef {} is not of type 'Content'. Cannot return contentReader", nodeRef);
