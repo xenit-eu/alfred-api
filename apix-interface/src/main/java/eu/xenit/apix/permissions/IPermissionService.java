@@ -2,10 +2,7 @@ package eu.xenit.apix.permissions;
 
 import eu.xenit.apix.data.NodeRef;
 
-import java.security.Permission;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public interface IPermissionService {
 
@@ -74,5 +71,15 @@ public interface IPermissionService {
      * directly applied to this specific node.
      */
     void setNodePermissions(NodeRef nodeRef, NodePermission permissions);
+
+    /**
+     * Check that the current authentication has a particular permission for the given node.
+     *
+     * @param nodeRef the noderef on which the permission is queried
+     * @param permission the String representation of the Permission that is being checked
+     *
+     * @return - Boolean indicating whether the asked permission is present.
+     */
+    boolean hasPermission(NodeRef nodeRef, String permission);
 
 }

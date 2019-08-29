@@ -367,7 +367,9 @@ public class NodesWebscript1 extends ApixV1Webscript {
         }
     }
 
-    @ApiOperation(value = "Returns combined information of multiple nodes",
+    @ApiOperation(value = "Returns combined information of multiple nodes. "
+            + "Nodes errors or without appropriate permissions will not be included in return, "
+            + "and will not cause failure of the call.",
             notes = "Example to get combined information of multiple nodes:\n" +
                     "\n" +
                     "```\n" +

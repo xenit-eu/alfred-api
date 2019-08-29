@@ -144,6 +144,23 @@ public class PermissionService implements IPermissionService {
         }
     }
 
+    @Override
+    public boolean hasPermission(NodeRef nodeRef, String permission) {
+        AccessStatus accessStatus = permissionService.hasPermission(c.alfresco(nodeRef), permission);
+        String fullyAuthenticatedUser = AuthenticationUtil.getFullyAuthenticatedUser();
+        switch (accessStatus) {
+            case ALLOWED:
+                logger.debug("User {} has permission {} on node {}", fullyAuthenticatedUser, permission, nodeRef);
+                return true;
+            case DENIED:
+            case UNDETERMINED:
+            default:
+                logger.warn("User {} does not have permission {} on node {} due to access status {}",
+                        fullyAuthenticatedUser, permission, nodeRef, accessStatus);
+                return false;
+        }
+    }
+
 
     @Override
     public void setPermission(NodeRef node, String authority, String permission) {

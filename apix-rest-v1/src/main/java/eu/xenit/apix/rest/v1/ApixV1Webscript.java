@@ -94,6 +94,10 @@ public class ApixV1Webscript {
             boolean retrieveTargetAssocs) {
         List<NodeInfo> nodeInfoList = new ArrayList<NodeInfo>();
         for (NodeRef nodeRef : nodeRefs) {
+            if (!permissionService.hasPermission(nodeRef, IPermissionService.READ)) {
+                logger.warn("Excluding node {} from results due to insufficient permissions", nodeRef);
+                continue;
+            }
             eu.xenit.apix.filefolder.NodePath path = null;
             if (retrievePath) {
                 path = fileFolderService.getPath(nodeRef);
