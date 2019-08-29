@@ -3,7 +3,9 @@
 ## 2.2.0 (Unreleased)
 
 ### Added
-* [ALFREDAPI-384](https://xenitsupport.jira.com/browse/ALFREDAPI-384):added hasPermission to IPermissionService and used it in the ApixV1Webscript
+* [ALFREDAPI-384](https://xenitsupport.jira.com/browse/ALFREDAPI-384):added hasPermission to IPermissionService and used it to fix `ApixV1Webscript#getAllInfoOfNodes()`
+
+    **!! The endpoint `POST /alfresco/s/apix/v1/nodeInfo` now returns a list with any faulty nodes (eg. `Access Denied` or `Does not Exist`) removed instead of HTTP 500 !!**
 ### Changed
 ### Deleted
 ### Fixed
