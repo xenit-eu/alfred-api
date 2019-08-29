@@ -3,6 +3,7 @@
 ## 2.2.0 (Unreleased)
 
 ### Added
+* [ALFREDAPI-384](https://xenitsupport.jira.com/browse/ALFREDAPI-384):added hasPermission to IPermissionService and used it in the ApixV1Webscript
 ### Changed
 ### Deleted
 ### Fixed
