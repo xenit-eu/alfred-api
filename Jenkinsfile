@@ -48,9 +48,8 @@ def BuildVersionX(publishingRepo, version) {
     sh "${gradleCommand} :apix-integrationtests:test-${version}:integrationTest"
 
     // Publishing
-    if (publishingRepo) {
+    if(publishingRepo) {
         sh "${gradleCommand} ${implProject}:ampde ${implProject}:publishMavenJavaPublicationTo${publishingRepo}Repository"
-
         sh "${gradleCommand} ${implProject}:ampde ${implProject}:publishAmpPublicationTo${publishingRepo}Repository"
     }
 }
@@ -65,8 +64,17 @@ node {
             sh "./setup.sh"
         }
         stage("Publish apix-interface") {
-            if (publishingRepo) {
-                sh "${gradleCommand} :apix-interface:publishMavenJavaPublicationTo${publishingRepo}Repository"
+            if(publishingRepo) {
+                withCredentials([
+                        usernamePassword(credentialsId: 'sonatype', passwordVariable: 'sonatypePassword', usernameVariable: 'sonatypeUsername'),
+                        string(credentialsId: 'gpgpassphrase', variable: 'gpgPassPhrase')]) {
+                    sh "${gradleCommand} :apix-interface:publish " +
+                            " -Ppublish_username=${sonatypeUsername} " +
+                            " -Ppublish_password=${sonatypePassword} " +
+                            " -PkeyId=DF8285F0 " +
+                            " -Ppassword=${gpgPassPhrase} " +
+                            " -PsecretKeyRingFile=/var/jenkins_home/secring.gpg "
+                }
             }
         }
         stage("Build 50") {

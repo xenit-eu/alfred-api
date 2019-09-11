@@ -8,19 +8,17 @@ publishing {
     }
     repositories {
         maven {
-            name 'snapshot'
-            url 'https://artifactory.xenit.eu/artifactory/libs-snapshot-local'
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+            println("=== SUPER DEBUG ===")
+            println("version: " + version)
+            println("url    : " + url)
+
             credentials {
-                username property("eu.xenit.artifactory.username")
-                password property("eu.xenit.artifactory.password")
-            }
-        }
-        maven {
-            name 'release'
-            url 'https://artifactory.xenit.eu/artifactory/libs-release-local'
-            credentials {
-                username property("eu.xenit.artifactory.username")
-                password property("eu.xenit.artifactory.password")
+                username = project.hasProperty('publish_username') ? project.publish_username : ''
+                password = project.hasProperty('publish_password') ? project.publish_password : ''
             }
         }
     }
@@ -36,7 +34,6 @@ dependencies {
 
 task generateJavadocs(type: Javadoc) {
     source = sourceSets.main.allJava
-    //destinationDir = file("${projectDir}/javadoc/src/main/resources/eu/xenit/apix/javadoc/apix-interface") //file("${rootProject.projectDir}/javadoc/apix-interface")
     options.memberLevel = JavadocMemberLevel.PROTECTED
     options.setOutputLevel(JavadocOutputLevel.VERBOSE)
     failOnError = false
