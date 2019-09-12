@@ -17,29 +17,12 @@ subprojects {
                 artifact file(ampFile)
             }
         }
-        repositories {
-            maven {
-                name 'snapshot'
-                url 'https://artifactory.xenit.eu/artifactory/libs-snapshot-local'
-                credentials {
-                    username property("eu.xenit.artifactory.username")
-                    password property("eu.xenit.artifactory.password")
-                }
-            }
-            maven {
-                name 'release'
-                url 'https://artifactory.xenit.eu/artifactory/libs-release-local'
-                credentials {
-                    username property("eu.xenit.artifactory.username")
-                    password property("eu.xenit.artifactory.password")
-                }
-            }
-        }
     }
 
+    apply from: "${rootProject.projectDir}/publish.gradle"
+    apply from: "${project.projectDir}/overrides.gradle"
     apply plugin: 'org.dm.bundle'
     apply plugin: 'ampde'
-    apply from: "${project.projectDir}/overrides.gradle"
 
     sourceSets {
         main {
