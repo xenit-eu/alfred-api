@@ -49,8 +49,18 @@ def BuildVersionX(publishingRepo, version) {
 
     // Publishing
     if(publishingRepo) {
-        sh "${gradleCommand} ${implProject}:ampde ${implProject}:publishMavenJavaPublicationTo${publishingRepo}Repository"
-        sh "${gradleCommand} ${implProject}:ampde ${implProject}:publishAmpPublicationTo${publishingRepo}Repository"
+        withCredentials([
+                usernamePassword(credentialsId: 'sonatype', passwordVariable: 'sonatypePassword', usernameVariable: 'sonatypeUsername'),
+                string(credentialsId: 'gpgpassphrase', variable: 'gpgPassPhrase')]) {
+            sh "${gradleCommand} ${implProject}:ampde " +
+                    " ${implProject}:publishMavenJavaPublicationToMavenRepository " +
+                    " ${implProject}:publishAmpPublicationToMavenRepository" +
+                    " -Ppublish_username=${sonatypeUsername} " +
+                    " -Ppublish_password=${sonatypePassword} " +
+                    " -PkeyId=DF8285F0 " +
+                    " -Ppassword=${gpgPassPhrase} " +
+                    " -PsecretKeyRingFile=/var/jenkins_home/secring.gpg "
+        }
     }
 }
 
