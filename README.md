@@ -2,7 +2,7 @@
 
 ## Rules for pull requests
 * Common sense trumps all rules.
-* For every pull request please extend [CHANGELOG.md](../CHANGELOG.md).
+* For every pull request please extend [CHANGELOG.md](./CHANGELOG.md).
 * Do not make breaking changes since this is an API used by customers. Breaking changes include 
   adding, changing or removing endpoints or JSON objects used in requests and responses.
   * If you are forced to make a breaking change:
