@@ -107,20 +107,5 @@ subprojects {
         maven { url "https://artifacts.alfresco.com/nexus/content/groups/public" }
         maven { url "http://repo.springsource.org/release" }
         maven { url "http://jcenter.bintray.com" }
-        maven {
-            url "https://artifactory.xenit.eu/artifactory/libs-release"
-            credentials {
-                username property("eu.xenit.artifactory.username")
-                password property("eu.xenit.artifactory.password")
-            }
-        }
-        maven {
-            name 'alfresco-private-repository'
-            url 'https://artifacts.alfresco.com/nexus/content/repositories/activiti-enterprise-releases'
-            credentials {
-                username property("org.alfresco.maven.nexus.username")
-                password property("org.alfresco.maven.nexus.password")
-            }
-        }
     }
 }
