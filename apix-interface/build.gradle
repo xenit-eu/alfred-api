@@ -6,23 +6,9 @@ publishing {
             from components.java
         }
     }
-    repositories {
-        maven {
-            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-
-            println("=== SUPER DEBUG ===")
-            println("version: " + version)
-            println("url    : " + url)
-
-            credentials {
-                username = project.hasProperty('publish_username') ? project.publish_username : ''
-                password = project.hasProperty('publish_password') ? project.publish_password : ''
-            }
-        }
-    }
 }
+
+apply from: "${rootProject.projectDir}/publish.gradle"
 
 dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: jackson_version

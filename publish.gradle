@@ -1,0 +1,69 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+publishing {
+    publications {
+        all {
+            pom {
+                url = 'https://github.com/xenit-eu/alfred-api'
+                name = "alfred-api"
+                description = project.description
+
+                scm {
+                    connection = 'scm:git:git@github.com:xenit-eu/alfred-api.git'
+                    developerConnection = 'scm:git:git@github.com:xenit-eu/alfred-api.git'
+                    url = 'https://github.com/xenit-eu/alfred-api.git'
+                }
+                developers {
+                    developer {
+                        id = "xenit"
+                        name = "Xenit Solutions NV"
+                    }
+                }
+
+                licenses {
+                    license {
+                        name = 'GNU Lesser General Public License v3.0'
+                        url = 'https://www.gnu.org/licenses/lgpl-3.0.txt'
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+            credentials {
+                username = project.hasProperty('publish_username') ? project.publish_username : ''
+                password = project.hasProperty('publish_password') ? project.publish_password : ''
+            }
+        }
+    }
+}
+
+afterEvaluate {
+    signing {
+        required { !version.endsWith('SNAPSHOT') && gradle.taskGraph.hasTask("publish") }
+        sign publishing.publications
+    }
+}
+
+gradle.taskGraph.whenReady { graph ->
+    if(graph.hasTask(publish)) {
+        if(!project.hasProperty('keyId') || !project.hasProperty('secretKeyRingFile') || !project.hasProperty('password')) {
+            throw new GradleException('You need to provide signing params in order to sign artifacts')
+        }
+
+        def id = project.hasProperty('keyId') ? project.keyId : ''
+        def file = project.hasProperty('secretKeyRingFile') ? project.secretKeyRingFile : ''
+        def password = project.hasProperty('password') ? project.password : ''
+
+        ext."signing.keyId" = id
+        ext."signing.secretKeyRingFile" = file
+        ext."signing.password" = password
+    }
+}
