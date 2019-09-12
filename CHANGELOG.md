@@ -1,18 +1,21 @@
 # Alfred API - Changelog
 
+
 ## 2.2.0 (Unreleased)
 
 ### Added
-* [ALFREDAPI-384](https://xenitsupport.jira.com/browse/ALFREDAPI-384):added hasPermission to IPermissionService and used it to fix `ApixV1Webscript#getAllInfoOfNodes()`
 
-    **!! The endpoint `POST /alfresco/s/apix/v1/nodeInfo` now returns a list with any faulty nodes (eg. `Access Denied` or `Does not Exist`) removed instead of HTTP 500 !!**
 ### Changed
+* [ALFREDAPI-346](https://xenitsupport.jira.com/browse/ALFREDAPI-346): Moved Alfred API to Github
+* [ALFREDAPI-384](https://xenitsupport.jira.com/browse/ALFREDAPI-384): Added hasPermission to IPermissionService and used it to fix `ApixV1Webscript#getAllInfoOfNodes()`.
+    **The endpoint `POST /alfresco/s/apix/v1/nodeInfo` now returns a list with any faulty nodes (e.g. `Access Denied` or `Does not Exist`) removed instead of HTTP 500**
+    
 ### Deleted
+
 ### Fixed
 
-## 2.1.0 (2019-08-26)
 
-### Added
+## 2.1.0 (2019-08-26)
 
 ### Changed
 * [ALFREDAPI-382](https://xenitsupport.jira.com/browse/ALFREDAPI-382): Configure docker project to run with debug enabled locally, but regularly on Jenkins
@@ -26,7 +29,8 @@
 * [ALFREDAPI-357](https://xenitsupport.jira.com/browse/ALFREDAPI-357): Query with special character in it (e.g. - or {) causes 500 exception
 * [ALFREDAPI-381](https://xenitsupport.jira.com/browse/ALFREDAPI-381): Changing the name of a node now also updates the qname path
 * [ALFREDAPI-382](https://xenitsupport.jira.com/browse/ALFREDAPI-382): Return 400 when PUTting acls with malformed body
-* [ALFFREDAPI-367](https://xenitsupport.jira.com/browse/ALFREDAPI-367): Get content of non existing node results in SC 500
+* [ALFREDAPI-367](https://xenitsupport.jira.com/browse/ALFREDAPI-367): Get content of non existing node results in SC 500
+
 
 ## 2.0.2 (2019-06-25)
 
