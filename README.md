@@ -1,5 +1,12 @@
 # Alfred API
 
+[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](
+  https://www.gnu.org/licenses/lgpl-3.0)
+[![Maven Central](https://img.shields.io/maven-central/v/eu.xenit.apix/apix-interface.svg)](
+  http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22eu.xenit.apix%22%20AND%20a%3A%22apix-interface%22)
+[![Jenkins Build Status](https://jenkins-2.xenit.eu/buildStatus/icon?job=Xenit+Github%2Falfred-api%2Fmaster&subject=Jenkins)](
+  https://jenkins-2.xenit.eu/job/Xenit%20Github/job/alfred-api/job/master/)
+
 ## Rules for pull requests
 * Common sense trumps all rules.
 * For every pull request please extend [CHANGELOG.md](./CHANGELOG.md).
