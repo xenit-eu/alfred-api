@@ -26,11 +26,6 @@ def sendEmailNotifications() {
     )
 }
 
-def isPublishNeeded() {
-    def gitBranch = env.BRANCH_NAME
-    return gitBranch.startsWith("release") || gitBranch == "master"
-}
-
 def BuildVersionX(isPublishNeeded, version) {
     def gradleCommand = "./gradlew --info --stacktrace "
     def implProject = ":apix-impl:apix-impl-${version}"
@@ -59,7 +54,8 @@ def BuildVersionX(isPublishNeeded, version) {
 
 node {
     def gradleCommand = "./gradlew --info --stacktrace "
-    def isPublishNeeded = isPublishNeeded()
+    def gitBranch = env.BRANCH_NAME
+    def isPublishNeeded = gitBranch.startsWith("release") || gitBranch == "master"
 
     try {
         stage("Checkout + Initialize") {
