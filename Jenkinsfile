@@ -26,18 +26,12 @@ def sendEmailNotifications() {
     )
 }
 
-def getPublishingRepository() {
-    def gitBranch = env.BRANCH_NAME // https://issues.jenkins-ci.org/browse/JENKINS-30252
-    if(gitBranch.startsWith("release")) {
-        return 'Release'
-    }
-    if(gitBranch == "master") {
-        return 'Snapshot'
-    }
-    return null
+def isPublishNeeded() {
+    def gitBranch = env.BRANCH_NAME
+    return gitBranch.startsWith("release") || gitBranch == "master"
 }
 
-def BuildVersionX(publishingRepo, version) {
+def BuildVersionX(isPublishNeeded, version) {
     def gradleCommand = "./gradlew --info --stacktrace "
     def implProject = ":apix-impl:apix-impl-${version}"
 
@@ -47,8 +41,7 @@ def BuildVersionX(publishingRepo, version) {
     // Integration tests
     sh "${gradleCommand} :apix-integrationtests:test-${version}:integrationTest"
 
-    // Publishing
-    if(publishingRepo) {
+    if(isPublishNeeded) {
         withCredentials([
                 usernamePassword(credentialsId: 'sonatype', passwordVariable: 'sonatypePassword', usernameVariable: 'sonatypeUsername'),
                 string(credentialsId: 'gpgpassphrase', variable: 'gpgPassPhrase')]) {
@@ -66,7 +59,7 @@ def BuildVersionX(publishingRepo, version) {
 
 node {
     def gradleCommand = "./gradlew --info --stacktrace "
-    def publishingRepo = getPublishingRepository()
+    def isPublishNeeded = isPublishNeeded()
 
     try {
         stage("Checkout + Initialize") {
@@ -74,7 +67,7 @@ node {
             sh "./setup.sh"
         }
         stage("Publish apix-interface") {
-            if(publishingRepo) {
+            if(isPublishNeeded) {
                 withCredentials([
                         usernamePassword(credentialsId: 'sonatype', passwordVariable: 'sonatypePassword', usernameVariable: 'sonatypeUsername'),
                         string(credentialsId: 'gpgpassphrase', variable: 'gpgPassPhrase')]) {
@@ -88,19 +81,19 @@ node {
             }
         }
         stage("Build 50") {
-            BuildVersionX(publishingRepo, "50")
+            BuildVersionX(isPublishNeeded, "50")
         }
         stage("Build 51") {
-            BuildVersionX(publishingRepo, "51")
+            BuildVersionX(isPublishNeeded, "51")
         }
         stage("Build 52") {
-            BuildVersionX(publishingRepo, "52")
+            BuildVersionX(isPublishNeeded, "52")
         }
         stage("Build 60") {
-            BuildVersionX(publishingRepo, "60")
+            BuildVersionX(isPublishNeeded, "60")
         }
         stage("Build 61") {
-            BuildVersionX(publishingRepo, "61")
+            BuildVersionX(isPublishNeeded, "61")
         }
     }
     finally {
