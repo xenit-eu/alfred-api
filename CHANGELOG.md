@@ -1,18 +1,12 @@
 # Alfred API - Changelog
 
 
-## 2.2.0 (Unreleased)
-
-### Added
+## 2.2.0 (2019-09-17)
 
 ### Changed
-* [ALFREDAPI-346](https://xenitsupport.jira.com/browse/ALFREDAPI-346): Moved Alfred API to Github
+* [ALFREDAPI-346](https://xenitsupport.jira.com/browse/ALFREDAPI-346): Moved Alfred API to Github: https://github.com/xenit-eu/alfred-api
 * [ALFREDAPI-384](https://xenitsupport.jira.com/browse/ALFREDAPI-384): Added hasPermission to IPermissionService and used it to fix `ApixV1Webscript#getAllInfoOfNodes()`.
     **The endpoint `POST /alfresco/s/apix/v1/nodeInfo` now returns a list with any faulty nodes (e.g. `Access Denied` or `Does not Exist`) removed instead of HTTP 500**
-    
-### Deleted
-
-### Fixed
 
 
 ## 2.1.0 (2019-08-26)
