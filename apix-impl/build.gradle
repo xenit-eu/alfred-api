@@ -5,12 +5,23 @@ subprojects {
     // Isolate the version number ("apix-impl-52" -> "52").
     def subproject_alfresco_version = project.name.substring(project.name.length() - 2)
 
+    task sourcesJar(type: Jar) {
+        from sourceSets.main.allJava
+        classifier = 'sources'
+    }
+
+    task javadocJar(type: Jar) {
+        from javadoc
+        classifier = 'javadoc'
+    }
+
     publishing {
         publications {
             mavenJava(MavenPublication) {
                 from components.java
+                artifact sourcesJar
+                artifact javadocJar
             }
-
             amp(MavenPublication) {
                 artifactId "apix-impl-${subproject_alfresco_version}-amp"
                 // TODO: This should be replaced by a proper reference to an artifact
