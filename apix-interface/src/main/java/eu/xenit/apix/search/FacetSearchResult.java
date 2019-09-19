@@ -7,15 +7,11 @@ import java.util.Objects;
 
 /**
  * Data structure that represents a facet of a search result.
- *
- * @param name: The name of the facet
- * @param values: A list with all the possible facet values.
  */
 public class FacetSearchResult {
 
     private String name;
     private List<FacetValue> values = new ArrayList<>();
-
 
     public FacetSearchResult() {
     }
@@ -24,6 +20,9 @@ public class FacetSearchResult {
         return name;
     }
 
+    /**
+     * @param name The name of the facet
+     */
     public void setName(String name) {
         this.name = name;
     }
@@ -32,6 +31,9 @@ public class FacetSearchResult {
         return values;
     }
 
+    /**
+     * @param values A list with all the possible facet values.
+     */
     public void setValues(List<FacetValue> values) {
         this.values = values;
     }
@@ -54,7 +56,7 @@ public class FacetSearchResult {
         }
         FacetSearchResult that = (FacetSearchResult) o;
         return Objects.equals(getName(), that.getName()) &&
-              Objects.equals(getValues(), that.getValues());
+                Objects.equals(getValues(), that.getValues());
     }
 
     @Override
@@ -136,9 +138,9 @@ public class FacetSearchResult {
             }
             FacetValue that = (FacetValue) o;
             return getCount() == that.getCount() &&
-                  Objects.equals(getValue(), that.getValue()) &&
-                  Objects.equals(getRange(), that.getRange()) &&
-                  Objects.equals(getLabel(), that.getLabel());
+                    Objects.equals(getValue(), that.getValue()) &&
+                    Objects.equals(getRange(), that.getRange()) &&
+                    Objects.equals(getLabel(), that.getLabel());
         }
 
         @Override
