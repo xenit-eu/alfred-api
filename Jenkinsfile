@@ -39,6 +39,10 @@ node {
             checkout scm
             sh "./setup.sh"
         }
+        stage("Build interface") {
+            // Execute  before the integration testing so we can catch potential errors early
+            sh "${gradleCommand} :apix-interface:build :apix-interface:javadoc"
+        }
         stage("Build 50") {
             BuildVersionX( "50")
         }
