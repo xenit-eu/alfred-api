@@ -47,7 +47,7 @@ publishing {
 
 afterEvaluate {
     signing {
-        required { !version.endsWith('SNAPSHOT') && gradle.taskGraph.hasTask("publish") }
+        required { !version.endsWith('SNAPSHOT') && gradle.taskGraph.hasTask(publish) }
         sign publishing.publications
     }
 }
