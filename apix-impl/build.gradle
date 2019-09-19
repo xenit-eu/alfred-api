@@ -150,6 +150,10 @@ public class Version {
         }
     }
 
+    afterEvaluate {
+        signAmpPublication.dependsOn ampde
+    }
+
     task installBundle(type: InstallBundle) {
         dependsOn jar
         doFirst {
