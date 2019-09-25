@@ -29,15 +29,6 @@ Currently Alfred supports the following Alfresco versions:
 * 6.0
 * 6.1
 
-Alfred API is composed of two components. Artifacts for both components are published 
-to the [Xenit artifactory](https://artifactory.xenit.eu).  
-
-## Java API
-The base layer is a Java API built on top of the Alfresco. 
-
-## REST API
-A REST API is built on top of the Java abstraction layer, exposing a stable HTTP API.
-
 
 # Installation
 
@@ -46,6 +37,7 @@ Alfred API requires *Dynamic Extensions* version 2.0.1 or later. This module sho
 Installation instructions for can be found [here](https://github.com/xenit-eu/dynamic-extensions-for-alfresco).
 
 ## Installation of Alfred API
+Artifacts are published to [Maven Central](https://search.maven.org/search?q=g:eu.xenit.apix).
 
 ### Development scenario
 For development use only Alfred API can be deployed as JAR (which is actually an OSGi *Bundle*). 
@@ -82,6 +74,11 @@ To install the AMP, follow the Alfresco AMP installation guidelines your version
 
 
 # Concepts
+Alfred API is composed of two logical layers.
+
+* The base layer is a *Java API* built on top of the Alfresco.
+* A *REST API* is built on top of the Java abstraction layer, exposing a stable HTTP API.
+
 
 ## Data objects
 Alfred API has data objects that mirror the Alfresco concepts of QName, NodeRef, StoreRef, Path, 
