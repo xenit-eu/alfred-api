@@ -12,13 +12,13 @@ services:
     - SOLR_HOST=solr
 
   solr:
-    image: hub.xenit.eu/alfresco-solr6:1.1.1
+    image: hub.xenit.eu/alfresco-enterprise/alfresco-solr6:1.1.1
     restart: unless-stopped
     environment:
     - ALFRESCO_HOST=alfresco-core
 
   postgresql:
-    image: hub.xenit.eu/postgres:10.4
+    image: docker.io/xeniteu/postgres:10.10
     volumes:
     - postgres:/var/lib/postgresql/data
     environment:
@@ -28,7 +28,7 @@ services:
     restart: unless-stopped
 
   jodconverter:
-    image: hub.xenit.eu/jodconverter-ws
+    image: hub.xenit.eu/public/jodconverter-ws
     restart: unless-stopped
 
 

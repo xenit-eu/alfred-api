@@ -18,7 +18,7 @@ services:
     - ALFRESCO_HOST=alfresco-core
 
   postgresql:
-    image: hub.xenit.eu/postgres:10.4
+    image: docker.io/xeniteu/postgres:10.10
     volumes:
     - postgres:/var/lib/postgresql/data
     environment:
@@ -28,7 +28,7 @@ services:
     restart: unless-stopped
 
   jodconverter:
-    image: hub.xenit.eu/jodconverter-ws
+    image: hub.xenit.eu/public/jodconverter-ws
     restart: unless-stopped
 
 volumes:

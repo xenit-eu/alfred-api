@@ -1,7 +1,7 @@
 dependencies {
-    baseAlfrescoWar "eu.xenit.alfresco:alfresco:5.1.1.6@war"
+    baseAlfrescoWar "org.alfresco:alfresco-enterprise:5.1.5@war"
 }
 
 dockerAlfresco {
-    baseImage = "hub.xenit.eu/alfresco-enterprise:5.1.1"
+    baseImage = "hub.xenit.eu/alfresco-enterprise/alfresco-enterprise:5.1.5"
 }

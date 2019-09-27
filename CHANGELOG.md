@@ -1,5 +1,8 @@
 # Alfred API - Changelog
 
+## 2.2.1 (Unreleased)
+## Changed
+* [ALFREDAPI-385](https://xenitsupport.jira.com/browse/ALFREDAPI-385): Change docker & compose files for integration tests to use harbor
 
 ## 2.2.0 (2019-09-17)
 

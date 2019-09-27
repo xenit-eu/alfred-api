@@ -14,9 +14,6 @@ services:
     - DB_PASSWORD=admin
     - DB_URL=jdbc:postgresql://postgresql:5432/alfresco
     - DB_DRIVER=org.postgresql.Driver
-    - SOLR_HOST=solr
-    - SOLR_PORT=8081
-    - SOLR_PORT_SSL=8444
     - JAVA_XMS=511M
     - JAVA_XMX=2048M
     - GLOBAL_content.transformer.RemoteJODConverter.endpoint=http://jodconverter:8080/converter/service
@@ -24,19 +21,15 @@ services:
     - GLOBAL_jodconverter.enabled=false
 
   solr:
-    image: hub.xenit.eu/alfresco-solr4:build-201809071427-19
+    image: hub.xenit.eu/alfresco-enterprise/alfresco-solr4:5.1
     restart: unless-stopped
     environment:
     - ALFRESCO_HOST=alfresco-core
-    - ALFRESCO_PORT=8080
-    - ALFRESCO_PORT_SSL=8443
-    - SOLR_PORT=8081
-    - SOLR_PORT_SSL=8444
     - JAVA_XMS=512M
     - JAVA_XMX=2048M
 
   postgresql:
-    image: hub.xenit.eu/postgres
+    image: docker.io/xeniteu/postgres:10.10
     volumes:
     - postgres:/var/lib/postgresql/data
     environment:
@@ -56,7 +49,7 @@ services:
     restart: unless-stopped
 
   jodconverter:
-    image: hub.xenit.eu/jodconverter-ws
+    image: hub.xenit.eu/public/jodconverter-ws
     restart: unless-stopped
 
 
