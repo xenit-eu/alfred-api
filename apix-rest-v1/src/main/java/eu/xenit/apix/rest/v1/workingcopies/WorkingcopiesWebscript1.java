@@ -49,73 +49,75 @@ public class WorkingcopiesWebscript1 extends ApixV1Webscript {
     public void createWorkingcopy(CheckoutBody checkoutBody, WebScriptResponse response) throws IOException {
         final NodeRef originalRef = checkoutBody.getOriginal();
         NodeRef destinationRef = checkoutBody.getDestinationFolder();
-
-        final NodeRef finalDestinationRef = destinationRef;
-        NodeRef workingCopyRef = nodeService.checkout(originalRef, finalDestinationRef);
-
-//        NodeInfo nodeInfo = this.nodeRefToNodeInfo(workingCopyRef, this.fileFolderService, this.nodeService, this.permissionService);
-
-        writeJsonResponse(response, new NoderefResult(workingCopyRef));
+        String message = String.format("Original noderef %s", originalRef);
+        if (nodeService.exists(originalRef)) {
+            final NodeRef finalDestinationRef = destinationRef;
+            message = String.format("Destination noderef %s", finalDestinationRef);
+            if (nodeService.exists(finalDestinationRef)) {
+                NodeRef workingCopyRef = nodeService.checkout(originalRef, finalDestinationRef);
+                writeJsonResponse(response, new NoderefResult(workingCopyRef));
+            }
+        } else {
+            response.setStatus(404);
+            response.getWriter().write(String.format("%s does not exist.", message));
+        }
     }
-
-//    @Uri(value = "/workingcopies/{space}/{store}/{guid}", method = HttpMethod.GET)
-//    @ApiOperation("Checks out a new working copy for given node")
-//    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NodeInfo.class))
-//    public void getWorkingcopy(@UriVariable final String space, @UriVariable final String store, @UriVariable final String guid,
-//                         WebScriptResponse response) throws IOException {
-//        final NodeRef originalRef = this.createNodeRef(space, store, guid);
-//
-//        Object resultObject = serviceRegistry.getRetryingTransactionHelper().doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
-//            @Override
-//            public Object execute() throws Throwable {
-//                NodeRef workingCopyRef = nodeService.checkout(originalRef, null);
-//                return workingCopyRef;
-//            }
-//        }, false, true);
-//
-//        NodeRef workingCopyRef = new NodeRef(resultObject.toString());
-//
-//        NodeInfo nodeInfo = this.nodeRefToNodeInfo(workingCopyRef, this.fileFolderService, this.nodeService, this.permissionService);
-//
-//        writeJsonResponse(response, nodeInfo);
-//    }
 
     @ApiOperation(value = "Checks in given working copy and removes it", notes = "Returns the noderef of the original node")
     @Uri(value = "/workingcopies/{space}/{store}/{guid}/checkin", method = HttpMethod.POST)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NoderefResult.class))
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success", response = NoderefResult.class),
+            @ApiResponse(code = 404, message = "Not found")
+    })
     public void checkinWorkingcopy(@UriVariable final String space, @UriVariable final String store,
             @UriVariable final String guid,
             final CheckinBody checkinBody, WebScriptResponse response) throws IOException {
-        final NodeRef nodeRef = this.createNodeRef(space, store, guid);
-
-        NodeRef originalRef = nodeService.checkin(nodeRef, checkinBody.getComment(), checkinBody.getMajorVersion());
-
-        writeJsonResponse(response, new NoderefResult(originalRef));
+        final NodeRef nodeRef = createNodeRef(space, store, guid);
+        if (nodeService.exists(nodeRef)) {
+            NodeRef originalRef = nodeService.checkin(nodeRef, checkinBody.getComment(), checkinBody.getMajorVersion());
+            writeJsonResponse(response, new NoderefResult(originalRef));
+        } else {
+            response.setStatus(404);
+            response.getWriter().write(String.format("Noderef %s does not exist.", nodeRef));
+        }
     }
 
     @ApiOperation(value = "Cancels and removes a working copy", notes = "Returns the noderef of the original node")
     @Uri(value = "/workingcopies/{space}/{store}/{guid}", method = HttpMethod.DELETE)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NoderefResult.class))
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success", response = NoderefResult.class),
+            @ApiResponse(code = 404, message = "Not found")
+    })
     public void cancelWorkingcopy(@UriVariable final String space, @UriVariable final String store,
             @UriVariable final String guid,
             WebScriptResponse response) throws IOException {
-        final NodeRef workingCopyRef = this.createNodeRef(space, store, guid);
-
-        NodeRef originalRef = nodeService.cancelCheckout(workingCopyRef);
-
-        writeJsonResponse(response, new NoderefResult(originalRef));
+        final NodeRef workingCopyRef = createNodeRef(space, store, guid);
+        if (nodeService.exists(workingCopyRef)) {
+            NodeRef originalRef = nodeService.cancelCheckout(workingCopyRef);
+            writeJsonResponse(response, new NoderefResult(originalRef));
+        } else {
+            response.setStatus(404);
+            response.getWriter().write(String.format("Noderef %s does not exist.", workingCopyRef));
+        }
     }
 
     @ApiOperation("Returns the original node for given working copy")
     @Uri(value = "/workingcopies/{space}/{store}/{guid}/original", method = HttpMethod.GET)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NoderefResult.class))
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success", response = NoderefResult.class),
+            @ApiResponse(code = 404, message = "Not Found")
+    })
     public void getWorkingCopySource(@UriVariable final String space, @UriVariable final String store,
             @UriVariable final String guid,
             WebScriptResponse response) throws IOException {
-        NodeRef workingCopyRef = this.createNodeRef(space, store, guid);
-        NodeRef originalRef = this.nodeService.getWorkingCopySource(workingCopyRef);
-
-        writeJsonResponse(response, new NoderefResult(originalRef));
+        NodeRef workingCopyRef = createNodeRef(space, store, guid);
+        if (nodeService.exists(workingCopyRef)) {
+            NodeRef originalRef = nodeService.getWorkingCopySource(workingCopyRef);
+            writeJsonResponse(response, new NoderefResult(originalRef));
+        } else {
+            response.setStatus(404);
+            response.getWriter().write(String.format("Noderef %s does not exist.", workingCopyRef));
+        }
     }
 
 }

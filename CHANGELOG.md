@@ -3,6 +3,7 @@
 ## 2.2.1 (Unreleased)
 ## Changed
 * [ALFREDAPI-385](https://xenitsupport.jira.com/browse/ALFREDAPI-385): Change docker & compose files for integration tests to use harbor
+* [ALFREDAPI-387](https://xenitsupport.jira.com/browse/ALFREDAPI-387): Add existence check and 404 to working copies endpoint
 
 ## 2.2.0 (2019-09-17)
 
