@@ -15,14 +15,8 @@ services:
     - DB_URL=jdbc:postgresql://postgresql:5432/alfresco
     - DB_DRIVER=org.postgresql.Driver
     - SOLR_HOST=solr
-    - SOLR_PORT=8081
-    - SOLR_PORT_SSL=8444
     - ALFRESCO_HOST=localhost
-    - ALFRESCO_PORT=8080
-    - ALFRESCO_PORT_SSL=8443
     - ALFRESCO_PROTOCOL=http
-    - SHARE_PROTOCOL=http
-    - SHARE_PORT=8080
     - JAVA_XMS=512M
     - JAVA_XMX=2048M
     - JMX_ENABLED=true
@@ -33,22 +27,16 @@ services:
 
 
   solr:
-    image: hub.xenit.eu/alfresco-enterprise-solr:5.0
+    image: hub.xenit.eu/alfresco-enterprise/alfresco-solr4:5.1
     restart: unless-stopped
     environment:
     - ALFRESCO_HOST=alfresco-core
-    - ALFRESCO_PORT=8080
-    - ALFRESCO_PORT_SSL=8443
     - SOLR_HOST=localhost
-    - SOLR_PORT=8081
-    - SOLR_PORT_SSL=8444
-    - SOLR_CONNECTOR_PORT=8011
-    - SOLR_SERVER_PORT=8007
     - JAVA_XMS=512M
     - JAVA_XMX=2048M
 
   postgresql:
-    image: hub.xenit.eu/postgres:9.4
+    image: docker.io/xeniteu/postgres:9.4
     volumes:
     - postgres:/var/lib/postgresql/data
     environment:
@@ -76,7 +64,7 @@ services:
 
 
   jodconverter:
-    image: hub.xenit.eu/jodconverter-ws
+    image: hub.xenit.eu/public/jodconverter-ws
     restart: unless-stopped
 
 
