@@ -49,17 +49,19 @@ public class WorkingcopiesWebscript1 extends ApixV1Webscript {
     public void createWorkingcopy(CheckoutBody checkoutBody, WebScriptResponse response) throws IOException {
         final NodeRef originalRef = checkoutBody.getOriginal();
         NodeRef destinationRef = checkoutBody.getDestinationFolder();
-        String message = String.format("Original noderef %s", originalRef);
+
         if (nodeService.exists(originalRef)) {
-            final NodeRef finalDestinationRef = destinationRef;
-            message = String.format("Destination noderef %s", finalDestinationRef);
-            if (nodeService.exists(finalDestinationRef)) {
-                NodeRef workingCopyRef = nodeService.checkout(originalRef, finalDestinationRef);
+            // if a destinationRef was specified, it must exist, but nodeservice.checkout(..., null) works fine.
+            if (destinationRef == null || nodeService.exists(destinationRef)) {
+                NodeRef workingCopyRef = nodeService.checkout(originalRef, destinationRef);
                 writeJsonResponse(response, new NoderefResult(workingCopyRef));
+            } else {
+                response.setStatus(404);
+                response.getWriter().write(String.format("Destination noderef %s does not exist", destinationRef));
             }
         } else {
             response.setStatus(404);
-            response.getWriter().write(String.format("%s does not exist.", message));
+            response.getWriter().write(String.format("Original noderef %s does not exist.", originalRef));
         }
     }
 
