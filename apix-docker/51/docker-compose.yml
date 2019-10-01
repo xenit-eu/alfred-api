@@ -29,7 +29,7 @@ services:
     - JAVA_XMX=2048M
 
   postgresql:
-    image: docker.io/xeniteu/postgres:10.10
+    image: docker.io/xenit/postgres
     volumes:
     - postgres:/var/lib/postgresql/data
     environment:
