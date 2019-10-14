@@ -127,3 +127,7 @@ The resulting PDF is written in the same directory.
       JUnit test, create a new transaction after calling HTTP. 
     * Warning: Do not forget to set `requiresNew` on the transaction in Alfresco as the JUnit test by 
       default already runs inside a transaction.
+
+
+BLABLABLA
+Please remove me
