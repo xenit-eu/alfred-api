@@ -14,7 +14,6 @@ backcover-background-img: images/AlfredAPI-User-Guide-BackCover.jpg
 
 numbersections: true
 toc: true
-listings-break-lines: true
 ---
 
 # About
@@ -39,26 +38,8 @@ Installation instructions for can be found [here](https://github.com/xenit-eu/dy
 ## Installation of Alfred API
 Artifacts are published to [Maven Central](https://search.maven.org/search?q=g:eu.xenit.apix).
 
-### Development scenario
-For development use only Alfred API can be deployed as JAR (which is actually an OSGi *Bundle*). 
-File format of this JAR is `apix-impl-{ALFRESCO-VERSION}-{APIX-VERSION}.jar`, where `ALFRESCO-VERSION` 
-is one of *(50|51|52|60|61)*. This JAR can be deployed through the Dynamic Extensions web interface.
- 
-When installing the JAR through DE, you have to install beforehand those modules:
-
-* com.fasterxml.jackson.core:jackson-annotations:jar:2.6.3
-* com.fasterxml.jackson.core:jackson-core:jar:2.6.3
-* com.fasterxml.jackson.core:jackson-databind:jar:2.6.3
-* com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:2.6.3
-* io.swagger:swagger-annotations:jar:1.5.7
-* io.swagger:swagger-core:jar:1.5.7
-* io.swagger:swagger-models:jar:1.5.7
-* javax.validation:validation-api:jar:1.1.0.Final
-* eu.xenit.testing:integration-testing:1.1.0
-
-
 ### Production scenario
-Alfred API is also distributed as an Alfresco Module Package (AMP), which should be used for 
+Alfred API is distributed as an Alfresco Module Package (AMP), which should be used for 
 production installations.
 
 File format of the AMP is `apix-impl-{ALFRESCO-VERSION}-{APIX-VERSION}.amp`, where `ALFRESCO-VERSION`
@@ -71,6 +52,18 @@ To install the AMP, follow the Alfresco AMP installation guidelines your version
 [6.0](https://docs.alfresco.com/6.0/tasks/amp-install.html) or
 [6.1](https://docs.alfresco.com/6.1/tasks/amp-install.html).
 
+### Development scenario
+Since the above scenario includes waiting for Alfresco to start this is slow when developing in Alfred API. 
+You can circumvent this by hot deploying Alfred API as a JAR (which is actually an OSGi *Bundle*).
+ 
+The JAR has the format `apix-impl-{ALFRESCO-VERSION}-{APIX-VERSION}.jar` and can be found under 
+`apix-impl/{ALFRESCO-VERSION}/build/libs/`, where `ALFRESCO-VERSION` is one of *(50|51|52|60|61)*.
+
+You first need still need to install Alfred API as AMP as outlined in the production scenario.
+Afterwards you can either install the JAR via the Dynamic Extensions web interface, or via:
+```bash
+./gradlew :apix-impl:apix-impl-{ALFRESCO-VERSION}:installBundle -Phost={ALFRESCO-HOST} -Pport={ALFRESCO-PORT}
+```
 
 
 # Concepts
