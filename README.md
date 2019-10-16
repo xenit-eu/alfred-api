@@ -28,7 +28,7 @@
 * *apix-interface* builds the interface of Alfred API. This part is agnostic of the 
 Alfresco version used.
 * *apix-rest-v1* builds the REST API of Alfred API. 
-* *apix-impl* builds the AMP which is the main deliverable for Alfred API. The AMP and JAR contains the JARs of 
+* *apix-impl* builds the AMP which is the main deliverable for Alfred API. The AMP contains the JARs of 
 *apix-interface* and *apix-rest-v1*.
   * The top directory also contains code shared over different Alfresco versions.
   * *apix-impl/xx* contains all code per Alfresco version. It has a *src/java* folder
@@ -59,8 +59,8 @@ This starts up all docker containers required for an Alfresco running Alfred API
 Again, where `VERSION` is e.g. `51`.
 
 ### Run integration tests under debugger
-1. Edit the `apix-docker/${VERSION}/docker-compose.yml` to include a portmapping `8000:8000`, and 
-  add the environment variable `DEBUG=true`.
+1. Debugging settings are already added by `apix-docker/${VERSION}/debug-extension.docker-compose.yml`, including a 
+portmapping `8000:8000`. This file does not get loaded when running in Jenkins.
 2. Prepare your remote debugger in IntelliJ and set breakpoints where you want in your tests
  (or Alfred API code).
 3. Run the integration tests (see section above).
