@@ -5,6 +5,10 @@
 * [ALFREDAPI-385](https://xenitsupport.jira.com/browse/ALFREDAPI-385): Change docker & compose files for integration tests to use harbor and docker.io/xenit
 * [ALFREDAPI-387](https://xenitsupport.jira.com/browse/ALFREDAPI-387): Add existence check and 404 to working copies endpoint
 
+## Fixed
+* [ALFREDAPI-392](https://xenitsupport.jira.com/browse/ALFREDAPI-392): Stop the incorrect publishing of (development use case only) apix-impl JARs
+
+
 ## 2.2.0 (2019-09-17)
 
 ### Changed
