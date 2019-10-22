@@ -13,8 +13,8 @@ import eu.xenit.apix.permissions.IPermissionService;
 import eu.xenit.apix.rest.v0.RestV0Config;
 import java.io.IOException;
 import org.alfresco.service.ServiceRegistry;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
 @Authentication(AuthenticationType.USER)
 public class MetadataPostWebscript extends AbstractWebScript {
 
-    private static final Log logger = LogFactory.getLog(MetadataPostWebscript.class);
+    private static final Logger logger = LoggerFactory.getLogger(MetadataPostWebscript.class);
     @Autowired
     private INodeService service;
     @Autowired
