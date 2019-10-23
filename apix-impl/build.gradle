@@ -1,6 +1,11 @@
 import com.github.dynamicextensionsalfresco.gradle.configuration.BaseConfig
 import com.github.dynamicextensionsalfresco.gradle.tasks.InstallBundle
 
+plugins {
+    id 'eu.xenit.amp' version '0.2.1'
+    id 'eu.xenit.de' version '2.0.2' apply false
+}
+
 subprojects {
     // Isolate the version number ("apix-impl-52" -> "52").
     def subproject_alfresco_version = project.name.substring(project.name.length() - 2)
@@ -17,8 +22,8 @@ subprojects {
 
     apply from: "${rootProject.projectDir}/publish.gradle"
     apply from: "${project.projectDir}/overrides.gradle"
-    apply plugin: 'org.dm.bundle'
     apply plugin: 'ampde'
+    apply plugin: 'eu.xenit.de'
 
     sourceSets {
         main {
@@ -103,23 +108,29 @@ public class Version {
         testLogging { events "PASSED", "FAILED", "SKIPPED" }
     }
 
-    bundle {
-        instruction 'Export-Package', 'eu.xenit.apix.*'
-        instruction 'Include-Resource', includeResource(configurations.compile)
-        instruction 'Bundle-ClassPath', bundleClassPath(configurations.compile)
-        instruction 'Bundle-Description', 'APIX Impl + REST API'
-        instruction 'Alfresco-Dynamic-Extension', 'true'
-        instruction 'Import-Package', ('org.springframework.beans.factory,'
-                + 'org.springframework.cglib.core,'
-                + 'org.springframework.cglib.proxy,'
-                + '!org.codehaus.jackson.map,'
-                + '!com.google.errorprone.annotations.concurrent,'
-                + '!org.joda.convert,'
-                + '*')
+    jar {
+        bnd(
+                'Export-Package': 'eu.xenit.apix.*',
+                'Include-Resource': includeResource(configurations.compile),
+                'Bundle-ClassPath': bundleClassPath(configurations.compile),
+                'Bundle-SymbolicName': "${project.group}.${project.name}",
+                'Bundle-Description': 'Alfred API: Java API and REST API',
+                'Import-Package': 'org.springframework.beans.factory,'
+                        + 'org.springframework.cglib.core,'
+                        + 'org.springframework.cglib.proxy,'
+                        // Unintuitively, the notation 'version="1.0"' means any version >= 1.0
+                        + 'org.json;version="1.0",'
+                        + '!org.codehaus.jackson.map,'
+                        + '!com.google.appengine.api,'
+                        + '!com.google.apphosting.api,'
+                        + '!org.joda.convert,'
+                        + '*'
+        )
     }
 
-    project.extensions.add("alfrescoDynamicExtensions", new BaseConfig())
+    //project.extensions.add("alfrescoDynamicExtensions", new BaseConfig())
 
+    /*
     // Extend 'ampde' plugin's task:
     // We want to add 'alfresco-global.properties' to the module-specific folder in the AMP
     // (e.g. 'config/module/alfresco/module/apix-impl-51/') without hard-coding project name for each Alfresco version.
@@ -150,4 +161,5 @@ public class Version {
             alfrescoDynamicExtensions.repository.endpoint.protocol = protocol
         }
     }
+    */
 }

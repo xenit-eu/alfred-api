@@ -1,8 +1,13 @@
 import com.github.dynamicextensionsalfresco.gradle.configuration.BaseConfig
 import com.github.dynamicextensionsalfresco.gradle.tasks.InstallBundle
 
+plugins {
+    id 'eu.xenit.amp' version '0.2.1'
+    id 'eu.xenit.de' version '2.0.2' apply false
+}
+
 subprojects {
-    apply plugin: 'org.dm.bundle'
+    apply plugin: 'eu.xenit.de'
     apply from: "${project.projectDir}/overrides.gradle"
 
     sourceSets {
@@ -52,24 +57,30 @@ subprojects {
         compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-joda', version: jackson_version
     }
 
-    bundle {
-        instruction 'Export-Package', 'eu.xenit.apix.tests.*,eu.xenit.apix.rest.*.tests.*'
-        instruction 'Include-Resource', includeResource(configurations.compile)
-        instruction 'Bundle-ClassPath', bundleClassPath(configurations.compile)
-        instruction "Alfresco-Dynamic-Extension", "true"
-        instruction 'Import-Package', ('net.sf.cglib.core,'
-                + 'net.sf.cglib.proxy,'
-                + 'net.sf.cglib.reflect,'
-                + "!com.google.errorprone.annotations.concurrent,"
-                + '!org.joda.convert,'
-                + '!org.apache.log,'
-                + '*')
+    jar {
+        bnd(
+                'Export-Package': 'eu.xenit.apix.tests.*,eu.xenit.apix.rest.*.tests.*',
+                'Include-Resource': includeResource(configurations.compile),
+                'Bundle-ClassPath': bundleClassPath(configurations.compile),
+                'Bundle-SymbolicName': "${project.group}.${project.name}",
+                'Bundle-Description': 'Alfred API: Integration tests',
+                'Import-Package': 'net.sf.cglib.core,'
+                        + 'net.sf.cglib.proxy,'
+                        + 'net.sf.cglib.reflect,'
+                        // Unintuitively, the notation 'version="1.0"' means any version >= 1.0
+                        + 'org.json;version="1.0",'
+                        + "!com.google.errorprone.annotations.concurrent,"
+                        + '!org.joda.convert,'
+                        + '!org.apache.log,'
+                        + '*'
+        )
     }
 
     def projectDocker = project(":apix-docker:docker-${subproject_alfresco_version}")
     def composeUpTask = projectDocker.tasks.getByName("composeUp")
     def composeDownTask = projectDocker.tasks.getByName("composeDown")
 
+    /*
     project.extensions.add("alfrescoDynamicExtensions", new BaseConfig())
 
     task configureDE {
@@ -95,7 +106,7 @@ subprojects {
         dependsOn configureDE
         configuration = configurations.integrationJar { transitive = false }
     }
-    
+
     task installIntegrationJarLocal(type: InstallBundle) {
         dependsOn configureDELocal
         configuration = configurations.integrationJar { transitive = false }
@@ -141,4 +152,6 @@ subprojects {
 
         outputs.upToDateWhen { false }
     }
+
+     */
 }
