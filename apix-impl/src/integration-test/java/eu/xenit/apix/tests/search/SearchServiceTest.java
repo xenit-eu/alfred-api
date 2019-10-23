@@ -3,7 +3,6 @@ package eu.xenit.apix.tests.search;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import com.google.common.collect.Sets;
 import eu.xenit.apix.search.FacetSearchResult;
 import eu.xenit.apix.search.ISearchService;
 import eu.xenit.apix.search.QueryBuilder;
@@ -263,15 +262,9 @@ abstract public class SearchServiceTest extends BaseTest {
                         query.setConsistency(SearchQueryConsistency.TRANSACTIONAL);
                         SearchQueryResult result = searchService.query(query);
 
-                        java.util.HashSet<String> sets = Sets.newHashSet(result.getNoderefs());
-                        System.out.println("Size:" + sets.size());
-                        for (String f : sets) {
-                            System.out.println(f);
-                        }
-
                         assertTrue(
                                 "Should find back the new node immediately when using transactional consistency!",
-                                sets.contains(theNewNode.toString()));
+                                result.getNoderefs().contains(theNewNode.toString()));
 
                         return Boolean.TRUE;
                     }

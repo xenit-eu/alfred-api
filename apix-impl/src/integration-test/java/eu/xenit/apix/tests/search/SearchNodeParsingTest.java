@@ -1,11 +1,9 @@
 package eu.xenit.apix.tests.search;
 
-import com.google.common.collect.Lists;
 import eu.xenit.apix.search.json.SearchNodeJsonParser;
 import eu.xenit.apix.search.nodes.SearchSyntaxNode;
 import eu.xenit.apix.search.visitors.SearchSyntaxPrinter;
 import java.io.IOException;
-import java.util.ArrayList;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -34,10 +32,7 @@ public class SearchNodeParsingTest {
 
     @Test
     public void TestTerms() throws IOException {
-        ArrayList<String> terms = Lists.newArrayList(
-                "aspect", "type", "noderef", "path", "text", "parent", "category", "all"
-        );
-        for (String term : terms) {
+        for (String term : new String[]{"aspect", "type", "noderef", "path", "text", "parent", "category", "all"}) {
             assertJsonParsesInto("{'" + term + "':'myVal'}", "TERM " + term + "=myVal");
         }
     }
