@@ -140,11 +140,11 @@ public class Version {
         }
     }
 
-    /*
     afterEvaluate {
-        signAmpPublication.dependsOn ampde
+        signMavenPublication.dependsOn amp
     }
 
+    /*
     //project.extensions.add("alfrescoDynamicExtensions", new BaseConfig())
 
     task installBundle(type: InstallBundle) {
