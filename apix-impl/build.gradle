@@ -48,13 +48,6 @@ subprojects {
         compile(project(":apix-rest-v1")) {
             exclude group: 'org.alfresco'
         }
-        compileOnly("eu.xenit.de:annotations:${de_version}") {
-            transitive = false
-        }
-        compileOnly("eu.xenit.de:webscripts:${de_version}") {
-            transitive = false
-        }
-
         compileOnly(group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_version) {
             exclude group: 'maven-plugins'
         }
@@ -144,19 +137,14 @@ public class Version {
         signMavenPublication.dependsOn amp
     }
 
-    /*
-    //project.extensions.add("alfrescoDynamicExtensions", new BaseConfig())
-
-    task installBundle(type: InstallBundle) {
-        dependsOn jar
-        doFirst {
-            def host = project.hasProperty('host') ? project.host : 'localhost'
-            def port = project.hasProperty('port') ? project.port : '8080'
-            def protocol = project.hasProperty('protocol') ? project.protocol : 'http'
-            alfrescoDynamicExtensions.repository.endpoint.port = port
-            alfrescoDynamicExtensions.repository.endpoint.host = host
-            alfrescoDynamicExtensions.repository.endpoint.protocol = protocol
+    alfrescoDynamicExtensions {
+        // Configure endpoint for installBundle task
+        repository {
+            endpoint {
+                protocol = project.hasProperty('protocol') ? project.protocol : 'http'
+                host = project.hasProperty('host') ? project.host : 'localhost'
+                port = project.hasProperty('port') ? project.port : 8080
+            }
         }
     }
-    */
 }
