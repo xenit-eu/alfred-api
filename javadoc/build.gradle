@@ -13,8 +13,7 @@ buildscript {
     }
 }
 
-apply plugin: 'alfresco-dynamic-extension'
-apply plugin: 'ampde' // creation of an amp from an Dynamic Extension jar.
+apply plugin: 'alfresco-dynamic-extension' // TODO: remove
 
 dependencies {
     compile group: 'org.apache.felix', name: 'org.apache.felix.framework', version: '4.2.1'
