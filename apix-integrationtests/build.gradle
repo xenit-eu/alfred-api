@@ -1,4 +1,3 @@
-import com.github.dynamicextensionsalfresco.gradle.configuration.BaseConfig
 import com.github.dynamicextensionsalfresco.gradle.tasks.InstallBundle
 
 plugins {
@@ -39,7 +38,6 @@ subprojects {
             transitive = false
         }
         compileOnly group: 'org.alfresco', name: 'alfresco-data-model', version: alfresco_dm_version
-        compileOnly group: 'eu.xenit.de', name: 'annotations', version: de_version
         compileOnly group: 'org.osgi', name: 'org.osgi.core', version: '4.3.1'
 
         integrationJar group: 'eu.xenit.testing', name: 'integration-testing', version: '1.1.0'
@@ -79,21 +77,39 @@ subprojects {
     def composeUpTask = projectDocker.tasks.getByName("composeUp")
     def composeDownTask = projectDocker.tasks.getByName("composeDown")
 
-    /*
-    project.extensions.add("alfrescoDynamicExtensions", new BaseConfig())
-
     task configureDE {
+        group 'verification'
         dependsOn composeUpTask
         doLast {
+            def protocol = 'http'
+
             def serviceInfo = composeUpTask.servicesInfos.get("alfresco-core")
             def port = serviceInfo.ports[8080]
             def host = serviceInfo.getHost()
+            if(serviceInfo != null) {
+                port = serviceInfo.ports[8080]
+                host = serviceInfo.getHost()
+            }
+
+            // Values passed as properties override everything
+            if(project.hasProperty('protocol')) {
+                protocol = project.protocol
+            }
+            if(project.hasProperty('host')) {
+                host = project.host
+            }
+            if(project.hasProperty('port')) {
+                port = project.port
+            }
+            
+            alfrescoDynamicExtensions.repository.endpoint.protocol = protocol
             alfrescoDynamicExtensions.repository.endpoint.port = port
             alfrescoDynamicExtensions.repository.endpoint.host = host
         }
     }
 
     task configureDELocal {
+        group 'verification'
         doLast {
             alfrescoDynamicExtensions.repository.endpoint.protocol = project.hasProperty('protocol') ? project.protocol : 'http'
             alfrescoDynamicExtensions.repository.endpoint.port = project.hasProperty('port') ? project.port : '8080'
@@ -102,23 +118,29 @@ subprojects {
     }
 
     task installIntegrationJar(type: InstallBundle) {
+        group 'verification'
         dependsOn configureDE
-        configuration = configurations.integrationJar { transitive = false }
+        files = configurations.integrationJar { transitive = false }
     }
 
     task installIntegrationJarLocal(type: InstallBundle) {
+        group 'verification'
         dependsOn configureDELocal
-        configuration = configurations.integrationJar { transitive = false }
+        files = configurations.integrationJar { transitive = false }
     }
 
     task installTestsOnDocker(type: InstallBundle) {
+        group 'verification'
         dependsOn installIntegrationJar
         dependsOn jar
+        files = jar
     }
 
-    task installTestsLocal(type: InstallBundle) {
-        dependsOn configureDELocal
+    task installTestsOnDockerLocal(type: InstallBundle) {
+        group 'verification'
+        dependsOn installIntegrationJarLocal
         dependsOn jar
+        files = jar
     }
 
     task integrationTest(type: Test) {
@@ -131,26 +153,26 @@ subprojects {
             def serviceInfo = composeUpTask.servicesInfos.get("alfresco-core")
             def port = serviceInfo.ports[8080]
             def host = serviceInfo.getHost()
-            systemProperty("alfresco.url", "http://admin:admin@" + host + ":" + port + "/alfresco")
+            systemProperty("alfresco.url", "http://admin:admin@${host}:${port}/alfresco")
         }
         outputs.upToDateWhen { false }
-
+        
         // After the tests, the docker setup should be stopped
         finalizedBy(composeDownTask)
     }
 
     task integrationTestLocal(type: Test) {
         group 'verification'
-        dependsOn installTestsLocal
+        dependsOn installTestsOnDockerLocal
         testClassesDirs = sourceSets.main.output.classesDirs
         classpath = sourceSets.main.runtimeClasspath
+
         def host = project.hasProperty('host') ? project.host : 'localhost'
         def port = project.hasProperty('port') ? project.port : '8080'
         def protocol = project.hasProperty('protocol') ? project.protocol : 'http'
-        systemProperty("alfresco.url", "$protocol://admin:admin@" + host + ":" + port + "/alfresco")
+        systemProperty("alfresco.url", "${protocol}://admin:admin@${host}:${port}/alfresco")
 
         outputs.upToDateWhen { false }
     }
 
-     */
 }

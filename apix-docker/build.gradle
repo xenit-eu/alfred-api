@@ -1,4 +1,5 @@
 import eu.xenit.gradle.JenkinsUtil;
+
 subprojects {
     apply plugin: 'eu.xenit.docker-alfresco'
 
