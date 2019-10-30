@@ -95,6 +95,9 @@ public class Version {
     }
 
     jar {
+        // This BundleSymbolicName is also used in
+        // apix-impl/src/integration-test/java/eu/xenit/apix/tests/ApixImplBundleFilter.java
+        // to find which integration tests need to run, so when changing it, change it there too.
         bnd(
                 'Export-Package': 'eu.xenit.apix.*',
                 'Include-Resource': includeResource(configurations.compile),

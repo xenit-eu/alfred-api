@@ -11,18 +11,17 @@ public class ApixImplBundleFilter implements CustomBundleFilter {
 
     @Override
     public Bundle getBundleToUseAsSpringContext(Bundle[] bundles) {
-        Bundle ret = null;
-
+        final String bundleSymbolicNamePrefix = "eu.xenit.apix.apix-impl-";
+        Bundle result = null;
         for (Bundle b : bundles) {
-            if (!b.getSymbolicName().startsWith("eu.xenit.apix.impl-")) {
+            if (!b.getSymbolicName().startsWith(bundleSymbolicNamePrefix)) {
                 continue;
             }
-            if (ret != null) {
-                throw new RuntimeException(
-                        "Found multiple implementations of apix on the same server! (not supported)");
+            if (result != null) {
+                throw new RuntimeException("Found multiple Apix implementations on the same server! (not supported)");
             }
-            ret = b;
+            result = b;
         }
-        return ret;
+        return result;
     }
 }
