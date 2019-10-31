@@ -54,9 +54,17 @@ This starts up all docker containers required for an Alfresco running Alfred API
 
 ### Run integration tests
 ```bash
-./gradlew :apix-integrationtests:test-${VERSION}:integrationTest --info
+./gradlew :apix-integrationtests:test-${VERSION}:integrationTest
 ```  
 Again, where `VERSION` is e.g. `51`.
+
+However, this starts (and afterwards stops) docker containers. This includes starting an Alfresco container,
+ adding a startup time of several minutes. To circumvent this you also run the test on already running containers with
+ for example:
+ ```bash
+./gradlew -x composeUp -x composeDown :apix-integrationtests:test-61:integrationTest -Pprotocol=http -Phost=localhost -Pport=8061
+```
+
 
 ### Run integration tests under debugger
 1. Debugging settings are already added by `apix-docker/${VERSION}/debug-extension.docker-compose.yml`, including a 
