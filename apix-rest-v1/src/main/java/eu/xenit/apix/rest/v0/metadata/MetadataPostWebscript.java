@@ -13,8 +13,6 @@ import eu.xenit.apix.permissions.IPermissionService;
 import eu.xenit.apix.rest.v0.RestV0Config;
 import java.io.IOException;
 import org.alfresco.service.ServiceRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
@@ -26,7 +24,6 @@ import org.springframework.stereotype.Component;
 @Authentication(AuthenticationType.USER)
 public class MetadataPostWebscript extends AbstractWebScript {
 
-    private static final Logger logger = LoggerFactory.getLogger(MetadataPostWebscript.class);
     @Autowired
     private INodeService service;
     @Autowired
@@ -37,26 +34,18 @@ public class MetadataPostWebscript extends AbstractWebScript {
     @Uri(value = "/eu/xenit/metadata", method = HttpMethod.POST)
     @Override
     public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
-
         ObjectMapper m = new ObjectMapper();
-
         NodeRef noderef = new NodeRef(webScriptRequest.getParameter("noderef"));
-
-        MetadataChangesV0 changes = m
-                .readValue(webScriptRequest.getContent().getInputStream(), MetadataChangesV0.class);
+        MetadataChangesV0 changes = m.readValue(
+                webScriptRequest.getContent().getInputStream(), MetadataChangesV0.class);
 
         NodeMetadata metadata = service.setMetadata(noderef, changes.ToV1());
-
         String retStr = m.writeValueAsString(NodeMetadataV0.FromV1(metadata, permissionService));
-
         webScriptResponse.setContentType("json");
         webScriptResponse.getWriter().write(retStr);
-
     }
 
     public void setServiceRegistry(ServiceRegistry serviceRegistry) {
         this.serviceRegistry = serviceRegistry;
     }
-
-
 }
