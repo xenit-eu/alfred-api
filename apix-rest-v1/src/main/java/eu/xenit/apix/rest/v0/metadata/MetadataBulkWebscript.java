@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.alfresco.service.ServiceRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
@@ -30,7 +28,6 @@ import org.springframework.stereotype.Component;
 @Authentication(AuthenticationType.USER)
 public class MetadataBulkWebscript extends AbstractWebScript {
 
-    private static final Logger logger = LoggerFactory.getLogger(MetadataBulkWebscript.class);
     @Autowired
     private INodeService service;
     @Autowired
@@ -48,9 +45,6 @@ public class MetadataBulkWebscript extends AbstractWebScript {
             throw new RuntimeException("Should be an array of noderefs");
         }
 
-//        List<NodeRef> refs = StreamSupport.stream(input.spliterator(), false)
-//                .map(x -> new NodeRef(x.asText())).collect(Collectors.toList());
-
         List<NodeRef> refs = new ArrayList<>(input.size());
         Iterator<JsonNode> iterator = input.elements();
         while (iterator.hasNext()) {
@@ -64,8 +58,6 @@ public class MetadataBulkWebscript extends AbstractWebScript {
         }
 
         ArrayNode node = m.createArrayNode();
-
-        //node.addAll(metadatas.stream().map(data -> (JsonNode)m.valueToTree(data)).collect(Collectors.toList()));
 
         for (NodeMetadataV0 metadata : metadatas) {
             node.add(m.valueToTree(metadata));
