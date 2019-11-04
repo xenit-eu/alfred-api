@@ -1,10 +1,12 @@
 # Alfred API - Changelog
 
 ## 2.3.0 (Unreleased)
+
 ## Changed
 * [ALFREDAPI-385](https://xenitsupport.jira.com/browse/ALFREDAPI-385): Change docker & compose files for integration tests to use harbor and docker.io/xenit
 * [ALFREDAPI-387](https://xenitsupport.jira.com/browse/ALFREDAPI-387): Add existence check and 404 to working copies endpoint
 * [ALFREDAPI-368](https://xenitsupport.jira.com/browse/ALFREDAPI-368): Replace obsoleted Gradle plugins (org.dm.bundle and ampde)
+* [ALFREDAPI-386](https://xenitsupport.jira.com/browse/ALFREDAPI-386): Upgrade to Gradle 5 
 
 ## Fixed
 * [ALFREDAPI-392](https://xenitsupport.jira.com/browse/ALFREDAPI-392): Stop the incorrect publishing of (development use case only) apix-impl JARs
