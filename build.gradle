@@ -15,9 +15,9 @@ def includeResource(configuration) {
 }
 
 def getVersionQualifier(String branch_name) {
-    if (branch_name.startsWith('release'))
+    if(branch_name.startsWith('release'))
         return ''
-    if (branch_name == 'master')
+    if(branch_name == 'master')
         return '-SNAPSHOT'
     return '-' + branch_name + '-SNAPSHOT'
 }
@@ -25,11 +25,13 @@ def getVersionQualifier(String branch_name) {
 buildscript {
     repositories {
         jcenter()
+        mavenCentral()
         maven {
             url "http://maven.alfresco.com/nexus/content/groups/public"
-
         }
-        maven { url "https://plugins.gradle.org/m2/" }
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
         maven {
             url 'https://artifactory.xenit.eu/artifactory/libs-snapshot'
             credentials {
@@ -44,25 +46,12 @@ buildscript {
                 password property("eu.xenit.artifactory.password")
             }
         }
-        // Dynamic Extensions
-        maven {
-            url 'https://oss.sonatype.org/content/repositories/snapshot/'
-        }
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.moowork.gradle:gradle-node-plugin:1.2.0'
-        classpath 'org.apache.httpcomponents:httpclient:4.5.3'
-        classpath 'org.apache.httpcomponents:httpmime:4.5.3'
-        classpath 'org._10ne.gradle:rest-gradle-plugin:0.4.2'
-        classpath 'org.codehaus.groovy.modules.http-builder:http-builder:0.7'
-        classpath 'eu.xenit.gradle:alfresco-docker-plugin:4.0.2'
     }
 }
 
 ext {
     versionWithoutQualifier = '2.3.0'
-    
+
     jackson_version = '2.6.3'
     swagger_version = "1.5.7"
     de_version = "2.0.1"
@@ -91,7 +80,7 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'maven'
     apply plugin: 'maven-publish'
-    
+
     group = 'eu.xenit.apix'
     version = versionWithoutQualifier + getVersionQualifier(System.env.BRANCH_NAME ?: 'local')
     sourceCompatibility = 1.8
