@@ -7,6 +7,7 @@ subprojects {
     publishing {
         publications {
             maven(MavenPublication) {
+                artifactId "${project.name}-amp"
                 artifact tasks.amp
             }
         }
