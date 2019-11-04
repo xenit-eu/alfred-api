@@ -4,6 +4,11 @@ plugins {
 }
 
 subprojects {
+    apply from: "${rootProject.projectDir}/publish.gradle"
+    apply from: "${project.projectDir}/overrides.gradle"
+    apply plugin: 'eu.xenit.de'
+    apply plugin: 'eu.xenit.amp'
+
     publishing {
         publications {
             maven(MavenPublication) {
@@ -12,11 +17,6 @@ subprojects {
             }
         }
     }
-
-    apply from: "${rootProject.projectDir}/publish.gradle"
-    apply from: "${project.projectDir}/overrides.gradle"
-    apply plugin: 'eu.xenit.de'
-    apply plugin: 'eu.xenit.amp'
 
     configurations {
         ampArtifact

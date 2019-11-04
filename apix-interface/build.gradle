@@ -1,24 +1,6 @@
 description = 'Xenit API-X Java interface'
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
-        }
-    }
-}
-
 apply from: "${rootProject.projectDir}/publish.gradle"
-
-dependencies {
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: jackson_version
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: jackson_version
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jackson_version
-    compile group: 'io.swagger', name: 'swagger-annotations', version: swagger_version
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-}
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
@@ -29,3 +11,22 @@ task javadocJar(type: Jar) {
     from javadoc
     classifier = 'javadoc'
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
+
+dependencies {
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: jackson_version
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: jackson_version
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jackson_version
+    compile group: 'io.swagger', name: 'swagger-annotations', version: swagger_version
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
