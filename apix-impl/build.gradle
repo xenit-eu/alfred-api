@@ -141,6 +141,7 @@ public class Version {
     }
 
     alfrescoDynamicExtensions {
+        versions.dynamicExtensions = de_version
         // Configure endpoint for installBundle task
         repository {
             endpoint {
