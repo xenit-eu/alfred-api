@@ -20,9 +20,17 @@ subprojects {
         alfrescoAmp project(path: ':apix-integrationtests-model-amp', configuration: 'ampArchives')
         alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${subproject_alfresco_version}:${de_version}@amp"
     }
-    
+
     dockerCompose {
-        useComposeFiles = ["docker-compose.yml"] +
-                (JenkinsUtil.buildId == null ? ["debug-extension.docker-compose.yml"] : [])
+        useComposeFiles = ['docker-compose.yml']
+        // Don't use the dev compose file on Jenkins
+        if(JenkinsUtil.buildId == null) {
+            // Allow the dev compose file to be deleted
+            def extraComposeFile = 'debug-extension.docker-compose.yml'
+            if(project.file(extraComposeFile).exists()) {
+                useComposeFiles.add(extraComposeFile)
+            }
+        }
     }
+
 }
