@@ -2,11 +2,13 @@ import com.github.dynamicextensionsalfresco.gradle.tasks.InstallBundle
 
 plugins {
     id 'eu.xenit.de' version '2.0.2' apply false
+    id 'eu.xenit.alfresco' version '1.0.0' apply false
 }
 
 subprojects {
-    apply plugin: 'eu.xenit.de'
     apply from: "${project.projectDir}/overrides.gradle"
+    apply plugin: 'eu.xenit.de'
+    apply plugin: 'eu.xenit.alfresco'
 
     sourceSets {
         main {
@@ -31,14 +33,10 @@ subprojects {
         compileOnly project(":apix-interface")
         compileOnly project(":apix-impl:apix-impl-${subproject_alfresco_version}")
 
-        compileOnly(group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_version) {
-            exclude group: 'maven-plugins'
-        }
-        compileOnly(group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_version) {
-            transitive = false
-        }
-        compileOnly group: 'org.alfresco', name: 'alfresco-data-model', version: alfresco_dm_version
-        compileOnly group: 'org.osgi', name: 'org.osgi.core', version: '4.3.1'
+        alfrescoProvided group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_version
+        alfrescoProvided group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_version
+        alfrescoProvided group: 'org.alfresco', name: 'alfresco-data-model', version: alfresco_dm_version
+        alfrescoProvided group: 'org.osgi', name: 'org.osgi.core', version: '4.3.1'
 
         integrationJar group: 'eu.xenit.testing', name: 'integration-testing', version: '1.1.0'
 
