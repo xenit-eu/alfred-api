@@ -5,5 +5,6 @@ package eu.xenit.apix.search;
  */
 public enum SearchQueryConsistency {
     EVENTUAL,
-    TRANSACTIONAL
+    TRANSACTIONAL,
+    TRANSACTIONAL_IF_POSSIBLE
 }

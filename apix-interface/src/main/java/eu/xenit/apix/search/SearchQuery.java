@@ -29,7 +29,7 @@ public class SearchQuery {
     private PagingOptions paging = new PagingOptions();
     private FacetOptions facets = new FacetOptions();
     private List<OrderBy> orderBy = new ArrayList<>();
-    private SearchQueryConsistency consistency = SearchQueryConsistency.EVENTUAL;
+    private SearchQueryConsistency consistency = SearchQueryConsistency.TRANSACTIONAL_IF_POSSIBLE;
     private Locale locale = null;
     private StoreRef workspace = null;
     private HighlightOptions highlight = null;
