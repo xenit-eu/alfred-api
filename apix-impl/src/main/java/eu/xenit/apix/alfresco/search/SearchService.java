@@ -98,6 +98,8 @@ public class SearchService implements ISearchService {
         searchParameters.setLanguage(org.alfresco.service.cmr.search.SearchService.LANGUAGE_FTS_ALFRESCO);
         if (postQuery.getConsistency() == SearchQueryConsistency.TRANSACTIONAL) {
             searchParameters.setQueryConsistency(QueryConsistency.TRANSACTIONAL);
+        } else if (postQuery.getConsistency() == SearchQueryConsistency.TRANSACTIONAL_IF_POSSIBLE) {
+            searchParameters.setQueryConsistency(QueryConsistency.TRANSACTIONAL_IF_POSSIBLE);
         } else if (postQuery.getConsistency() == SearchQueryConsistency.EVENTUAL) {
             searchParameters.setQueryConsistency(QueryConsistency.EVENTUAL);
         } else {

@@ -16,6 +16,12 @@ public class PropertySearchNode implements SearchSyntaxNode {
     public PropertySearchNode() {
     }
 
+    public PropertySearchNode(String name, String value, String exact)
+    {
+        this(name, value);
+        this.exact = Boolean.parseBoolean(exact);
+    }
+
     public PropertySearchNode(String name, String value) {
         setName(name);
         this.value = value;
