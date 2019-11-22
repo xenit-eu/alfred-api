@@ -10,6 +10,7 @@
 
 ## Fixed
 * [ALFREDAPI-392](https://xenitsupport.jira.com/browse/ALFREDAPI-392): Stop the incorrect publishing of (development use case only) apix-impl JARs
+* [ALFREDAPI-377](https://xenitsupport.jira.com/browse/ALFREDAPI-377): Changed default query consistency to transactional if possible
 
 
 ## 2.2.0 (2019-09-17)
