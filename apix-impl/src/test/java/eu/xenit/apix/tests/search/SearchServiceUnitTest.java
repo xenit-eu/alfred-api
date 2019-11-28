@@ -31,29 +31,39 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class SearchServiceUnitTest {
+
     @Test
-    public void TestSearchInDefaultStore(){
+    public void TestSearchInDefaultStore() {
         assertAlfrescoSearchQueryStoreMatchesInput(null, StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
     }
 
     @Test
-    public void TestSearchInWorkspaceSpacesStoreStore(){
-        assertAlfrescoSearchQueryStoreMatchesInput(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
+    public void TestSearchInWorkspaceSpacesStoreStore() {
+        assertAlfrescoSearchQueryStoreMatchesInput(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE,
+                StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
     }
 
     @Test
-    public void TestSearchInArchiveSpacesStoreStore(){
-        assertAlfrescoSearchQueryStoreMatchesInput(StoreRef.STORE_REF_ARCHIVE_SPACESSTORE, StoreRef.STORE_REF_ARCHIVE_SPACESSTORE);
+    public void TestSearchInArchiveSpacesStoreStore() {
+        assertAlfrescoSearchQueryStoreMatchesInput(StoreRef.STORE_REF_ARCHIVE_SPACESSTORE,
+                StoreRef.STORE_REF_ARCHIVE_SPACESSTORE);
+    }
+
+    @Test
+    public void TestSearchQueryConsistencyIsTransactionalIfPossible() {
+
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testOrderBy_withMultivalueProperty_throwsIllegalArgumentException(){
-        SearchService apixSearchServiceMocked = buildApixSearchServiceWithMocks(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
+    public void testOrderBy_withMultivalueProperty_throwsIllegalArgumentException() {
+        SearchService apixSearchServiceMocked = buildApixSearchServiceWithMocks(
+                StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
 
         PropertyService propertyServiceMock_withMultivalueTrue = mock(PropertyService.class);
         PropertyDefinition propertyDefinition = mock(PropertyDefinition.class);
         when(propertyDefinition.isMultiValued()).thenReturn(true);
-        when(propertyServiceMock_withMultivalueTrue.GetPropertyDefinition(any(QName.class))).thenReturn(propertyDefinition);
+        when(propertyServiceMock_withMultivalueTrue.GetPropertyDefinition(any(QName.class)))
+                .thenReturn(propertyDefinition);
         apixSearchServiceMocked.setPropertyService(propertyServiceMock_withMultivalueTrue);
 
         QueryBuilder builder = new QueryBuilder();
@@ -62,7 +72,8 @@ public class SearchServiceUnitTest {
                 .create();
         SearchQuery query = new SearchQuery();
         query.setQuery(node);
-        eu.xenit.apix.data.StoreRef apixStore = new eu.xenit.apix.data.StoreRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE.toString());
+        eu.xenit.apix.data.StoreRef apixStore = new eu.xenit.apix.data.StoreRef(
+                StoreRef.STORE_REF_WORKSPACE_SPACESSTORE.toString());
         query.setWorkspace(apixStore);
         QName apixQname = new QName("cm:multivalued");
         OrderBy multivalueOrdering = new OrderBy(Order.ASCENDING, apixQname);
@@ -72,22 +83,22 @@ public class SearchServiceUnitTest {
         apixSearchServiceMocked.query(query);
     }
 
-    private void assertAlfrescoSearchQueryStoreMatchesInput(StoreRef store, StoreRef expectedStore){
+    private void assertAlfrescoSearchQueryStoreMatchesInput(StoreRef store, StoreRef expectedStore) {
         org.alfresco.service.cmr.search.SearchService alfrescoSearchService = searchInStore(store);
 
         // Validate that the Alfresco Search Service has received a query with the correct StoreRef
         ArgumentCaptor<SearchParameters> argument = ArgumentCaptor
-                                                    .forClass(SearchParameters.class);
+                .forClass(SearchParameters.class);
         verify(alfrescoSearchService)
-            .query(argument.capture());
+                .query(argument.capture());
 
         ArrayList<StoreRef> stores = argument
-                                        .getValue()
-                                        .getStores();
+                .getValue()
+                .getStores();
         Assert.assertTrue(stores.contains(expectedStore));
     }
 
-    private org.alfresco.service.cmr.search.SearchService searchInStore(StoreRef store){
+    private org.alfresco.service.cmr.search.SearchService searchInStore(StoreRef store) {
         //<editor-fold desc="Create a simple query">
         QueryBuilder builder = new QueryBuilder();
         SearchSyntaxNode node = builder
@@ -101,7 +112,7 @@ public class SearchServiceUnitTest {
         // Set the test StoreRef
         eu.xenit.apix.data.StoreRef apixStore = null;
         String storeString = "";
-        if(store != null){
+        if (store != null) {
             storeString = store.toString();
             apixStore = new eu.xenit.apix.data.StoreRef(storeString);
         }
@@ -114,7 +125,7 @@ public class SearchServiceUnitTest {
         return apixSearchService.getSearchService();
     }
 
-    private SearchService buildApixSearchServiceWithMocks(StoreRef store){
+    private SearchService buildApixSearchServiceWithMocks(StoreRef store) {
         // Setup of the mock for Alfresco Search Service to verify the query parameters
         org.alfresco.service.cmr.search.SearchService alfrescoSearchService = buildAlfrescoSearchServiceMock();
         ServiceRegistry serviceRegistry = mock(ServiceRegistry.class);
@@ -123,18 +134,20 @@ public class SearchServiceUnitTest {
 
         ApixToAlfrescoConversion c = mock(ApixToAlfrescoConversion.class);
         String storeString = "";
-        if(store != null){
+        if (store != null) {
             storeString = store.toString();
             when(c.alfresco(new eu.xenit.apix.data.StoreRef(storeString)))
                     .thenReturn(new StoreRef(storeString));
         }
 
         SearchFacetsService facetService = mock(SearchFacetsService.class);
-        when(facetService.getFacetResults(any(SearchQuery.FacetOptions.class), any(ResultSet.class), any(SearchParameters.class)))
+        when(facetService.getFacetResults(any(SearchQuery.FacetOptions.class), any(ResultSet.class),
+                any(SearchParameters.class)))
                 .thenReturn(new ArrayList<FacetSearchResult>());
 
         SearchResultCountService resultCountService = mock(SearchResultCountService.class);
-        when(resultCountService.countResults(any(SearchQuery.PagingOptions.class), any(ResultSet.class), any(SearchParameters.class)))
+        when(resultCountService
+                .countResults(any(SearchQuery.PagingOptions.class), any(ResultSet.class), any(SearchParameters.class)))
                 .thenReturn(1L);
 
         PropertyDefinition propertyDefinition = mock(PropertyDefinition.class);
@@ -146,7 +159,8 @@ public class SearchServiceUnitTest {
     }
 
     private org.alfresco.service.cmr.search.SearchService buildAlfrescoSearchServiceMock() {
-        org.alfresco.service.cmr.search.SearchService alfrescoSearchService = mock(org.alfresco.service.cmr.search.SearchService.class);
+        org.alfresco.service.cmr.search.SearchService alfrescoSearchService = mock(
+                org.alfresco.service.cmr.search.SearchService.class);
         ResultSet rs = mock(ResultSet.class);
         when(rs.iterator())
                 .thenReturn(new ArrayList<ResultSetRow>().iterator());
