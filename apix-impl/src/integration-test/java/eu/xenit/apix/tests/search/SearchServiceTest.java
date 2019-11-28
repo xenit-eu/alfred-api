@@ -33,6 +33,7 @@ import org.alfresco.service.transaction.TransactionService;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -151,6 +152,10 @@ abstract public class SearchServiceTest extends BaseTest {
         Assert.assertEquals(resultAll.getNoderefs().get(2), result.getNoderefs().get(1));
     }
 
+    @Ignore("Result of getTotalResultCount() is unreliable. It depends on the result of the getNumberFound() method of "
+            + "a search result set (see description of the method in interface ResultSetSPI). The result of the "
+            + "getNumberFound() method can have a different meaning depending on the search query consistency and the "
+            + "search engine being used.")
     @Test
     public void TestTotalCount() throws IOException, InterruptedException {
         solrTestHelper.waitForSolrSync();
@@ -183,6 +188,10 @@ abstract public class SearchServiceTest extends BaseTest {
         assertTrue(result.getTotalResultCount() > 0);
     }
 
+    @Ignore("Result of getTotalResultCount() is unreliable. It depends on the result of the getNumberFound() method of "
+            + "a search result set (see description of the method in interface ResultSetSPI). The result of the "
+            + "getNumberFound() method can have a different meaning depending on the search query consistency and the "
+            + "search engine being used.")
     @Test
     public void TestTotalCountSkip() throws IOException, InterruptedException {
         solrTestHelper.waitForSolrSync();
