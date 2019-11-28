@@ -12,6 +12,7 @@ import eu.xenit.apix.search.QueryBuilder;
 import eu.xenit.apix.search.SearchQuery;
 import eu.xenit.apix.search.SearchQuery.OrderBy;
 import eu.xenit.apix.search.SearchQuery.OrderBy.Order;
+import eu.xenit.apix.search.SearchQueryConsistency;
 import eu.xenit.apix.search.nodes.SearchSyntaxNode;
 import java.util.ArrayList;
 
@@ -50,8 +51,9 @@ public class SearchServiceUnitTest {
     }
 
     @Test
-    public void TestSearchQueryConsistencyIsTransactionalIfPossible() {
-
+    public void TestDefaultSearchQueryConsistencyIsTransactionalIfPossible() {
+        SearchQuery searchQuery = new SearchQuery();
+        Assert.assertEquals(SearchQueryConsistency.TRANSACTIONAL_IF_POSSIBLE, searchQuery.getConsistency());
     }
 
     @Test(expected = IllegalArgumentException.class)
