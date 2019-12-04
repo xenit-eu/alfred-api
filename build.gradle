@@ -32,20 +32,6 @@ buildscript {
         maven {
             url "https://plugins.gradle.org/m2/"
         }
-        maven {
-            url 'https://artifactory.xenit.eu/artifactory/libs-snapshot'
-            credentials {
-                username property("eu.xenit.artifactory.username")
-                password property("eu.xenit.artifactory.password")
-            }
-        }
-        maven {
-            url 'https://artifactory.xenit.eu/artifactory/libs-release'
-            credentials {
-                username property("eu.xenit.artifactory.username")
-                password property("eu.xenit.artifactory.password")
-            }
-        }
     }
 }
 
