@@ -152,10 +152,6 @@ abstract public class SearchServiceTest extends BaseTest {
         Assert.assertEquals(resultAll.getNoderefs().get(2), result.getNoderefs().get(1));
     }
 
-    @Ignore("Result of getTotalResultCount() is unreliable. It depends on the result of the getNumberFound() method of "
-            + "a search result set (see description of the method in interface ResultSetSPI). The result of the "
-            + "getNumberFound() method can have a different meaning depending on the search query consistency and the "
-            + "search engine being used.")
     @Test
     public void TestTotalCount() throws IOException, InterruptedException {
         solrTestHelper.waitForSolrSync();
@@ -169,7 +165,7 @@ abstract public class SearchServiceTest extends BaseTest {
 
         logger.debug("Total: " + result.getTotalResultCount());
         logger.debug("Returned: " + result.getNoderefs().size());
-        assertTrue(result.getTotalResultCount() > result.getNoderefs().size());
+        Assert.assertEquals(result.getNoderefs().size(), result.getTotalResultCount());
     }
 
     @Test
@@ -186,30 +182,6 @@ abstract public class SearchServiceTest extends BaseTest {
 
         logger.debug("Total: " + result.getTotalResultCount());
         assertTrue(result.getTotalResultCount() > 0);
-    }
-
-    @Ignore("Result of getTotalResultCount() is unreliable. It depends on the result of the getNumberFound() method of "
-            + "a search result set (see description of the method in interface ResultSetSPI). The result of the "
-            + "getNumberFound() method can have a different meaning depending on the search query consistency and the "
-            + "search engine being used.")
-    @Test
-    public void TestTotalCountSkip() throws IOException, InterruptedException {
-        solrTestHelper.waitForSolrSync();
-        QueryBuilder builder = new QueryBuilder();
-        SearchSyntaxNode node = builder.term("type", "cm:folder").create();
-
-        SearchQuery query = new SearchQuery();
-        query.setQuery(node);
-
-        query.getPaging().setLimit(2);
-        SearchQueryResult result = searchService.query(query);
-
-        query.getPaging().setSkip(10);
-
-        SearchQueryResult resultSkip = searchService.query(query);
-
-        Assert.assertEquals(resultSkip.getTotalResultCount(), result.getTotalResultCount());
-        Assert.assertEquals(2, resultSkip.getNoderefs().size());
     }
 
     public static void waitAWhile(int nbSeconds) throws InterruptedException {
