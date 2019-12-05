@@ -38,6 +38,10 @@ public class SearchQueryResult {
         this.facets = facets;
     }
 
+    /**
+     * Returns the total number of results for the search query. Depending on if the query is executed
+     * against the database or Solr this will include the skipped results or not.
+     */
     public long getTotalResultCount() {
         return totalResultCount;
     }
