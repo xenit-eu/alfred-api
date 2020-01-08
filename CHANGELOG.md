@@ -2,17 +2,18 @@
 
 ## 2.3.0 (Unreleased)
 
-## Changed
-* [ALFREDAPI-368](https://xenitsupport.jira.com/browse/ALFREDAPI-368): Replace obsoleted Gradle plugins (org.dm.bundle and ampde)
+### Changed
 * [ALFREDAPI-385](https://xenitsupport.jira.com/browse/ALFREDAPI-385): Change docker & compose files for integration tests to use harbor and docker.io/xenit
-* [ALFREDAPI-386](https://xenitsupport.jira.com/browse/ALFREDAPI-386): Upgrade to Gradle 5
 * [ALFREDAPI-387](https://xenitsupport.jira.com/browse/ALFREDAPI-387): Add existence check and 404 to working copies endpoint
-* [ALFREDAPI-402](https://xenitsupport.jira.com/browse/ALFREDAPI-402): Removed obsolete webscript (rest-v0.categories.CategoryGetWebscript)
+* [ALFREDAPI-368](https://xenitsupport.jira.com/browse/ALFREDAPI-368): Replace obsoleted Gradle plugins (org.dm.bundle and ampde)
+* [ALFREDAPI-386](https://xenitsupport.jira.com/browse/ALFREDAPI-386): Upgrade to Gradle 5
 
-## Fixed
+### Fixed
 * [ALFREDAPI-392](https://xenitsupport.jira.com/browse/ALFREDAPI-392): Stop the incorrect publishing of (development use case only) apix-impl JARs
 * [ALFREDAPI-377](https://xenitsupport.jira.com/browse/ALFREDAPI-377): Changed default query consistency to transactional if possible
 
+### Deleted
+* [ALFREDAPI-402](https://xenitsupport.jira.com/browse/ALFREDAPI-402): Removed obsolete webscript (rest-v0.categories.CategoryGetWebscript)
 
 ## 2.2.0 (2019-09-17)
 
