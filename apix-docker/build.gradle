@@ -1,7 +1,7 @@
 import eu.xenit.gradle.JenkinsUtil;
 
 plugins {
-    id 'eu.xenit.docker-alfresco' version '4.1.1' apply false
+    id 'eu.xenit.docker-alfresco' version '4.1.2' apply false
 }
 
 subprojects {
