@@ -1,4 +1,4 @@
-Fixes https://xenitsupport.jira.com/browse/ALFREDAPI-
+Fixes https://xenitsupport.jira.com/browse/ALFREDAPI-<*YOUR TICKET ID*>
 
 - [ ] Is [CHANGELOG.md](https://github.com/xenit-eu/alfred-api/blob/master/CHANGELOG.md) extended?
 - [ ] Does this PR avoid breaking the API? 
