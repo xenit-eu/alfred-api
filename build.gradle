@@ -27,7 +27,6 @@ def getVersionQualifier(String branch_name) {
 
 buildscript {
     repositories {
-        jcenter()
         mavenCentral()
         maven {
             url "https://maven.alfresco.com/nexus/content/groups/public"
@@ -78,7 +77,6 @@ subprojects {
     repositories {
         mavenLocal()
         mavenCentral()
-        jcenter()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
         maven { url "https://artifacts.alfresco.com/nexus/content/groups/public" }
         maven { url "https://repo.springsource.org/release" }
