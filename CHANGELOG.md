@@ -7,6 +7,7 @@
 * [ALFREDAPI-387](https://xenitsupport.jira.com/browse/ALFREDAPI-387): Add existence check and 404 to working copies endpoint
 * [ALFREDAPI-368](https://xenitsupport.jira.com/browse/ALFREDAPI-368): Replace obsoleted Gradle plugins (org.dm.bundle and ampde)
 * [ALFREDAPI-386](https://xenitsupport.jira.com/browse/ALFREDAPI-386): Upgrade to Gradle 5
+* [ALFREDAPI-404](https://xenitsupport.jira.com/browse/ALFREDAPI-404): Use HTTPS to connect to artifact repositories
 
 ### Fixed
 * [ALFREDAPI-392](https://xenitsupport.jira.com/browse/ALFREDAPI-392): Stop the incorrect publishing of (development use case only) apix-impl JARs

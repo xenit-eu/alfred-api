@@ -30,7 +30,7 @@ buildscript {
         jcenter()
         mavenCentral()
         maven {
-            url "http://maven.alfresco.com/nexus/content/groups/public"
+            url "https://maven.alfresco.com/nexus/content/groups/public"
         }
         maven {
             url "https://plugins.gradle.org/m2/"
@@ -77,10 +77,10 @@ subprojects {
 
     repositories {
         mavenLocal()
-        maven { url "http://repo.maven.apache.org/maven2" }
+        mavenCentral()
+        jcenter()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
         maven { url "https://artifacts.alfresco.com/nexus/content/groups/public" }
-        maven { url "http://repo.springsource.org/release" }
-        maven { url "http://jcenter.bintray.com" }
+        maven { url "https://repo.springsource.org/release" }
     }
 }
