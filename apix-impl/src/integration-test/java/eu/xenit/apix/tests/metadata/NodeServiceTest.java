@@ -779,4 +779,6 @@ public class NodeServiceTest extends BaseTest {
                 service.getRootNode(apixStoreRef).toString(),
                 alfrescoNodeService.getRootNode(alfStoreRef).toString());
     }
+
+
 }
