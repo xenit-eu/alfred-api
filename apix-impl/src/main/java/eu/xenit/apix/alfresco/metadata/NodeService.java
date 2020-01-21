@@ -2,23 +2,7 @@ package eu.xenit.apix.alfresco.metadata;
 
 import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
-import eu.xenit.apix.node.ChildParentAssociation;
-import eu.xenit.apix.node.INodeService;
-import eu.xenit.apix.node.MetadataChanges;
-import eu.xenit.apix.node.NodeAssociation;
-import eu.xenit.apix.node.NodeAssociations;
-import eu.xenit.apix.node.NodeMetadata;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import eu.xenit.apix.node.*;
 import org.alfresco.model.ContentModel;
 import org.alfresco.rest.framework.core.exceptions.InvalidArgumentException;
 import org.alfresco.service.ServiceRegistry;
@@ -32,17 +16,7 @@ import org.alfresco.service.cmr.lock.LockStatus;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
-import org.alfresco.service.cmr.repository.AssociationRef;
-import org.alfresco.service.cmr.repository.ChildAssociationRef;
-import org.alfresco.service.cmr.repository.ContentData;
-import org.alfresco.service.cmr.repository.ContentReader;
-import org.alfresco.service.cmr.repository.ContentService;
-import org.alfresco.service.cmr.repository.ContentWriter;
-import org.alfresco.service.cmr.repository.CopyService;
-import org.alfresco.service.cmr.repository.DuplicateChildNodeNameException;
-import org.alfresco.service.cmr.repository.InvalidNodeRefException;
-import org.alfresco.service.cmr.repository.MimetypeService;
-import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.*;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.security.AuthenticationService;
@@ -51,6 +25,7 @@ import org.alfresco.service.cmr.version.VersionType;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
+import org.alfresco.util.Pair;
 import org.alfresco.util.TempFileProvider;
 import org.apache.chemistry.opencmis.commons.spi.AclService;
 import org.apache.commons.io.FileUtils;
@@ -59,6 +34,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.io.*;
+import java.util.*;
 
 /**
  * Created by mhgam on 23/11/2015.
@@ -568,11 +546,16 @@ public class NodeService implements INodeService {
             return;
         }
         InputStream inputStreamCopy = null;
+        File tempFile = null;
+
         try {
-            inputStreamCopy = cloneInputStreamWithMarkSupported(inputStream);
+            Pair inputStreamFilePair = cloneInputStreamWithMarkSupported(inputStream);
+            inputStreamCopy = (InputStream) inputStreamFilePair.getFirst();
+            tempFile = (File) inputStreamFilePair.getSecond();
+
             String mimeType = guessMimetype(originalFilename, inputStreamCopy);
 
-            org.alfresco.service.cmr.repository.NodeRef createdNodeRef = c.alfresco(node);
+            NodeRef createdNodeRef = c.alfresco(node);
             ContentWriter writer = contentService.getWriter(createdNodeRef, ContentModel.PROP_CONTENT, true);
             writer.putContent(inputStreamCopy);
             ContentData contentData = (ContentData) nodeService.getProperty(createdNodeRef, ContentModel.PROP_CONTENT);
@@ -584,6 +567,13 @@ public class NodeService implements INodeService {
         } finally {
             if (inputStreamCopy != null) {
                 IOUtils.closeQuietly(inputStreamCopy);
+            }
+            if (tempFile != null) {
+                String tempFilePath = tempFile.getAbsolutePath();
+                boolean status = tempFile.delete();
+                if (status == true) {
+                    logger.debug("Removed temporary file at location : ", tempFilePath);
+                }
             }
             IOUtils.closeQuietly(inputStream);
         }
@@ -641,8 +631,12 @@ public class NodeService implements INodeService {
             String encoding) {
         // Making copy of original inputstream because we want an inputstream that definitely supports mark/reset
         InputStream inputStreamCopy = null;
+        File tempFile = null;
         try {
-            inputStreamCopy = cloneInputStreamWithMarkSupported(inputStream);
+            Pair inputStreamFilePair = cloneInputStreamWithMarkSupported(inputStream);
+            inputStreamCopy = (InputStream) inputStreamFilePair.getFirst();
+            tempFile = (File) inputStreamFilePair.getSecond();
+
             String mimeType = guessMimetype(fileName, inputStreamCopy);
 
             ContentWriter writer = contentService.getWriter(null, ContentModel.PROP_CONTENT, false);
@@ -662,6 +656,13 @@ public class NodeService implements INodeService {
             if (inputStreamCopy != null) {
                 IOUtils.closeQuietly(inputStreamCopy);
             }
+            if (tempFile != null) {
+                String tempFilePath = tempFile.getAbsolutePath();
+                boolean status = tempFile.delete();
+                if (status == true) {
+                    logger.debug("Removed temporary file at location : ", tempFilePath);
+                }
+            }
             IOUtils.closeQuietly(inputStream);
         }
     }
@@ -669,14 +670,19 @@ public class NodeService implements INodeService {
     /**
      * Make copy of original inputstream supporting mark/reset, since calling Alfresco's services' methods moves the
      * stream read pointer and by using mark/reset we keep stream usable.
+     *
+     * setContent and createContent need a copy of the inputstream to make a guess about the mimetype (guessMimetype).
+     * The copy of the inputstream provided by alfresco must be of type ByteArrayInputStream so that it supports mark/
+     * reset functions. To recreate this inputstream, a temporary file is created, read and later removed
+     * by the TempFileProvider. The temporary file path is also returned in case a manual clean up is needed.
      */
-    protected InputStream cloneInputStreamWithMarkSupported(InputStream stream) throws IOException {
+    protected Pair<InputStream, File> cloneInputStreamWithMarkSupported(InputStream stream) throws IOException {
         try {
             // Write stream to file using Alfrescos temp file provider. Will clean up all temp files after set period (default 1h)
-            return new ByteArrayInputStream(FileUtils.readFileToByteArray(TempFileProvider.createTempFile(
-                    stream,
+            File tempFile = TempFileProvider.createTempFile(stream,
                     "Apix_NodeService_cloneInputstreamWithMarkSupported_",
-                    "_tmpFile")));
+                    "_tmpFile");
+            return new Pair<>(new ByteArrayInputStream(FileUtils.readFileToByteArray(tempFile)), tempFile);
         } catch (Exception exception) {
             logger.error("encountered an error while processing a temp file.", exception);
             throw new IOException(exception);
