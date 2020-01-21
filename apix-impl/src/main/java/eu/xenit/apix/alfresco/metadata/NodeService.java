@@ -2,7 +2,21 @@ package eu.xenit.apix.alfresco.metadata;
 
 import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
-import eu.xenit.apix.node.*;
+import eu.xenit.apix.node.ChildParentAssociation;
+import eu.xenit.apix.node.INodeService;
+import eu.xenit.apix.node.MetadataChanges;
+import eu.xenit.apix.node.NodeAssociation;
+import eu.xenit.apix.node.NodeAssociations;
+import eu.xenit.apix.node.NodeMetadata;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.alfresco.model.ContentModel;
 import org.alfresco.rest.framework.core.exceptions.InvalidArgumentException;
 import org.alfresco.service.ServiceRegistry;
@@ -16,7 +30,17 @@ import org.alfresco.service.cmr.lock.LockStatus;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
-import org.alfresco.service.cmr.repository.*;
+import org.alfresco.service.cmr.repository.AssociationRef;
+import org.alfresco.service.cmr.repository.ChildAssociationRef;
+import org.alfresco.service.cmr.repository.ContentData;
+import org.alfresco.service.cmr.repository.ContentReader;
+import org.alfresco.service.cmr.repository.ContentService;
+import org.alfresco.service.cmr.repository.ContentWriter;
+import org.alfresco.service.cmr.repository.CopyService;
+import org.alfresco.service.cmr.repository.DuplicateChildNodeNameException;
+import org.alfresco.service.cmr.repository.InvalidNodeRefException;
+import org.alfresco.service.cmr.repository.MimetypeService;
+import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.security.AuthenticationService;
@@ -34,8 +58,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
-import java.util.*;
 
 /**
  * Created by mhgam on 23/11/2015.
