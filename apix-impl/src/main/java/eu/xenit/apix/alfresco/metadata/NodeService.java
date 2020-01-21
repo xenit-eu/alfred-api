@@ -25,7 +25,6 @@ import org.alfresco.service.cmr.version.VersionType;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
-import org.alfresco.util.Pair;
 import org.alfresco.util.TempFileProvider;
 import org.apache.chemistry.opencmis.commons.spi.AclService;
 import org.apache.commons.io.FileUtils;
@@ -547,12 +546,12 @@ public class NodeService implements INodeService {
         }
         InputStream inputStreamCopy = null;
         File tempFile = null;
-
         try {
-            Pair inputStreamFilePair = cloneInputStreamWithMarkSupported(inputStream);
-            inputStreamCopy = (InputStream) inputStreamFilePair.getFirst();
-            tempFile = (File) inputStreamFilePair.getSecond();
-
+            // Write the inputstream to a temporary file
+            tempFile = saveStreamInTempFile(inputStream,"Apix_NodeService_" + originalFilename + "_clone");
+            // Read the temporary file in a new ByteArrayInputStream that supports mark/reset functionalities.
+            inputStreamCopy = getByteInputStreamFromTempFile(tempFile);
+            // Use the ByteArrayInputStream with mark/reset
             String mimeType = guessMimetype(originalFilename, inputStreamCopy);
 
             NodeRef createdNodeRef = c.alfresco(node);
@@ -568,13 +567,7 @@ public class NodeService implements INodeService {
             if (inputStreamCopy != null) {
                 IOUtils.closeQuietly(inputStreamCopy);
             }
-            if (tempFile != null) {
-                String tempFilePath = tempFile.getAbsolutePath();
-                boolean status = tempFile.delete();
-                if (status == true) {
-                    logger.debug("Removed temporary file at location : ", tempFilePath);
-                }
-            }
+            cleanUpTempFile(tempFile);
             IOUtils.closeQuietly(inputStream);
         }
     }
@@ -633,10 +626,11 @@ public class NodeService implements INodeService {
         InputStream inputStreamCopy = null;
         File tempFile = null;
         try {
-            Pair inputStreamFilePair = cloneInputStreamWithMarkSupported(inputStream);
-            inputStreamCopy = (InputStream) inputStreamFilePair.getFirst();
-            tempFile = (File) inputStreamFilePair.getSecond();
-
+            // Write the inputstream to a temporary file
+            tempFile = saveStreamInTempFile(inputStream,"Apix_NodeService_" + fileName + "_clone");
+            // Read the temporary file in a new new ByteArrayInputStream that supports mark/reset functionalities.
+            inputStreamCopy = getByteInputStreamFromTempFile(tempFile);
+            // Use the ByteArrayInputStream with mark/reset
             String mimeType = guessMimetype(fileName, inputStreamCopy);
 
             ContentWriter writer = contentService.getWriter(null, ContentModel.PROP_CONTENT, false);
@@ -656,36 +650,45 @@ public class NodeService implements INodeService {
             if (inputStreamCopy != null) {
                 IOUtils.closeQuietly(inputStreamCopy);
             }
-            if (tempFile != null) {
-                String tempFilePath = tempFile.getAbsolutePath();
-                boolean status = tempFile.delete();
-                if (status == true) {
-                    logger.debug("Removed temporary file at location : ", tempFilePath);
-                }
-            }
+            cleanUpTempFile(tempFile);
             IOUtils.closeQuietly(inputStream);
         }
     }
 
     /**
-     * Make copy of original inputstream supporting mark/reset, since calling Alfresco's services' methods moves the
-     * stream read pointer and by using mark/reset we keep stream usable.
-     *
-     * setContent and createContent need a copy of the inputstream to make a guess about the mimetype (guessMimetype).
-     * The copy of the inputstream provided by alfresco must be of type ByteArrayInputStream so that it supports mark/
-     * reset functions. To recreate this inputstream, a temporary file is created, read and later removed
-     * by the TempFileProvider. The temporary file path is also returned in case a manual clean up is needed.
+     * Saves the content of the IntputStream in a temporary file. Handled by TempFileProvider (org.alfresco.util).
      */
-    protected Pair<InputStream, File> cloneInputStreamWithMarkSupported(InputStream stream) throws IOException {
+    protected File saveStreamInTempFile(InputStream stream, String prefix) throws IOException {
         try {
-            // Write stream to file using Alfrescos temp file provider. Will clean up all temp files after set period (default 1h)
-            File tempFile = TempFileProvider.createTempFile(stream,
-                    "Apix_NodeService_cloneInputstreamWithMarkSupported_",
-                    "_tmpFile");
-            return new Pair<>(new ByteArrayInputStream(FileUtils.readFileToByteArray(tempFile)), tempFile);
-        } catch (Exception exception) {
-            logger.error("encountered an error while processing a temp file.", exception);
+            return TempFileProvider.createTempFile(stream, prefix,"_tmpFile");
+        } catch (Exception exception){
+            logger.error("Encountered an error while saving a temp file.", exception);
             throw new IOException(exception);
+        }
+    }
+
+    /**
+     * Returns a new ByteArrayInputStream that supports mark/reset functionalities. (Needed for guesMimeType)
+     */
+    protected InputStream getByteInputStreamFromTempFile(File file) throws IOException {
+        try {
+            return new ByteArrayInputStream(FileUtils.readFileToByteArray(file));
+        } catch (Exception exception){
+            logger.error("Encountered an error while reading " + file.getName(), exception);
+            throw new IOException(exception);
+        }
+    }
+
+    /**
+     * Deletes the provided temporary file and possibly logs an error
+     */
+    protected void cleanUpTempFile(File file){
+        if (file != null) {
+            boolean status = file.delete();
+            if (status == false) {
+                logger.error("Encounterd an error while deleting file " +
+                        file.getName() + " @ " + TempFileProvider.getTempDir());
+            }
         }
     }
 
