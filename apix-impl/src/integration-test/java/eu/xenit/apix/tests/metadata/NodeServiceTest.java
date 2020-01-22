@@ -23,11 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.domain.node.ContentDataWithId;
 import org.alfresco.repo.model.Repository;
@@ -49,6 +46,7 @@ import org.alfresco.service.cmr.version.VersionService;
 import org.alfresco.service.cmr.version.VersionType;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
+import org.alfresco.util.TempFileProvider;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -741,6 +739,62 @@ public class NodeServiceTest extends BaseTest {
         }
     }
 
+    @Test
+    public void TestMultipleFileUpload() throws IOException{
+        this.cleanUp();
+        NodeRef companyHomeNodeRef = repository.getCompanyHome();
+        FileInfo mainTestFolder = this.createMainTestFolder(companyHomeNodeRef);
+        //Clean the temporary files folder prior to uploading documents
+        TempFileProvider.TempFileCleanerJob.removeFiles(System.currentTimeMillis());
+        //Number of files that will be uploaded
+        int numberUploads = 10;
+        for (int index = 0 ; index < numberUploads; index++){
+            //Create a dummy txt file
+            File testFile = new File("TestFile" + index +".txt");
+            Boolean newFileCreated = testFile.createNewFile();
+            PrintWriter writer = new PrintWriter("TestFile" + index +".txt", "UTF-8");
+            String contentString = "This is the content";
+            writer.println(contentString);
+            writer.close();
+            try {
+                //Read dummy text file in an inputstream
+                InputStream inputStream = new FileInputStream(testFile);
+                eu.xenit.apix.data.NodeRef createdNodeRef = this.service
+                        .createNode(c.apix(mainTestFolder.getNodeRef()), testFile.getName(),
+                                c.apix(ContentModel.TYPE_CONTENT));
+                //Upload documents in parallel
+                FileUploader fileUploader = new FileUploader(inputStream,createdNodeRef,testFile.getName(), this.service);
+                Thread t = new Thread(fileUploader);
+                t.start();
+            } finally {
+                testFile.delete();
+            }
+        }
+        //Number of childs in the testfolder should be equal to the number of uploads
+        assertEquals(numberUploads,this.service.getChildAssociations(c.apix(mainTestFolder.getNodeRef())).size());
+        // Remove the testnode
+        this.removeTestNode(mainTestFolder.getNodeRef());
+        // No temporary files should be found
+        assertEquals(0,TempFileProvider.TempFileCleanerJob.removeFiles(System.currentTimeMillis()));
+    }
+
+    public class FileUploader implements Runnable {
+        public InputStream inputStream;
+        public eu.xenit.apix.data.NodeRef nodeRef;
+        public String fName;
+        public INodeService service;
+
+        public FileUploader(InputStream inputStream, eu.xenit.apix.data.NodeRef nodeRef, String fileName, INodeService service ) {
+            this.inputStream = inputStream;
+            this.nodeRef = nodeRef;
+            this.fName = fileName;
+            this.service = service;
+        }
+
+        public void run() {
+            this.service.setContent(this.nodeRef, this.inputStream, this.fName);
+        }
+    }
 
     @Test
     public void TestSetContent_ShortOverload() {
@@ -779,6 +833,4 @@ public class NodeServiceTest extends BaseTest {
                 service.getRootNode(apixStoreRef).toString(),
                 alfrescoNodeService.getRootNode(alfStoreRef).toString());
     }
-
-
 }
