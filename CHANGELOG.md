@@ -12,6 +12,7 @@
 ### Fixed
 * [ALFREDAPI-392](https://xenitsupport.jira.com/browse/ALFREDAPI-392): Stop the incorrect publishing of (development use case only) apix-impl JARs
 * [ALFREDAPI-377](https://xenitsupport.jira.com/browse/ALFREDAPI-377): Changed default query consistency to transactional if possible
+* [ALFREDAPI-406](https://xenitsupport.jira.com/browse/ALFREDAPI-406): Deletion of temporary files after an upload finishes
 
 ### Deleted
 * [ALFREDAPI-402](https://xenitsupport.jira.com/browse/ALFREDAPI-402): Removed obsolete webscript (rest-v0.categories.CategoryGetWebscript)
