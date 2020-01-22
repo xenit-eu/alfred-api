@@ -8,7 +8,6 @@ import eu.xenit.apix.node.MetadataChanges;
 import eu.xenit.apix.node.NodeAssociation;
 import eu.xenit.apix.node.NodeAssociations;
 import eu.xenit.apix.node.NodeMetadata;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
