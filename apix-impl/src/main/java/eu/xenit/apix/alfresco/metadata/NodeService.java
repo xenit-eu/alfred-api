@@ -580,7 +580,7 @@ public class NodeService implements INodeService {
             // Use the ByteArrayInputStream with mark/reset
             String mimeType = guessMimetype(originalFilename, inputStreamCopy);
 
-            NodeRef createdNodeRef = c.alfresco(node);
+            org.alfresco.service.cmr.repository.NodeRef createdNodeRef = c.alfresco(node);
             ContentWriter writer = contentService.getWriter(createdNodeRef, ContentModel.PROP_CONTENT, true);
             writer.putContent(inputStreamCopy);
             ContentData contentData = (ContentData) nodeService.getProperty(createdNodeRef, ContentModel.PROP_CONTENT);
@@ -706,7 +706,7 @@ public class NodeService implements INodeService {
     }
 
     /**
-     * Deletes the provided temporary file and possibly logs an error
+     * Deletes the provided temporary file and possibly logs an error.
      */
     protected void cleanUpTempFile(File file){
         if (file != null) {
