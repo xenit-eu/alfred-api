@@ -45,6 +45,7 @@ import org.alfresco.service.cmr.repository.InvalidNodeRefException;
 import org.alfresco.service.cmr.repository.MimetypeService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
+import org.alfresco.service.cmr.repository.MimetypeServiceAware;
 import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PermissionService;
@@ -568,31 +569,14 @@ public class NodeService implements INodeService {
         if (inputStream == null) {
             nodeService.removeProperty(c.alfresco(node), ContentModel.PROP_CONTENT);
             return;
-        }
-        InputStream inputStreamCopy = null;
-        File tempFile = null;
-        try {
-            // Write the inputstream to a temporary file
-            tempFile = saveStreamInTempFile(inputStream,"Apix_NodeService_" + originalFilename + "_clone");
-            // Read the temporary file in a new ByteArrayInputStream that supports mark/reset functionalities.
-            inputStreamCopy = getByteInputStreamFromTempFile(tempFile);
-            // Use the ByteArrayInputStream with mark/reset
-            String mimeType = guessMimetype(originalFilename, inputStreamCopy);
-
+        } try {
             org.alfresco.service.cmr.repository.NodeRef createdNodeRef = c.alfresco(node);
             ContentWriter writer = contentService.getWriter(createdNodeRef, ContentModel.PROP_CONTENT, true);
-            writer.putContent(inputStreamCopy);
+            writer.guessMimetype(originalFilename);
+            writer.putContent(inputStream);
             ContentData contentData = (ContentData) nodeService.getProperty(createdNodeRef, ContentModel.PROP_CONTENT);
-            contentData = ContentData.setMimetype(contentData, mimeType);
             nodeService.setProperty(createdNodeRef, ContentModel.PROP_CONTENT, contentData);
-        } catch (IOException ioException) {
-            logger.error("Error handling the io-streams:", ioException);
-            throw new RuntimeException(ioException);
         } finally {
-            if (inputStreamCopy != null) {
-                IOUtils.closeQuietly(inputStreamCopy);
-            }
-            cleanUpTempFile(tempFile);
             IOUtils.closeQuietly(inputStream);
         }
     }
@@ -647,81 +631,23 @@ public class NodeService implements INodeService {
     @Override
     public eu.xenit.apix.data.ContentData createContentWithMimetypeGuess(InputStream inputStream, String fileName,
             String encoding) {
-        // Making copy of original inputstream because we want an inputstream that definitely supports mark/reset
-        InputStream inputStreamCopy = null;
-        File tempFile = null;
         try {
-            // Write the inputstream to a temporary file
-            tempFile = saveStreamInTempFile(inputStream,"Apix_NodeService_" + fileName + "_clone");
-            // Read the temporary file in a new new ByteArrayInputStream that supports mark/reset functionalities.
-            inputStreamCopy = getByteInputStreamFromTempFile(tempFile);
-            // Use the ByteArrayInputStream with mark/reset
-            String mimeType = guessMimetype(fileName, inputStreamCopy);
-
             ContentWriter writer = contentService.getWriter(null, ContentModel.PROP_CONTENT, false);
-            writer.setMimetype(mimeType);
+            if (writer instanceof MimetypeServiceAware) {
+                ((MimetypeServiceAware) writer).setMimetypeService(getServiceRegistry().getMimetypeService());
+            }
+            writer.guessMimetype(fileName);
+            writer.putContent(inputStream);
             writer.setEncoding(encoding);
-            writer.putContent(inputStreamCopy);
             return new eu.xenit.apix.data.ContentData(
                     writer.getContentUrl(),
-                    mimeType,
+                    writer.getMimetype(),
                     writer.getSize(),
                     encoding,
                     writer.getLocale());
-        } catch (IOException ioException) {
-            logger.error("Error handling the io-streams:", ioException);
-            throw new RuntimeException(ioException);
         } finally {
-            if (inputStreamCopy != null) {
-                IOUtils.closeQuietly(inputStreamCopy);
-            }
-            cleanUpTempFile(tempFile);
             IOUtils.closeQuietly(inputStream);
         }
-    }
-
-    /**
-     * Saves the content of the IntputStream in a temporary file. Handled by TempFileProvider (org.alfresco.util).
-     */
-    protected File saveStreamInTempFile(InputStream stream, String prefix) throws IOException {
-        try {
-            return TempFileProvider.createTempFile(stream, prefix,"_tmpFile");
-        } catch (Exception exception){
-            logger.error("Encountered an error while saving a temp file.", exception);
-            throw new IOException(exception);
-        }
-    }
-
-    /**
-     * Returns a new ByteArrayInputStream that supports mark/reset functionalities. (Needed for guesMimeType)
-     */
-    protected InputStream getByteInputStreamFromTempFile(File file) throws IOException {
-        try {
-            return new ByteArrayInputStream(FileUtils.readFileToByteArray(file));
-        } catch (Exception exception){
-            logger.error("Encountered an error while reading " + file.getName(), exception);
-            throw new IOException(exception);
-        }
-    }
-
-    /**
-     * Deletes the provided temporary file and possibly logs an error.
-     */
-    protected void cleanUpTempFile(File file){
-        if (file != null) {
-            boolean status = file.delete();
-            if (status == false) {
-                logger.error("Encounterd an error while deleting file " +
-                        file.getName() + " @ " + TempFileProvider.getTempDir());
-            }
-        }
-    }
-
-    protected String guessMimetype(String fileName, InputStream inputStream) throws IOException {
-        inputStream.mark(Integer.MAX_VALUE);
-        String mimetype = mimetypeService.guessMimetype(fileName, inputStream);
-        inputStream.reset();
-        return mimetype;
     }
 
     @Override
