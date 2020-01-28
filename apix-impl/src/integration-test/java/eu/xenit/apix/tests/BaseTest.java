@@ -18,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.*;
+
 
 @RunWith(ApixIntegration.class)
 @UseSpringContextOfBundle(filter = ApixImplBundleFilter.class)
@@ -85,6 +87,20 @@ public abstract class BaseTest {
             success = true;
         }
         return success;
+    }
+
+    protected File createTextFileWithContent(String fileName, String content) throws IOException {
+        if (!fileName.endsWith(".txt")) {
+            fileName += ".txt";
+        }
+        File textFile = new File(fileName);
+        textFile.deleteOnExit();
+        textFile.createNewFile();
+        PrintWriter writer = new PrintWriter(fileName, "UTF-8");
+        String contentString = content;
+        writer.println(contentString);
+        writer.close();
+        return textFile;
     }
 
     protected boolean cleanUp() {

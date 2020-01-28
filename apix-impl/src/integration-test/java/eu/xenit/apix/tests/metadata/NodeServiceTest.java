@@ -701,24 +701,16 @@ public class NodeServiceTest extends BaseTest {
     @Test
     public void TestFileUpload() throws IOException {
         this.cleanUp();
-        NodeRef companyHomeNodeRef = this.getNodeAtPath("/app:company_home");
-
+        NodeRef companyHomeNodeRef = repository.getCompanyHome();
         FileInfo mainTestFolder = this.createMainTestFolder(companyHomeNodeRef);
-
-        File testFile = new File("test.txt");
-        Boolean newFileCreated = testFile.createNewFile();
-        PrintWriter writer = new PrintWriter("test.txt", "UTF-8");
-        String contentString = "This is the content";
-        writer.println(contentString);
-        writer.close();
-
+        String contentString = "This is random content.";
+        File testFile = this.createTextFileWithContent("test", contentString);
         try {
-
             InputStream inputStream = new FileInputStream(testFile);
-
             eu.xenit.apix.data.NodeRef createdNodeRef = this.service
                     .createNode(c.apix(mainTestFolder.getNodeRef()), testFile.getName(),
                             c.apix(ContentModel.TYPE_CONTENT));
+            logger.debug("Filename: " + testFile.getName());
             this.service.setContent(createdNodeRef, inputStream, testFile.getName());
 
             QName createdNodeType = this.alfrescoNodeService.getType(c.alfresco(createdNodeRef));
@@ -743,59 +735,20 @@ public class NodeServiceTest extends BaseTest {
     }
 
     @Test
-    public void TestMultipleFileUpload() throws IOException{
+    public void testTextFileUploadWithMimeGuess() throws IOException{
         this.cleanUp();
         NodeRef companyHomeNodeRef = repository.getCompanyHome();
-        FileInfo mainTestFolder = this.createMainTestFolder(companyHomeNodeRef);
-        //Clean the temporary files folder prior to uploading documents
-        TempFileProvider.TempFileCleanerJob.removeFiles(System.currentTimeMillis());
-        //Number of files that will be uploaded
-        int numberUploads = 10;
-        for (int index = 0 ; index < numberUploads; index++){
-            //Create a dummy txt file
-            File testFile = new File("TestFile" + index +".txt");
-            Boolean newFileCreated = testFile.createNewFile();
-            PrintWriter writer = new PrintWriter("TestFile" + index +".txt", "UTF-8");
-            String contentString = "This is the content";
-            writer.println(contentString);
-            writer.close();
-            try {
-                //Read dummy text file in an inputstream
-                InputStream inputStream = new FileInputStream(testFile);
-                eu.xenit.apix.data.NodeRef createdNodeRef = this.service
-                        .createNode(c.apix(mainTestFolder.getNodeRef()), testFile.getName(),
-                                c.apix(ContentModel.TYPE_CONTENT));
-                //Upload documents in parallel
-                FileUploader fileUploader = new FileUploader(inputStream,createdNodeRef,testFile.getName(), this.service);
-                Thread t = new Thread(fileUploader);
-                t.start();
-            } finally {
-                testFile.delete();
-            }
-        }
-        //Number of childs in the testfolder should be equal to the number of uploads
-        assertEquals(numberUploads,this.service.getChildAssociations(c.apix(mainTestFolder.getNodeRef())).size());
-        // Remove the testnode
-        this.removeTestNode(mainTestFolder.getNodeRef());
-        // No temporary files should be found
-        assertEquals(0,TempFileProvider.TempFileCleanerJob.removeFiles(System.currentTimeMillis()));
-    }
-
-    public class FileUploader implements Runnable {
-        public InputStream inputStream;
-        public eu.xenit.apix.data.NodeRef nodeRef;
-        public String fName;
-        public INodeService service;
-
-        public FileUploader(InputStream inputStream, eu.xenit.apix.data.NodeRef nodeRef, String fileName, INodeService service ) {
-            this.inputStream = inputStream;
-            this.nodeRef = nodeRef;
-            this.fName = fileName;
-            this.service = service;
-        }
-
-        public void run() {
-            this.service.setContent(this.nodeRef, this.inputStream, this.fName);
+        FileInfo mainTestFolder = createMainTestFolder(companyHomeNodeRef);
+        File testTextFile = createTextFileWithContent("test.txt", "This is random content.");
+        try {
+            InputStream inputStream = new FileInputStream(testTextFile);
+            eu.xenit.apix.data.ContentData contentData = service.createContentWithMimetypeGuess(inputStream,
+                    testTextFile.getName(),
+                    "UTF-8");
+            assertEquals(contentData.getEncoding(),"UTF-8");
+            assertEquals(TEXT_MIMETYPE, contentData.getMimetype());
+        } finally {
+            removeTestNode(mainTestFolder.getNodeRef());
         }
     }
 
