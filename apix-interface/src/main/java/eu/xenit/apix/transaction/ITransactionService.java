@@ -12,7 +12,7 @@ public interface ITransactionService {
      *
      * @param func the transaction to execute
      * @param readOnly Whether this is a read only transaction.
-     * @param requiresNew <tt>true</tt> to force a new transaction.
+     * @param requiresNew <code>true</code> to force a new transaction.
      * @param <T> Return type parameter
      * @return the result of the transaction in case of success.
      */
