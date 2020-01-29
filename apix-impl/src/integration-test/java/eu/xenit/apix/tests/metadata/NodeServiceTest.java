@@ -698,26 +698,26 @@ public class NodeServiceTest extends BaseTest {
 
     @Test
     public void TestFileUpload() throws IOException {
-        this.cleanUp();
+        cleanUp();
         NodeRef companyHomeNodeRef = repository.getCompanyHome();
-        FileInfo mainTestFolder = this.createMainTestFolder(companyHomeNodeRef);
+        FileInfo mainTestFolder = createMainTestFolder(companyHomeNodeRef);
         String contentString = "This is random content.";
-        File testFile = this.createTextFileWithContent("test", contentString);
+        File testFile = createTextFileWithContent("test", contentString);
         try {
             InputStream inputStream = new FileInputStream(testFile);
-            eu.xenit.apix.data.NodeRef createdNodeRef = this.service
+            eu.xenit.apix.data.NodeRef createdNodeRef = service
                     .createNode(c.apix(mainTestFolder.getNodeRef()), testFile.getName(),
                             c.apix(ContentModel.TYPE_CONTENT));
             logger.debug("Filename: " + testFile.getName());
-            this.service.setContent(createdNodeRef, inputStream, testFile.getName());
+            service.setContent(createdNodeRef, inputStream, testFile.getName());
 
-            QName createdNodeType = this.alfrescoNodeService.getType(c.alfresco(createdNodeRef));
-            String fileContentString = this.contentService
+            QName createdNodeType = alfrescoNodeService.getType(c.alfresco(createdNodeRef));
+            String fileContentString = contentService
                     .getReader(c.alfresco(createdNodeRef), ContentModel.PROP_CONTENT).getContentString();
-            ContentDataWithId contentProperty = (ContentDataWithId) this.alfrescoNodeService
+            ContentDataWithId contentProperty = (ContentDataWithId) alfrescoNodeService
                     .getProperty(c.alfresco(createdNodeRef), ContentModel.PROP_CONTENT);
             String mimeType = contentProperty.getMimetype();
-            String name = (String) this.alfrescoNodeService
+            String name = (String) alfrescoNodeService
                     .getProperty(c.alfresco(createdNodeRef), ContentModel.PROP_NAME);
 
             assertEquals(ContentModel.TYPE_CONTENT.toString(), createdNodeType.toString());
@@ -727,14 +727,14 @@ public class NodeServiceTest extends BaseTest {
             assertEquals(TEXT_MIMETYPE, mimeType);
             assertEquals(testFile.getName(), name);
         } finally {
-            this.removeTestNode(mainTestFolder.getNodeRef());
+            removeTestNode(mainTestFolder.getNodeRef());
             testFile.delete();
         }
     }
 
     @Test
     public void testTextFileUploadWithMimeGuess() throws IOException{
-        this.cleanUp();
+        cleanUp();
         NodeRef companyHomeNodeRef = repository.getCompanyHome();
         FileInfo mainTestFolder = createMainTestFolder(companyHomeNodeRef);
         File testTextFile = createTextFileWithContent("test.txt", "This is random content.");
