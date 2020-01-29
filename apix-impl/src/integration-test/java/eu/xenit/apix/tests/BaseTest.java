@@ -97,10 +97,9 @@ public abstract class BaseTest {
         File textFile = new File(fileName);
         textFile.deleteOnExit();
         textFile.createNewFile();
-        PrintWriter writer = new PrintWriter(fileName, "UTF-8");
-        String contentString = content;
-        writer.println(contentString);
-        writer.close();
+        try(PrintWriter writer = new PrintWriter(fileName, "UTF-8")){
+            writer.println(content);
+        }
         return textFile;
     }
 

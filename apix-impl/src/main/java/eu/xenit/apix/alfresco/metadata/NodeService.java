@@ -12,7 +12,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -564,12 +563,15 @@ public class NodeService implements INodeService {
 
     }
 
+    //guessMimetype places a ContentStreamListener on ContentWriter and waits for the input to be written.
+    //Afterwards, makes a mime type guess based on file extension AND content.
     @Override
     public void setContent(eu.xenit.apix.data.NodeRef node, InputStream inputStream, String originalFilename) {
         if (inputStream == null) {
             nodeService.removeProperty(c.alfresco(node), ContentModel.PROP_CONTENT);
             return;
-        } try {
+        }
+        try {
             org.alfresco.service.cmr.repository.NodeRef createdNodeRef = c.alfresco(node);
             ContentWriter writer = contentService.getWriter(createdNodeRef, ContentModel.PROP_CONTENT, true);
             writer.guessMimetype(originalFilename);
@@ -628,6 +630,8 @@ public class NodeService implements INodeService {
         }
     }
 
+    //guessMimetype places a ContentStreamListener on ContentWriter and waits for the input to be written.
+    //Afterwards, makes a mime type guess based on file extension AND content.
     @Override
     public eu.xenit.apix.data.ContentData createContentWithMimetypeGuess(InputStream inputStream, String fileName,
             String encoding) {
