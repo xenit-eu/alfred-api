@@ -631,7 +631,7 @@ public class NodeService implements INodeService {
     }
 
     //guessMimetype places a ContentStreamListener on ContentWriter and waits for the input to be written.
-    //Afterwards, makes a mime type guess based on file extension AND content.
+    //Afterwards, makes a mime type guess based on file extension aswell as content.
     @Override
     public eu.xenit.apix.data.ContentData createContentWithMimetypeGuess(InputStream inputStream, String fileName,
             String encoding) {
