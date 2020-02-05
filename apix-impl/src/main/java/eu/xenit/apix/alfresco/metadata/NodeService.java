@@ -563,8 +563,6 @@ public class NodeService implements INodeService {
 
     }
 
-    //guessMimetype places a ContentStreamListener on ContentWriter and waits for the input to be written.
-    //Afterwards, makes a mime type guess based on file extension AND content.
     @Override
     public void setContent(eu.xenit.apix.data.NodeRef node, InputStream inputStream, String originalFilename) {
         if (inputStream == null) {
@@ -574,6 +572,8 @@ public class NodeService implements INodeService {
         try {
             org.alfresco.service.cmr.repository.NodeRef createdNodeRef = c.alfresco(node);
             ContentWriter writer = contentService.getWriter(createdNodeRef, ContentModel.PROP_CONTENT, true);
+            //guessMimetype places a ContentStreamListener on ContentWriter and waits for the input to be written.
+            //Afterwards, makes a mime type guess based on file extension and on content.
             writer.guessMimetype(originalFilename);
             writer.putContent(inputStream);
             ContentData contentData = (ContentData) nodeService.getProperty(createdNodeRef, ContentModel.PROP_CONTENT);
@@ -630,8 +630,6 @@ public class NodeService implements INodeService {
         }
     }
 
-    //guessMimetype places a ContentStreamListener on ContentWriter and waits for the input to be written.
-    //Afterwards, makes a mime type guess based on file extension aswell as content.
     @Override
     public eu.xenit.apix.data.ContentData createContentWithMimetypeGuess(InputStream inputStream, String fileName,
             String encoding) {
@@ -640,6 +638,8 @@ public class NodeService implements INodeService {
             if (writer instanceof MimetypeServiceAware) {
                 ((MimetypeServiceAware) writer).setMimetypeService(getServiceRegistry().getMimetypeService());
             }
+            //guessMimetype places a ContentStreamListener on ContentWriter and waits for the input to be written.
+            //Afterwards, makes a mime type guess based on file extension and on content.
             writer.guessMimetype(fileName);
             writer.putContent(inputStream);
             writer.setEncoding(encoding);
