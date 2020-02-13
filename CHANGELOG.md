@@ -1,6 +1,6 @@
 # Alfred API - Changelog
 
-## 2.3.0 (Unreleased)
+## 2.3.0 (2020-02-13)
 
 ### Changed
 * [ALFREDAPI-385](https://xenitsupport.jira.com/browse/ALFREDAPI-385): Change docker & compose files for integration tests to use harbor and docker.io/xenit
@@ -16,6 +16,7 @@
 
 ### Deleted
 * [ALFREDAPI-402](https://xenitsupport.jira.com/browse/ALFREDAPI-402): Removed obsolete webscript (rest-v0.categories.CategoryGetWebscript)
+
 
 ## 2.2.0 (2019-09-17)
 
