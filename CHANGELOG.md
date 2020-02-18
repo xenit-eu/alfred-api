@@ -7,6 +7,7 @@
 ### Changed
 
 ### Fixed
+* [ALFREDAPI-410](https://xenitsupport.jira.com/browse/ALFREDAPI-410): Configuration webscript requires read access to Company Home
 
 ### Deleted
 

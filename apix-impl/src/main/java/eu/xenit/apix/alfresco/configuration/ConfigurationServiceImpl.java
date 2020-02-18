@@ -18,6 +18,7 @@ import eu.xenit.apix.node.ChildParentAssociation;
 import eu.xenit.apix.node.INodeService;
 import eu.xenit.apix.node.NodeMetadata;
 import eu.xenit.apix.rest.v1.configuration.ConfigurationWebscript1;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,8 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         }
         String[] searchDirectoryParts = searchDirectory.split("/");
 
-        NodeRef rootFolder = fileFolderService.getDataDictionary();
+        // Running as system so user does not need read access on the folders in between
+        NodeRef rootFolder = AuthenticationUtil.runAsSystem(() -> fileFolderService.getDataDictionary());
         logger.debug("Looking up directory {} inside datadictionary {}", searchDirectory, rootFolder);
 
         NodeRef searchDirectoryRef = rootFolder;
