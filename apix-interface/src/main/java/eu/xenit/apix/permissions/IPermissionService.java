@@ -16,24 +16,27 @@ public interface IPermissionService {
     String READ_RECORDS = "ReadRecords";
     String FILING = "Filing";
 
-    /**
-     * Returns the set of permissions that are present on this object.
-     * Possible values are Read, Write, Delete, CreateChildren, ReadPermissions, ChangePermissions
-     * and custom permissions
-     * @param node The node of which the permissions are requested.
-     * @return A map from permission to permission value.
-     */
+
 
     /**
      * getPermissionsFast is not certifiable by Alfresco because it uses the ModelDAO, which is not part of the public
      * API. However, getPermissionsFast is roughly 3 times as efficient as getPermissions. I have made case on Alfresco
      * support with case id 00930777
+     * @param node the noderef from which the permissions will be gathered.
+     * @return Returns a map with the permissions and a PermissionValue
+     * that allows or denies actions on the provided node for the current authentication.
      */
     Map<String, PermissionValue> getPermissionsFast(NodeRef node);
 
     /**
      * getPermissions cannot be replaced yet by getPermissionsFast because getPermissionsFast is not certifiable yet.
      * However, in the future that is what we want to do.
+     * Returns the set of permissions that are present on this object.
+     * Possible values are Read, Write, Delete, CreateChildren, ReadPermissions, ChangePermissions
+     * and custom permissions
+     * @param node the noderef from which the permissions will be gathered
+     * @return Returns a map with the permissions and a PermissionValue
+     * that allows or denies actions on the provided node for the current authentication
      */
     Map<String, PermissionValue> getPermissions(NodeRef node);
 
@@ -59,6 +62,7 @@ public interface IPermissionService {
     /**
      * returns the ACL for a given node.
      *
+     * @param nodeRef the node from which the permissions will be returned.
      * @return NodePermission object informing the fact that permissions are inherited or not and which permissions are
      * directly applied to this specific node.
      */
@@ -67,6 +71,7 @@ public interface IPermissionService {
     /**
      * Applies the ACL to a given node.
      *
+     * @param nodeRef noderef for which the permissions will be applied.
      * @param permissions object informing the fact that permissions are inherited or not and which permissions are
      * directly applied to this specific node.
      */
@@ -75,8 +80,8 @@ public interface IPermissionService {
     /**
      * Check that the current authentication has a particular permission for the given node.
      *
-     * @param nodeRef the noderef on which the permission is queried
-     * @param permission the String representation of the Permission that is being checked
+     * @param nodeRef the noderef on which the permission is queried.
+     * @param permission the String representation of the Permission that is being checked.
      *
      * @return - Boolean indicating whether the asked permission is present.
      */

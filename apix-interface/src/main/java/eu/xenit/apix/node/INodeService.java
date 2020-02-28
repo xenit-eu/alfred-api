@@ -27,6 +27,7 @@ public interface INodeService {
     /**
      * @param noderef The noderef for which the metadata is set.
      * @param metadata The new metadata for the given noderef.
+     * @return Returns the new metadata in a NodeMetadata object (contains node ref, properties, ...).
      */
     NodeMetadata setMetadata(NodeRef noderef, MetadataChanges metadata);
 
@@ -35,6 +36,7 @@ public interface INodeService {
      * Get the root node of the given store.
      *
      * @param storeRef the Store of which the root node is requested.
+     * @return the noderef of the root node.
      */
     NodeRef getRootNode(StoreRef storeRef);
 
@@ -161,9 +163,11 @@ public interface INodeService {
     /**
      * Checks in the given working copy.
      *
+     * @param nodeRef the node that will be checked.
      * @param comment Give a comment while checking in.
      * @param majorVersion If true this version will have an increased major version number relative to the previous
      * commit. Otherwise an increased minor version number.
+     * @return the noderef to the original node, updated with the checked in state.
      */
     NodeRef checkin(NodeRef nodeRef, String comment, boolean majorVersion);
 
@@ -182,14 +186,15 @@ public interface INodeService {
     NodeRef getWorkingCopySource(NodeRef nodeRef);
 
     /**
-     * Sets content of a specific node. Also changes mimetype by guessing it via the original file name.
+     * Sets content of a specific node. Also changes mimetype by guessing it using content and original file name.
      *
+     * @param node noderef of the node where the content of the inputStream will placed.
      * @param inputStream The input stream that contains the content. In case the input stream is null the content will
-     * be set to empty. The inputstream will be copied and read (in combination with originalFilename)
+     * be set to empty. The inputstream will be read (in combination with originalFilename)
      * to make a best effort guess about which mimetype the content should have.
      * To enforce a specific mimetype, use {@link #setContent(NodeRef, ContentData) setContent(NodeRef, ContentData)}
      * with a ContentData object that has the mimetype explicitly set.
-     * A ContentData object can be obtaint from the method {@link #createContent(InputStream, String, String) createContent}
+     * A ContentData object can be obtained from the method {@link #createContent(InputStream, String, String) createContent}
      * @param originalFilename The filename of the content. This is only used to guess the mimetype of the node.
      */
     void setContent(eu.xenit.apix.data.NodeRef node, InputStream inputStream, String originalFilename);
@@ -217,8 +222,9 @@ public interface INodeService {
      * Creates a content without linking it to a specific node yet.
      *
      * @param inputStream Can be null: in that case, the content property of the file is removed.
-     * @param fileName Necessary for guessing the mimetype
-     * @param encoding ex: "UTF-8", ....
+     * @param fileName Needed for guessing the mimetype. (Does necessary not need to contain the extension
+     *                 as mimeTypeGuessing will also work on content of the inputStream)
+     * @param encoding Encoding of the inputStream. ex: "UTF-8", ....
      * @return the URL of the content (can be set to the content property of a node).
      */
     ContentData createContentWithMimetypeGuess(InputStream inputStream, String fileName, String encoding);
@@ -226,12 +232,14 @@ public interface INodeService {
     /**
      * Returns content as inputStream + other related informations (mimeType, size, ...)
      *
+     * @param node the noderef from which the content will be gathered.
      * @return ContentInputStream.inputStream has to be closed!
      */
     ContentInputStream getContent(eu.xenit.apix.data.NodeRef node);
 
     /**
      * Extracts metadata on a node
+     * @param node the noderef from which metadata will be extracted.
      */
     void extractMetadata(eu.xenit.apix.data.NodeRef node);
 
