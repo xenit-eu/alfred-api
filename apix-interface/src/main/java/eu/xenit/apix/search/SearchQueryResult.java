@@ -39,7 +39,7 @@ public class SearchQueryResult {
     }
 
     /**
-     * Returns the total number of results for the search query. Depending on if the query is executed
+     * @return Returns the total number of results for the search query. Depending on if the query is executed
      * against the database or Solr this will include the skipped results or not.
      */
     public long getTotalResultCount() {

@@ -12,7 +12,6 @@ public interface IContentService {
 
     /**
      * Checks if the content url exists.
-     *
      * @param contentUrl The content url to check.
      * @return true if exists, false otherwise
      */
@@ -21,6 +20,7 @@ public interface IContentService {
     /**
      * Sets content of a specific node. Also changes mimetype by guessing it via the original file name.
      *
+     * @param node NodeRef of the node where the content of the inputStream will placed.
      * @param inputStream The input stream that contains the content. In case the input stream is null the content will
      * be set to empty.
      * @param originalFilename The filename of the content. This is only used to guess the mimetype of the node.
@@ -40,6 +40,7 @@ public interface IContentService {
     /**
      * Returns content as inputStream + other related informations (mimeType, size, ...)
      *
+     * @param node NodeRef from where the content will be gathered.
      * @return ContentInputStream.inputStream has to be closed!
      */
     ContentInputStream getContent(eu.xenit.apix.data.NodeRef node);

@@ -25,7 +25,8 @@ public class Category {
     }
 
     /**
-     * Sets the qname path.
+     * Sets the category qname path.
+     * @param qnamePath qname path of the category.
      */
     public void setQnamePath(String qnamePath) {
         this.qnamePath = qnamePath;
@@ -39,7 +40,8 @@ public class Category {
     }
 
     /**
-     * Sets the noderef of the category
+     * Sets the category noderef.
+     * @param noderef nodeRef of the category.
      */
     public void setNoderef(String noderef) {
         this.noderef = noderef;
@@ -54,6 +56,7 @@ public class Category {
 
     /**
      * Sets the name of the category.
+     * @param name Name of the category.
      */
     public void setName(String name) {
         this.name = name;
@@ -68,6 +71,7 @@ public class Category {
 
     /**
      * Sets the subcategories of this category.
+     * @param subcategories the subcategories of the Category.
      */
     public void setSubcategories(ArrayList<Category> subcategories) {
         this.subcategories = subcategories;
