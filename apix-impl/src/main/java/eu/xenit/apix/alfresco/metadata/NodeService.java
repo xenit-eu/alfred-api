@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.model.Repository;
 import org.alfresco.rest.framework.core.exceptions.InvalidArgumentException;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.coci.CheckOutCheckInService;
@@ -92,6 +93,8 @@ public class NodeService implements INodeService {
     private AlfrescoPropertyConvertor propertyConvertor;
     private TempFileProvider tempFileProvider;
 
+    @Autowired
+    private Repository repository;
 
     public NodeService() {
     }
@@ -419,6 +422,53 @@ public class NodeService implements INodeService {
     @Override
     public NodeAssociations getAssociations(eu.xenit.apix.data.NodeRef ref) {
         return new NodeAssociations(getChildAssociations(ref), getParentAssociations(ref), getTargetAssociations(ref));
+    }
+
+    @Override
+    public List<eu.xenit.apix.data.NodeRef> getParentsRecursively(eu.xenit.apix.data.NodeRef ref, eu.xenit.apix.data.NodeRef rootRef) {
+        logger.error(">>>>>>>>>> getParentsRecursively");
+        if (ref == null) {
+            logger.error("ref: null");
+        }
+        else {
+            logger.error("ref: " + ref.getValue());
+        }
+
+        if (rootRef == null) {
+            logger.error("rootRef: null");
+        }
+        else {
+            logger.error("rootRef: " + rootRef.getValue());
+        }
+
+        NodeRef alfrescoRootRef;
+        if (rootRef == null){
+            alfrescoRootRef = repository.getCompanyHome();
+        }
+        else
+        {
+            alfrescoRootRef = c.alfresco(rootRef);
+        }
+        logger.error("alfrescoRootRef: " + alfrescoRootRef);
+
+        NodeRef nodeRef = c.alfresco(ref);
+        if (nodeRef.equals(alfrescoRootRef)){
+            return new ArrayList<>();
+        }
+
+        List<eu.xenit.apix.data.NodeRef> recursiveParentRefs = new ArrayList<>();
+        NodeRef parentRef = nodeService.getPrimaryParent(nodeRef).getParentRef();
+        logger.error("parentRef: " + parentRef);
+        while(parentRef != null) {
+            recursiveParentRefs.add(c.apix(parentRef));
+            if (parentRef.equals(alfrescoRootRef)) {
+                break;
+            }
+            parentRef = nodeService.getPrimaryParent(parentRef).getParentRef();
+        }
+
+        logger.error("<<<<<<<<<< getParentsRecursively");
+        return recursiveParentRefs;
     }
 
     @Override

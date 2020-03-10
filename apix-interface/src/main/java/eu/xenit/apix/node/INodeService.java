@@ -70,6 +70,15 @@ public interface INodeService {
     NodeAssociations getAssociations(NodeRef ref);
 
     /**
+     * Returns all recursive primary parents of the given node.
+     *
+     * @param ref The node for which the recursive parents are requested.
+     * @param rootRef The node up to which point the parents have to be retrieved recursively.
+     * @return a list of the node references of the primary parents.
+     */
+    List<NodeRef> getParentsRecursively(NodeRef ref, NodeRef rootRef);
+
+    /**
      * Creates an association between source and target of a given type.
      *
      * @param source The source of the association to create.

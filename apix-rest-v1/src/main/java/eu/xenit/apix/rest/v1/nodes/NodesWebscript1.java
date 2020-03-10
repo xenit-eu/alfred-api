@@ -7,6 +7,7 @@ import com.github.dynamicextensionsalfresco.webscripts.annotations.Transaction;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.UriVariable;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.WebScript;
+import com.sun.star.auth.InvalidArgumentException;
 import eu.xenit.apix.data.ContentInputStream;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
@@ -32,6 +33,7 @@ import io.swagger.annotations.ApiResponses;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +41,7 @@ import java.util.Objects;
 import java.util.Set;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.ServiceRegistry;
@@ -76,6 +79,9 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
     @Autowired
     ServiceRegistry serviceRegistry;
+
+    @Autowired
+    Repository repository;
 
     @Uri(value = "/nodes/{space}/{store}/{guid}/metadata", method = HttpMethod.POST)
     @ApiOperation(value = "Change node metadata",
@@ -480,6 +486,40 @@ public class NodesWebscript1 extends ApixV1Webscript {
         //logger.error("start writeJsonResponse");
         writeJsonResponse(response, nodeInfoList);
         //logger.error("end writeJsonResponse");
+    }
+
+    @ApiOperation("Retrieves the parents of the nodes recursively")
+    @Uri(value = "/nodes/parent/recursive", method = HttpMethod.POST)
+    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Map.class))
+    public void rerieveParentsRecursively(WebScriptRequest request, WebScriptResponse response)
+            throws IOException, JSONException, InvalidArgumentException {
+        String requestString = request.getContent().getContent();
+        logger.error("request content: " + requestString);
+        JSONObject jsonObject = new JSONObject(requestString);
+        JSONArray nodeRefsJsonArray = jsonObject.getJSONArray("noderefs");
+        if (nodeRefsJsonArray == null) {
+            logger.error("noderefsJsonArray is null");
+            throw new InvalidArgumentException("noderefsJsonArray is null");
+        }
+
+        NodeRef rootRef = null;
+        if (jsonObject.has("rootRef")) {
+            rootRef = new NodeRef(jsonObject.getString("rootRef"));
+            logger.error("Set rootRef to " + rootRef);
+        }
+
+        int nodeRefsJsonArrayLength = nodeRefsJsonArray.length();
+        logger.error("nodeRefsJsonArrayLength: " + nodeRefsJsonArrayLength);
+        Map<NodeRef, List<NodeRef>> recursiveParents = new HashMap<>();
+        for (int i = 0; i < nodeRefsJsonArrayLength; i++) {
+            String nodeRefString = (String) nodeRefsJsonArray.get(i);
+            logger.error("nodeRefString: " + nodeRefString);
+            NodeRef nodeRef = new NodeRef(nodeRefString);
+            List<NodeRef> parentRefs =  nodeService.getParentsRecursively(nodeRef, rootRef);
+            recursiveParents.put(nodeRef, parentRefs);
+        }
+
+        writeJsonResponse(response, recursiveParents);
     }
 
     @ApiOperation("Creates or copies a node")

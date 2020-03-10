@@ -15,6 +15,7 @@ import eu.xenit.apix.permissions.PermissionValue;
 import eu.xenit.apix.rest.v1.nodes.NodeInfo;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.alfresco.repo.admin.SysAdminParams;
@@ -79,6 +80,24 @@ public class ApixV1Webscript {
         }
 
         return nodeInfoList;
+    }
+
+    protected NodeInfo nodeRefToNodeInfo(NodeRef nodeRef,
+            IFileFolderService fileFolderService,
+            INodeService nodeService,
+            IPermissionService permissionService,
+            boolean retrievePath,
+            boolean retrieveMetadata,
+            boolean retrievePermissions,
+            boolean retrieveAssocs,
+            boolean retrieveChildAssocs,
+            boolean retrieveParentAssocs,
+            boolean retrieveTargetAssocs) {
+        List<NodeInfo> nodeInfoList = nodeRefToNodeInfo(Collections.singletonList(nodeRef), fileFolderService,
+                nodeService, permissionService, retrievePath, retrieveMetadata, retrievePermissions, retrieveAssocs,
+                retrieveChildAssocs, retrieveParentAssocs, retrieveTargetAssocs);
+
+        return nodeInfoList.get(0);
     }
 
     protected List<NodeInfo> nodeRefToNodeInfo(List<NodeRef> nodeRefs,
