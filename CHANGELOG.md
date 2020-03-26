@@ -1,19 +1,14 @@
 # Alfred API - Changelog
 
-## 2.4.0 (Unlreleased)
 
-### Added
+## 2.4.0 (2020-03-26)
 
 ### Changed
 * [ALFREDOPS-457](https://xenitsupport.jira.com/browse/ALFREDOPS-457): Updated Alfresco 6.1 base war to 'org.alfresco:content-services:6.1.1@war'
 * [ALFREDAPI-407](https://xenitsupport.jira.com/browse/ALFREDAPI-407): Updated documentation (cleaning javadoc warnings)
 
-
 ### Fixed
 * [ALFREDAPI-410](https://xenitsupport.jira.com/browse/ALFREDAPI-410): Configuration webscript requires read access to Company Home
-
-### Deleted
-
 
 
 ## 2.3.0 (2020-02-13)
