@@ -8,6 +8,7 @@ import eu.xenit.apix.data.QName;
 import eu.xenit.apix.data.StoreRef;
 import io.swagger.annotations.Api;
 import java.io.InputStream;
+import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 
@@ -77,6 +78,17 @@ public interface INodeService {
      * @return a list of the node references of the primary parents.
      */
     List<NodeRef> getParentsRecursively(NodeRef ref, NodeRef rootRef);
+
+    /**
+     * Returns all recursive primary parents of the given nodes.
+     *
+     * @param refs The list of nodes for which the recursive parents are requested.
+     * @param rootRef The node up to which point the parents have to be retrieved recursively.
+     * @return a mapping between the requested node references and the list of
+     * the node references of the primary parents. Requested node references that don't exist or
+     * the user doesn't have read permissions on are not returned.
+     */
+    Map<NodeRef, List<NodeRef>> getParentsRecursively(List<NodeRef> refs, NodeRef rootRef);
 
     /**
      * Creates an association between source and target of a given type.
