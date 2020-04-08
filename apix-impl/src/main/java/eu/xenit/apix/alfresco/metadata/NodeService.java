@@ -445,14 +445,18 @@ public class NodeService implements INodeService {
         List<eu.xenit.apix.data.NodeRef> recursiveParentRefs = new ArrayList<>();
         if (!nodeService.exists(nodeRef)) return null;
         if (permissionService.hasReadPermission(nodeRef) != AccessStatus.ALLOWED) return null;
-        NodeRef parentRef = nodeService.getPrimaryParent(nodeRef).getParentRef();
 
-        while(parentRef != null) {
+        ChildAssociationRef childAssocRef = nodeService.getPrimaryParent(nodeRef);
+        if (childAssocRef == null) return null;
+
+        NodeRef parentRef = childAssocRef.getParentRef();
+        while (parentRef != null) {
             recursiveParentRefs.add(c.apix(parentRef));
             if (parentRef.equals(alfrescoRootRef)) break;
-            if (!nodeService.exists(parentRef)) break;
-            if (permissionService.hasReadPermission(parentRef) != AccessStatus.ALLOWED) break;
-            parentRef = nodeService.getPrimaryParent(parentRef).getParentRef();
+            if (permissionService.hasReadPermission(parentRef) != AccessStatus.ALLOWED) return null;
+            ChildAssociationRef parentAssoc = nodeService.getPrimaryParent(parentRef);
+            if (parentAssoc == null) return null;
+            parentRef = parentAssoc.getParentRef();
         }
 
         return recursiveParentRefs;
@@ -463,12 +467,6 @@ public class NodeService implements INodeService {
             List<eu.xenit.apix.data.NodeRef> refs, eu.xenit.apix.data.NodeRef rootRef) {
         Map<eu.xenit.apix.data.NodeRef, List<eu.xenit.apix.data.NodeRef>> result = new HashMap<>();
         for (eu.xenit.apix.data.NodeRef nodeRef : refs) {
-            NodeRef alfrescoNodeRef = c.alfresco(nodeRef);
-            if (!this.nodeService.exists(alfrescoNodeRef)) continue;
-
-            AccessStatus accessStatus = this.permissionService.hasReadPermission(alfrescoNodeRef);
-            if (accessStatus != AccessStatus.ALLOWED) continue;
-
             List<eu.xenit.apix.data.NodeRef> recursiveParents = getParentsRecursively(nodeRef, rootRef);
             if (recursiveParents == null) continue;
 

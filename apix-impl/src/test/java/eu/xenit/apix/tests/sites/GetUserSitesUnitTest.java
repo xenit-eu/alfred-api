@@ -123,10 +123,10 @@ public class GetUserSitesUnitTest {
         Assert.assertNotEquals(null, testSite1);
         Assert.assertNotEquals(null, testSite2);
         Assert.assertNotEquals(null, testSite3);
-        Assert.assertEquals(testUserSites.size(), 3);
-        Assert.assertEquals(testUserSites.get(0).getShortName(), testSite1.getShortName());
-        Assert.assertEquals(testUserSites.get(1).getShortName(), testSite2.getShortName());
-        Assert.assertEquals(testUserSites.get(2).getShortName(), testSite3.getShortName());
+        Assert.assertEquals(3, testUserSites.size());
+        Assert.assertEquals(testSite1.getShortName(), testUserSites.get(0).getShortName());
+        Assert.assertEquals(testSite2.getShortName(), testUserSites.get(1).getShortName());
+        Assert.assertEquals(testSite3.getShortName(), testUserSites.get(2).getShortName());
         verify(alfrescoSiteService, times(1)).listSites(eq(user));
         verifyGetContainer(alfrescoSiteService, testSite1);
         verifyGetContainer(alfrescoSiteService, testSite2);
