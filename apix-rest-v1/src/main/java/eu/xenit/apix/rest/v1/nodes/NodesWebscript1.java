@@ -517,7 +517,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
             NodeRef nodeRef = new NodeRef(nodeRefString);
             nodeRefs.add(nodeRef);
         }
-        writeJsonResponse(response, nodeService.getParentsRecursiveLy(nodeRefs, rootRef));
+        writeJsonResponse(response, nodeService.getParentsRecursively(nodeRefs, rootRef));
     }
 
     @ApiOperation("Creates or copies a node")
