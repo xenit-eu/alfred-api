@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -47,6 +48,7 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.cmr.repository.MimetypeServiceAware;
 import org.alfresco.service.cmr.search.SearchService;
+import org.alfresco.service.cmr.security.AccessStatus;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.cmr.version.VersionType;
@@ -426,21 +428,6 @@ public class NodeService implements INodeService {
 
     @Override
     public List<eu.xenit.apix.data.NodeRef> getParentsRecursively(eu.xenit.apix.data.NodeRef ref, eu.xenit.apix.data.NodeRef rootRef) {
-        logger.error(">>>>>>>>>> getParentsRecursively");
-        if (ref == null) {
-            logger.error("ref: null");
-        }
-        else {
-            logger.error("ref: " + ref.getValue());
-        }
-
-        if (rootRef == null) {
-            logger.error("rootRef: null");
-        }
-        else {
-            logger.error("rootRef: " + rootRef.getValue());
-        }
-
         NodeRef alfrescoRootRef;
         if (rootRef == null){
             alfrescoRootRef = repository.getCompanyHome();
@@ -449,7 +436,6 @@ public class NodeService implements INodeService {
         {
             alfrescoRootRef = c.alfresco(rootRef);
         }
-        logger.error("alfrescoRootRef: " + alfrescoRootRef);
 
         NodeRef nodeRef = c.alfresco(ref);
         if (nodeRef.equals(alfrescoRootRef)){
@@ -457,18 +443,39 @@ public class NodeService implements INodeService {
         }
 
         List<eu.xenit.apix.data.NodeRef> recursiveParentRefs = new ArrayList<>();
+        if (!nodeService.exists(nodeRef)) return null;
+        if (permissionService.hasReadPermission(nodeRef) != AccessStatus.ALLOWED) return null;
         NodeRef parentRef = nodeService.getPrimaryParent(nodeRef).getParentRef();
-        logger.error("parentRef: " + parentRef);
+
         while(parentRef != null) {
             recursiveParentRefs.add(c.apix(parentRef));
-            if (parentRef.equals(alfrescoRootRef)) {
-                break;
-            }
+            if (parentRef.equals(alfrescoRootRef)) break;
+            if (!nodeService.exists(parentRef)) break;
+            if (permissionService.hasReadPermission(parentRef) != AccessStatus.ALLOWED) break;
             parentRef = nodeService.getPrimaryParent(parentRef).getParentRef();
         }
 
-        logger.error("<<<<<<<<<< getParentsRecursively");
         return recursiveParentRefs;
+    }
+
+    @Override
+    public Map<eu.xenit.apix.data.NodeRef, List<eu.xenit.apix.data.NodeRef>> getParentsRecursively(
+            List<eu.xenit.apix.data.NodeRef> refs, eu.xenit.apix.data.NodeRef rootRef) {
+        Map<eu.xenit.apix.data.NodeRef, List<eu.xenit.apix.data.NodeRef>> result = new HashMap<>();
+        for (eu.xenit.apix.data.NodeRef nodeRef : refs) {
+            NodeRef alfrescoNodeRef = c.alfresco(nodeRef);
+            if (!this.nodeService.exists(alfrescoNodeRef)) continue;
+
+            AccessStatus accessStatus = this.permissionService.hasReadPermission(alfrescoNodeRef);
+            if (accessStatus != AccessStatus.ALLOWED) continue;
+
+            List<eu.xenit.apix.data.NodeRef> recursiveParents = getParentsRecursively(nodeRef, rootRef);
+            if (recursiveParents == null) continue;
+
+            result.put(nodeRef, recursiveParents);
+        }
+
+        return result;
     }
 
     @Override

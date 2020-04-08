@@ -491,7 +491,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
     @ApiOperation("Retrieves the parents of the nodes recursively")
     @Uri(value = "/nodes/parent/recursive", method = HttpMethod.POST)
     @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Map.class))
-    public void rerieveParentsRecursively(WebScriptRequest request, WebScriptResponse response)
+    public void retrieveParentsRecursively(WebScriptRequest request, WebScriptResponse response)
             throws IOException, JSONException, InvalidArgumentException {
         String requestString = request.getContent().getContent();
         logger.error("request content: " + requestString);
@@ -510,16 +510,14 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
         int nodeRefsJsonArrayLength = nodeRefsJsonArray.length();
         logger.error("nodeRefsJsonArrayLength: " + nodeRefsJsonArrayLength);
-        Map<NodeRef, List<NodeRef>> recursiveParents = new HashMap<>();
+        List<NodeRef> nodeRefs = new ArrayList<>();
         for (int i = 0; i < nodeRefsJsonArrayLength; i++) {
             String nodeRefString = (String) nodeRefsJsonArray.get(i);
             logger.error("nodeRefString: " + nodeRefString);
             NodeRef nodeRef = new NodeRef(nodeRefString);
-            List<NodeRef> parentRefs =  nodeService.getParentsRecursively(nodeRef, rootRef);
-            recursiveParents.put(nodeRef, parentRefs);
+            nodeRefs.add(nodeRef);
         }
-
-        writeJsonResponse(response, recursiveParents);
+        writeJsonResponse(response, nodeService.getParentsRecursiveLy(nodeRefs, rootRef));
     }
 
     @ApiOperation("Creates or copies a node")
