@@ -77,7 +77,7 @@ public interface INodeService {
      * @param rootRef The node up to which point the parents have to be retrieved recursively.
      * @return a list of the node references of the primary parents.
      */
-    List<NodeRef> getParentsRecursively(NodeRef ref, NodeRef rootRef);
+    List<NodeRef> getRecursiveParents(NodeRef ref, NodeRef rootRef);
 
     /**
      * Returns all recursive primary parents of the given nodes.
@@ -88,7 +88,7 @@ public interface INodeService {
      * the node references of the primary parents. Requested node references that don't exist or
      * the user doesn't have read permissions on are not returned.
      */
-    Map<NodeRef, List<NodeRef>> getParentsRecursively(List<NodeRef> refs, NodeRef rootRef);
+    Map<NodeRef, List<NodeRef>> getRecursiveParents(List<NodeRef> refs, NodeRef rootRef);
 
     /**
      * Creates an association between source and target of a given type.

@@ -44,7 +44,7 @@ public class RecursiveParentsFromNodeUnitTest extends RecursiveParentsBaseUnitTe
                 serviceRegistry, apixAlfrescoConverter);
         eu.xenit.apix.data.NodeRef rootRef = new eu.xenit.apix.data.NodeRef(testNode3.toString());
         eu.xenit.apix.data.NodeRef testNode = new eu.xenit.apix.data.NodeRef(testNode1.toString());
-        List<eu.xenit.apix.data.NodeRef> recursiveParents = apixNodeService.getParentsRecursively(testNode, rootRef);
+        List<eu.xenit.apix.data.NodeRef> recursiveParents = apixNodeService.getRecursiveParents(testNode, rootRef);
         Assert.assertEquals(2, recursiveParents.size());
         Assert.assertEquals(testNode2.toString(), recursiveParents.get(0).toString());
         Assert.assertEquals(testNode3.toString(), recursiveParents.get(1).toString());

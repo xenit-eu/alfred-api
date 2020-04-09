@@ -427,7 +427,7 @@ public class NodeService implements INodeService {
     }
 
     @Override
-    public List<eu.xenit.apix.data.NodeRef> getParentsRecursively(eu.xenit.apix.data.NodeRef ref, eu.xenit.apix.data.NodeRef rootRef) {
+    public List<eu.xenit.apix.data.NodeRef> getRecursiveParents(eu.xenit.apix.data.NodeRef ref, eu.xenit.apix.data.NodeRef rootRef) {
         NodeRef alfrescoRootRef;
         if (rootRef == null){
             alfrescoRootRef = repository.getCompanyHome();
@@ -463,11 +463,11 @@ public class NodeService implements INodeService {
     }
 
     @Override
-    public Map<eu.xenit.apix.data.NodeRef, List<eu.xenit.apix.data.NodeRef>> getParentsRecursively(
+    public Map<eu.xenit.apix.data.NodeRef, List<eu.xenit.apix.data.NodeRef>> getRecursiveParents(
             List<eu.xenit.apix.data.NodeRef> refs, eu.xenit.apix.data.NodeRef rootRef) {
         Map<eu.xenit.apix.data.NodeRef, List<eu.xenit.apix.data.NodeRef>> result = new HashMap<>();
         for (eu.xenit.apix.data.NodeRef nodeRef : refs) {
-            List<eu.xenit.apix.data.NodeRef> recursiveParents = getParentsRecursively(nodeRef, rootRef);
+            List<eu.xenit.apix.data.NodeRef> recursiveParents = getRecursiveParents(nodeRef, rootRef);
             if (recursiveParents == null) continue;
 
             result.put(nodeRef, recursiveParents);

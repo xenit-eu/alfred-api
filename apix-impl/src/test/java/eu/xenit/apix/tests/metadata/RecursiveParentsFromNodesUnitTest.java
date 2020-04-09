@@ -32,7 +32,8 @@ public class RecursiveParentsFromNodesUnitTest extends RecursiveParentsBaseUnitT
         when(nodeServiceMock.exists(eq(testNodeWithoutReadPermission))).thenReturn(true);
         ChildAssociationRef childAssocRef1 = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, testNode2, null,
                 testNode1);
-        ChildAssociationRef childAssocRef2 = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, testNodeWithoutReadPermission,
+        ChildAssociationRef childAssocRef2 = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS,
+                testNodeWithoutReadPermission,
                 null,
                 testNode2);
         ChildAssociationRef childAssocRef3 = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, testNode3, null,
@@ -66,7 +67,7 @@ public class RecursiveParentsFromNodesUnitTest extends RecursiveParentsBaseUnitT
         eu.xenit.apix.data.NodeRef testNode = new eu.xenit.apix.data.NodeRef(testNode1.toString());
         List<NodeRef> testNodes = new ArrayList<>();
         testNodes.add(testNode);
-        Map<NodeRef, List<NodeRef>> recursiveParents = apixNodeService.getParentsRecursively(testNodes, rootRef);
+        Map<NodeRef, List<NodeRef>> recursiveParents = apixNodeService.getRecursiveParents(testNodes, rootRef);
         Assert.assertEquals(0, recursiveParents.size());
         verify(alfrescoPermissionService, times(1)).hasReadPermission(eq(testNode1));
         verify(alfrescoPermissionService, times(1)).hasReadPermission(eq(testNode2));
