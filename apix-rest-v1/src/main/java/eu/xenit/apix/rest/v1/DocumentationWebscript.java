@@ -13,6 +13,7 @@ import eu.xenit.apix.rest.v1.nodes.NodesWebscript1;
 import eu.xenit.apix.rest.v1.people.PeopleWebscript1;
 import eu.xenit.apix.rest.v1.properties.PropertiesWebScript1;
 import eu.xenit.apix.rest.v1.search.SearchWebScript1;
+import eu.xenit.apix.rest.v1.sites.SitesWebscript1;
 import eu.xenit.apix.rest.v1.temp.WIPWebscript;
 import eu.xenit.apix.rest.v1.translation.TranslationsWebscript1;
 import eu.xenit.apix.rest.v1.versionhistory.VersionHistoryWebScript1;
@@ -150,6 +151,7 @@ public class DocumentationWebscript extends ApixV1Webscript {//implements BeanFa
         r.read(GeneralWebscript.class);
         r.read(NodesWebscript1.class);
         r.read(SearchWebScript1.class);
+        r.read(SitesWebscript1.class);
         r.read(TranslationsWebscript1.class);
         r.read(VersionHistoryWebScript1.class);
         r.read(WIPWebscript.class);
