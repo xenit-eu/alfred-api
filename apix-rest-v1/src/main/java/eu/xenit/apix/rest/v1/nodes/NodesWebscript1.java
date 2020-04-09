@@ -488,36 +488,55 @@ public class NodesWebscript1 extends ApixV1Webscript {
         //logger.error("end writeJsonResponse");
     }
 
-    @ApiOperation("Retrieves the parents of the nodes recursively")
+    @ApiOperation(value = "Retrieves the parents of the nodes recursively",
+            notes = "example json request data: \n"
+                    + "```\n"
+                    + "{\n"
+                    + "\t\"rootRef\" : \"workspace://SpacesStore/c5a7fe48-d4ab-401c-bf38-e51a297f572f\",\n"
+                    + "\t\"nodeRefs\" : [\n"
+                    + "\t\t\"workspace://SpacesStore/f3e914be-c112-45b4-a398-6ceb6bd19958\",\n"
+                    + "\t\t\"workspace://SpacesStore/74d2de42-c03d-410b-bfc5-12ab487840b8\"\n"
+                    + "\t\t]\n"
+                    + "}\n"
+                    + "```\n"
+                    + "\n"
+                    + "Parameter 'rootRef' is an optional parameter. If the parameter is not given the default value\n"
+                    + "will be the node reference of Company Home. It is the last parent last parent in the list of\n"
+                    + "recursive parents."
+                    + "Parameter 'nodeRefs' is a mandatory parameter. It contains the node references of the nodes\n"
+                    + "for which the recursive parents need to be retrieved.\n"
+                    + "\n"
+                    + "Nodes for which the recursive parents are requested are omitted from the result if the node\n"
+                    + "does not exist or one of its recursive parents cannot be read by the user.")
     @Uri(value = "/nodes/parent/recursive", method = HttpMethod.POST)
     @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Map.class))
-    public void retrieveParentsRecursively(WebScriptRequest request, WebScriptResponse response)
+    public void retrieveRecursiveParents(WebScriptRequest request, WebScriptResponse response)
             throws IOException, JSONException, InvalidArgumentException {
         String requestString = request.getContent().getContent();
-        logger.error("request content: " + requestString);
+        logger.debug("request content: " + requestString);
         JSONObject jsonObject = new JSONObject(requestString);
-        JSONArray nodeRefsJsonArray = jsonObject.getJSONArray("noderefs");
+        JSONArray nodeRefsJsonArray = jsonObject.getJSONArray("nodeRefs");
         if (nodeRefsJsonArray == null) {
-            logger.error("noderefsJsonArray is null");
-            throw new InvalidArgumentException("noderefsJsonArray is null");
+            logger.debug("nodeRefsJsonArray is null");
+            throw new InvalidArgumentException("nodeRefsJsonArray is null");
         }
 
         NodeRef rootRef = null;
         if (jsonObject.has("rootRef")) {
             rootRef = new NodeRef(jsonObject.getString("rootRef"));
-            logger.error("Set rootRef to " + rootRef);
+            logger.debug("Set rootRef to " + rootRef);
         }
 
         int nodeRefsJsonArrayLength = nodeRefsJsonArray.length();
-        logger.error("nodeRefsJsonArrayLength: " + nodeRefsJsonArrayLength);
+        logger.debug("nodeRefsJsonArrayLength: " + nodeRefsJsonArrayLength);
         List<NodeRef> nodeRefs = new ArrayList<>();
         for (int i = 0; i < nodeRefsJsonArrayLength; i++) {
             String nodeRefString = (String) nodeRefsJsonArray.get(i);
-            logger.error("nodeRefString: " + nodeRefString);
+            logger.debug("nodeRefString: " + nodeRefString);
             NodeRef nodeRef = new NodeRef(nodeRefString);
             nodeRefs.add(nodeRef);
         }
-        writeJsonResponse(response, nodeService.getParentsRecursively(nodeRefs, rootRef));
+        writeJsonResponse(response, nodeService.getRecursiveParents(nodeRefs, rootRef));
     }
 
     @ApiOperation("Creates or copies a node")

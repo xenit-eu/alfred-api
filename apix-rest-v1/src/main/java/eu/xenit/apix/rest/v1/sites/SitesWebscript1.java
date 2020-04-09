@@ -52,25 +52,34 @@ public class SitesWebscript1 extends ApixV1Webscript {
     @Autowired
     ServiceRegistry serviceRegistry;
 
-    @ApiOperation(value = "some value", notes = "some notes")
+    @ApiOperation(value = "Retrieves information about the available sites of the current user",
+            notes = "Returns a list of sites. For each site the node reference, short name, title, description,\n"
+                    + "site visibility and list of site components (document libray, links, data lists, wiki,\n"
+                    + "discussions) are returned.\n"
+                    + "\n"
+                    + "There are no mandatory request parameters. However, there are optional ones:\n"
+                    + "Set 'retrieveMetadata' to true to return the aspects and properties of the sites.\n"
+                    + "Set 'retrievePath' to true to return the path of the sites.\n"
+                    + "Set 'retrievePermissions' to true to return the permissions of the sites.\n"
+                    + "Set 'retrieveChildAssocs' to true to return the child associations of the sites.\n"
+                    + "Set 'retrieveParentAssocs' to true to return the parent associations of the sites.\n"
+                    +"Set 'retrieveTargetAssocs' to true to return the peer associations of the sites.\n")
     @Uri(value = "/sites/mySites", method = HttpMethod.GET)
     @ApiResponses(@ApiResponse(code = 200, message = "Success", response = SiteInfo[].class))
     public void getMySites(@RequestParam(required = false) Boolean retrieveMetadata,
             @RequestParam(required = false) Boolean retrievePath,
             @RequestParam(required = false) Boolean retrievePermissions,
-            @RequestParam(required = false) Boolean retrieveAssocs,
             @RequestParam(required = false) Boolean retrieveChildAssocs,
             @RequestParam(required = false) Boolean retrieveParentAssocs,
             @RequestParam(required = false) Boolean retrieveTargetAssocs,
             WebScriptResponse response)
             throws IOException {
-        logger.error("retrieveMetadata: "+retrieveMetadata);
-        logger.error("retrievePath: "+retrievePath);
-        logger.error("retrievePermissions: "+retrievePermissions);
-        logger.error("retrieveAssocs: "+retrieveAssocs);
-        logger.error("retrieveChildAssocs: "+retrieveChildAssocs);
-        logger.error("retrieveParentAssocs: "+retrieveParentAssocs);
-        logger.error("retrieveTargetAssocs: "+retrieveTargetAssocs);
+        logger.debug("retrieveMetadata: "+retrieveMetadata);
+        logger.debug("retrievePath: "+retrievePath);
+        logger.debug("retrievePermissions: "+retrievePermissions);
+        logger.debug("retrieveChildAssocs: "+retrieveChildAssocs);
+        logger.debug("retrieveParentAssocs: "+retrieveParentAssocs);
+        logger.debug("retrieveTargetAssocs: "+retrieveTargetAssocs);
 
         if (retrieveMetadata == null){
             retrieveMetadata = false;
@@ -80,9 +89,6 @@ public class SitesWebscript1 extends ApixV1Webscript {
         }
         if (retrievePermissions == null){
             retrievePermissions = false;
-        }
-        if (retrieveAssocs == null){
-            retrieveAssocs = false;
         }
         if (retrieveChildAssocs == null){
             retrieveChildAssocs = false;
@@ -100,7 +106,7 @@ public class SitesWebscript1 extends ApixV1Webscript {
         for (ISite site : sites) {
             NodeRef siteRef = site.getNodeRef();
             NodeInfo nodeInfo = nodeRefToNodeInfo(siteRef, fileFolderService, nodeService, permissionService,
-                    retrievePath, retrieveMetadata, retrievePermissions, retrieveAssocs, retrieveChildAssocs,
+                    retrievePath, retrieveMetadata, retrievePermissions, true, retrieveChildAssocs,
                     retrieveParentAssocs, retrieveTargetAssocs);
             SiteInfo siteInfo = new SiteInfo(site, nodeInfo);
             siteInfoList.add(siteInfo);
