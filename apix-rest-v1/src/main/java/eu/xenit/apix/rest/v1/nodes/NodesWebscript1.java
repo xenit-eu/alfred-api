@@ -7,7 +7,6 @@ import com.github.dynamicextensionsalfresco.webscripts.annotations.Transaction;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.UriVariable;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.WebScript;
-import com.sun.star.auth.InvalidArgumentException;
 import eu.xenit.apix.data.ContentInputStream;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
@@ -509,14 +508,14 @@ public class NodesWebscript1 extends ApixV1Webscript {
     @Uri(value = "/nodes/parent/recursive", method = HttpMethod.POST)
     @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Map.class))
     public void retrieveRecursiveParents(WebScriptRequest request, WebScriptResponse response)
-            throws IOException, JSONException, InvalidArgumentException {
+            throws IOException, JSONException, IllegalArgumentException {
         String requestString = request.getContent().getContent();
         logger.debug("request content: " + requestString);
         JSONObject jsonObject = new JSONObject(requestString);
         JSONArray nodeRefsJsonArray = jsonObject.getJSONArray("nodeRefs");
         if (nodeRefsJsonArray == null) {
             logger.debug("nodeRefsJsonArray is null");
-            throw new InvalidArgumentException("nodeRefsJsonArray is null");
+            throw new IllegalArgumentException("nodeRefsJsonArray is null");
         }
 
         NodeRef rootRef = null;
