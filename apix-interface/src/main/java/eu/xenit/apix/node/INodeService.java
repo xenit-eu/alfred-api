@@ -75,6 +75,7 @@ public interface INodeService {
      *
      * @param ref     The node for which the recursive parents are requested.
      * @param rootRef The node up to which point the parents have to be retrieved recursively.
+     *                This is optional and uses Company Home as root by default.
      * @return a list of the node references of the primary parents.
      */
     List<NodeRef> getRecursiveParents(NodeRef ref, NodeRef rootRef);
