@@ -486,7 +486,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         //logger.error("end writeJsonResponse");
     }
 
-    @ApiOperation(value = "Retrieves the parents of the nodes recursively",
+    @ApiOperation(value = "Retrieves the ancestors of the nodes",
             notes = "example json request data: \n"
                     + "```\n"
                     + "{\n"
@@ -499,16 +499,15 @@ public class NodesWebscript1 extends ApixV1Webscript {
                     + "```\n"
                     + "\n"
                     + "Parameter 'rootRef' is an optional parameter. If the parameter is not given the default value\n"
-                    + "will be the node reference of Company Home. It is the last parent last parent in the list of\n"
-                    + "recursive parents."
+                    + "will be the node reference of Company Home. It is the last parent in the list of ancestors\n"
                     + "Parameter 'nodeRefs' is a mandatory parameter. It contains the node references of the nodes\n"
-                    + "for which the recursive parents need to be retrieved.\n"
+                    + "for which the ancestors need to be retrieved.\n"
                     + "\n"
-                    + "Nodes for which the recursive parents are requested are omitted from the result if the node\n"
-                    + "does not exist or one of its recursive parents cannot be read by the user.")
-    @Uri(value = "/nodes/parent/recursive", method = HttpMethod.POST)
+                    + "Nodes for which the ancestors are requested are omitted from the result if the node\n"
+                    + "does not exist or one of its ancestors cannot be read by the user.")
+    @Uri(value = "/nodes/ancestors", method = HttpMethod.POST)
     @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Map.class))
-    public void retrieveRecursiveParents(WebScriptRequest request, WebScriptResponse response)
+    public void retrieveAncestors(WebScriptRequest request, WebScriptResponse response)
             throws IOException, JSONException, IllegalArgumentException {
         String requestString = request.getContent().getContent();
         logger.debug("request content: " + requestString);
@@ -534,7 +533,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
             NodeRef nodeRef = new NodeRef(nodeRefString);
             nodeRefs.add(nodeRef);
         }
-        writeJsonResponse(response, nodeService.getRecursiveParents(nodeRefs, rootRef));
+        writeJsonResponse(response, nodeService.getAncestors(nodeRefs, rootRef));
     }
 
     @ApiOperation("Creates or copies a node")

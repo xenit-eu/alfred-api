@@ -12,7 +12,7 @@ import org.alfresco.service.cmr.security.AccessStatus;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.junit.Before;
 
-public abstract class RecursiveParentsBaseUnitTest {
+public abstract class AncestorsBaseUnitTest {
 
     protected ServiceRegistry serviceRegistry;
     protected ApixToAlfrescoConversion apixAlfrescoConverter;

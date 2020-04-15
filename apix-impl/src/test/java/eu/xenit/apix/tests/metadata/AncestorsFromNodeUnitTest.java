@@ -14,7 +14,7 @@ import org.alfresco.service.cmr.security.PermissionService;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class RecursiveParentsFromNodeUnitTest extends RecursiveParentsBaseUnitTest {
+public class AncestorsFromNodeUnitTest extends AncestorsBaseUnitTest {
 
     @Override
     protected NodeService initNodeServiceMock() {
@@ -36,7 +36,7 @@ public class RecursiveParentsFromNodeUnitTest extends RecursiveParentsBaseUnitTe
     }
 
     @Test
-    public void getRecursiveParentsOfNodeTest() {
+    public void getAncestorsOfNodeTest() {
         PermissionService alfrescoPermissionService = serviceRegistry.getPermissionService();
         NodeService alfrescoNodeService = serviceRegistry.getNodeService();
 
@@ -44,10 +44,10 @@ public class RecursiveParentsFromNodeUnitTest extends RecursiveParentsBaseUnitTe
                 serviceRegistry, apixAlfrescoConverter);
         eu.xenit.apix.data.NodeRef rootRef = new eu.xenit.apix.data.NodeRef(testNode3.toString());
         eu.xenit.apix.data.NodeRef testNode = new eu.xenit.apix.data.NodeRef(testNode1.toString());
-        List<eu.xenit.apix.data.NodeRef> recursiveParents = apixNodeService.getRecursiveParents(testNode, rootRef);
-        Assert.assertEquals(2, recursiveParents.size());
-        Assert.assertEquals(testNode2.toString(), recursiveParents.get(0).toString());
-        Assert.assertEquals(testNode3.toString(), recursiveParents.get(1).toString());
+        List<eu.xenit.apix.data.NodeRef> ancestors = apixNodeService.getAncestors(testNode, rootRef);
+        Assert.assertEquals(2, ancestors.size());
+        Assert.assertEquals(testNode2.toString(), ancestors.get(0).toString());
+        Assert.assertEquals(testNode3.toString(), ancestors.get(1).toString());
         verify(alfrescoPermissionService, times(1)).hasReadPermission(eq(testNode1));
         verify(alfrescoPermissionService, times(1)).hasReadPermission(eq(testNode2));
         verify(alfrescoPermissionService, times(0)).hasReadPermission(eq(testNode3));

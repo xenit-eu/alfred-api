@@ -4,7 +4,7 @@
 ## 2.4.1 (Unreleased)
 
 ### Added
-* [HA-29](https://xenitsupport.jira.com/browse/HA-29): Added webscript for retrieving available sites + webscript for retrieving recursive parents of a node
+* [HA-29](https://xenitsupport.jira.com/browse/HA-29): Added webscript for retrieving available sites + webscript for retrieving ancestors of a node
 
 ### Changed
 
