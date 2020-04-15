@@ -427,35 +427,46 @@ public class NodeService implements INodeService {
     }
 
     @Override
-    public List<eu.xenit.apix.data.NodeRef> getRecursiveParents(eu.xenit.apix.data.NodeRef ref, eu.xenit.apix.data.NodeRef rootRef) {
+    public List<eu.xenit.apix.data.NodeRef> getRecursiveParents(eu.xenit.apix.data.NodeRef ref,
+            eu.xenit.apix.data.NodeRef rootRef) {
         NodeRef alfrescoRootRef;
-        if (rootRef == null){
+        if (rootRef == null) {
             alfrescoRootRef = repository.getCompanyHome();
-        }
-        else
-        {
+        } else {
             alfrescoRootRef = c.alfresco(rootRef);
         }
 
         NodeRef nodeRef = c.alfresco(ref);
-        if (nodeRef.equals(alfrescoRootRef)){
+        if (nodeRef.equals(alfrescoRootRef)) {
             return new ArrayList<>();
         }
 
         List<eu.xenit.apix.data.NodeRef> recursiveParentRefs = new ArrayList<>();
-        if (!nodeService.exists(nodeRef)) return null;
-        if (permissionService.hasReadPermission(nodeRef) != AccessStatus.ALLOWED) return null;
+        if (!nodeService.exists(nodeRef)) {
+            return null;
+        }
+        if (permissionService.hasReadPermission(nodeRef) != AccessStatus.ALLOWED) {
+            return null;
+        }
 
         ChildAssociationRef childAssocRef = nodeService.getPrimaryParent(nodeRef);
-        if (childAssocRef == null) return null;
+        if (childAssocRef == null) {
+            return null;
+        }
 
         NodeRef parentRef = childAssocRef.getParentRef();
         while (parentRef != null) {
             recursiveParentRefs.add(c.apix(parentRef));
-            if (parentRef.equals(alfrescoRootRef)) break;
-            if (permissionService.hasReadPermission(parentRef) != AccessStatus.ALLOWED) return null;
+            if (parentRef.equals(alfrescoRootRef)) {
+                break;
+            }
+            if (permissionService.hasReadPermission(parentRef) != AccessStatus.ALLOWED) {
+                return null;
+            }
             ChildAssociationRef parentAssoc = nodeService.getPrimaryParent(parentRef);
-            if (parentAssoc == null) return null;
+            if (parentAssoc == null) {
+                return null;
+            }
             parentRef = parentAssoc.getParentRef();
         }
 
@@ -468,7 +479,9 @@ public class NodeService implements INodeService {
         Map<eu.xenit.apix.data.NodeRef, List<eu.xenit.apix.data.NodeRef>> result = new HashMap<>();
         for (eu.xenit.apix.data.NodeRef nodeRef : refs) {
             List<eu.xenit.apix.data.NodeRef> recursiveParents = getRecursiveParents(nodeRef, rootRef);
-            if (recursiveParents == null) continue;
+            if (recursiveParents == null) {
+                continue;
+            }
 
             result.put(nodeRef, recursiveParents);
         }
