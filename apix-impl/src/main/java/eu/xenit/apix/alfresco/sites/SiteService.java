@@ -28,12 +28,7 @@ public class SiteService implements ISiteService {
     private final static String DISCUSSIONS_COMPONENT = "discussions";
 
     private ApixToAlfrescoConversion c;
-
-    @Autowired
     private ServiceRegistry serviceRegistry;
-
-    public SiteService() {
-    }
 
     @Autowired
     public SiteService(ServiceRegistry serviceRegistry, ApixToAlfrescoConversion apixToAlfrescoConversion) {
