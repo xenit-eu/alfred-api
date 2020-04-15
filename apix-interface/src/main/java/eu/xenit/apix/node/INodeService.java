@@ -71,25 +71,25 @@ public interface INodeService {
     NodeAssociations getAssociations(NodeRef ref);
 
     /**
-     * Returns all recursive primary parents of the given node.
+     * Returns all primary ancestors of the given node.
      *
-     * @param ref     The node for which the recursive parents are requested.
-     * @param rootRef The node up to which point the parents have to be retrieved recursively.
+     * @param ref     The node for which the ancestors are requested.
+     * @param rootRef The node up to which point the ancestors have to be retrieved.
      *                This is optional and uses Company Home as root by default.
      * @return a list of the node references of the primary parents.
      */
-    List<NodeRef> getRecursiveParents(NodeRef ref, NodeRef rootRef);
+    List<NodeRef> getAncestors(NodeRef ref, NodeRef rootRef);
 
     /**
-     * Returns all recursive primary parents of the given nodes.
+     * Returns all primary ancestors of the given nodes.
      *
-     * @param refs    The list of nodes for which the recursive parents are requested.
-     * @param rootRef The node up to which point the parents have to be retrieved recursively.
+     * @param refs    The list of nodes for which the ancestors are requested.
+     * @param rootRef The node up to which point the ancestors have to be retrieved.
      * @return a mapping between the requested node references and the list of
      * the node references of the primary parents. Requested node references that don't exist or
      * the user doesn't have read permissions on are not returned.
      */
-    Map<NodeRef, List<NodeRef>> getRecursiveParents(List<NodeRef> refs, NodeRef rootRef);
+    Map<NodeRef, List<NodeRef>> getAncestors(List<NodeRef> refs, NodeRef rootRef);
 
     /**
      * Creates an association between source and target of a given type.
