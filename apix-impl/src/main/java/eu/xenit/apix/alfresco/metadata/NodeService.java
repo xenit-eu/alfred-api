@@ -427,7 +427,7 @@ public class NodeService implements INodeService {
     }
 
     @Override
-    public List<eu.xenit.apix.data.NodeRef> getRecursiveParents(eu.xenit.apix.data.NodeRef ref,
+    public List<eu.xenit.apix.data.NodeRef> getAncestors(eu.xenit.apix.data.NodeRef ref,
             eu.xenit.apix.data.NodeRef rootRef) {
         NodeRef alfrescoRootRef;
         if (rootRef == null) {
@@ -441,7 +441,7 @@ public class NodeService implements INodeService {
             return new ArrayList<>();
         }
 
-        List<eu.xenit.apix.data.NodeRef> recursiveParentRefs = new ArrayList<>();
+        List<eu.xenit.apix.data.NodeRef> ancestorRefs = new ArrayList<>();
         if (!nodeService.exists(nodeRef)) {
             return null;
         }
@@ -456,7 +456,7 @@ public class NodeService implements INodeService {
 
         NodeRef parentRef = childAssocRef.getParentRef();
         while (parentRef != null) {
-            recursiveParentRefs.add(c.apix(parentRef));
+            ancestorRefs.add(c.apix(parentRef));
             if (parentRef.equals(alfrescoRootRef)) {
                 break;
             }
@@ -470,20 +470,20 @@ public class NodeService implements INodeService {
             parentRef = parentAssoc.getParentRef();
         }
 
-        return recursiveParentRefs;
+        return ancestorRefs;
     }
 
     @Override
-    public Map<eu.xenit.apix.data.NodeRef, List<eu.xenit.apix.data.NodeRef>> getRecursiveParents(
+    public Map<eu.xenit.apix.data.NodeRef, List<eu.xenit.apix.data.NodeRef>> getAncestors(
             List<eu.xenit.apix.data.NodeRef> refs, eu.xenit.apix.data.NodeRef rootRef) {
         Map<eu.xenit.apix.data.NodeRef, List<eu.xenit.apix.data.NodeRef>> result = new HashMap<>();
         for (eu.xenit.apix.data.NodeRef nodeRef : refs) {
-            List<eu.xenit.apix.data.NodeRef> recursiveParents = getRecursiveParents(nodeRef, rootRef);
-            if (recursiveParents == null) {
+            List<eu.xenit.apix.data.NodeRef> ancestors = getAncestors(nodeRef, rootRef);
+            if (ancestors == null) {
                 continue;
             }
 
-            result.put(nodeRef, recursiveParents);
+            result.put(nodeRef, ancestors);
         }
 
         return result;
