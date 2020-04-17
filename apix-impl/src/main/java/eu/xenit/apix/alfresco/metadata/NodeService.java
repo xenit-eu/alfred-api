@@ -8,13 +8,10 @@ import eu.xenit.apix.node.MetadataChanges;
 import eu.xenit.apix.node.NodeAssociation;
 import eu.xenit.apix.node.NodeAssociations;
 import eu.xenit.apix.node.NodeMetadata;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.model.Repository;
+import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.rest.framework.core.exceptions.InvalidArgumentException;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.coci.CheckOutCheckInService;
@@ -44,9 +42,9 @@ import org.alfresco.service.cmr.repository.CopyService;
 import org.alfresco.service.cmr.repository.DuplicateChildNodeNameException;
 import org.alfresco.service.cmr.repository.InvalidNodeRefException;
 import org.alfresco.service.cmr.repository.MimetypeService;
+import org.alfresco.service.cmr.repository.MimetypeServiceAware;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
-import org.alfresco.service.cmr.repository.MimetypeServiceAware;
 import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.security.AccessStatus;
 import org.alfresco.service.cmr.security.AuthenticationService;
@@ -57,7 +55,6 @@ import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
 import org.alfresco.util.TempFileProvider;
 import org.apache.chemistry.opencmis.commons.spi.AclService;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -428,7 +425,7 @@ public class NodeService implements INodeService {
 
     @Override
     public List<eu.xenit.apix.data.NodeRef> getAncestors(eu.xenit.apix.data.NodeRef ref,
-            eu.xenit.apix.data.NodeRef rootRef) {
+            eu.xenit.apix.data.NodeRef rootRef) throws InvalidNodeRefException, AccessDeniedException {
         NodeRef alfrescoRootRef;
         if (rootRef == null) {
             alfrescoRootRef = repository.getCompanyHome();
@@ -441,19 +438,17 @@ public class NodeService implements INodeService {
             return new ArrayList<>();
         }
 
+        String accessDeniedMessage = "no read access on node with node reference %s";
+        String nodeDoesNotExistMesage = "node with node reference %s does not exist";
         List<eu.xenit.apix.data.NodeRef> ancestorRefs = new ArrayList<>();
         if (!nodeService.exists(nodeRef)) {
-            return null;
+            throw new InvalidNodeRefException(String.format(nodeDoesNotExistMesage, nodeRef), nodeRef);
         }
         if (permissionService.hasReadPermission(nodeRef) != AccessStatus.ALLOWED) {
-            return null;
+            throw new AccessDeniedException(String.format(accessDeniedMessage, nodeRef));
         }
 
         ChildAssociationRef childAssocRef = nodeService.getPrimaryParent(nodeRef);
-        if (childAssocRef == null) {
-            return null;
-        }
-
         NodeRef parentRef = childAssocRef.getParentRef();
         while (parentRef != null) {
             ancestorRefs.add(c.apix(parentRef));
@@ -461,32 +456,13 @@ public class NodeService implements INodeService {
                 break;
             }
             if (permissionService.hasReadPermission(parentRef) != AccessStatus.ALLOWED) {
-                return null;
+                throw new AccessDeniedException(String.format(accessDeniedMessage, parentRef));
             }
             ChildAssociationRef parentAssoc = nodeService.getPrimaryParent(parentRef);
-            if (parentAssoc == null) {
-                return null;
-            }
             parentRef = parentAssoc.getParentRef();
         }
 
         return ancestorRefs;
-    }
-
-    @Override
-    public Map<eu.xenit.apix.data.NodeRef, List<eu.xenit.apix.data.NodeRef>> getAncestors(
-            List<eu.xenit.apix.data.NodeRef> refs, eu.xenit.apix.data.NodeRef rootRef) {
-        Map<eu.xenit.apix.data.NodeRef, List<eu.xenit.apix.data.NodeRef>> result = new HashMap<>();
-        for (eu.xenit.apix.data.NodeRef nodeRef : refs) {
-            List<eu.xenit.apix.data.NodeRef> ancestors = getAncestors(nodeRef, rootRef);
-            if (ancestors == null) {
-                continue;
-            }
-
-            result.put(nodeRef, ancestors);
-        }
-
-        return result;
     }
 
     @Override

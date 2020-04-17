@@ -44,6 +44,7 @@ import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.InvalidNodeRefException;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -487,53 +488,33 @@ public class NodesWebscript1 extends ApixV1Webscript {
     }
 
     @ApiOperation(value = "Retrieves the ancestors of the nodes",
-            notes = "example json request data: \n"
-                    + "```\n"
-                    + "{\n"
-                    + "\t\"rootRef\" : \"workspace://SpacesStore/c5a7fe48-d4ab-401c-bf38-e51a297f572f\",\n"
-                    + "\t\"nodeRefs\" : [\n"
-                    + "\t\t\"workspace://SpacesStore/f3e914be-c112-45b4-a398-6ceb6bd19958\",\n"
-                    + "\t\t\"workspace://SpacesStore/74d2de42-c03d-410b-bfc5-12ab487840b8\"\n"
-                    + "\t\t]\n"
-                    + "}\n"
-                    + "```\n"
-                    + "\n"
-                    + "Parameter 'rootRef' is an optional parameter. If the parameter is not given the default value\n"
-                    + "will be the node reference of Company Home. It is the last parent in the list of ancestors\n"
-                    + "Parameter 'nodeRefs' is a mandatory parameter. It contains the node references of the nodes\n"
-                    + "for which the ancestors need to be retrieved.\n"
-                    + "\n"
-                    + "Nodes for which the ancestors are requested are omitted from the result if the node\n"
-                    + "does not exist or one of its ancestors cannot be read by the user.")
-    @Uri(value = "/nodes/ancestors", method = HttpMethod.POST)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Map.class))
-    public void retrieveAncestors(WebScriptRequest request, WebScriptResponse response)
-            throws IOException, JSONException, IllegalArgumentException {
-        String requestString = request.getContent().getContent();
-        logger.debug("request content: " + requestString);
-        JSONObject jsonObject = new JSONObject(requestString);
-        JSONArray nodeRefsJsonArray = jsonObject.getJSONArray("nodeRefs");
-        if (nodeRefsJsonArray == null) {
-            logger.debug("nodeRefsJsonArray is null");
-            throw new IllegalArgumentException("nodeRefsJsonArray is null");
-        }
-
+            notes = "It is possible to add \"root\" as a request parameter.\n"
+                    + "It is the node reference up to which point ancestors will be retrieved.\n"
+                    + "The default root reference will be the reference of Company Home")
+    @Uri(value = "/nodes/{space}/{store}/{guid}/ancestors", method = HttpMethod.GET)
+    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NodeRef[].class))
+    public void retrieveAncestors(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
+            @RequestParam(required = false) String root, WebScriptResponse response) throws IOException {
+        NodeRef nodeRef = this.createNodeRef(space, store, guid);
         NodeRef rootRef = null;
-        if (jsonObject.has("rootRef")) {
-            rootRef = new NodeRef(jsonObject.getString("rootRef"));
-            logger.debug("Set rootRef to " + rootRef);
+        if (root != null) {
+            rootRef = new NodeRef(root);
         }
 
-        int nodeRefsJsonArrayLength = nodeRefsJsonArray.length();
-        logger.debug("nodeRefsJsonArrayLength: " + nodeRefsJsonArrayLength);
-        List<NodeRef> nodeRefs = new ArrayList<>();
-        for (int i = 0; i < nodeRefsJsonArrayLength; i++) {
-            String nodeRefString = (String) nodeRefsJsonArray.get(i);
-            logger.debug("nodeRefString: " + nodeRefString);
-            NodeRef nodeRef = new NodeRef(nodeRefString);
-            nodeRefs.add(nodeRef);
+        try {
+            List<NodeRef> ancestors = nodeService.getAncestors(nodeRef, rootRef);
+            writeJsonResponse(response, ancestors);
         }
-        writeJsonResponse(response, nodeService.getAncestors(nodeRefs, rootRef));
+        catch (InvalidNodeRefException ex) {
+            logger.error("noderef does not exist");
+            response.setStatus(HttpStatus.SC_NOT_FOUND);
+            writeJsonResponse(response, ex.getMessage());
+        }
+        catch (AccessDeniedException ex) {
+            logger.error("access denied on noderef");
+            response.setStatus(HttpStatus.SC_FORBIDDEN);
+            writeJsonResponse(response, ex.getMessage());
+        }
     }
 
     @ApiOperation("Creates or copies a node")
