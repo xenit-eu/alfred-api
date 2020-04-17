@@ -12,7 +12,7 @@ import org.alfresco.service.cmr.security.AccessStatus;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.junit.Test;
 
-public class AncestorsFromInaccessibleNodeUnitTest extends AncestorsBaseUnitTest{
+public class AncestorsFromInaccessibleNodeUnitTest extends AncestorsBaseUnitTest {
 
     @Override
     protected NodeService initNodeServiceMock() {
