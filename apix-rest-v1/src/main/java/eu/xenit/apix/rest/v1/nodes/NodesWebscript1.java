@@ -504,13 +504,11 @@ public class NodesWebscript1 extends ApixV1Webscript {
         try {
             List<NodeRef> ancestors = nodeService.getAncestors(nodeRef, rootRef);
             writeJsonResponse(response, ancestors);
-        }
-        catch (InvalidNodeRefException ex) {
+        } catch (InvalidNodeRefException ex) {
             logger.error("noderef does not exist");
             response.setStatus(HttpStatus.SC_NOT_FOUND);
             writeJsonResponse(response, ex.getMessage());
-        }
-        catch (AccessDeniedException ex) {
+        } catch (AccessDeniedException ex) {
             logger.error("access denied on noderef");
             response.setStatus(HttpStatus.SC_FORBIDDEN);
             writeJsonResponse(response, ex.getMessage());

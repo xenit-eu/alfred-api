@@ -10,7 +10,7 @@ import org.alfresco.service.cmr.repository.InvalidNodeRefException;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.junit.Test;
 
-public class AncestorsFromNonExistingNodeUnitTest extends AncestorsBaseUnitTest{
+public class AncestorsFromNonExistingNodeUnitTest extends AncestorsBaseUnitTest {
 
     @Override
     protected NodeService initNodeServiceMock() {
