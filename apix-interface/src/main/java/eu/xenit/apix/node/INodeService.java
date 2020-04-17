@@ -81,17 +81,6 @@ public interface INodeService {
     List<NodeRef> getAncestors(NodeRef ref, NodeRef rootRef);
 
     /**
-     * Returns all primary ancestors of the given nodes.
-     *
-     * @param refs    The list of nodes for which the ancestors are requested.
-     * @param rootRef The node up to which point the ancestors have to be retrieved.
-     * @return a mapping between the requested node references and the list of
-     * the node references of the primary parents. Requested node references that don't exist or
-     * the user doesn't have read permissions on are not returned.
-     */
-    Map<NodeRef, List<NodeRef>> getAncestors(List<NodeRef> refs, NodeRef rootRef);
-
-    /**
      * Creates an association between source and target of a given type.
      *
      * @param source    The source of the association to create.
