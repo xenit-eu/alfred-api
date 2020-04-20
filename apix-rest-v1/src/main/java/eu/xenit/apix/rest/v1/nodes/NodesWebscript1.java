@@ -492,7 +492,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
                     + "It is the node reference up to which point ancestors will be retrieved.\n"
                     + "The default root reference will be the reference of Company Home")
     @Uri(value = "/nodes/{space}/{store}/{guid}/ancestors", method = HttpMethod.GET)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NodeRef[].class))
+    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = AncestorsObject.class))
     public void retrieveAncestors(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             @RequestParam(required = false) String root, WebScriptResponse response) throws IOException {
         NodeRef nodeRef = this.createNodeRef(space, store, guid);
@@ -503,7 +503,8 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
         try {
             List<NodeRef> ancestors = nodeService.getAncestors(nodeRef, rootRef);
-            writeJsonResponse(response, ancestors);
+            AncestorsObject ancestorsObject = new AncestorsObject(nodeRef, ancestors);
+            writeJsonResponse(response, ancestorsObject);
         } catch (InvalidNodeRefException ex) {
             logger.error("noderef does not exist");
             response.setStatus(HttpStatus.SC_NOT_FOUND);
