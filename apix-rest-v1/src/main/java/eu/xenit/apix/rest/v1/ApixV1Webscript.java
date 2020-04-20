@@ -52,34 +52,37 @@ public class ApixV1Webscript {
         return str.replace("\\", "");
     }
 
-    protected NodeInfo nodeRefToNodeInfo(NodeRef nodeRef, IFileFolderService fileFolderService,
-            INodeService nodeService, IPermissionService permissionService) {
-        List<NodeRef> nodeRefList = new ArrayList<NodeRef>();
-        nodeRefList.add(nodeRef);
-        List<NodeInfo> nodeInfoList = this
-                .nodeRefToNodeInfo(nodeRefList, fileFolderService, nodeService, permissionService);
-
-        NodeInfo nodeInfo = null;
-        if (!nodeInfoList.isEmpty() && nodeInfoList.size() > 0) {
-            nodeInfo = nodeInfoList.get(0);
-        }
-
-        return nodeInfo;
-    }
-
-    protected List<NodeInfo> nodeRefToNodeInfo(List<NodeRef> nodeRefs, IFileFolderService fileFolderService,
-            INodeService nodeService, IPermissionService permissionService) {
-        List<NodeInfo> nodeInfoList = new ArrayList<NodeInfo>();
+    protected List<NodeInfo> nodeRefToNodeInfo(List<NodeRef> nodeRefs,
+            IFileFolderService fileFolderService,
+            INodeService nodeService,
+            IPermissionService permissionService,
+            boolean retrievePath,
+            boolean retrieveMetadata,
+            boolean retrievePermissions,
+            boolean retrieveAssocs,
+            boolean retrieveChildAssocs,
+            boolean retrieveParentAssocs,
+            boolean retrieveTargetAssocs) {
+        List<NodeInfo> nodeInfoList = new ArrayList<>();
         for (NodeRef nodeRef : nodeRefs) {
-            eu.xenit.apix.filefolder.NodePath path = fileFolderService.getPath(nodeRef);
-            NodeMetadata nodeMetadata = nodeService.getMetadata(nodeRef);
-            Map<String, PermissionValue> permissions = permissionService.getPermissions(nodeRef);
-            NodeAssociations associations = nodeService.getAssociations(nodeRef);
-            NodeInfo nodeInfo = new NodeInfo(nodeRef, nodeMetadata, permissions, associations, path);
+            NodeInfo nodeInfo = nodeRefToNodeInfo(nodeRef, fileFolderService, nodeService, permissionService,
+                    retrievePath, retrieveMetadata, retrievePermissions, retrieveAssocs, retrieveChildAssocs,
+                    retrieveParentAssocs, retrieveTargetAssocs);
+            if (nodeInfo == null) {
+                continue;
+            }
+
             nodeInfoList.add(nodeInfo);
         }
 
         return nodeInfoList;
+    }
+
+    protected NodeInfo nodeRefToNodeInfo(NodeRef nodeRef, IFileFolderService fileFolderService,
+            INodeService nodeService, IPermissionService permissionService) {
+        return nodeRefToNodeInfo(nodeRef, fileFolderService, nodeService, permissionService,
+                true, true, true, true,
+                true, true, true);
     }
 
     protected NodeInfo nodeRefToNodeInfo(NodeRef nodeRef,
@@ -93,64 +96,43 @@ public class ApixV1Webscript {
             boolean retrieveChildAssocs,
             boolean retrieveParentAssocs,
             boolean retrieveTargetAssocs) {
-        List<NodeInfo> nodeInfoList = nodeRefToNodeInfo(Collections.singletonList(nodeRef), fileFolderService,
-                nodeService, permissionService, retrievePath, retrieveMetadata, retrievePermissions, retrieveAssocs,
-                retrieveChildAssocs, retrieveParentAssocs, retrieveTargetAssocs);
-
-        return nodeInfoList.get(0);
-    }
-
-    protected List<NodeInfo> nodeRefToNodeInfo(List<NodeRef> nodeRefs,
-            IFileFolderService fileFolderService,
-            INodeService nodeService,
-            IPermissionService permissionService,
-            boolean retrievePath,
-            boolean retrieveMetadata,
-            boolean retrievePermissions,
-            boolean retrieveAssocs,
-            boolean retrieveChildAssocs,
-            boolean retrieveParentAssocs,
-            boolean retrieveTargetAssocs) {
-        List<NodeInfo> nodeInfoList = new ArrayList<NodeInfo>();
-        for (NodeRef nodeRef : nodeRefs) {
-            if (!permissionService.hasPermission(nodeRef, IPermissionService.READ)) {
-                logger.warn("Excluding node {} from results due to insufficient permissions", nodeRef);
-                continue;
-            }
-            eu.xenit.apix.filefolder.NodePath path = null;
-            if (retrievePath) {
-                path = fileFolderService.getPath(nodeRef);
-            }
-
-            logger.debug("start getMetadata");
-            NodeMetadata nodeMetadata = null;
-            if (retrieveMetadata) {
-                nodeMetadata = nodeService.getMetadata(nodeRef);
-            }
-            Map<String, PermissionValue> permissions = null;
-            if (retrievePermissions) {
-                permissions = permissionService.getPermissions(nodeRef);
-            }
-            NodeAssociations associations = null;
-            if (retrieveAssocs) {
-                List<ChildParentAssociation> childAssocs = null;
-                if (retrieveChildAssocs) {
-                    childAssocs = nodeService.getChildAssociations(nodeRef);
-                }
-                List<ChildParentAssociation> parentAssociations = null;
-                if (retrieveParentAssocs) {
-                    parentAssociations = nodeService.getParentAssociations(nodeRef);
-                }
-                List<NodeAssociation> targetAssociations = null;
-                if (retrieveTargetAssocs) {
-                    targetAssociations = nodeService.getTargetAssociations(nodeRef);
-                }
-                associations = new NodeAssociations(childAssocs, parentAssociations, targetAssociations);
-            }
-            NodeInfo nodeInfo = new NodeInfo(nodeRef, nodeMetadata, permissions, associations, path);
-            nodeInfoList.add(nodeInfo);
+        if (!permissionService.hasPermission(nodeRef, IPermissionService.READ)) {
+            logger.warn("Excluding node {} from results due to insufficient permissions", nodeRef);
+            return null;
         }
 
-        return nodeInfoList;
+        eu.xenit.apix.filefolder.NodePath path = null;
+        if (retrievePath) {
+            path = fileFolderService.getPath(nodeRef);
+        }
+
+        NodeMetadata nodeMetadata = null;
+        if (retrieveMetadata) {
+            nodeMetadata = nodeService.getMetadata(nodeRef);
+        }
+
+        Map<String, PermissionValue> permissions = null;
+        if (retrievePermissions) {
+            permissions = permissionService.getPermissions(nodeRef);
+        }
+
+        NodeAssociations associations = null;
+        if (retrieveAssocs) {
+            List<ChildParentAssociation> childAssocs = null;
+            if (retrieveChildAssocs) {
+                childAssocs = nodeService.getChildAssociations(nodeRef);
+            }
+            List<ChildParentAssociation> parentAssociations = null;
+            if (retrieveParentAssocs) {
+                parentAssociations = nodeService.getParentAssociations(nodeRef);
+            }
+            List<NodeAssociation> targetAssociations = null;
+            if (retrieveTargetAssocs) {
+                targetAssociations = nodeService.getTargetAssociations(nodeRef);
+            }
+            associations = new NodeAssociations(childAssocs, parentAssociations, targetAssociations);
+        }
+
+        return new NodeInfo(nodeRef, nodeMetadata, permissions, associations, path);
     }
 }
