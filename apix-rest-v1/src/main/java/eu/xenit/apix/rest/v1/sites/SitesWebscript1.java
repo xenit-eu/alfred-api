@@ -66,12 +66,12 @@ public class SitesWebscript1 extends ApixV1Webscript {
                     + "Set 'retrieveTargetAssocs' to true to return the peer associations of the sites.\n")
     @Uri(value = "/sites/mySites", method = HttpMethod.GET)
     @ApiResponses(@ApiResponse(code = 200, message = "Success", response = SiteInfo[].class))
-    public void getMySites(@RequestParam(required = false) Boolean retrieveMetadata,
-            @RequestParam(required = false) Boolean retrievePath,
-            @RequestParam(required = false) Boolean retrievePermissions,
-            @RequestParam(required = false) Boolean retrieveChildAssocs,
-            @RequestParam(required = false) Boolean retrieveParentAssocs,
-            @RequestParam(required = false) Boolean retrieveTargetAssocs,
+    public void getMySites(@RequestParam(required = false, defaultValue = "false") Boolean retrieveMetadata,
+            @RequestParam(required = false, defaultValue = "false") boolean retrievePath,
+            @RequestParam(required = false, defaultValue = "false") boolean retrievePermissions,
+            @RequestParam(required = false, defaultValue = "false") boolean retrieveChildAssocs,
+            @RequestParam(required = false, defaultValue = "false") boolean retrieveParentAssocs,
+            @RequestParam(required = false, defaultValue = "false") boolean retrieveTargetAssocs,
             WebScriptResponse response)
             throws IOException {
         logger.debug("retrieveMetadata: " + retrieveMetadata);
@@ -80,25 +80,6 @@ public class SitesWebscript1 extends ApixV1Webscript {
         logger.debug("retrieveChildAssocs: " + retrieveChildAssocs);
         logger.debug("retrieveParentAssocs: " + retrieveParentAssocs);
         logger.debug("retrieveTargetAssocs: " + retrieveTargetAssocs);
-
-        if (retrieveMetadata == null) {
-            retrieveMetadata = false;
-        }
-        if (retrievePath == null) {
-            retrievePath = false;
-        }
-        if (retrievePermissions == null) {
-            retrievePermissions = false;
-        }
-        if (retrieveChildAssocs == null) {
-            retrieveChildAssocs = false;
-        }
-        if (retrieveParentAssocs == null) {
-            retrieveParentAssocs = false;
-        }
-        if (retrieveTargetAssocs == null) {
-            retrieveTargetAssocs = false;
-        }
 
         AuthenticationService authService = serviceRegistry.getAuthenticationService();
         List<ISite> sites = siteService.getUserSites(authService.getCurrentUserName());
