@@ -63,7 +63,7 @@ public class SitesWebscript1 extends ApixV1Webscript {
                     + "Set 'retrievePermissions' to true to return the permissions of the sites.\n"
                     + "Set 'retrieveChildAssocs' to true to return the child associations of the sites.\n"
                     + "Set 'retrieveParentAssocs' to true to return the parent associations of the sites.\n"
-                    +"Set 'retrieveTargetAssocs' to true to return the peer associations of the sites.\n")
+                    + "Set 'retrieveTargetAssocs' to true to return the peer associations of the sites.\n")
     @Uri(value = "/sites/mySites", method = HttpMethod.GET)
     @ApiResponses(@ApiResponse(code = 200, message = "Success", response = SiteInfo[].class))
     public void getMySites(@RequestParam(required = false) Boolean retrieveMetadata,
@@ -74,29 +74,29 @@ public class SitesWebscript1 extends ApixV1Webscript {
             @RequestParam(required = false) Boolean retrieveTargetAssocs,
             WebScriptResponse response)
             throws IOException {
-        logger.debug("retrieveMetadata: "+retrieveMetadata);
-        logger.debug("retrievePath: "+retrievePath);
-        logger.debug("retrievePermissions: "+retrievePermissions);
-        logger.debug("retrieveChildAssocs: "+retrieveChildAssocs);
-        logger.debug("retrieveParentAssocs: "+retrieveParentAssocs);
-        logger.debug("retrieveTargetAssocs: "+retrieveTargetAssocs);
+        logger.debug("retrieveMetadata: " + retrieveMetadata);
+        logger.debug("retrievePath: " + retrievePath);
+        logger.debug("retrievePermissions: " + retrievePermissions);
+        logger.debug("retrieveChildAssocs: " + retrieveChildAssocs);
+        logger.debug("retrieveParentAssocs: " + retrieveParentAssocs);
+        logger.debug("retrieveTargetAssocs: " + retrieveTargetAssocs);
 
-        if (retrieveMetadata == null){
+        if (retrieveMetadata == null) {
             retrieveMetadata = false;
         }
-        if (retrievePath == null){
+        if (retrievePath == null) {
             retrievePath = false;
         }
-        if (retrievePermissions == null){
+        if (retrievePermissions == null) {
             retrievePermissions = false;
         }
-        if (retrieveChildAssocs == null){
+        if (retrieveChildAssocs == null) {
             retrieveChildAssocs = false;
         }
-        if (retrieveParentAssocs == null){
+        if (retrieveParentAssocs == null) {
             retrieveParentAssocs = false;
         }
-        if (retrieveTargetAssocs == null){
+        if (retrieveTargetAssocs == null) {
             retrieveTargetAssocs = false;
         }
 
