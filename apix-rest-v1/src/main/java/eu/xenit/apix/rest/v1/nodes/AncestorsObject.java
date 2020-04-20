@@ -4,6 +4,7 @@ import eu.xenit.apix.data.NodeRef;
 import java.util.List;
 
 public class AncestorsObject {
+
     private NodeRef node;
     private List<NodeRef> ancestors;
 

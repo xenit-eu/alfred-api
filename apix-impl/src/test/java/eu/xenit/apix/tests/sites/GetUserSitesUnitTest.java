@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 public class GetUserSitesUnitTest {
+
     private ServiceRegistry serviceRegistry;
     private ApixToAlfrescoConversion apixAlfrescoConverter;
     private SiteInfo testSite1;
@@ -94,11 +95,13 @@ public class GetUserSitesUnitTest {
 
     private void initSiteComponents(SiteService siteService, SiteInfo site) {
         String shortName = site.getShortName();
-        NodeRef documentLibraryComponentRef = new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, shortName + "docLib");
+        NodeRef documentLibraryComponentRef = new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE,
+                shortName + "docLib");
         NodeRef linksComponentRef = new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, shortName + "links");
         NodeRef dataListsComponentRef = new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, shortName + "dataLists");
         NodeRef wikiComponentRef = new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, shortName + "wiki");
-        NodeRef discussionsComponentRef = new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, shortName + "discussions");
+        NodeRef discussionsComponentRef = new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE,
+                shortName + "discussions");
 
         when(siteService.getContainer(site.getShortName(), DOCUMENT_LIBRARY_COMPONENT))
                 .thenReturn(documentLibraryComponentRef);
