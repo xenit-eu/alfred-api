@@ -44,6 +44,7 @@ import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.InvalidNodeRefException;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -202,7 +203,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
             @RequestParam String target, @RequestParam String type,
             WebScriptResponse response) throws IOException {
         NodeRef source = this.createNodeRef(space, store, guid);
-        nodeService.removeAssociation(source, new NodeRef(target), new QName(type));
+        nodeService.removeAssociation(source, new NodeRef(StringEscapeUtils.unescapeHtml4(target)), new QName(type));
         response.setStatus(200);
     }
 
