@@ -9,6 +9,7 @@
 ### Changed
 
 ### Fixed
+* [ALFREDAPI-419](https://xenitsupport.jira.com/browse/ALFREAPI-419): Add htmldecoding to deleteAssociation endpoint
 
 ### Deleted
 
