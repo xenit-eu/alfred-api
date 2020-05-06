@@ -31,6 +31,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -44,7 +46,6 @@ import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.InvalidNodeRefException;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -203,7 +204,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
             @RequestParam String target, @RequestParam String type,
             WebScriptResponse response) throws IOException {
         NodeRef source = this.createNodeRef(space, store, guid);
-        nodeService.removeAssociation(source, new NodeRef(StringEscapeUtils.unescapeHtml4(target)), new QName(type));
+        nodeService.removeAssociation(source, new NodeRef(URLDecoder.decode(target, StandardCharsets.UTF_8.toString())), new QName(type));
         response.setStatus(200);
     }
 
