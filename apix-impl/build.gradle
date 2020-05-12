@@ -4,7 +4,7 @@ plugins {
     id 'eu.xenit.alfresco' version '1.0.0' apply false
 }
 
-String getMaxRepositoryVersionRequirement(Project currentProject, String minAlfrescoVersion){
+String getMaxRepositoryVersionRequirement(Project currentProject, String minAlfrescoVersion) {
     Comparator<Project> comparator = new Comparator<Project>() {
         @Override
         int compare(Project p1, Project p2) {
