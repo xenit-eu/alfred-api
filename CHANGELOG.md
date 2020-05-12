@@ -7,6 +7,7 @@
 * [HA-29](https://xenitsupport.jira.com/browse/HA-29): Added webscript for retrieving available sites + webscript for retrieving ancestors of a node
 
 ### Changed
+* [ALFREDAPI-416](https://xenitsupport.jira.com/browse/ALFREDAPI-416): Removed max repository version from module.properties for builds for most recent Alfresco
 
 ### Fixed
 * [ALFREDAPI-419](https://xenitsupport.jira.com/browse/ALFREDAPI-419): Add urldecoding to deleteAssociation endpoint
