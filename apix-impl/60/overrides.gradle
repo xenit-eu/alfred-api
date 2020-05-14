@@ -3,6 +3,6 @@ description = "Xenit API-X implementation Alfresco 6.0"
 ext {
     alfresco_version = alfresco_60_version
     alfresco_dm_version = alfresco_60_dm_version
-    alfresco_min_version = alfresco_60_min_version
+    alfresco_min_version = "6.0"
     alfresco_max_version = getMaxRepositoryVersionRequirement(project, alfresco_min_version)
 }

@@ -21,14 +21,6 @@ String getMaxRepositoryVersionRequirement(Project currentProject, String minAlfr
     return minAlfrescoVersion + ".99"
 }
 
-ext {
-    alfresco_50_min_version = "5.0"
-    alfresco_51_min_version = "5.1"
-    alfresco_52_min_version = "5.2"
-    alfresco_60_min_version = "6.0"
-    alfresco_61_min_version = "6.1"
-}
-
 subprojects {
     apply from: "${rootProject.projectDir}/publish.gradle"
     apply from: "${project.projectDir}/overrides.gradle"
