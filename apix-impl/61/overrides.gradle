@@ -4,5 +4,4 @@ ext {
     alfresco_version = alfresco_61_version
     alfresco_dm_version = alfresco_61_dm_version
     alfresco_min_version = "6.1"
-    alfresco_max_version = getMaxRepositoryVersionRequirement(project, alfresco_min_version)
 }

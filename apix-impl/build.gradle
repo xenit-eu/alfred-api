@@ -4,23 +4,6 @@ plugins {
     id 'eu.xenit.alfresco' version '1.0.0' apply false
 }
 
-String getMaxRepositoryVersionRequirement(Project currentProject, String minAlfrescoVersion) {
-    Comparator<Project> comparator = new Comparator<Project>() {
-        @Override
-        int compare(Project p1, Project p2) {
-            return p1.name.compareTo(p2.name)
-        }
-    }
-
-    List<Project> subProjectList = subprojects.toSorted(comparator)
-
-    if (currentProject.getName().equals(subProjectList.last().getName())) {
-        return ""
-    }
-
-    return minAlfrescoVersion + ".99"
-}
-
 subprojects {
     apply from: "${rootProject.projectDir}/publish.gradle"
     apply from: "${project.projectDir}/overrides.gradle"
