@@ -102,7 +102,8 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
                     +
                     "Set 'retrieveChildAssocs' to false to omit the child associations from the result.\n" +
                     "Set 'retrieveParentAssocs' to false to omit the parent associations from the result.\n" +
-                    "Set 'retrieveTargetAssocs' to false to omit the peer associations from the result.\n")
+                    "Set 'retrieveTargetAssocs' to false to omit the peer target associations from the result.\n" +
+                    "Set 'retrieveSourceAssocs' to false to omit the peer source associations from the result.\n")
     @Uri(value = "/nodes/nodeInfo", method = HttpMethod.POST)
     @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NodeInfo[].class))
     public void getAllInfos(WebScriptRequest request, WebScriptResponse response) throws IOException, JSONException {
@@ -122,6 +123,7 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
         boolean retrieveChildAssocs = true;
         boolean retrieveParentAssocs = true;
         boolean retrieveTargetAssocs = true;
+        boolean retrieveSourceAssocs = true;
 
         List<NodeRef> nodeRefs = new ArrayList<NodeRef>();
         try {
@@ -145,6 +147,9 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
             }
             if (jsonObject.has("retrieveTargetAssocs")) {
                 retrieveTargetAssocs = jsonObject.getBoolean("retrieveTargetAssocs");
+            }
+            if (jsonObject.has("retrieveSourceAssocs")) {
+                retrieveSourceAssocs = jsonObject.getBoolean("retrieveSourceAssocs");
             }
 
             JSONArray nodeRefsJsonArray = jsonObject.getJSONArray("noderefs");
@@ -178,7 +183,8 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
                 retrieveAssocs,
                 retrieveChildAssocs,
                 retrieveParentAssocs,
-                retrieveTargetAssocs);
+                retrieveTargetAssocs,
+                retrieveSourceAssocs);
         logger.debug("end nodeRefToNodeInfo");
 
         logger.debug("start writeJsonResponse");

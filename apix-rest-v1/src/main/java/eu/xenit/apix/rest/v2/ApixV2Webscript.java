@@ -41,7 +41,7 @@ public class ApixV2Webscript extends ApixV1Webscript {
             boolean retrievePath, boolean retrieveMetadata,
             boolean retrievePermissions, boolean retrieveAssocs,
             boolean retrieveChildAssocs, boolean retrieveParentAssocs,
-            boolean retrieveTargetAssocs) {
+            boolean retrieveTargetAssocs, boolean retrieveSourceAssocs) {
         List<NodeInfo> nodeInfoList = new ArrayList<NodeInfo>();
         for (NodeRef nodeRef : nodeRefs) {
             logger.debug("######################################################");
@@ -82,7 +82,11 @@ public class ApixV2Webscript extends ApixV1Webscript {
                 if (retrieveTargetAssocs) {
                     targetAssociations = nodeService.getTargetAssociations(nodeRef);
                 }
-                associations = new NodeAssociations(childAssocs, parentAssociations, targetAssociations);
+                List<NodeAssociation> sourceAssociations = null;
+                if (retrieveSourceAssocs) {
+                    targetAssociations = nodeService.getSourceAssociations(nodeRef);
+                }
+                associations = new NodeAssociations(childAssocs, parentAssociations, targetAssociations, sourceAssociations);
             }
             logger.debug("end getAssociations");
 

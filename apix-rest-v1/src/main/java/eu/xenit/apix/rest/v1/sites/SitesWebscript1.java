@@ -63,7 +63,8 @@ public class SitesWebscript1 extends ApixV1Webscript {
                     + "Set 'retrievePermissions' to true to return the permissions of the sites.\n"
                     + "Set 'retrieveChildAssocs' to true to return the child associations of the sites.\n"
                     + "Set 'retrieveParentAssocs' to true to return the parent associations of the sites.\n"
-                    + "Set 'retrieveTargetAssocs' to true to return the peer associations of the sites.\n")
+                    + "Set 'retrieveTargetAssocs' to true to return the target peer associations of the sites.\n"
+                    + "Set 'retrieveSourceAssocs' to true to return the source peer associations of the sites.\n")
     @Uri(value = "/sites/mySites", method = HttpMethod.GET)
     @ApiResponses(@ApiResponse(code = 200, message = "Success", response = SiteInfo[].class))
     public void getMySites(@RequestParam(required = false, defaultValue = "false") Boolean retrieveMetadata,
@@ -72,6 +73,7 @@ public class SitesWebscript1 extends ApixV1Webscript {
             @RequestParam(required = false, defaultValue = "false") boolean retrieveChildAssocs,
             @RequestParam(required = false, defaultValue = "false") boolean retrieveParentAssocs,
             @RequestParam(required = false, defaultValue = "false") boolean retrieveTargetAssocs,
+            @RequestParam(required = false, defaultValue = "false") boolean retrieveSourceAssocs,
             WebScriptResponse response)
             throws IOException {
         logger.debug("retrieveMetadata: " + retrieveMetadata);
@@ -80,6 +82,7 @@ public class SitesWebscript1 extends ApixV1Webscript {
         logger.debug("retrieveChildAssocs: " + retrieveChildAssocs);
         logger.debug("retrieveParentAssocs: " + retrieveParentAssocs);
         logger.debug("retrieveTargetAssocs: " + retrieveTargetAssocs);
+        logger.debug("retrieveSourceAssocs: " + retrieveSourceAssocs);
 
         AuthenticationService authService = serviceRegistry.getAuthenticationService();
         List<ISite> sites = siteService.getUserSites(authService.getCurrentUserName());
@@ -88,7 +91,7 @@ public class SitesWebscript1 extends ApixV1Webscript {
             NodeRef siteRef = site.getNodeRef();
             NodeInfo nodeInfo = nodeRefToNodeInfo(siteRef, fileFolderService, nodeService, permissionService,
                     retrievePath, retrieveMetadata, retrievePermissions, true, retrieveChildAssocs,
-                    retrieveParentAssocs, retrieveTargetAssocs);
+                    retrieveParentAssocs, retrieveTargetAssocs, retrieveSourceAssocs);
             SiteInfo siteInfo = new SiteInfo(site, nodeInfo);
             siteInfoList.add(siteInfo);
         }
