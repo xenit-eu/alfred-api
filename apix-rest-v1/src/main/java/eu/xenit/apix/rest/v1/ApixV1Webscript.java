@@ -62,12 +62,14 @@ public class ApixV1Webscript {
             boolean retrieveAssocs,
             boolean retrieveChildAssocs,
             boolean retrieveParentAssocs,
-            boolean retrieveTargetAssocs) {
+            boolean retrieveTargetAssocs,
+            boolean retrieveSourceAssocs
+    ) {
         List<NodeInfo> nodeInfoList = new ArrayList<>();
         for (NodeRef nodeRef : nodeRefs) {
             NodeInfo nodeInfo = nodeRefToNodeInfo(nodeRef, fileFolderService, nodeService, permissionService,
                     retrievePath, retrieveMetadata, retrievePermissions, retrieveAssocs, retrieveChildAssocs,
-                    retrieveParentAssocs, retrieveTargetAssocs);
+                    retrieveParentAssocs, retrieveTargetAssocs, retrieveSourceAssocs);
             if (nodeInfo == null) {
                 continue;
             }
@@ -82,7 +84,7 @@ public class ApixV1Webscript {
             INodeService nodeService, IPermissionService permissionService) {
         return nodeRefToNodeInfo(nodeRef, fileFolderService, nodeService, permissionService,
                 true, true, true, true,
-                true, true, true);
+                true, true, true, true);
     }
 
     protected NodeInfo nodeRefToNodeInfo(NodeRef nodeRef,
@@ -95,7 +97,8 @@ public class ApixV1Webscript {
             boolean retrieveAssocs,
             boolean retrieveChildAssocs,
             boolean retrieveParentAssocs,
-            boolean retrieveTargetAssocs) {
+            boolean retrieveTargetAssocs,
+            boolean retrieveSourceAssocs) {
         if (!permissionService.hasPermission(nodeRef, IPermissionService.READ)) {
             logger.warn("Excluding node {} from results due to insufficient permissions", nodeRef);
             return null;
@@ -130,7 +133,12 @@ public class ApixV1Webscript {
             if (retrieveTargetAssocs) {
                 targetAssociations = nodeService.getTargetAssociations(nodeRef);
             }
-            associations = new NodeAssociations(childAssocs, parentAssociations, targetAssociations);
+            List<NodeAssociation> sourceAssociationts = null;
+            if (retrieveSourceAssocs) {
+                sourceAssociationts = nodeService.getSourceAssociations(nodeRef);
+            }
+            associations = new NodeAssociations(childAssocs, parentAssociations, targetAssociations,
+                    sourceAssociationts);
         }
 
         return new NodeInfo(nodeRef, nodeMetadata, permissions, associations, path);
