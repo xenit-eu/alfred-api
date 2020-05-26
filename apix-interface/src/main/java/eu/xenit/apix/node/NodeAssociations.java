@@ -10,15 +10,17 @@ public class NodeAssociations {
     private List<ChildParentAssociation> children;
     private List<ChildParentAssociation> parents;
     private List<NodeAssociation> targets;
+    private List<NodeAssociation> sources;
 
     public NodeAssociations() {
     }
 
     public NodeAssociations(List<ChildParentAssociation> children, List<ChildParentAssociation> parents,
-            List<NodeAssociation> targets) {
+            List<NodeAssociation> targets, List<NodeAssociation> sources) {
         this.children = children;
         this.parents = parents;
         this.targets = targets;
+        this.sources = sources;
     }
 
     public List<ChildParentAssociation> getChildren() {
@@ -43,5 +45,13 @@ public class NodeAssociations {
 
     public void setTargets(List<NodeAssociation> targets) {
         this.targets = targets;
+    }
+
+    public List<NodeAssociation> getSources() {
+        return sources;
+    }
+
+    public void setSources(List<NodeAssociation> sources) {
+        this.sources = sources;
     }
 }
