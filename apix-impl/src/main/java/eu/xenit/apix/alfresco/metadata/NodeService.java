@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
@@ -419,8 +420,21 @@ public class NodeService implements INodeService {
     }
 
     @Override
+    public List<NodeAssociation> getSourceAssociations(eu.xenit.apix.data.NodeRef ref) {
+        return this.nodeService.getSourceAssocs(c.alfresco(ref), RegexQNamePattern.MATCH_ALL)
+                .stream()
+                .map(alfPeerAssoc ->
+                        new NodeAssociation(
+                            ref,
+                            c.apix(alfPeerAssoc.getSourceRef()),
+                            c.apix(alfPeerAssoc.getTypeQName())))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public NodeAssociations getAssociations(eu.xenit.apix.data.NodeRef ref) {
-        return new NodeAssociations(getChildAssociations(ref), getParentAssociations(ref), getTargetAssociations(ref));
+        return new NodeAssociations(getChildAssociations(ref), getParentAssociations(ref), getTargetAssociations(ref),
+                getSourceAssociations(ref));
     }
 
     @Override

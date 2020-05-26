@@ -57,10 +57,18 @@ public interface INodeService {
     /**
      * Fetches all associations for which the given node is the source.
      *
-     * @param ref The node for which the target associations are requested.
-     * @return The parent associations of the given node.
+     * @param ref The node for which the associations are requested.
+     * @return The peer associations of the given node for which it is the source
      */
     List<NodeAssociation> getTargetAssociations(NodeRef ref);
+
+    /**
+     * Fetches all associations for which the given node is the target.
+     *
+     * @param ref The node for which the associations are requested.
+     * @return The peer associations of the given node for which it is the target
+     */
+    List<NodeAssociation> getSourceAssociations(NodeRef ref);
 
     /**
      * Returns all target, parent and child associations of the given node.
