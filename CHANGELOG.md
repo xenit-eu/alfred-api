@@ -11,6 +11,7 @@
 
 ### Fixed
 * [ALFREDAPI-419](https://xenitsupport.jira.com/browse/ALFREDAPI-419): Add urldecoding to deleteAssociation endpoint
+* [ALFREDAPI-420](https://xenitsupport.jira.com/browse/ALFREDAPI-420): Add missing Associations to getAssociations call
 
 ### Deleted
 
