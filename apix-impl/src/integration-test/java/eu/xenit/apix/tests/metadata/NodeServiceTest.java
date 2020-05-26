@@ -404,18 +404,28 @@ public class NodeServiceTest extends BaseTest {
                     ContentModel.ASSOC_CONTAINS,
                     (QName) null, true);
 
+            // Test for peerassociations as fetched from the source
             List<NodeAssociation> peerAssociations = this.service.getTargetAssociations(c.apix(copyNodeRef));
-            assertEquals(peerAssociations.size(), 1);
-            for (NodeAssociation peerAssoc : peerAssociations) {
-                logger.debug(" Peer assoc source: " + peerAssoc.getSource().toString());
-                logger.debug(" Peer assoc target: " + peerAssoc.getTarget().toString());
-                logger.debug(" Peer assoc type: " + peerAssoc.getType().toString());
-                assertEquals(peerAssoc.getSource().toString(), copyNodeRef.toString());
-                assertEquals(peerAssoc.getTarget().toString(), testNode.getNodeRef().toString());
-                assertEquals(peerAssoc.getType().toString(), ContentModel.ASSOC_ORIGINAL.toString());
-            }
+            assertPeerAssociation(testNode.getNodeRef(), copyNodeRef, peerAssociations);
+
+            // Test for peerassociations as fetched from the target
+            peerAssociations = this.service.getSourceAssociations(c.apix(testNode.getNodeRef()));
+            assertPeerAssociation(testNode.getNodeRef(), copyNodeRef, peerAssociations);
+
         } finally {
             this.removeTestNode(mainTestFolder.getNodeRef());
+        }
+    }
+
+    protected void assertPeerAssociation(NodeRef source, NodeRef target, List<NodeAssociation> peerAssociations) {
+        assertEquals(peerAssociations.size(), 1);
+        for (NodeAssociation peerAssoc : peerAssociations) {
+            logger.debug(" Peer assoc source: " + peerAssoc.getSource().toString());
+            logger.debug(" Peer assoc target: " + peerAssoc.getTarget().toString());
+            logger.debug(" Peer assoc type: " + peerAssoc.getType().toString());
+            assertEquals(peerAssoc.getSource().toString(), source.toString());
+            assertEquals(peerAssoc.getTarget().toString(), target.toString());
+            assertEquals(peerAssoc.getType().toString(), ContentModel.ASSOC_ORIGINAL.toString());
         }
     }
 
