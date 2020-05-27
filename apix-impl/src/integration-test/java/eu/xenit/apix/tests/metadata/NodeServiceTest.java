@@ -404,12 +404,14 @@ public class NodeServiceTest extends BaseTest {
                     ContentModel.ASSOC_CONTAINS,
                     (QName) null, true);
 
+            this.alfrescoNodeService.createAssociation(testNode.getNodeRef(), copyNodeRef, ContentModel.ASSOC_ORIGINAL);
+
             // Test for peerassociations as fetched from the source
-            List<NodeAssociation> peerAssociations = this.service.getTargetAssociations(c.apix(copyNodeRef));
+            List<NodeAssociation> peerAssociations = this.service.getTargetAssociations(c.apix(testNode.getNodeRef()));
             assertPeerAssociation(testNode.getNodeRef(), copyNodeRef, peerAssociations);
 
             // Test for peerassociations as fetched from the target
-            peerAssociations = this.service.getSourceAssociations(c.apix(testNode.getNodeRef()));
+            peerAssociations = this.service.getSourceAssociations(c.apix(copyNodeRef));
             assertPeerAssociation(testNode.getNodeRef(), copyNodeRef, peerAssociations);
 
         } finally {
