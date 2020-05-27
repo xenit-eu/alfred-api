@@ -425,8 +425,8 @@ public class NodeService implements INodeService {
                 .stream()
                 .map(alfPeerAssoc ->
                         new NodeAssociation(
-                            ref,
                             c.apix(alfPeerAssoc.getSourceRef()),
+                            ref,
                             c.apix(alfPeerAssoc.getTypeQName())))
                 .collect(Collectors.toList());
     }
