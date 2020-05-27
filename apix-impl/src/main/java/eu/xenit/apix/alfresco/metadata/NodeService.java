@@ -390,8 +390,8 @@ public class NodeService implements INodeService {
         return nodeService.getParentAssocs(c.alfresco(ref))
                 .stream().map(alfParentAssoc ->
                         new ChildParentAssociation(
-                                c.apix(alfParentAssoc.getParentRef()),
                                 ref,
+                                c.apix(alfParentAssoc.getParentRef()),
                                 c.apix(alfParentAssoc.getTypeQName()),
                                 alfParentAssoc.isPrimary()
                         ))
