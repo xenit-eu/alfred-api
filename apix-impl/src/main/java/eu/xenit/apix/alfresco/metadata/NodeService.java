@@ -374,54 +374,45 @@ public class NodeService implements INodeService {
 
     @Override
     public List<ChildParentAssociation> getChildAssociations(eu.xenit.apix.data.NodeRef ref) {
-        List<ChildParentAssociation> apixChildAssocs = new ArrayList<>();
-        List<ChildAssociationRef> alfChildAssocs = this.nodeService.getChildAssocs(c.alfresco(ref));
-        for (ChildAssociationRef alfChildAssoc : alfChildAssocs) {
-            NodeRef alfChildRef = alfChildAssoc.getChildRef();
-            QName alfType = alfChildAssoc.getTypeQName();
-            boolean isPrimary = alfChildAssoc.isPrimary();
-            ChildParentAssociation apixChildAssoc = new ChildParentAssociation(ref, c.apix(alfChildRef),
-                    c.apix(alfType), isPrimary);
-            apixChildAssocs.add(apixChildAssoc);
-        }
-
-        return apixChildAssocs;
+        return nodeService.getChildAssocs(c.alfresco(ref))
+                .stream().map(alfChildAssoc ->
+                        new ChildParentAssociation(
+                                ref,
+                                c.apix(alfChildAssoc.getChildRef()),
+                                c.apix(alfChildAssoc.getTypeQName()),
+                                alfChildAssoc.isPrimary()
+                        ))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<ChildParentAssociation> getParentAssociations(eu.xenit.apix.data.NodeRef ref) {
-        List<ChildParentAssociation> apixParentAssocs = new ArrayList<>();
-        List<ChildAssociationRef> alfParentAssocs = this.nodeService.getParentAssocs(c.alfresco(ref));
-        for (ChildAssociationRef alfParentAssoc : alfParentAssocs) {
-            NodeRef alfParentRef = alfParentAssoc.getParentRef();
-            QName alfType = alfParentAssoc.getTypeQName();
-            boolean isPrimary = alfParentAssoc.isPrimary();
-            ChildParentAssociation apixParentAssoc = new ChildParentAssociation(ref, c.apix(alfParentRef),
-                    c.apix(alfType), isPrimary);
-            apixParentAssocs.add(apixParentAssoc);
-        }
-
-        return apixParentAssocs;
+        return nodeService.getParentAssocs(c.alfresco(ref))
+                .stream().map(alfParentAssoc ->
+                        new ChildParentAssociation(
+                                c.apix(alfParentAssoc.getParentRef()),
+                                ref,
+                                c.apix(alfParentAssoc.getTypeQName()),
+                                alfParentAssoc.isPrimary()
+                        ))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<NodeAssociation> getTargetAssociations(eu.xenit.apix.data.NodeRef ref) {
-        List<NodeAssociation> apixPeerAssocs = new ArrayList<>();
-        List<AssociationRef> alfPeerAssocs = this.nodeService
-                .getTargetAssocs(c.alfresco(ref), RegexQNamePattern.MATCH_ALL);
-        for (AssociationRef alfPeerAssoc : alfPeerAssocs) {
-            NodeRef alfPeerRef = alfPeerAssoc.getTargetRef();
-            QName alfType = alfPeerAssoc.getTypeQName();
-            NodeAssociation apixPeerAssoc = new NodeAssociation(ref, c.apix(alfPeerRef), c.apix(alfType));
-            apixPeerAssocs.add(apixPeerAssoc);
-        }
-
-        return apixPeerAssocs;
+        return nodeService.getTargetAssocs(c.alfresco(ref), RegexQNamePattern.MATCH_ALL)
+                .stream()
+                .map(alfPeerAssoc ->
+                        new NodeAssociation(
+                                ref,
+                                c.apix(alfPeerAssoc.getTargetRef()),
+                                c.apix(alfPeerAssoc.getTypeQName())))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<NodeAssociation> getSourceAssociations(eu.xenit.apix.data.NodeRef ref) {
-        return this.nodeService.getSourceAssocs(c.alfresco(ref), RegexQNamePattern.MATCH_ALL)
+        return nodeService.getSourceAssocs(c.alfresco(ref), RegexQNamePattern.MATCH_ALL)
                 .stream()
                 .map(alfPeerAssoc ->
                         new NodeAssociation(
