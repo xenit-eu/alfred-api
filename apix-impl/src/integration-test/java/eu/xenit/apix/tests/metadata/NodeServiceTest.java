@@ -421,14 +421,13 @@ public class NodeServiceTest extends BaseTest {
 
     protected void assertPeerAssociation(NodeRef source, NodeRef target, List<NodeAssociation> peerAssociations) {
         assertEquals(peerAssociations.size(), 1);
-        for (NodeAssociation peerAssoc : peerAssociations) {
-            logger.debug(" Peer assoc source: " + peerAssoc.getSource().toString());
-            logger.debug(" Peer assoc target: " + peerAssoc.getTarget().toString());
-            logger.debug(" Peer assoc type: " + peerAssoc.getType().toString());
-            assertEquals(peerAssoc.getSource().toString(), source.toString());
-            assertEquals(peerAssoc.getTarget().toString(), target.toString());
-            assertEquals(peerAssoc.getType().toString(), ContentModel.ASSOC_ORIGINAL.toString());
-        }
+        NodeAssociation peerAssoc = peerAssociations.get(0);
+        logger.debug(" Peer assoc source: " + peerAssoc.getSource().toString());
+        logger.debug(" Peer assoc target: " + peerAssoc.getTarget().toString());
+        logger.debug(" Peer assoc type: " + peerAssoc.getType().toString());
+        assertEquals(peerAssoc.getSource().toString(), source.toString());
+        assertEquals(peerAssoc.getTarget().toString(), target.toString());
+        assertEquals(peerAssoc.getType().toString(), ContentModel.ASSOC_ORIGINAL.toString());
     }
 
     @Test
