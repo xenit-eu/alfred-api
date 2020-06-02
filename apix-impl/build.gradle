@@ -58,7 +58,7 @@ subprojects {
         compile group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
 
         testCompile group: 'eu.xenit.de', name: 'annotations', version: de_version
-        testCompile group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_version
+        testCompile group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_repo_version
         testCompile group: 'org.alfresco', name: 'alfresco-data-model', version: alfresco_dm_version
         testCompile group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_version
 

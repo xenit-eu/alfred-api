@@ -12,7 +12,7 @@
 
 ### Fixed
 * [ALFREDAPI-419](https://xenitsupport.jira.com/browse/ALFREDAPI-419): Add urldecoding to deleteAssociation endpoint
-
+* [ALFREDAPI-422](https://xenitsupport.jira.com/browse/ALFREDAPI-422): Fix totalResults and limits for TDMQ's
 ### Deleted
 
 
