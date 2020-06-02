@@ -150,12 +150,12 @@ public class SearchService implements ISearchService {
 
     // These 2 methods are overridden in the 4.2 impl
     protected void setSearchLimit(SearchParameters searchParameters, int max) {
-        searchParameters.setMaxItems(max);
+        searchParameters.setMaxItems(-1);
         searchParameters.setLimit(max);
     }
 
     protected int getSearchLimit(SearchParameters searchParameters) {
-        return searchParameters.getMaxItems();
+        return searchParameters.getLimit();
     }
 
     protected void logQuery(SearchParameters searchParameters) {
