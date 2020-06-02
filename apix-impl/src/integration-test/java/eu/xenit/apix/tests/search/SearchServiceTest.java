@@ -27,6 +27,7 @@ import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
@@ -60,6 +61,8 @@ abstract public class SearchServiceTest extends BaseTest {
     @Autowired
     @Qualifier("Search")
     SwitchableApplicationContextFactory searchSubSystem;
+    @Autowired
+    NamespacePrefixResolver namespacePrefixResolver;
 
     protected SolrTestHelper solrTestHelper;
 
@@ -154,18 +157,45 @@ abstract public class SearchServiceTest extends BaseTest {
 
     @Test
     public void TestTotalCount() throws IOException, InterruptedException {
+        transactionService.getRetryingTransactionHelper()
+                .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<NodeRef>() {
+                    @Override
+                    public NodeRef execute() throws Throwable {
+
+                        NodeRef companyHomeRef = repository.getCompanyHome();
+
+                        FileInfo mainTestFolder = createMainTestFolder(companyHomeRef);
+                        FileInfo testFolder = createTestFolder(mainTestFolder.getNodeRef(), "testFolder");
+                        FileInfo testNode = createTestNode(testFolder.getNodeRef(), "testNode");
+                        FileInfo testNode2 = createTestNode(testFolder.getNodeRef(), "testNode2");
+                        return null;
+                    }
+                }, false, true);
+
         solrTestHelper.waitForSolrSync();
-        QueryBuilder builder = new QueryBuilder();
-        SearchSyntaxNode node = builder.term("type", "cm:folder").create();
+        // solrTestHelper has a bug. TODO ticket ALFREDAPI-425
+        Thread.sleep(15000);
 
-        SearchQuery query = new SearchQuery();
-        query.setQuery(node);
-        query.getPaging().setLimit(2);
-        SearchQueryResult result = searchService.query(query);
+        transactionService.getRetryingTransactionHelper()
+                .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<NodeRef>() {
+                    @Override
+                    public NodeRef execute() throws Throwable {
+                        QueryBuilder builder = new QueryBuilder();
+                        SearchSyntaxNode node = builder.property(
+                                ContentModel.PROP_NAME.toPrefixString(namespacePrefixResolver),
+                                "testNode",
+                                false)
+                                .create();
 
-        logger.debug("Total: " + result.getTotalResultCount());
-        logger.debug("Returned: " + result.getNoderefs().size());
-        Assert.assertEquals(result.getNoderefs().size(), result.getTotalResultCount());
+                        SearchQuery query = new SearchQuery();
+                        query.setQuery(node);
+                        SearchQueryResult result = searchService.query(query);
+
+                        logger.info("Total: " + result.getTotalResultCount());
+                        Assert.assertEquals(2, result.getTotalResultCount());
+                        return null;
+                    }
+                }, false, true);
     }
 
     @Test
@@ -289,8 +319,6 @@ abstract public class SearchServiceTest extends BaseTest {
 
     /**
      * Implemented in alfresco version specific subclasses to set up and tear down solr facets.
-     * @param work
-     * @throws Exception
      */
     abstract protected void withTestFacets(AuthenticationUtil.RunAsWork<Object> work) throws Exception;
 
