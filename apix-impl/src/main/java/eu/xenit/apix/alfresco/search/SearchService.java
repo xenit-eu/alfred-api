@@ -150,7 +150,10 @@ public class SearchService implements ISearchService {
 
     // These 2 methods are overridden in the 4.2 impl
     protected void setSearchLimit(SearchParameters searchParameters, int max) {
+        // MaxItems will impose a hard limit on the total number of results.
+        // Setting it to -1 signifies all results should be counted in the totalCount
         searchParameters.setMaxItems(-1);
+        // Limit is equivalent to page size. combine with ordering and skipcount to page through results
         searchParameters.setLimit(max);
     }
 
