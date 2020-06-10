@@ -570,7 +570,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         nodeService.moveNode(nodeToMove, parent);
     }
 
-    @ApiOperation(value = "Downloads content file for given node")
+    @ApiOperation(value = "Downloads content file for given node", produces = "application/octet-stream")
     @Uri(value = "/nodes/{space}/{store}/{guid}/content", method = HttpMethod.GET)
     @ApiResponses({
             @ApiResponse(code = 200, message = "Success"),
