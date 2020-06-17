@@ -1,5 +1,8 @@
 package eu.xenit.apix.alfresco.search;
 
+import eu.xenit.apix.alfresco.dictionary.PropertyService;
+import eu.xenit.apix.data.QName;
+import eu.xenit.apix.properties.PropertyDefinition;
 import eu.xenit.apix.search.nodes.*;
 import eu.xenit.apix.search.visitors.BaseSearchSyntaxNodeVisitor;
 import eu.xenit.apix.utils.StringUtils;
@@ -7,6 +10,11 @@ import eu.xenit.apix.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Created by Michiel Huygen on 12/11/2015.
@@ -15,8 +23,16 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
 
     private StringBuilder builder = new StringBuilder();
     private HashMap<String, String> termToFtsTerm = new HashMap<>();
+    private final PropertyService propertyService;
+    private final Map<String, Function<String, Boolean>> constraintMap = new HashMap<String, Function<String, Boolean>>() {{
+        put("d:int", FtsNodeVisitor::isInt);
+    }};
 
     public FtsNodeVisitor() {
+        this(null);
+    }
+
+    public FtsNodeVisitor(PropertyService propertyService) {
         termToFtsTerm.put("type", "TYPE");
         termToFtsTerm.put("aspect", "ASPECT");
         termToFtsTerm.put("noderef", "ID");
@@ -25,6 +41,7 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
         termToFtsTerm.put("category", "CATEGORY");
         termToFtsTerm.put("text", "TEXT");
         termToFtsTerm.put("all", "ALL");
+        this.propertyService = propertyService;
         //termToFtsTerm.put("","");
     }
 
@@ -51,7 +68,8 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
         }
 
 //        String s = String.join(" " + n.getOperator() + " ", n.getChildren().stream().map(el -> visit(el)).collect(Collectors.toList()));
-        String s = StringUtils.join(" " + n.getOperator() + " ", children);
+        String s = StringUtils.join(" " + n.getOperator() + " ", children.stream().filter(Objects::nonNull).collect(
+                Collectors.toList()));
         builder.setLength(0);
         builder.append('(');
         builder.append(s);
@@ -62,6 +80,9 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
 
     @Override
     public String visit(PropertySearchNode n) {
+        if (!fitsType(n)) {
+            return null;
+        }
         builder.setLength(0);
         if (n.isExact()) {
             builder.append('=');
@@ -147,5 +168,30 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
         //public static readonly Regex FTS_PATTERN_TEXT = new Regex(FTS_ESCAPE_TEXT);
         //public static readonly String REPLACEMENT_STRING = @"\$0";
         return value.replaceAll("\"", "\\\"");
+    }
+
+    private boolean fitsType(PropertySearchNode node) {
+        if (node == null || node.getValue() == null || node.getName() == null || propertyService == null) {
+            return true;
+        }
+        PropertyDefinition propertyDefinition = propertyService.GetPropertyDefinition(new QName(node.getName()));
+        if (propertyDefinition == null || propertyDefinition.getDataType() == null) {
+            return true;
+        }
+        for (Entry<String, Function<String, Boolean>> entry : constraintMap.entrySet()) {
+            if (entry.getKey().equals(propertyDefinition.getDataType().getValue())) {
+                return entry.getValue().apply(node.getValue());
+            }
+        }
+        return true;
+    }
+
+    private static boolean isInt(String value) {
+        try {
+            Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
     }
 }
