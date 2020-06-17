@@ -26,7 +26,9 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
     private final PropertyService propertyService;
     private final Map<String, Function<String, Boolean>> constraintMap = new HashMap<String, Function<String, Boolean>>() {{
         put("d:int", FtsNodeVisitor::isInt);
+        put("{http://www.alfresco.org/model/dictionary/1.0}int", FtsNodeVisitor::isInt);
         put("d:long", FtsNodeVisitor::isLong);
+        put("{http://www.alfresco.org/model/dictionary/1.0}long", FtsNodeVisitor::isLong);
     }};
 
     public FtsNodeVisitor() {
@@ -175,7 +177,8 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
         if (node == null || node.getValue() == null || node.getName() == null || propertyService == null) {
             return true;
         }
-        PropertyDefinition propertyDefinition = propertyService.GetPropertyDefinition(new QName(node.getName()));
+        QName qName = new QName(node.getName().replaceAll("\\\\", "")); //stuff like hyphen in node-dbid is escaped
+        PropertyDefinition propertyDefinition = propertyService.GetPropertyDefinition(qName);
         if (propertyDefinition == null || propertyDefinition.getDataType() == null) {
             return true;
         }
