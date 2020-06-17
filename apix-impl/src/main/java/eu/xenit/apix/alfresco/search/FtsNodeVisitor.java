@@ -26,6 +26,7 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
     private final PropertyService propertyService;
     private final Map<String, Function<String, Boolean>> constraintMap = new HashMap<String, Function<String, Boolean>>() {{
         put("d:int", FtsNodeVisitor::isInt);
+        put("d:long", FtsNodeVisitor::isLong);
     }};
 
     public FtsNodeVisitor() {
@@ -189,6 +190,15 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
     private static boolean isInt(String value) {
         try {
             Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
+
+    private static boolean isLong(String value) {
+        try {
+            Long.parseLong(value);
         } catch (NumberFormatException e) {
             return false;
         }
