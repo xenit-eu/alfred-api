@@ -1,6 +1,7 @@
 package eu.xenit.apix.alfresco.search;
 
 import eu.xenit.apix.alfresco.dictionary.PropertyService;
+import eu.xenit.apix.alfresco.dictionary.PropertyTypeCheckService;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.properties.PropertyDefinition;
 import eu.xenit.apix.search.nodes.*;
@@ -23,13 +24,7 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
 
     private StringBuilder builder = new StringBuilder();
     private HashMap<String, String> termToFtsTerm = new HashMap<>();
-    private final PropertyService propertyService;
-    private final Map<String, Function<String, Boolean>> constraintMap = new HashMap<String, Function<String, Boolean>>() {{
-        put("d:int", FtsNodeVisitor::isInt);
-        put("{http://www.alfresco.org/model/dictionary/1.0}int", FtsNodeVisitor::isInt);
-        put("d:long", FtsNodeVisitor::isLong);
-        put("{http://www.alfresco.org/model/dictionary/1.0}long", FtsNodeVisitor::isLong);
-    }};
+    private final PropertyTypeCheckService propertyTypeCheckService;
 
     public FtsNodeVisitor() {
         this(null);
@@ -44,7 +39,7 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
         termToFtsTerm.put("category", "CATEGORY");
         termToFtsTerm.put("text", "TEXT");
         termToFtsTerm.put("all", "ALL");
-        this.propertyService = propertyService;
+        this.propertyTypeCheckService = new PropertyTypeCheckService(propertyService);
         //termToFtsTerm.put("","");
     }
 
@@ -83,7 +78,7 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
 
     @Override
     public String visit(PropertySearchNode n) {
-        if (!fitsType(n)) {
+        if (!propertyTypeCheckService.fitsType(n)) {
             return null;
         }
         builder.setLength(0);
@@ -173,38 +168,4 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
         return value.replaceAll("\"", "\\\"");
     }
 
-    private boolean fitsType(PropertySearchNode node) {
-        if (node == null || node.getValue() == null || node.getName() == null || propertyService == null) {
-            return true;
-        }
-        QName qName = new QName(node.getName().replaceAll("\\\\", "")); //stuff like hyphen in node-dbid is escaped
-        PropertyDefinition propertyDefinition = propertyService.GetPropertyDefinition(qName);
-        if (propertyDefinition == null || propertyDefinition.getDataType() == null) {
-            return true;
-        }
-        for (Entry<String, Function<String, Boolean>> entry : constraintMap.entrySet()) {
-            if (entry.getKey().equals(propertyDefinition.getDataType().getValue())) {
-                return entry.getValue().apply(node.getValue());
-            }
-        }
-        return true;
-    }
-
-    private static boolean isInt(String value) {
-        try {
-            Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            return false;
-        }
-        return true;
-    }
-
-    private static boolean isLong(String value) {
-        try {
-            Long.parseLong(value);
-        } catch (NumberFormatException e) {
-            return false;
-        }
-        return true;
-    }
 }
