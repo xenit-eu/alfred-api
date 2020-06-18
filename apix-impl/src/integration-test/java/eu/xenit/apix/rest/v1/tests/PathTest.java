@@ -62,6 +62,15 @@ public class PathTest extends BaseTest {
     }
 
     @Test
+    public void testDisplayPathGetReturnsAccesDenied() throws IOException {
+        NodeRef[] nodeRef = init();
+        String url = makeNodesUrl(nodeRef[3], "/path", "red", "red");
+
+        HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
+        assertEquals(403, httpResponse.getStatusLine().getStatusCode());
+    }
+
+    @Test
     public void testQNamePathGet() throws IOException {
         NodeRef[] nodeRef = init();
         String url = makeNodesUrl(nodeRef[0], "/path", "admin", "admin");
@@ -75,6 +84,16 @@ public class PathTest extends BaseTest {
                 this.nodeService.getPath(new org.alfresco.service.cmr.repository.NodeRef(nodeRef[0].getValue()))
                         .toPrefixString(namespaceService));
         assertTrue(result.contains(expectedResult));
+    }
+
+    @Test
+    public void testQNamePathGetReturnsAccesDenied() throws IOException {
+        NodeRef[] nodeRef = init();
+        String url = makeNodesUrl(nodeRef[3], "/path", "red", "red");
+
+        HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
+
+        assertEquals(403, httpResponse.getStatusLine().getStatusCode());
     }
 
     @After

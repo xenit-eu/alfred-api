@@ -87,6 +87,29 @@ public class NodeContentTest extends BaseTest {
     }
 
     @Test
+    public void testSetNodeContentReturnsAccesDenied() throws IOException {
+        final NodeRef[] nodeRef = init();
+
+        final String url = makeNodesUrl(nodeRef[3], "/content", "red", "red");
+        final CloseableHttpClient httpclient = HttpClients.createDefault();
+
+        transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    HttpPut httpput = new HttpPut(url);
+                    HttpEntity httpBody = MultipartEntityBuilder.create()
+                            .addBinaryBody("file", "test content123".getBytes(), ContentType.TEXT_PLAIN, "abc.txt")
+                            .build();
+                    httpput.setEntity(httpBody);
+
+                    try (CloseableHttpResponse response = httpclient.execute(httpput)) {
+                        assertEquals(403, response.getStatusLine().getStatusCode());
+                    }
+
+                    return null;
+                }, false, true);
+    }
+
+    @Test
     public void testDeleteNodeContent() throws IOException {
         final NodeRef[] nodeRef = init();
 
@@ -127,6 +150,22 @@ public class NodeContentTest extends BaseTest {
     }
 
     @Test
+    public void testDeleteNodeContentReturnsAccesDenied() throws IOException {
+        final NodeRef[] nodeRef = init();
+
+        final String url = makeNodesUrl(nodeRef[3], "/content", "red", "red");
+        final CloseableHttpClient httpclient = HttpClients.createDefault();
+
+        transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    try (CloseableHttpResponse response = httpclient.execute(new HttpDelete(url))) {
+                        assertEquals(403, response.getStatusLine().getStatusCode());
+                    }
+                    return null;
+                }, false, true);
+    }
+
+    @Test
     public void testGetNodeContent() throws IOException {
         final NodeRef[] nodeRef = init();
 
@@ -156,6 +195,22 @@ public class NodeContentTest extends BaseTest {
                         }
                         return null;
                     }
+                }, false, true);
+    }
+
+    @Test
+    public void testGetNodeContentReturnsAccesDenid() throws IOException {
+        final NodeRef[] nodeRef = init();
+
+        final String url = makeNodesUrl(nodeRef[3], "/content", "red", "red");
+        final CloseableHttpClient httpclient = HttpClients.createDefault();
+
+        transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    try (CloseableHttpResponse response = httpclient.execute(new HttpGet(url))) {
+                        assertEquals(403, response.getStatusLine().getStatusCode());
+                    }
+                    return null;
                 }, false, true);
     }
 

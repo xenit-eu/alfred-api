@@ -79,6 +79,18 @@ public class MetadataTest extends BaseTest {
     }
 
     @Test
+    public void testMetadataGetAccessDenied() throws IOException {
+        NodeRef[] nodeRef = init();
+        String url = makeNodesUrl(nodeRef[3], "/metadata",
+                "red", "red");
+        logger.info("URL: " + url);
+        HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
+
+        logger.info(EntityUtils.toString(httpResponse.getEntity()));
+        assertEquals(403, httpResponse.getStatusLine().getStatusCode());
+    }
+
+    @Test
     public void testMetadataPost() throws IOException, JSONException {
         final NodeRef[] nodeRef = init();
         String url = makeNodesUrl(nodeRef[0], "/metadata", "admin", "admin");
@@ -120,6 +132,30 @@ public class MetadataTest extends BaseTest {
                         return null;
                     }
                 }, false, true);
+    }
+
+    @Test
+    public void testMetadataPostReturnsAccesDenied() throws IOException, JSONException {
+        final NodeRef[] nodeRef = init();
+        String url = makeNodesUrl(nodeRef[3], "/metadata", "red", "red");
+        logger.info(" URL: " + url);
+
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpPost httppost = new HttpPost(url);
+
+        String propertiesToSet = json(String.format("'propertiesToSet' : {" +
+                "'%s' : ['newTitle']" +
+                "}", ContentModel.PROP_TITLE));
+
+        //Adding the cm:versionable aspect as a test
+        httppost.setEntity(new StringEntity(json(String
+                .format("{'aspectsToAdd':['%s'], %s}", ContentModel.ASPECT_VERSIONABLE.toString(), propertiesToSet))));
+
+        try (CloseableHttpResponse response = httpclient.execute(httppost)) {
+            String jsonString = EntityUtils.toString(response.getEntity());
+            logger.info(" Result: " + jsonString + " ");
+            assertEquals(403, response.getStatusLine().getStatusCode());
+        }
     }
 
     private String getUrl(NodeRef nodeRef) {
@@ -173,6 +209,17 @@ public class MetadataTest extends BaseTest {
                         assertNotNull(archivedRef);
                         return null;
                     }
+                }, true, true);
+    }
+
+    @Test
+    public void testDeletePermanentlyReturnsAccesDenied() throws IOException {
+        final NodeRef[] nodeRef = init();
+        final String url = makeNodesUrl(nodeRef[3], "red", "red") + "?permanently=true";
+        transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    assertEquals(403, Request.Delete(url).execute().returnResponse().getStatusLine().getStatusCode());
+                    return null;
                 }, true, true);
     }
 

@@ -9,6 +9,7 @@
 ### Changed
 * [ALFREDAPI-416](https://xenitsupport.jira.com/browse/ALFREDAPI-416): Removed max repository version from module.properties for builds for most recent Alfresco
 * [ALFREDAPI-420](https://xenitsupport.jira.com/browse/ALFREDAPI-420): Add missing Associations to getAssociations call; `getAssociations` now also returns source associations for a node. `/nodes/nodeInfo` will now also returns source associations by default.
+* [ALFREDAPI-421](https://xenitsupport.jira.com/browse/ALFREDAPI-421): Add 403 Not Authorized responses to `NodesWebscript1.java`
 
 ### Fixed
 * [ALFREDAPI-419](https://xenitsupport.jira.com/browse/ALFREDAPI-419): Add urldecoding to deleteAssociation endpoint
