@@ -271,7 +271,7 @@ public class BulkTest extends BaseTest {
         final NodeRef mainFolderRef = primaryParentAssoc.getTarget();
 
         List<ChildParentAssociation> childAssocs = this.nodeService.getChildAssociations(mainFolderRef);
-        assertEquals(2, childAssocs.size());
+        assertEquals(3, childAssocs.size());
 
         String url = this.makeBulkUrl();
 
@@ -291,7 +291,7 @@ public class BulkTest extends BaseTest {
                           assertEquals(200, response.getStatusLine().getStatusCode());
                           List<ChildParentAssociation> newChildAssocs = nodeService
                                 .getChildAssociations(mainFolderRef);
-                          assertEquals(3, newChildAssocs.size());
+                          assertEquals(4, newChildAssocs.size());
                       }
                       return null;
                   }

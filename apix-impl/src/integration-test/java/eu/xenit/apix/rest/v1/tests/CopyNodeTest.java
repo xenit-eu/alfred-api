@@ -55,31 +55,51 @@ public class CopyNodeTest extends BaseTest {
         final CloseableHttpClient httpclient = HttpClients.createDefault();
 
         transactionService.getRetryingTransactionHelper()
-                .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
-                    @Override
-                    public Object execute() throws Throwable {
-                        HttpPost httppost = new HttpPost(url);
-                        String jsonString = json(String.format(
-                                "{" +
-                                        "\"parent\":\"%s\"," +
-                                        "\"copyFrom\":\"%s\"" +
-                                        "}"
-                                , parentRef.toString(), nodeRef[0].toString()));
-                        httppost.setEntity(new StringEntity(jsonString));
-                        List<ChildParentAssociation> childAssociations = nodeService.getChildAssociations(parentRef);
-                        assertEquals(1, childAssociations.size());
-
-                        try (CloseableHttpResponse response = httpclient.execute(httppost)) {
-                            logger.debug(EntityUtils.toString(response.getEntity()));
-
-                            assertEquals(200, response.getStatusLine().getStatusCode());
-                        }
-                        return null;
-                    }
+                .doInTransaction(() -> {
+                    doTestCopy(httpclient, url, parentRef, nodeRef[0].toString(), 200);
+                    return null;
                 }, false, true);
 
         List<ChildParentAssociation> newChildAssocs = nodeService.getChildAssociations(parentRef);
         assertEquals(2, newChildAssocs.size());
+    }
+
+    @Test
+    public void copyNodeReturnsAccesDenied() {
+        final NodeRef[] initArray = init();
+        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initArray[3]);
+        final ChildParentAssociation primaryParentAssoc = parentAssociations.get(0);
+        final NodeRef parentRef = primaryParentAssoc.getTarget();
+
+        final String url = makeAlfrescoBaseurl("red", "red") + "/apix/v1/nodes";
+        final CloseableHttpClient httpclient = HttpClients.createDefault();
+
+        transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    doTestCopy(httpclient, url, parentRef, initArray[3].toString(), 403);
+                    return null;
+                }, false, true);
+
+        List<ChildParentAssociation> newChildAssocs = nodeService.getChildAssociations(parentRef);
+        assertEquals(1, newChildAssocs.size());
+    }
+
+    private void doTestCopy(CloseableHttpClient httpClient, String url, NodeRef parentRef, String targetRef, int expectedResponseCode) throws Throwable {
+        HttpPost httppost = new HttpPost(url);
+        String jsonString = json(String.format(
+                "{" +
+                        "\"parent\":\"%s\"," +
+                        "\"copyFrom\":\"%s\"" +
+                        "}"
+                , parentRef.toString(), targetRef));
+        httppost.setEntity(new StringEntity(jsonString));
+        List<ChildParentAssociation> childAssociations = nodeService.getChildAssociations(parentRef);
+        assertEquals(1, childAssociations.size());
+
+        try (CloseableHttpResponse response = httpClient.execute(httppost)) {
+            logger.debug(EntityUtils.toString(response.getEntity()));
+            assertEquals(expectedResponseCode, response.getStatusLine().getStatusCode());
+        }
     }
 
     @After

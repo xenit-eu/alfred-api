@@ -52,40 +52,17 @@ public class CreateNodeTest extends BaseTest {
         List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(nodeRef[0]);
         final ChildParentAssociation primaryParentAssoc = (ChildParentAssociation) parentAssociations.get(0);
         assertTrue(primaryParentAssoc.isPrimary());
+        NodeRef parent = primaryParentAssoc.getTarget();
 
         final String url = makeAlfrescoBaseurl("admin", "admin") + "/apix/v1/nodes";
         final CloseableHttpClient httpclient = HttpClients.createDefault();
 
         String responseBody = transactionService.getRetryingTransactionHelper()
-                .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<String>() {
-                    @Override
-                    public String execute() throws Throwable {
-                        HttpPost httppost = new HttpPost(url);
-                        String jsonString = json(String.format(
-                                "{" +
-                                        "\"parent\":\"%s\"," +
-                                        "\"name\":\"createNode\"," +
-                                        "\"properties\":{" +
-                                        "'%s' : ['" + TITLE_VALUE + "']" +
-                                        "}," +
-                                        "\"type\":\"%s\"" +
-                                        "}"
-                                , primaryParentAssoc.getTarget().toString(), ContentModel.PROP_TITLE.toString(),
-                                ContentModel.TYPE_CONTENT.toString()));
-                        httppost.setEntity(new StringEntity(jsonString));
-                        List<ChildParentAssociation> childAssociations = nodeService
-                                .getChildAssociations(primaryParentAssoc.getTarget());
-                        assertEquals(childAssociations.size(), 1);
-                        try (CloseableHttpResponse response = httpclient.execute(httppost)) {
-//                    String responseString = EntityUtils.toString(response.getEntity());
-                            assertEquals(200, response.getStatusLine().getStatusCode());
-//                    return responseString;
-                        }
-                        return null;
-                    }
+                .doInTransaction(() -> {
+                    doCreateNode(url, parent, httpclient, 200);
+                    return null;
                 }, false, true);
 
-        NodeRef parent = primaryParentAssoc.getTarget();
 //         FIXME : Test that METADATA has been filled
 //        ObjectMapper mapper = new ObjectMapper();
 //        NodeMetadata nodeMetadata =  mapper.readValue(responseBody, new TypeReference<NodeMetadata>() {});
@@ -93,6 +70,47 @@ public class CreateNodeTest extends BaseTest {
         List<ChildParentAssociation> newChildAssocs = nodeService.getChildAssociations(parent);
         assertEquals(2, newChildAssocs.size());
 //        assertEquals(TITLE_VALUE, nodeTitle);
+    }
+
+    @Test
+    public void testCreateNodeRespondsWithAccesDenied() throws IOException {
+        final NodeRef[] initArray = init();
+        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initArray[3]);
+        final ChildParentAssociation primaryParentAssoc = parentAssociations.get(0);
+        NodeRef parent = primaryParentAssoc.getTarget();
+        assertTrue(primaryParentAssoc.isPrimary());
+
+        final String url = makeAlfrescoBaseurl("red", "red") + "/apix/v1/nodes";
+        final CloseableHttpClient httpclient = HttpClients.createDefault();
+
+        transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    doCreateNode(url, parent, httpclient, 403);
+                    return null;
+                }, false, true);
+
+        List<ChildParentAssociation> newChildAssocs = nodeService.getChildAssociations(parent);
+        assertEquals(1, newChildAssocs.size());
+    }
+
+    private void doCreateNode(String url, NodeRef parentRef, CloseableHttpClient httpClient, int expectedReponseCode)
+            throws Throwable {
+        HttpPost httppost = new HttpPost(url);
+        String jsonString = json(String.format(
+                "{" +
+                        "\"parent\":\"%s\"," +
+                        "\"name\":\"createNode\"," +
+                        "\"properties\":{" +
+                        "'%s' : ['" + TITLE_VALUE + "']" +
+                        "}," +
+                        "\"type\":\"%s\"" +
+                        "}"
+                , parentRef.toString(), ContentModel.PROP_TITLE.toString(),
+                ContentModel.TYPE_CONTENT.toString()));
+        httppost.setEntity(new StringEntity(jsonString));
+        try (CloseableHttpResponse response = httpClient.execute(httppost)) {
+            assertEquals(expectedReponseCode, response.getStatusLine().getStatusCode());
+        }
     }
 
     @After

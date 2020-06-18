@@ -56,6 +56,14 @@ public class AssociationsTest extends BaseTest {
     }
 
     @Test
+    public void testAssociationsGetDenied() throws IOException {
+        NodeRef[] initArray = init();
+        String url = makeNodesUrl(initArray[3], "/associations", "red", "red");
+        HttpResponse response = Request.Get(url).execute().returnResponse();
+        assertEquals(403, response.getStatusLine().getStatusCode());
+    }
+
+    @Test
     public void testParentAssociationsGet() throws IOException {
         NodeRef[] nodeRef = init();
         String url = makeNodesUrl(nodeRef[0], "/associations/parents", "admin", "admin");

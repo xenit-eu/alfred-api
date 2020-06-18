@@ -7,6 +7,7 @@ import java.io.IOException;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -147,6 +148,48 @@ public class PermissionsTest extends BaseTest {
 
     }
 
+    @Test
+    public void testGetNodeAclsReturnsAccesDenied() throws IOException {
+        NodeRef[] nodeRef = init();
+        String url = makeNodesUrl(nodeRef[3], "/acl", "red", "red");
+
+        HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
+        logger.debug(EntityUtils.toString(httpResponse.getEntity()));
+        assertEquals(403, httpResponse.getStatusLine().getStatusCode());
+    }
+
+    @Test
+    public void testSetNodeAclsReturnsAccesDenied() throws IOException {
+        NodeRef[] nodeRef = init();
+        String url = makeNodesUrl(nodeRef[0], "/acl", "red", "red");
+
+        HttpResponse httpResponse = Request.Put(url).body(new StringEntity(
+                "{\n"
+                        + "   \"inheritFromParent\": false,\n"
+                        + "   \"ownAccessList\": [\n"
+                        + "      {\n"
+                        + "         \"allowed\": true,\n"
+                        + "         \"authority\": \"red\",\n"
+                        + "         \"permission\": \"Collaborator\"\n"
+                        + "      }\n"
+                        + "]}"
+        )).execute().returnResponse();
+        logger.debug(EntityUtils.toString(httpResponse.getEntity()));
+        String result = EntityUtils.toString(httpResponse.getEntity());
+        assertEquals(403, httpResponse.getStatusLine().getStatusCode());
+    }
+
+    @Test
+    public void testSetInheritFromParentReturnsAccesDenied() throws IOException {
+        NodeRef[] initArray = init();
+        assertEquals(403,
+                Request.Post(makeNodesUrl(initArray[3], "/acl/inheritFromParent", "red", "red"))
+                        .body(new StringEntity("{\"inheritFromParent\":true}"))
+                        .execute()
+                        .returnResponse()
+                        .getStatusLine()
+                        .getStatusCode());
+    }
 
     @After
     public void cleanUp() {
