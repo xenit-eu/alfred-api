@@ -52,6 +52,7 @@ public class UploadFileTest extends BaseTest {
     private NodeService alfrescoNodeService;
     private ContentService contentService;
     private NodeRef parentNodeRef;
+    private NodeRef[] initNodeRefArray;
 
     @org.junit.Before
     public void setUp() {
@@ -59,8 +60,8 @@ public class UploadFileTest extends BaseTest {
         alfrescoNodeService = this.serviceRegistry.getNodeService();
         contentService = this.serviceRegistry.getContentService();
 
-        NodeRef[] nodeRef = init();
-        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(nodeRef[0]);
+        initNodeRefArray = init();
+        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initNodeRefArray[0]);
         final ChildParentAssociation primaryParentAssoc = parentAssociations.get(0);
         this.parentNodeRef = primaryParentAssoc.getTarget();
         assertTrue(primaryParentAssoc.isPrimary());
@@ -73,23 +74,51 @@ public class UploadFileTest extends BaseTest {
 
     @Test
     public void testUploadFile() throws IOException {
-        String url = makeAlfrescoBaseurlAdmin() + "/apix/v1/nodes/upload";
+        String url = createUrl(null, null);
         logger.info(" URL: " + url);
-
-        HttpEntity entity = MultipartEntityBuilder.create()
-                .addTextBody("parent", this.parentNodeRef.toString())
-                .addTextBody("type", ContentModel.TYPE_CONTENT.toString())
-                .addBinaryBody("file", createTestFile())
-                .build();
-
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost(url);
-        httpPost.setEntity(entity);
-        try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
+        HttpEntity entity = createHttpEntity(parentNodeRef.toString());
+        try (CloseableHttpResponse response = doPost(url, entity)) {
             String resultString = EntityUtils.toString(response.getEntity());
             logger.debug(" resultString: " + resultString);
             assertEquals(200, response.getStatusLine().getStatusCode());
         }
+    }
+
+    @Test
+    public void testUploadFileResultsInAccessDenied() throws IOException {
+        String url = createUrl("red", "red");
+        logger.info(">>>>> URL: " + url);
+        HttpEntity entity = createHttpEntity(initNodeRefArray[3].toString());
+        try (CloseableHttpResponse response = doPost(url, entity)) {
+            String resultString = EntityUtils.toString(response.getEntity());
+            logger.debug(" resultString: " + resultString);
+            assertEquals(403, response.getStatusLine().getStatusCode());
+        }
+    }
+
+    private String createUrl(String username, String password) {
+        StringBuilder urlBuilder = new StringBuilder().append("/apix/v1/nodes/upload");
+        if (username == null || password == null) {
+            urlBuilder.insert(0, makeAlfrescoBaseurlAdmin());
+        } else {
+            urlBuilder.insert(0, makeAlfrescoBaseurl(username, password));
+        }
+        return urlBuilder.toString();
+    }
+
+    private HttpEntity createHttpEntity(String parentRef) throws IOException {
+        return MultipartEntityBuilder.create()
+                .addTextBody("parent", parentRef)
+                .addTextBody("type", ContentModel.TYPE_CONTENT.toString())
+                .addBinaryBody("file", createTestFile())
+                .build();
+    }
+
+    private CloseableHttpResponse doPost(String url, HttpEntity entity) throws IOException {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost(url);
+        httpPost.setEntity(entity);
+        return httpClient.execute(httpPost);
     }
 
     @Test

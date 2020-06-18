@@ -6,8 +6,11 @@ import eu.xenit.apix.integrationtesting.runner.ApixIntegration;
 import eu.xenit.apix.tests.ApixImplBundleFilter;
 import eu.xenit.testing.integrationtesting.runner.UseSpringContextOfBundle;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.admin.SysAdminParams;
 import org.alfresco.repo.model.Repository;
@@ -20,6 +23,7 @@ import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.AuthenticationService;
+import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
 import org.apache.http.HttpResponse;
@@ -169,7 +173,7 @@ public abstract class BaseTest {
     }
 
     protected eu.xenit.apix.data.NodeRef[] init() {
-        final eu.xenit.apix.data.NodeRef[] ref = {null, null, null};
+        final eu.xenit.apix.data.NodeRef[] ref = {null, null, null, null};
         TransactionService transactionService = serviceRegistry.getTransactionService();
 
         this.removeMainTestFolder();
@@ -196,6 +200,20 @@ public abstract class BaseTest {
                 NodeRef testNodeRef3 = testNode3.getNodeRef();
                 eu.xenit.apix.data.NodeRef apixTestNodeRef3 = new eu.xenit.apix.data.NodeRef(testNodeRef3.toString());
                 ref[2] = apixTestNodeRef3;
+
+                FileInfo noUserRightsFolder = createTestNode(mainTestFolder.getNodeRef(), "noUserRightsTestFolder",
+                        ContentModel.TYPE_FOLDER);
+                setPermissionInheritance(noUserRightsFolder.getNodeRef(), false);
+                FileInfo noUserRightsNode = createTestNode(noUserRightsFolder.getNodeRef(), "noUserRightsTestFile",
+                        ContentModel.TYPE_CONTENT);
+                NodeRef noUserRightsNodeRef = noUserRightsNode.getNodeRef();
+                setPermissionInheritance(noUserRightsNodeRef, false);
+                eu.xenit.apix.data.NodeRef apixNoUserRightsNodeRef = new eu.xenit.apix.data.NodeRef(
+                        noUserRightsNodeRef.toString());
+                ref[3] = apixNoUserRightsNodeRef;
+
+                String red = "red";
+                createUser(red, red, red, (red+"@"+red+".com"));
                 return null;
             }
         };
@@ -303,6 +321,25 @@ public abstract class BaseTest {
         };
         TransactionService transactionService = serviceRegistry.getTransactionService();
         transactionService.getRetryingTransactionHelper().doInTransaction(txnWork, false, true);
+    }
+
+    protected void setPermissionInheritance(NodeRef target, boolean bool) {
+        serviceRegistry.getPermissionService().setInheritParentPermissions(target, bool);
+    }
+
+    protected NodeRef createUser(String userName, String password, String firstName, String email) {
+        PersonService personService = serviceRegistry.getPersonService();
+        if (!personService.personExists(userName)) {
+            Map<QName, Serializable> personProperties = new HashMap<>();
+            personProperties.put(ContentModel.PROP_USERNAME, userName);
+            personProperties.put(ContentModel.PROP_FIRSTNAME, firstName);
+            personProperties.put(ContentModel.PROP_EMAIL, email);
+            NodeRef personNodeRef = personService.createPerson(personProperties);
+            serviceRegistry.getAuthenticationService().createAuthentication(userName, password.toCharArray());
+            return personNodeRef;
+        } else {
+            return personService.getPerson(userName);
+        }
     }
 
     public String json(String str) {

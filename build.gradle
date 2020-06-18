@@ -45,7 +45,7 @@ ext {
     de_version = "2.0.1"
 
     http_core_version = "4.3.3"
-    http_version = "4.3.3"
+    http_version = "4.3.4"
 
     alfresco_50_version = "5.0.d"
     alfresco_51_version = "5.1.f"

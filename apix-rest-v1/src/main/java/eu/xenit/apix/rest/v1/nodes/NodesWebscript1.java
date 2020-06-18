@@ -1,6 +1,7 @@
 package eu.xenit.apix.rest.v1.nodes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.dynamicextensionsalfresco.webscripts.annotations.ExceptionHandler;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.HttpMethod;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.RequestParam;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.Transaction;
@@ -114,7 +115,10 @@ public class NodesWebscript1 extends ApixV1Webscript {
                     "Changing the cm:name property will also update the qname path of the node so it is in sync with it.\n"
                     +
                     "This only applies to nodes of type or subtype cm:content or cm:folder but not of type or subtype of cm:systemfolder.")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NodeMetadata.class))
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success", response = NodeMetadata.class),
+            @ApiResponse(code = 403, message = "Not Authorized")
+    })
     public void setMetadata(@UriVariable final String space, @UriVariable final String store,
             @UriVariable final String guid,
             final MetadataChanges changes, final WebScriptResponse response) throws IOException {
@@ -124,11 +128,15 @@ public class NodesWebscript1 extends ApixV1Webscript {
             response.setStatus(404);
         }
         writeJsonResponse(response, nodeMetadata);
+
     }
 
     @ApiOperation("Retrieve node metadata")
     @Uri(value = "/nodes/{space}/{store}/{guid}/metadata", method = HttpMethod.GET)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NodeMetadata.class))
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success", response = NodeMetadata.class),
+            @ApiResponse(code = 403, message = "Not Authorized")
+    })
     public void getMetadata(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             WebScriptResponse response) throws IOException {
 
@@ -139,6 +147,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         } else {
             writeJsonResponse(response, nodeMetadata);
         }
+
     }
 
 
@@ -155,38 +164,35 @@ public class NodesWebscript1 extends ApixV1Webscript {
         boolean deletePermanently = permanently != null && permanently.equals("true");
         logger.debug(" deletePermanently: " + deletePermanently);
         NodeRef nodeRef = createNodeRef(space, store, guid);
-        try {
-            boolean success = nodeService.deleteNode(nodeRef, deletePermanently);
-            if (success) {
-                logger.debug("node {} deleted", nodeRef);
-                response.setStatus(200);
-                writeJsonResponse(response, "Node deleted.");
-            } else {
-                logger.debug("Failed to delete node, node does not exist: {}", nodeRef);
-                response.setStatus(404);
-                writeJsonResponse(response, "Failed to delete node, node does not exist: " + nodeRef.toString());
-            }
-        } catch (AccessDeniedException accessDeniedException) {
-            logger.debug("Not authorized to delete node: {}", nodeRef, accessDeniedException);
-            response.setStatus(403);
-            writeJsonResponse(response, "Not authorized to delete node");
+        boolean success = nodeService.deleteNode(nodeRef, deletePermanently);
+        if (success) {
+            logger.debug("node {} deleted", nodeRef);
+            response.setStatus(200);
+            writeJsonResponse(response, "Node deleted.");
+        } else {
+            logger.debug("Failed to delete node, node does not exist: {}", nodeRef);
+            response.setStatus(404);
+            writeJsonResponse(response, "Failed to delete node, node does not exist: " + nodeRef.toString());
         }
+
     }
 
     @ApiOperation("Retrieve node associations")
     @Uri(value = "/nodes/{space}/{store}/{guid}/associations", method = HttpMethod.GET)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NodeAssociations.class))
+    @ApiResponses({@ApiResponse(code = 200, message = "Success", response = NodeAssociations.class),
+            @ApiResponse(code = 403, message = "Not Authorized")})
     public void getAssociations(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             WebScriptResponse response) throws IOException {
         NodeRef nodeRef = this.createNodeRef(space, store, guid);
         NodeAssociations associations = this.nodeService.getAssociations(nodeRef);
-
         writeJsonResponse(response, associations);
+
     }
 
     @ApiOperation("Create new association with given node as source")
     @Uri(value = "/nodes/{space}/{store}/{guid}/associations", method = HttpMethod.POST)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success"))
+    @ApiResponses({@ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 403, message = "Not Authorized")})
     public void createAssociation(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             CreateAssociationOptions options,
             WebScriptResponse response) throws IOException {
@@ -199,48 +205,62 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
     @ApiOperation("Deletes an association with given node as source")
     @Uri(value = "/nodes/{space}/{store}/{guid}/associations", method = HttpMethod.DELETE)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success"))
+    @ApiResponses({@ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 403, message = "Not Authorized")})
     public void deleteAssociation(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             @RequestParam String target, @RequestParam String type,
             WebScriptResponse response) throws IOException {
         NodeRef source = this.createNodeRef(space, store, guid);
-        nodeService.removeAssociation(source, new NodeRef(URLDecoder.decode(target, StandardCharsets.UTF_8.toString())), new QName(type));
+        NodeRef targetNode = new NodeRef(URLDecoder.decode(target, StandardCharsets.UTF_8.toString()));
+
+        nodeService.removeAssociation(source,
+                targetNode,
+                new QName(type));
         response.setStatus(200);
+
     }
 
 
     @ApiOperation("Retrieve node parent associations")
     @Uri(value = "/nodes/{space}/{store}/{guid}/associations/parents", method = HttpMethod.GET)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = ChildParentAssociation[].class))
+    @ApiResponses({@ApiResponse(code = 200, message = "Success", response = ChildParentAssociation[].class),
+            @ApiResponse(code = 403, message = "Not Authorized")})
     public void getParentAssociations(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             WebScriptResponse response) throws IOException {
         NodeRef nodeRef = this.createNodeRef(space, store, guid);
+
         List<ChildParentAssociation> associations = this.nodeService.getParentAssociations(nodeRef);
 
         writeJsonResponse(response, associations);
+
     }
 
     @ApiOperation("Retrieve node child associations")
     @Uri(value = "/nodes/{space}/{store}/{guid}/associations/children", method = HttpMethod.GET)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = ChildParentAssociation[].class))
+    @ApiResponses({@ApiResponse(code = 200, message = "Success", response = ChildParentAssociation[].class),
+            @ApiResponse(code = 403, message = "Not Authorized")})
     public void getChildAssociations(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             WebScriptResponse response) throws IOException {
         NodeRef nodeRef = this.createNodeRef(space, store, guid);
+
         List<ChildParentAssociation> associations = this.nodeService.getChildAssociations(nodeRef);
 
         writeJsonResponse(response, associations);
+
     }
 
     @ApiOperation("Retrieve node peer associations with given node being the source")
     @Uri(value = "/nodes/{space}/{store}/{guid}/associations/targets", method = HttpMethod.GET)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NodeAssociation[].class))
+    @ApiResponses({@ApiResponse(code = 200, message = "Success", response = NodeAssociation[].class),
+            @ApiResponse(code = 403, message = "Not Authorized")})
     public void getSourcePeerAssociations(@UriVariable String space, @UriVariable String store,
             @UriVariable String guid,
             WebScriptResponse response) throws IOException {
         NodeRef nodeRef = this.createNodeRef(space, store, guid);
+
         List<NodeAssociation> associations = this.nodeService.getTargetAssociations(nodeRef);
 
         writeJsonResponse(response, associations);
+
     }
 
     @ApiOperation(value = "Retrieve current user's permissions for a node",
@@ -248,49 +268,60 @@ public class NodesWebscript1 extends ApixV1Webscript {
                     "Possible keys are: Read, Write, Delete, CreateChildren, ReadPermissions, ChangePermissions, " +
                     "or custom permissions")
     @Uri(value = "/nodes/{space}/{store}/{guid}/permissions", method = HttpMethod.GET)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = PermissionValue.class, responseContainer = "Map"))
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success", response = PermissionValue.class, responseContainer = "Map")})
+    // It would seem permissions can always be retrieved?
     public void getPermissions(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             WebScriptResponse response) throws IOException {
         NodeRef nodeRef = this.createNodeRef(space, store, guid);
 
         Map<String, PermissionValue> permissions = this.permissionService.getPermissions(nodeRef);
         writeJsonResponse(response, permissions);
+
     }
 
     @ApiOperation(value = "sets a user a permission for a node.")
     @Uri(value = "/nodes/{space}/{store}/{guid}/permissions/authority/{authority}/permission/{permission}", method = HttpMethod.POST)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success"))
+    @ApiResponses({@ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 403, message = "Not Authorized")})
     public void setPermission(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             @UriVariable String authority, @UriVariable String permission, WebScriptResponse response)
             throws IOException {
         NodeRef nodeRef = this.createNodeRef(space, store, guid);
+
         this.permissionService.setPermission(nodeRef, authority, permission);
         response.setStatus(200);
+
     }
 
     @ApiOperation(value = "removes a user its permission for a node.")
     @Uri(value = "/nodes/{space}/{store}/{guid}/permissions/authority/{authority}/permission/{permission}", method = HttpMethod.DELETE)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success"))
+    @ApiResponses({@ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 403, message = "Not Authorized")})
     public void deletePermission(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             @UriVariable String authority, @UriVariable String permission, WebScriptResponse response)
             throws IOException {
         NodeRef nodeRef = this.createNodeRef(space, store, guid);
+
         this.permissionService.deletePermission(nodeRef, authority, permission);
         response.setStatus(200);
+
     }
 
     @ApiOperation(value = "Gets the ACLs for a node.")
     @Uri(value = "/nodes/{space}/{store}/{guid}/acl", method = HttpMethod.GET)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NodePermission.class))
+    @ApiResponses({@ApiResponse(code = 200, message = "Success", response = NodePermission.class),
+            @ApiResponse(code = 403, message = "Not Authorized")})
     public void getAcls(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             WebScriptResponse response) throws IOException {
         NodeRef nodeRef = this.createNodeRef(space, store, guid);
+
         NodePermission permissions = this.permissionService.getNodePermissions(nodeRef);
         response.setStatus(200);
         writeJsonResponse(response, permissions);
+
     }
 
     @Uri(value = "/nodes/{space}/{store}/{guid}/acl/inheritFromParent", method = HttpMethod.POST)
+    @ApiResponses({@ApiResponse(code = 403, message = "Not Authorized")})
     public void setInheritParentPermissions(@UriVariable String space, @UriVariable String store,
             @UriVariable String guid, final InheritFromParent inherit) {
         NodeRef nodeRef = this.createNodeRef(space, store, guid);
@@ -311,11 +342,12 @@ public class NodesWebscript1 extends ApixV1Webscript {
             "]}\n" +
             "```", consumes = "application/json")
     @Uri(value = "/nodes/{space}/{store}/{guid}/acl", method = HttpMethod.PUT)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success"))
+    @ApiResponses({@ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 403, message = "Not Authorized")})
     public void setAcls(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             final ChangeAclsOptions changeAclsOptions, WebScriptRequest request, WebScriptResponse response)
             throws JSONException, IOException {
         NodeRef nodeRef = this.createNodeRef(space, store, guid);
+
         NodePermission permissions = new NodePermission();
 
         permissions.setInheritFromParent(changeAclsOptions.isInheritFromParent());
@@ -336,16 +368,20 @@ public class NodesWebscript1 extends ApixV1Webscript {
         this.permissionService.setNodePermissions(nodeRef, permissions);
 
         response.setStatus(200);
+
     }
 
     @ApiOperation("Returns path of the node")
     @Uri(value = "/nodes/{space}/{store}/{guid}/path", method = HttpMethod.GET)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NodePath.class))
+    @ApiResponses({@ApiResponse(code = 200, message = "Success", response = NodePath.class),
+            @ApiResponse(code = 403, message = "Not Authorized")})
     public void getPath(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             WebScriptResponse response) throws IOException {
         NodeRef nodeRef = this.createNodeRef(space, store, guid);
+
         NodePath path = this.fileFolderService.getPath(nodeRef);
         writeJsonResponse(response, path);
+
     }
 
     @ApiOperation("Returns combined information of a node")
@@ -360,18 +396,21 @@ public class NodesWebscript1 extends ApixV1Webscript {
         NodeRef nodeRef = this.createNodeRef(space, store, guid);
 
         try {
+            // This method will return a null result if user has insufficient permissions
             NodeInfo nodeInfo = this
                     .nodeRefToNodeInfo(nodeRef, this.fileFolderService, this.nodeService, this.permissionService);
-            writeJsonResponse(response, nodeInfo);
+            if (nodeInfo != null) {
+                writeJsonResponse(response, nodeInfo);
+            } else {
+                String message = String.format("Insufficient permissions for node %s", nodeRef);
+                throw new AccessDeniedException(message);
+            }
         } catch (InvalidNodeRefException invalidNodeRefException) {
             logger.debug("Failed to get node info, node does not exist: {}", invalidNodeRefException);
             response.setStatus(404);
             writeJsonResponse(response, "Failed to get node info, node does not exist.");
-        } catch (AccessDeniedException accessDeniedException) {
-            logger.debug("Failed to get node info, not authorized for node: {}", accessDeniedException);
-            response.setStatus(403);
-            writeJsonResponse(response, "Failed to get node info, not authorized for node");
         }
+
     }
 
     @ApiOperation(value = "Returns combined information of multiple nodes. "
@@ -500,7 +539,8 @@ public class NodesWebscript1 extends ApixV1Webscript {
                     + "It is the node reference up to which point ancestors will be retrieved.\n"
                     + "The default root reference will be the reference of Company Home")
     @Uri(value = "/nodes/{space}/{store}/{guid}/ancestors", method = HttpMethod.GET)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = AncestorsObject.class))
+    @ApiResponses({@ApiResponse(code = 200, message = "Success", response = AncestorsObject.class),
+            @ApiResponse(code = 403, message = "Not Authorized")})
     public void retrieveAncestors(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             @RequestParam(required = false) String root, WebScriptResponse response) throws IOException {
         NodeRef nodeRef = this.createNodeRef(space, store, guid);
@@ -526,7 +566,8 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
     @ApiOperation("Creates or copies a node")
     @Uri(value = "/nodes", method = HttpMethod.POST)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NodeInfo.class))
+    @ApiResponses({@ApiResponse(code = 200, message = "Success", response = NodeInfo.class),
+            @ApiResponse(code = 403, message = "Not Authorized")})
     public void createNode(final CreateNodeOptions createNodeOptions, WebScriptResponse response) throws IOException {
         Object resultObject = serviceRegistry.getRetryingTransactionHelper()
                 .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
@@ -542,7 +583,8 @@ public class NodesWebscript1 extends ApixV1Webscript {
                         NodeRef nodeRef;
                         if (copyFrom == null) {
                             nodeRef = nodeService
-                                    .createNode(parent, createNodeOptions.properties, new QName(createNodeOptions.type),
+                                    .createNode(parent, createNodeOptions.properties,
+                                            new QName(createNodeOptions.type),
                                             null);
                         } else {
                             nodeRef = nodeService.copyNode(copyFrom, parent, true);
@@ -557,28 +599,32 @@ public class NodesWebscript1 extends ApixV1Webscript {
                 .nodeRefToNodeInfo(resultRef, this.fileFolderService, this.nodeService, this.permissionService);
 
         writeJsonResponse(response, nodeInfo);
+
     }
 
     @ApiOperation("Moves a node by changing its parent")
     @Uri(value = "/nodes/{space}/{store}/{guid}/parent", method = HttpMethod.PUT)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success"))
+    @ApiResponses({@ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 403, message = "Not Authorized")})
     public void setParent(@UriVariable final String space, @UriVariable final String store,
             @UriVariable final String guid, final ChangeParentOptions location, WebScriptResponse response)
             throws IOException {
         NodeRef parent = new NodeRef(location.parent);
         NodeRef nodeToMove = createNodeRef(space, store, guid);
         nodeService.moveNode(nodeToMove, parent);
+
     }
 
     @ApiOperation(value = "Downloads content file for given node")
     @Uri(value = "/nodes/{space}/{store}/{guid}/content", method = HttpMethod.GET)
     @ApiResponses({
             @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 403, message = "Not Authorized"),
             @ApiResponse(code = 404, message = "Not Found")})
     public void getContent(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             WebScriptResponse response) throws IOException {
         final NodeRef nodeRef = new NodeRef(space, store, guid);
-        ContentInputStream contentInputStream = nodeService.getContent(nodeRef);
+        ContentInputStream contentInputStream = null;
+        contentInputStream = nodeService.getContent(nodeRef);
         if (contentInputStream == null) {
             response.setStatus(404);
             return;
@@ -603,10 +649,11 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
     @ApiOperation(value = "Sets or updates the content for given node. If no file is given the content will be set to empty.", consumes = "multipart/form-data")
     @Uri(value = "/nodes/{space}/{store}/{guid}/content", method = HttpMethod.PUT)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success"))
+    @ApiResponses({@ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 403, message = "Not Authorized")})
     @ApiImplicitParams({@ApiImplicitParam(name = "file", paramType = "form", dataType = "file", required = false)})
     public void setContent(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             final WebScriptRequest multiPart, WebScriptResponse response) throws IOException {
+        final NodeRef finalDestination = this.createNodeRef(space, store, guid);
         RetryingTransactionHelper transactionHelper = serviceRegistry.getRetryingTransactionHelper();
 
         org.springframework.extensions.webscripts.servlet.FormData.FormField content = null;
@@ -620,25 +667,26 @@ public class NodesWebscript1 extends ApixV1Webscript {
             }
         }
 
-        final NodeRef finalDestination = this.createNodeRef(space, store, guid);
         final org.springframework.extensions.webscripts.servlet.FormData.FormField finalContent = content;
         transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
             @Override
             public Object execute() throws Throwable {
 
-                nodeService.setContent(finalDestination, finalContent != null ? finalContent.getInputStream() : null,
-                        finalContent != null ? finalContent.getFilename() : null);
+                nodeService
+                        .setContent(finalDestination, finalContent != null ? finalContent.getInputStream() : null,
+                                finalContent != null ? finalContent.getFilename() : null);
                 return null;
             }
         }, false, true);
 
         //writeJsonResponse(response, new Message("Successfully set content"));
+
     }
 
 
     @ApiOperation(value = "Sets the content for given node to empty")
     @Uri(value = "/nodes/{space}/{store}/{guid}/content", method = HttpMethod.DELETE)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success"))
+    @ApiResponses({@ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 403, message = "Not Authorized")})
     public void deleteContent(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             final WebScriptRequest multiPart, WebScriptResponse response) throws IOException {
         RetryingTransactionHelper transactionHelper = serviceRegistry.getRetryingTransactionHelper();
@@ -651,21 +699,25 @@ public class NodesWebscript1 extends ApixV1Webscript {
                 return null;
             }
         }, false, true);
+
     }
 
 
     @ApiOperation(value = "Checks if the given node exists")
     @Uri(value = "/nodes/{space}/{store}/{guid}/exists", method = HttpMethod.GET)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success"))
+    @ApiResponses({@ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 403, message = "Not Authorized")})
     public void exists(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             WebScriptResponse response) throws IOException {
-        writeJsonResponse(response, nodeService.exists(new NodeRef(space, store, guid)));
+        NodeRef nodeRef = new NodeRef(space, store, guid);
+        writeJsonResponse(response, nodeService.exists(nodeRef));
+
     }
 
 
     @ApiOperation(value = "Creates a new node with given content", consumes = "multipart/form-data")
     @Uri(value = "/nodes/upload", method = HttpMethod.POST)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NodeInfo.class))
+    @ApiResponses({@ApiResponse(code = 200, message = "Success", response = NodeInfo.class),
+            @ApiResponse(code = 403, message = "Not Authorized")})
     @ApiImplicitParams({
             @ApiImplicitParam(value = "Noderef of parent for the new node", name = "parent", paramType = "form", dataType = "string", required = true),
             //TODO: Datatype doesnt work here?
@@ -721,7 +773,8 @@ public class NodesWebscript1 extends ApixV1Webscript {
                     @Override
                     public Object execute() throws Throwable {
                         NodeRef newNode = nodeService
-                                .createNode(new NodeRef(finalParent), finalFile.getFilename(), new QName(finalType));
+                                .createNode(new NodeRef(finalParent), finalFile.getFilename(),
+                                        new QName(finalType));
                         nodeService.setContent(newNode, finalFile.getInputStream(), finalFile.getFilename());
 
                         if (finalMetadata != null) {
@@ -743,5 +796,13 @@ public class NodesWebscript1 extends ApixV1Webscript {
         NodeInfo nodeInfo = this
                 .nodeRefToNodeInfo((NodeRef) resultRef, fileFolderService, nodeService, permissionService);
         writeJsonResponse(response, nodeInfo);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    private void writeNotAuthorizedResponse(AccessDeniedException exception, WebScriptResponse response)
+            throws IOException {
+        logger.debug("Not Authorized: ", exception);
+        response.setStatus(403);
+        writeJsonResponse(response, "Not authorised to execute this operation");
     }
 }

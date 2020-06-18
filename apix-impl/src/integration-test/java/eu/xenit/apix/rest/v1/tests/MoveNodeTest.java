@@ -10,6 +10,11 @@ import java.util.List;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.transaction.TransactionService;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +63,7 @@ public class MoveNodeTest extends BaseTest {
                                 .getChildAssociations(mainTestFolder);
                         List<ChildParentAssociation> childAssociationsTestFolder = nodeService
                                 .getChildAssociations(testFolder);
-                        assertEquals(2, childAssociationsMainTestFolder.size());
+                        assertEquals(3, childAssociationsMainTestFolder.size());
                         assertEquals(1, childAssociationsTestFolder.size());
 
                         return null;
@@ -71,9 +76,32 @@ public class MoveNodeTest extends BaseTest {
         doPut(url, null, "{\"parent\":\"%s\"}", mainTestFolder.toString());
 
         List<ChildParentAssociation> newChildAssocsMainTestFolder = nodeService.getChildAssociations(mainTestFolder);
-        assertEquals(3, newChildAssocsMainTestFolder.size());
+        assertEquals(4, newChildAssocsMainTestFolder.size());
         List<ChildParentAssociation> newChildAssocsTestFolder = nodeService.getChildAssociations(testFolder);
         assertEquals(0, newChildAssocsTestFolder.size());
+    }
+
+    @Test
+    public void testMoveNodeReturnsAccesDenied() throws IOException {
+        final NodeRef[] nodeRef = init();
+
+        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(nodeRef[3]);
+        final ChildParentAssociation primaryParentAssocTestNode = parentAssociations.get(0);
+        final NodeRef testFolder = primaryParentAssocTestNode.getTarget();
+
+        parentAssociations = this.nodeService.getParentAssociations(testFolder);
+        final ChildParentAssociation primaryParentAssocTestFolder = parentAssociations.get(0);
+        final NodeRef mainTestFolder = primaryParentAssocTestFolder.getTarget();
+
+        final String url = this.makeNodesUrl(nodeRef[3], "/parent", "red", "red");
+        logger.info(" URL: " + url);
+        final CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpPut httpPut = new HttpPut(url);
+        httpPut.setEntity(new StringEntity(String.format("{\"parent\":\"%s\"}", mainTestFolder.toString())));
+
+        try(CloseableHttpResponse httpResponse = httpClient.execute(httpPut)) {
+            assertEquals(403, httpResponse.getStatusLine().getStatusCode());
+        }
     }
 
     @After
