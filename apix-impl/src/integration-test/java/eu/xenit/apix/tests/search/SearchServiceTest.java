@@ -34,7 +34,6 @@ import org.alfresco.service.transaction.TransactionService;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -321,5 +320,32 @@ abstract public class SearchServiceTest extends BaseTest {
      * Implemented in alfresco version specific subclasses to set up and tear down solr facets.
      */
     abstract protected void withTestFacets(AuthenticationUtil.RunAsWork<Object> work) throws Exception;
+
+
+    @Test
+    public void testNotFilteredOut() {
+        SearchSyntaxNode node =
+                new QueryBuilder()
+                        .startOr()
+                        .property("{http://www.alfresco.org/model/system/1.0}node-dbid", "9223372036854775807")
+                        .end()
+                        .create();
+        SearchQuery searchQuery = new SearchQuery();
+        searchQuery.setQuery(node);
+        searchService.query(searchQuery);
+    }
+
+    @Test
+    public void testNothingLeftAfterFiltering() {
+        SearchSyntaxNode node =
+                new QueryBuilder()
+                        .startOr()
+                        .property("{http://www.alfresco.org/model/system/1.0}node-dbid", "9223372036854775808")
+                        .end()
+                        .create();
+        SearchQuery searchQuery = new SearchQuery();
+        searchQuery.setQuery(node);
+        searchService.query(searchQuery);
+    }
 
 }
