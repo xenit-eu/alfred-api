@@ -57,7 +57,7 @@ public class SearchService implements ISearchService {
         this.propertyService = propertyService;
     }
 
-    public String toFtsQuery(SearchQuery q, PropertyService propertyService) {
+    public String toFtsQuery(SearchQuery q) {
         FtsNodeVisitor ftsNodeVisitor = new FtsNodeVisitor(propertyService);
         return ftsNodeVisitor.visit(q.getQuery());
     }
@@ -72,7 +72,7 @@ public class SearchService implements ISearchService {
 
         SearchParameters searchParameters = new SearchParameters();
 
-        String query = toFtsQuery(postQuery, propertyService);
+        String query = toFtsQuery(postQuery);
         int argSkipCount = postQuery.getPaging().getSkip();
 
         // Max items

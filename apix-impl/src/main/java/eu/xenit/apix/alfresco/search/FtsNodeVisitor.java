@@ -62,12 +62,14 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
         //String s = ;
         List<String> children = new ArrayList<>(n.getChildren().size());
         for (SearchSyntaxNode node : n.getChildren()) {
-            children.add(visit(node));
+            String result = visit(node);
+            if (result != null) {
+                children.add(result);
+            }
         }
 
 //        String s = String.join(" " + n.getOperator() + " ", n.getChildren().stream().map(el -> visit(el)).collect(Collectors.toList()));
-        String s = StringUtils.join(" " + n.getOperator() + " ", children.stream().filter(Objects::nonNull).collect(
-                Collectors.toList()));
+        String s = StringUtils.join(" " + n.getOperator() + " ", children);
         builder.setLength(0);
         builder.append('(');
         builder.append(s);
