@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import eu.xenit.apix.alfresco.dictionary.PropertyService;
 import eu.xenit.apix.alfresco.search.FtsNodeVisitor;
@@ -15,7 +14,7 @@ import eu.xenit.apix.search.nodes.SearchSyntaxNode;
 import eu.xenit.apix.search.visitors.SearchSyntaxPrinter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,16 +24,16 @@ public class FtsNodeVisitorTest {
 
     private final static Logger logger = LoggerFactory.getLogger(FtsNodeVisitorTest.class);
 
-    private Map<String, String> propertyToDataType = new HashMap<String, String>() {{
-        put("{tenant.model}stringProperty1", "d:text");
-        put("{tenant.model}stringProperty2", "d:text");
-        put("{tenant.model}intProperty", "d:int");
+    private Map<QName, String> propertyToDataType = new HashMap<QName, String>() {{
+        put(new QName("{tenant.model}stringProperty1"), "d:text");
+        put(new QName("{tenant.model}stringProperty2"), "d:text");
+        put(new QName("{tenant.model}intProperty"), "d:int");
     }};
 
     @Test
     public void testIntTypeInvalid() {
         SearchSyntaxNode querySyntaxTree = generateAllQuery("5500012345");
-        PropertyService propertyService = generatePropertyServiceMock();
+        PropertyService propertyService = new PropertyServiceStub(propertyToDataType);
 
         String ftsQuery = toFts(querySyntaxTree, propertyService);
         assertThat("Fts search String does not contain wanted term", ftsQuery,
@@ -48,7 +47,7 @@ public class FtsNodeVisitorTest {
     @Test
     public void testIntTypeValid() {
         SearchSyntaxNode querySyntaxTree = generateAllQuery("1500012345");
-        PropertyService propertyService = generatePropertyServiceMock();
+        PropertyService propertyService = new PropertyServiceStub(propertyToDataType);
 
         String ftsQuery = toFts(querySyntaxTree, propertyService);
         assertThat("Fts search String does not contain wanted term", ftsQuery,
@@ -63,8 +62,8 @@ public class FtsNodeVisitorTest {
         QueryBuilder querySyntaxTree = new QueryBuilder()
                 .startAnd()
                 .startOr();
-        for (String property : propertyToDataType.keySet()) {
-            querySyntaxTree = querySyntaxTree.property(property, value);
+        for (QName qName : propertyToDataType.keySet()) {
+            querySyntaxTree = querySyntaxTree.property(qName.getValue(), value);
         }
         return querySyntaxTree
                 .end()
@@ -73,18 +72,6 @@ public class FtsNodeVisitorTest {
                 .create();
     }
 
-    private PropertyService generatePropertyServiceMock() {
-        PropertyService propertyService = mock(PropertyService.class);
-        for (Entry<String, String> entry : propertyToDataType.entrySet()) {
-            PropertyDefinition def = new PropertyDefinition();
-            def.setDataType(new QName(entry.getValue()));
-            when(propertyService.GetPropertyDefinition(new QName(entry.getKey())))
-                    .thenReturn(def);
-        }
-        return propertyService;
-    }
-
-
     private String toFts(SearchSyntaxNode node, PropertyService propertyService) {
         logger.debug(SearchSyntaxPrinter.Print(node));
         FtsNodeVisitor visitor = new FtsNodeVisitor(propertyService);
@@ -92,5 +79,30 @@ public class FtsNodeVisitorTest {
 
         logger.debug(ret);
         return ret;
+    }
+
+    private static class PropertyServiceStub extends PropertyService{
+
+        final Map<QName, String> propertyToDataType;
+
+        public PropertyServiceStub(Map<QName, String> propertyToDataType) {
+            this.propertyToDataType = propertyToDataType;
+        }
+
+        @Override
+        public PropertyDefinition GetPropertyDefinition(QName qname) {
+            String s = propertyToDataType.get(qname);
+            if (s == null) {
+                throw new NoSuchElementException("propertyToDataType in Stub did not contain QName: " + qname);
+            }
+            return definitionWithJustDataType(propertyToDataType.get(qname));
+        }
+
+        private PropertyDefinition definitionWithJustDataType(String type) {
+            PropertyDefinition def = new PropertyDefinition();
+            def.setDataType(new QName(type));
+            return def;
+        }
+
     }
 }
