@@ -62,10 +62,7 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
         //String s = ;
         List<String> children = new ArrayList<>(n.getChildren().size());
         for (SearchSyntaxNode node : n.getChildren()) {
-            String result = visit(node);
-            if (result != null) {
-                children.add(result);
-            }
+            children.add(visit(node));
         }
 
 //        String s = String.join(" " + n.getOperator() + " ", n.getChildren().stream().map(el -> visit(el)).collect(Collectors.toList()));
@@ -81,7 +78,7 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
     @Override
     public String visit(PropertySearchNode n) {
         if (!propertyTypeCheckService.fitsType(n)) {
-            return null;
+            return "_dummy_:_miss_";
         }
         builder.setLength(0);
         if (n.isExact()) {
