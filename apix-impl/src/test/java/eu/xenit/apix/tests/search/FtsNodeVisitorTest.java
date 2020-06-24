@@ -81,7 +81,7 @@ public class FtsNodeVisitorTest {
         return ret;
     }
 
-    private static class PropertyServiceStub extends PropertyService{
+    private static class PropertyServiceStub extends PropertyService {
 
         final Map<QName, String> propertyToDataType;
 

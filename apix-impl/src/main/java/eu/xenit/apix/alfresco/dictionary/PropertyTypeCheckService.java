@@ -40,12 +40,11 @@ public class PropertyTypeCheckService {
         if (propertyDefinition == null || propertyDefinition.getDataType() == null) {
             return true;
         }
-        for (Entry<String, Predicate<String>> entry : dataTypePredicates.entrySet()) {
-            if (entry.getKey().equals(propertyDefinition.getDataType().getValue())) {
-                return entry.getValue().test(node.getValue());
-            }
+        Predicate<String> predicate = dataTypePredicates.get(propertyDefinition.getDataType().getValue());
+        if (predicate == null) {
+            return true;
         }
-        return true;
+        return predicate.test(node.getValue());
     }
 
     private static boolean isInt(String value) {
