@@ -7,6 +7,7 @@ import eu.xenit.apix.permissions.IPermissionService;
 import eu.xenit.apix.rest.v2.tests.AllNodeInfoTest;
 import eu.xenit.apix.rest.v2.tests.BaseTest;
 import java.io.IOException;
+import java.util.HashMap;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.transaction.TransactionService;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -41,23 +42,17 @@ public class SetInheritParentPermissionsTest extends BaseTest {
     }
 
     @Test
-    public void testSetInheritPermissionsAPI() throws IOException, InterruptedException, JSONException {
-        NodeRef[] nodeRefs = init();
-        NodeRef nodeRef0 = nodeRefs[0];
-    }
-
-    @Test
     public void testSetInheritPermissionsRestTrue() throws IOException, InterruptedException, JSONException {
-        NodeRef[] nodeRefs = init();
-        NodeRef nodeRef0 = nodeRefs[0];
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        NodeRef nodeRef0 = initializedNodeRefs.get(BaseTest.TESTFILE_NAME);
         setInheritUrl(nodeRef0, true);
         assertInheritUrl(nodeRef0, true);
     }
 
     @Test
     public void testSetInheritPermissionsRestFalse() throws IOException, InterruptedException, JSONException {
-        NodeRef[] nodeRefs = init();
-        NodeRef nodeRef0 = nodeRefs[0];
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        NodeRef nodeRef0 = initializedNodeRefs.get(BaseTest.TESTFILE_NAME);
         setInheritUrl(nodeRef0, false);
         assertInheritUrl(nodeRef0, false);
     }

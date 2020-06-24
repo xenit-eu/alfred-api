@@ -623,8 +623,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
     public void getContent(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             WebScriptResponse response) throws IOException {
         final NodeRef nodeRef = new NodeRef(space, store, guid);
-        ContentInputStream contentInputStream = null;
-        contentInputStream = nodeService.getContent(nodeRef);
+        ContentInputStream contentInputStream = nodeService.getContent(nodeRef);
         if (contentInputStream == null) {
             response.setStatus(404);
             return;

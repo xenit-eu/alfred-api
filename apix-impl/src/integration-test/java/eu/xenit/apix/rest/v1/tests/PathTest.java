@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import eu.xenit.apix.data.NodeRef;
 import java.io.IOException;
+import java.util.HashMap;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.PermissionService;
@@ -46,8 +47,8 @@ public class PathTest extends BaseTest {
 
     @Test
     public void testDisplayPathGet() throws IOException {
-        NodeRef[] nodeRef = init();
-        String url = makeNodesUrl(nodeRef[0], "/path", "admin", "admin");
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/path", "admin", "admin");
 
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
         String result = EntityUtils.toString(httpResponse.getEntity());
@@ -56,15 +57,15 @@ public class PathTest extends BaseTest {
         assertEquals(200, httpResponse.getStatusLine().getStatusCode());
 
         String expectedResult = String.format("\"displayPath\":\"%s\"",
-                this.nodeService.getPath(new org.alfresco.service.cmr.repository.NodeRef(nodeRef[0].getValue()))
+                this.nodeService.getPath(new org.alfresco.service.cmr.repository.NodeRef(initializedNodeRefs.get(BaseTest.TESTFILE_NAME).getValue()))
                         .toDisplayPath(this.nodeService, this.permissionService));
         assertTrue(result.contains(expectedResult));
     }
 
     @Test
     public void testDisplayPathGetReturnsAccesDenied() throws IOException {
-        NodeRef[] nodeRef = init();
-        String url = makeNodesUrl(nodeRef[3], "/path", "red", "red");
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), "/path", BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS);
 
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
         assertEquals(403, httpResponse.getStatusLine().getStatusCode());
@@ -72,8 +73,8 @@ public class PathTest extends BaseTest {
 
     @Test
     public void testQNamePathGet() throws IOException {
-        NodeRef[] nodeRef = init();
-        String url = makeNodesUrl(nodeRef[0], "/path", "admin", "admin");
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/path", "admin", "admin");
 
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
         String result = EntityUtils.toString(httpResponse.getEntity());
@@ -81,15 +82,15 @@ public class PathTest extends BaseTest {
 
         assertEquals(200, httpResponse.getStatusLine().getStatusCode());
         String expectedResult = String.format("\"qnamePath\":\"%s\"",
-                this.nodeService.getPath(new org.alfresco.service.cmr.repository.NodeRef(nodeRef[0].getValue()))
+                this.nodeService.getPath(new org.alfresco.service.cmr.repository.NodeRef(initializedNodeRefs.get(BaseTest.TESTFILE_NAME).getValue()))
                         .toPrefixString(namespaceService));
         assertTrue(result.contains(expectedResult));
     }
 
     @Test
     public void testQNamePathGetReturnsAccesDenied() throws IOException {
-        NodeRef[] nodeRef = init();
-        String url = makeNodesUrl(nodeRef[3], "/path", "red", "red");
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), "/path", BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS);
 
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
 

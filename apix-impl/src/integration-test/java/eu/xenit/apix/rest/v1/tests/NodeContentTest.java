@@ -8,6 +8,7 @@ import eu.xenit.apix.node.INodeService;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.transaction.TransactionService;
@@ -50,9 +51,9 @@ public class NodeContentTest extends BaseTest {
 
     @Test
     public void testSetNodeContent() throws IOException {
-        final NodeRef[] nodeRef = init();
+        final HashMap<String, NodeRef> initializedNodeRefs = init();
 
-        final String url = makeNodesUrl(nodeRef[0], "/content", "admin", "admin");
+        final String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/content", "admin", "admin");
         final CloseableHttpClient httpclient = HttpClients.createDefault();
 
         transactionService.getRetryingTransactionHelper()
@@ -77,7 +78,8 @@ public class NodeContentTest extends BaseTest {
                 .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
                     @Override
                     public Object execute() throws Throwable {
-                        InputStream inputStream = nodeService.getContent(nodeRef[0]).getInputStream();
+                        InputStream inputStream = nodeService
+                                .getContent(initializedNodeRefs.get(BaseTest.TESTFILE_NAME)).getInputStream();
                         assertEquals("test content123", IOUtils.toString(inputStream));
                         inputStream.close();
                         return null;
@@ -88,9 +90,10 @@ public class NodeContentTest extends BaseTest {
 
     @Test
     public void testSetNodeContentReturnsAccesDenied() throws IOException {
-        final NodeRef[] nodeRef = init();
+        final HashMap<String, NodeRef> initializedNodeRefs = init();
 
-        final String url = makeNodesUrl(nodeRef[3], "/content", "red", "red");
+        final String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), "/content", BaseTest.USERWITHOUTRIGHTS,
+                BaseTest.USERWITHOUTRIGHTS);
         final CloseableHttpClient httpclient = HttpClients.createDefault();
 
         transactionService.getRetryingTransactionHelper()
@@ -111,15 +114,16 @@ public class NodeContentTest extends BaseTest {
 
     @Test
     public void testDeleteNodeContent() throws IOException {
-        final NodeRef[] nodeRef = init();
+        final HashMap<String, NodeRef> initializedNodeRefs = init();
 
-        final String url = makeNodesUrl(nodeRef[0], "/content", "admin", "admin");
+        final String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/content", "admin", "admin");
         final CloseableHttpClient httpclient = HttpClients.createDefault();
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
                     @Override
                     public Object execute() throws Throwable {
-                        nodeService.setContent(nodeRef[0], new ByteArrayInputStream("test contentabc".getBytes()),
+                        nodeService.setContent(initializedNodeRefs.get(BaseTest.TESTFILE_NAME),
+                                new ByteArrayInputStream("test contentabc".getBytes()),
                                 "abc.txt");
                         return null;
                     }
@@ -143,7 +147,7 @@ public class NodeContentTest extends BaseTest {
                     @Override
                     public Object execute() throws Throwable {
 
-                        assertNull(nodeService.getContent(nodeRef[0]));
+                        assertNull(nodeService.getContent(initializedNodeRefs.get(BaseTest.TESTFILE_NAME)));
                         return null;
                     }
                 }, false, true);
@@ -151,9 +155,10 @@ public class NodeContentTest extends BaseTest {
 
     @Test
     public void testDeleteNodeContentReturnsAccesDenied() throws IOException {
-        final NodeRef[] nodeRef = init();
+        final HashMap<String, NodeRef> initializedNodeRefs = init();
 
-        final String url = makeNodesUrl(nodeRef[3], "/content", "red", "red");
+        final String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), "/content", BaseTest.USERWITHOUTRIGHTS,
+                BaseTest.USERWITHOUTRIGHTS);
         final CloseableHttpClient httpclient = HttpClients.createDefault();
 
         transactionService.getRetryingTransactionHelper()
@@ -167,15 +172,16 @@ public class NodeContentTest extends BaseTest {
 
     @Test
     public void testGetNodeContent() throws IOException {
-        final NodeRef[] nodeRef = init();
+        final HashMap<String, NodeRef> initializedNodeRefs = init();
 
-        final String url = makeNodesUrl(nodeRef[0], "/content", "admin", "admin");
+        final String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/content", "admin", "admin");
         final CloseableHttpClient httpclient = HttpClients.createDefault();
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
                     @Override
                     public Object execute() throws Throwable {
-                        nodeService.setContent(nodeRef[0], new ByteArrayInputStream("test contentdef".getBytes()),
+                        nodeService.setContent(initializedNodeRefs.get(BaseTest.TESTFILE_NAME),
+                                new ByteArrayInputStream("test contentdef".getBytes()),
                                 "abc.txt");
                         return null;
                     }
@@ -199,10 +205,11 @@ public class NodeContentTest extends BaseTest {
     }
 
     @Test
-    public void testGetNodeContentReturnsAccesDenid() throws IOException {
-        final NodeRef[] nodeRef = init();
+    public void testGetNodeContentReturnsAccesDenied() throws IOException {
+        final HashMap<String, NodeRef> initializedNodeRefs = init();
 
-        final String url = makeNodesUrl(nodeRef[3], "/content", "red", "red");
+        final String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), "/content", BaseTest.USERWITHOUTRIGHTS,
+                BaseTest.USERWITHOUTRIGHTS);
         final CloseableHttpClient httpclient = HttpClients.createDefault();
 
         transactionService.getRetryingTransactionHelper()
