@@ -14,6 +14,8 @@
 ### Fixed
 * [ALFREDAPI-419](https://xenitsupport.jira.com/browse/ALFREDAPI-419): Add urldecoding to deleteAssociation endpoint
 * [ALFREDAPI-422](https://xenitsupport.jira.com/browse/ALFREDAPI-422): Fix totalResults and limits for TDMQ's
+* [ALFREDAPI-427](https://xenitsupport.jira.com/browse/ALFREDAPI-427): Replace terms with property values that will cause Invalid Number Exceptions in Solr 6 with dummy terms in FtsNodeVisitor
+
 ### Deleted
 
 
