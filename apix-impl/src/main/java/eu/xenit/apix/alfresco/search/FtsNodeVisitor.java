@@ -2,25 +2,24 @@ package eu.xenit.apix.alfresco.search;
 
 import eu.xenit.apix.alfresco.dictionary.PropertyService;
 import eu.xenit.apix.alfresco.dictionary.PropertyTypeCheckService;
-import eu.xenit.apix.data.QName;
-import eu.xenit.apix.properties.PropertyDefinition;
-import eu.xenit.apix.search.nodes.*;
+import eu.xenit.apix.search.nodes.InvertSearchNode;
+import eu.xenit.apix.search.nodes.OperatorSearchNode;
+import eu.xenit.apix.search.nodes.PropertySearchNode;
+import eu.xenit.apix.search.nodes.RangeValue;
+import eu.xenit.apix.search.nodes.SearchSyntaxNode;
+import eu.xenit.apix.search.nodes.TermSearchNode;
 import eu.xenit.apix.search.visitors.BaseSearchSyntaxNodeVisitor;
 import eu.xenit.apix.utils.StringUtils;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Created by Michiel Huygen on 12/11/2015.
  */
 public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
+
+    private static final String DUMMY = "_dummy_:_miss_";
 
     private StringBuilder builder = new StringBuilder();
     private HashMap<String, String> termToFtsTerm = new HashMap<>();
@@ -78,7 +77,7 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
     @Override
     public String visit(PropertySearchNode n) {
         if (!propertyTypeCheckService.fitsType(n)) {
-            return "_dummy_:_miss_";
+            return DUMMY;
         }
         builder.setLength(0);
         if (n.isExact()) {

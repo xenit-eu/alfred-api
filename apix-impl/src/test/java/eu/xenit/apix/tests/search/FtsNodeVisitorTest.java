@@ -3,8 +3,6 @@ package eu.xenit.apix.tests.search;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.contains;
-import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,9 +26,9 @@ public class FtsNodeVisitorTest {
     private final static Logger logger = LoggerFactory.getLogger(FtsNodeVisitorTest.class);
 
     private Map<String, String> propertyToDataType = new HashMap<String, String>() {{
-        put("{tenant}stringProperty1", "d:text");
-        put("{tenant}stringProperty2", "d:text");
-        put("{tenant}intProperty", "d:int");
+        put("{tenant.model}stringProperty1", "d:text");
+        put("{tenant.model}stringProperty2", "d:text");
+        put("{tenant.model}intProperty", "d:int");
     }};
 
     @Test
@@ -40,11 +38,11 @@ public class FtsNodeVisitorTest {
 
         String ftsQuery = toFts(querySyntaxTree, propertyService);
         assertThat("Fts search String does not contain wanted term", ftsQuery,
-                containsString("{tenant}stringProperty1"));
+                containsString("{tenant.model}stringProperty1"));
         assertThat("Fts search String does not contain wanted term", ftsQuery,
-                containsString("{tenant}stringProperty2"));
+                containsString("{tenant.model}stringProperty2"));
         assertThat("Fts search String contains term that shoud have been filtered out", ftsQuery,
-                not(containsString("{tenant}intProperty")));
+                not(containsString("{tenant.model}intProperty")));
     }
 
     @Test
@@ -54,11 +52,11 @@ public class FtsNodeVisitorTest {
 
         String ftsQuery = toFts(querySyntaxTree, propertyService);
         assertThat("Fts search String does not contain wanted term", ftsQuery,
-                containsString("{tenant}stringProperty1"));
+                containsString("{tenant.model}stringProperty1"));
         assertThat("Fts search String does not contain wanted term", ftsQuery,
-                containsString("{tenant}stringProperty2"));
+                containsString("{tenant.model}stringProperty2"));
         assertThat("Fts search String does not contain wanted term", ftsQuery,
-                containsString("{tenant}intProperty"));
+                containsString("{tenant.model}intProperty"));
     }
 
     private SearchSyntaxNode generateAllQuery(String value) {
