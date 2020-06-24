@@ -14,6 +14,7 @@ import eu.xenit.apix.tests.BaseTest;
 import eu.xenit.apix.util.SolrTestHelper;
 import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Locale;
 import java.util.Map;
 import javax.sql.DataSource;
@@ -42,6 +43,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.extensions.surf.util.I18NUtil;
 
 abstract public class SearchServiceTest extends BaseTest {
+
+    private static final String LONG_MAX_VALUE = String.valueOf(Long.MAX_VALUE);
+    private static final String LONG_MAX_VALUE_PLUS_ONE = new BigInteger(LONG_MAX_VALUE).add(new BigInteger("1"))
+            .toString();
 
     private final static Logger logger = LoggerFactory.getLogger(SearchServiceTest.class);
     private static final String ADMIN_USER_NAME = "admin";
@@ -323,11 +328,11 @@ abstract public class SearchServiceTest extends BaseTest {
 
 
     @Test
-    public void testNotFilteredOut() {
+    public void validLong_onlyNode_doesNotThrowException() {
         SearchSyntaxNode node =
                 new QueryBuilder()
                         .startOr()
-                        .property("{http://www.alfresco.org/model/system/1.0}node-dbid", "9223372036854775807")
+                        .property("{http://www.alfresco.org/model/system/1.0}node-dbid", LONG_MAX_VALUE)
                         .end()
                         .create();
         SearchQuery searchQuery = new SearchQuery();
@@ -336,11 +341,11 @@ abstract public class SearchServiceTest extends BaseTest {
     }
 
     @Test
-    public void testNothingLeftAfterFiltering() {
+    public void invalidLong_onlyNode_doesNotThrowException() {
         SearchSyntaxNode node =
                 new QueryBuilder()
                         .startOr()
-                        .property("{http://www.alfresco.org/model/system/1.0}node-dbid", "9223372036854775808")
+                        .property("{http://www.alfresco.org/model/system/1.0}node-dbid", LONG_MAX_VALUE_PLUS_ONE)
                         .end()
                         .create();
         SearchQuery searchQuery = new SearchQuery();
