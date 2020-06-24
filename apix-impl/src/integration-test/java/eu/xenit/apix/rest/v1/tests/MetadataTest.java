@@ -1,6 +1,7 @@
 package eu.xenit.apix.rest.v1.tests;
 
 import eu.xenit.apix.data.NodeRef;
+import java.util.HashMap;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.node.archive.NodeArchiveService;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -68,8 +69,8 @@ public class MetadataTest extends BaseTest {
 
     @Test
     public void testMetadataGet() throws IOException {
-        NodeRef[] nodeRef = init();
-        String url = makeNodesUrl(nodeRef[0], "/metadata?alf_ticket=" + authenticationService.getCurrentTicket(),
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/metadata?alf_ticket=" + authenticationService.getCurrentTicket(),
                 "admin", "admin");
         logger.info("URL: " + url);
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
@@ -80,9 +81,9 @@ public class MetadataTest extends BaseTest {
 
     @Test
     public void testMetadataGetAccessDenied() throws IOException {
-        NodeRef[] nodeRef = init();
-        String url = makeNodesUrl(nodeRef[3], "/metadata",
-                "red", "red");
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), "/metadata",
+                BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS);
         logger.info("URL: " + url);
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
 
@@ -92,11 +93,11 @@ public class MetadataTest extends BaseTest {
 
     @Test
     public void testMetadataPost() throws IOException, JSONException {
-        final NodeRef[] nodeRef = init();
-        String url = makeNodesUrl(nodeRef[0], "/metadata", "admin", "admin");
+        final HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/metadata", "admin", "admin");
         logger.info(" URL: " + url);
 
-        assertFalse(this.nodeService.hasAspect(new org.alfresco.service.cmr.repository.NodeRef(nodeRef[0].getValue()),
+        assertFalse(this.nodeService.hasAspect(new org.alfresco.service.cmr.repository.NodeRef(initializedNodeRefs.get(BaseTest.TESTFILE_NAME).getValue()),
                 ContentModel.ASPECT_VERSIONABLE));
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httppost = new HttpPost(url);
@@ -127,7 +128,7 @@ public class MetadataTest extends BaseTest {
                         org.alfresco.service.cmr.repository.NodeRef alfTestRef = new org.alfresco.service.cmr.repository.NodeRef(
                                 testNodeRef.toString());
                         assertEquals("newTitle", nodeService.getProperty(alfTestRef, ContentModel.PROP_TITLE));
-                        assertEquals("testFile", nodeService.getProperty(alfTestRef, ContentModel.PROP_NAME));
+                        assertEquals(BaseTest.TESTFILE_NAME, nodeService.getProperty(alfTestRef, ContentModel.PROP_NAME));
                         assertTrue(nodeService.hasAspect(alfTestRef, ContentModel.ASPECT_VERSIONABLE));
                         return null;
                     }
@@ -136,8 +137,8 @@ public class MetadataTest extends BaseTest {
 
     @Test
     public void testMetadataPostReturnsAccesDenied() throws IOException, JSONException {
-        final NodeRef[] nodeRef = init();
-        String url = makeNodesUrl(nodeRef[3], "/metadata", "red", "red");
+        final HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), "/metadata", BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS);
         logger.info(" URL: " + url);
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -164,11 +165,11 @@ public class MetadataTest extends BaseTest {
         return url;
     }
 
-    private NodeRef[] CreateAdminNode() {
-        final NodeRef[] nodeRef = init();
-        final boolean nodeExists = checkExists(nodeRef[0]);
+    private HashMap<String, NodeRef> CreateAdminNode() {
+        final HashMap<String, NodeRef> initializedNodeRefs = init();
+        final boolean nodeExists = checkExists(initializedNodeRefs.get(BaseTest.TESTFILE_NAME));
         assertTrue(nodeExists);
-        return nodeRef;
+        return initializedNodeRefs;
     }
 
     private boolean checkExists(NodeRef ref) {
@@ -177,16 +178,16 @@ public class MetadataTest extends BaseTest {
 
     @Test
     public void testDeletePermanently() throws IOException {
-        final NodeRef[] nodeRef = CreateAdminNode();
-        final String url = getUrl(nodeRef[0]) + "?permanently=true";
+        final HashMap<String, NodeRef> initializedNodeRefs = CreateAdminNode();
+        final String url = getUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME)) + "?permanently=true";
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
                     @Override
                     public Object execute() throws Throwable {
                         Request.Delete(url).execute().returnResponse();
                         org.alfresco.service.cmr.repository.NodeRef archivedRef = nodeArchiveService.getArchivedNode(
-                                new org.alfresco.service.cmr.repository.NodeRef(nodeRef[0].getValue()));
-                        assertFalse(checkExists(nodeRef[0]));
+                                new org.alfresco.service.cmr.repository.NodeRef(initializedNodeRefs.get(BaseTest.TESTFILE_NAME).getValue()));
+                        assertFalse(checkExists(initializedNodeRefs.get(BaseTest.TESTFILE_NAME)));
                         logger.debug(" deleted node: " + archivedRef.toString());
                         assertNotNull(archivedRef);
                         return null;
@@ -196,16 +197,16 @@ public class MetadataTest extends BaseTest {
 
     @Test
     public void testDeleteToArchive() throws IOException {
-        final NodeRef[] nodeRef = CreateAdminNode();
-        final String url = getUrl(nodeRef[0]);
+        final HashMap<String, NodeRef> initializedNodeRefs = CreateAdminNode();
+        final String url = getUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME));
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
                     @Override
                     public Object execute() throws Throwable {
                         Request.Delete(url).execute().returnResponse();
-                        assertFalse(checkExists(nodeRef[0]));
+                        assertFalse(checkExists(initializedNodeRefs.get(BaseTest.TESTFILE_NAME)));
                         org.alfresco.service.cmr.repository.NodeRef archivedRef = nodeArchiveService.getArchivedNode(
-                                new org.alfresco.service.cmr.repository.NodeRef(nodeRef[0].getValue()));
+                                new org.alfresco.service.cmr.repository.NodeRef(initializedNodeRefs.get(BaseTest.TESTFILE_NAME).getValue()));
                         assertNotNull(archivedRef);
                         return null;
                     }
@@ -214,8 +215,8 @@ public class MetadataTest extends BaseTest {
 
     @Test
     public void testDeletePermanentlyReturnsAccesDenied() throws IOException {
-        final NodeRef[] nodeRef = init();
-        final String url = makeNodesUrl(nodeRef[3], "red", "red") + "?permanently=true";
+        final HashMap<String, NodeRef> initializedNodeRefs = init();
+        final String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS) + "?permanently=true";
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
                     assertEquals(403, Request.Delete(url).execute().returnResponse().getStatusLine().getStatusCode());
@@ -226,8 +227,8 @@ public class MetadataTest extends BaseTest {
 
     @Test
     public void testMetadataShortGet() throws IOException {
-        NodeRef[] nodeRef = init();
-        String url = makeNodesUrl(nodeRef[0].getGuid(), "/metadata", "admin", "admin");
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME).getGuid(), "/metadata", "admin", "admin");
         logger.info("URL: " + url);
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
 

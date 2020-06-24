@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.NodeRef;
 import java.io.IOException;
+import java.util.HashMap;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
@@ -47,8 +48,8 @@ public class AssociationsTest extends BaseTest {
 
     @Test
     public void testAssociationsGet() throws IOException {
-        NodeRef[] nodeRef = init();
-        String url = makeNodesUrl(nodeRef[0], "/associations", "admin", "admin");
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/associations", "admin", "admin");
 
         HttpResponse response = Request.Get(url).execute().returnResponse();
         String result = EntityUtils.toString(response.getEntity());
@@ -57,16 +58,18 @@ public class AssociationsTest extends BaseTest {
 
     @Test
     public void testAssociationsGetDenied() throws IOException {
-        NodeRef[] initArray = init();
-        String url = makeNodesUrl(initArray[3], "/associations", "red", "red");
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), "/associations", BaseTest.USERWITHOUTRIGHTS,
+                BaseTest.USERWITHOUTRIGHTS);
         HttpResponse response = Request.Get(url).execute().returnResponse();
         assertEquals(403, response.getStatusLine().getStatusCode());
     }
 
     @Test
     public void testParentAssociationsGet() throws IOException {
-        NodeRef[] nodeRef = init();
-        String url = makeNodesUrl(nodeRef[0], "/associations/parents", "admin", "admin");
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/associations/parents", "admin",
+                "admin");
 
         HttpResponse response = Request.Get(url).execute().returnResponse();
         String result = EntityUtils.toString(response.getEntity());
@@ -75,8 +78,9 @@ public class AssociationsTest extends BaseTest {
 
     @Test
     public void testChildAssociationsGet() throws IOException {
-        NodeRef[] nodeRef = init();
-        String url = makeNodesUrl(nodeRef[0], "/associations/children", "admin", "admin");
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/associations/children", "admin",
+                "admin");
 
         HttpResponse response = Request.Get(url).execute().returnResponse();
         String result = EntityUtils.toString(response.getEntity());
@@ -85,8 +89,9 @@ public class AssociationsTest extends BaseTest {
 
     @Test
     public void testPeerAssociationsGet() throws IOException {
-        NodeRef[] nodeRef = init();
-        String url = makeNodesUrl(nodeRef[0], "/associations/targets", "admin", "admin");
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/associations/targets", "admin",
+                "admin");
 
         HttpResponse response = Request.Get(url).execute().returnResponse();
         String result = EntityUtils.toString(response.getEntity());
@@ -95,9 +100,9 @@ public class AssociationsTest extends BaseTest {
 
     @Test
     public void testCreateAssociation() throws IOException {
-        NodeRef[] nodes = init();
-        final NodeRef nodeRefA = nodes[0];
-        final NodeRef nodeRefB = nodes[1];
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        final NodeRef nodeRefA = initializedNodeRefs.get(BaseTest.TESTFILE_NAME);
+        final NodeRef nodeRefB = initializedNodeRefs.get(BaseTest.TESTFILE2_NAME);
 
         final java.util.List<org.alfresco.service.cmr.repository.AssociationRef> assocs = nodeService
                 .getTargetAssocs(c.alfresco(nodeRefA), RegexQNamePattern.MATCH_ALL);
@@ -130,9 +135,9 @@ public class AssociationsTest extends BaseTest {
 
     @Test
     public void testRemoveAssociation() throws IOException {
-        NodeRef[] nodes = init();
-        final NodeRef nodeRefA = nodes[0];
-        final NodeRef nodeRefB = nodes[1];
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        final NodeRef nodeRefA = initializedNodeRefs.get(BaseTest.TESTFILE_NAME);
+        final NodeRef nodeRefB = initializedNodeRefs.get(BaseTest.TESTFILE2_NAME);
 
         serviceRegistry.getRetryingTransactionHelper()
                 .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {

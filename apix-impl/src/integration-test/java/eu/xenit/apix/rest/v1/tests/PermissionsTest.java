@@ -1,9 +1,12 @@
 package eu.xenit.apix.rest.v1.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import eu.xenit.apix.data.NodeRef;
 import java.io.IOException;
+import java.util.HashMap;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
@@ -34,8 +37,8 @@ public class PermissionsTest extends BaseTest {
 
     @Test
     public void testPermissionsGet() throws IOException {
-        NodeRef[] nodeRef = init();
-        String url = makeNodesUrl(nodeRef[0], "/permissions", "admin", "admin");
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/permissions", "admin", "admin");
 
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
         logger.debug(EntityUtils.toString(httpResponse.getEntity()));
@@ -45,8 +48,9 @@ public class PermissionsTest extends BaseTest {
 
     @Test
     public void testPermissionsShortGet() throws IOException {
-        NodeRef[] nodeRef = init();
-        String url = makeNodesUrl(nodeRef[0].getGuid(), "/permissions", "admin", "admin");
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME).getGuid(), "/permissions", "admin",
+                "admin");
 
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
         logger.debug(EntityUtils.toString(httpResponse.getEntity()));
@@ -59,8 +63,8 @@ public class PermissionsTest extends BaseTest {
      */
     @Test
     public void testNodePermissionGetDefault() throws IOException, JSONException {
-        NodeRef[] nodeRef = init();
-        String url = makeNodesUrl(nodeRef[0].getGuid(), "/acl", "admin", "admin");
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME).getGuid(), "/acl", "admin", "admin");
 
         checkNoPermissionOnNode(url);
     }
@@ -97,8 +101,8 @@ public class PermissionsTest extends BaseTest {
      */
     @Test
     public void testNodePermissionApplyGetAndRemove() throws IOException, JSONException {
-        NodeRef[] nodeRef = init();
-        String url = makeNodesUrl(nodeRef[0].getGuid(), "/acl", "admin", "admin");
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME).getGuid(), "/acl", "admin", "admin");
 
         doPut(url,
                 null,
@@ -150,8 +154,9 @@ public class PermissionsTest extends BaseTest {
 
     @Test
     public void testGetNodeAclsReturnsAccesDenied() throws IOException {
-        NodeRef[] nodeRef = init();
-        String url = makeNodesUrl(nodeRef[3], "/acl", "red", "red");
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), "/acl",
+                BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS);
 
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
         logger.debug(EntityUtils.toString(httpResponse.getEntity()));
@@ -160,8 +165,9 @@ public class PermissionsTest extends BaseTest {
 
     @Test
     public void testSetNodeAclsReturnsAccesDenied() throws IOException {
-        NodeRef[] nodeRef = init();
-        String url = makeNodesUrl(nodeRef[0], "/acl", "red", "red");
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/acl", BaseTest.USERWITHOUTRIGHTS,
+                BaseTest.USERWITHOUTRIGHTS);
 
         HttpResponse httpResponse = Request.Put(url).body(new StringEntity(
                 "{\n"
@@ -181,9 +187,11 @@ public class PermissionsTest extends BaseTest {
 
     @Test
     public void testSetInheritFromParentReturnsAccesDenied() throws IOException {
-        NodeRef[] initArray = init();
+        HashMap<String, NodeRef> initializedNodeRefs = init();
         assertEquals(403,
-                Request.Post(makeNodesUrl(initArray[3], "/acl/inheritFromParent", "red", "red"))
+                Request.Post(
+                        makeNodesUrl(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), "/acl/inheritFromParent",
+                                BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS))
                         .body(new StringEntity("{\"inheritFromParent\":true}"))
                         .execute()
                         .returnResponse()

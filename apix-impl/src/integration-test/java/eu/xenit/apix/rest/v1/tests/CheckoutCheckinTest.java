@@ -48,7 +48,7 @@ public class CheckoutCheckinTest extends BaseTest {
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-        originalNoderef = init()[0];
+        originalNoderef = init().get(BaseTest.TESTFILE_NAME);
     }
 
     @Test

@@ -54,6 +54,19 @@ public abstract class BaseTest {
     private final static Logger logger = LoggerFactory.getLogger(BaseTest.class);
     private final static String VERSION = "v1";
 
+    public static final String MAIN_TESTFOLDER_NAME = "mainTestFolder";
+    public static final String TESTFOLDER_NAME = "testFolder";
+    public static final String TESTFILE_NAME = "testFile";
+    public static final String TESTFOLDER2_NAME = "testFolder2";
+    public static final String TESTFILE2_NAME = "testFile2";
+    public static final String TESTFILE3_NAME = "testFile3";
+    public static final String NOUSERRIGHTS_FOLDER_NAME = "noUserRightsTestFolder";
+    public static final String NOUSERRIGHTS_FILE_NAME = "noUserRightsTestFile";
+
+    public static final String USERWITHOUTRIGHTS = "red";
+    public static final String USERWITHOUTRIGHTS_EMAIL =
+            USERWITHOUTRIGHTS + "@" + USERWITHOUTRIGHTS + ".com";
+
     @Autowired
     protected ServiceRegistry serviceRegistry;
 
@@ -172,8 +185,8 @@ public abstract class BaseTest {
         return String.format(makeAlfrescoBaseurl() + "/apix/" + getVersion() + "/bulk?alf_ticket=" + ticket);
     }
 
-    protected eu.xenit.apix.data.NodeRef[] init() {
-        final eu.xenit.apix.data.NodeRef[] ref = {null, null, null, null};
+    protected HashMap<String, eu.xenit.apix.data.NodeRef> init() {
+        final HashMap<String, eu.xenit.apix.data.NodeRef> initializedNodeRefs = new HashMap<>();
         TransactionService transactionService = serviceRegistry.getTransactionService();
 
         this.removeMainTestFolder();
@@ -181,45 +194,48 @@ public abstract class BaseTest {
         RetryingTransactionHelper.RetryingTransactionCallback<Object> txnWork = new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
             public Object execute() throws Exception {
                 NodeRef companyHomeRef = repository.getCompanyHome();
-                FileInfo mainTestFolder = createTestNode(companyHomeRef, "mainTestFolder", ContentModel.TYPE_FOLDER);
-                FileInfo testFolder = createTestNode(mainTestFolder.getNodeRef(), "testFolder",
+                FileInfo mainTestFolder = createTestNode(companyHomeRef, MAIN_TESTFOLDER_NAME,
                         ContentModel.TYPE_FOLDER);
-                FileInfo testNode = createTestNode(testFolder.getNodeRef(), "testFile", ContentModel.TYPE_CONTENT);
+                FileInfo testFolder = createTestNode(mainTestFolder.getNodeRef(), TESTFOLDER_NAME,
+                        ContentModel.TYPE_FOLDER);
+                FileInfo testNode = createTestNode(testFolder.getNodeRef(), TESTFILE_NAME, ContentModel.TYPE_CONTENT);
                 NodeRef testNodeRef = testNode.getNodeRef();
                 eu.xenit.apix.data.NodeRef apixTestNodeRef = new eu.xenit.apix.data.NodeRef(testNodeRef.toString());
-                ref[0] = apixTestNodeRef;
+                initializedNodeRefs.put(TESTFILE_NAME, apixTestNodeRef);
 
-                FileInfo testFolder2 = createTestNode(mainTestFolder.getNodeRef(), "testFolder2",
+                FileInfo testFolder2 = createTestNode(mainTestFolder.getNodeRef(), TESTFOLDER2_NAME,
                         ContentModel.TYPE_FOLDER);
-                FileInfo testNode2 = createTestNode(testFolder2.getNodeRef(), "testFile2", ContentModel.TYPE_CONTENT);
+                FileInfo testNode2 = createTestNode(testFolder2.getNodeRef(), TESTFILE2_NAME,
+                        ContentModel.TYPE_CONTENT);
                 NodeRef testNodeRef2 = testNode2.getNodeRef();
                 eu.xenit.apix.data.NodeRef apixTestNodeRef2 = new eu.xenit.apix.data.NodeRef(testNodeRef2.toString());
-                ref[1] = apixTestNodeRef2;
+                initializedNodeRefs.put(TESTFILE2_NAME, apixTestNodeRef2);
 
-                FileInfo testNode3 = createTestNode(testFolder2.getNodeRef(), "testFile3", ContentModel.TYPE_CONTENT);
+                FileInfo testNode3 = createTestNode(testFolder2.getNodeRef(), TESTFILE3_NAME,
+                        ContentModel.TYPE_CONTENT);
                 NodeRef testNodeRef3 = testNode3.getNodeRef();
                 eu.xenit.apix.data.NodeRef apixTestNodeRef3 = new eu.xenit.apix.data.NodeRef(testNodeRef3.toString());
-                ref[2] = apixTestNodeRef3;
+                initializedNodeRefs.put(TESTFILE3_NAME, apixTestNodeRef3);
 
-                FileInfo noUserRightsFolder = createTestNode(mainTestFolder.getNodeRef(), "noUserRightsTestFolder",
+                FileInfo noUserRightsFolder = createTestNode(mainTestFolder.getNodeRef(), NOUSERRIGHTS_FOLDER_NAME,
                         ContentModel.TYPE_FOLDER);
                 setPermissionInheritance(noUserRightsFolder.getNodeRef(), false);
-                FileInfo noUserRightsNode = createTestNode(noUserRightsFolder.getNodeRef(), "noUserRightsTestFile",
+                FileInfo noUserRightsNode = createTestNode(noUserRightsFolder.getNodeRef(), NOUSERRIGHTS_FILE_NAME,
                         ContentModel.TYPE_CONTENT);
                 NodeRef noUserRightsNodeRef = noUserRightsNode.getNodeRef();
                 setPermissionInheritance(noUserRightsNodeRef, false);
                 eu.xenit.apix.data.NodeRef apixNoUserRightsNodeRef = new eu.xenit.apix.data.NodeRef(
                         noUserRightsNodeRef.toString());
-                ref[3] = apixNoUserRightsNodeRef;
+                initializedNodeRefs.put(NOUSERRIGHTS_FILE_NAME, apixNoUserRightsNodeRef);
 
-                String red = "red";
-                createUser(red, red, red, (red+"@"+red+".com"));
+                createUser(USERWITHOUTRIGHTS, USERWITHOUTRIGHTS, USERWITHOUTRIGHTS,
+                        USERWITHOUTRIGHTS_EMAIL);
                 return null;
             }
         };
 
         transactionService.getRetryingTransactionHelper().doInTransaction(txnWork, false, true);
-        return ref;
+        return initializedNodeRefs;
     }
 
     protected String makeNodesUrl(eu.xenit.apix.data.NodeRef nodeRef, String userName, String passWord) {
@@ -260,7 +276,7 @@ public abstract class BaseTest {
 
     protected NodeRef getMainTestFolder() {
         FileFolderService fileFolderService = this.serviceRegistry.getFileFolderService();
-        NodeRef nodeRef = fileFolderService.searchSimple(repository.getCompanyHome(), "mainTestFolder");
+        NodeRef nodeRef = fileFolderService.searchSimple(repository.getCompanyHome(), MAIN_TESTFOLDER_NAME);
         return nodeRef;
     }
 
