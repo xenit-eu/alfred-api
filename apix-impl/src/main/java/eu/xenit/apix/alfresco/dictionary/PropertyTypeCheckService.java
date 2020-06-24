@@ -35,7 +35,7 @@ public class PropertyTypeCheckService {
         if (node == null || node.getValue() == null || node.getName() == null || propertyService == null) {
             return true;
         }
-        QName qName = new QName(node.getName().replaceAll("\\\\", "")); //stuff like hyphen in node-dbid is escaped
+        QName qName = new QName(PropertySearchNode.unescapeName(node.getName()));
         PropertyDefinition propertyDefinition = propertyService.GetPropertyDefinition(qName);
         if (propertyDefinition == null || propertyDefinition.getDataType() == null) {
             return true;
