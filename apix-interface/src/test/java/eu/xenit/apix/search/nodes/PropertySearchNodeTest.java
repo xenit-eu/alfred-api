@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.Test;
 
 public class PropertySearchNodeTest {
@@ -25,6 +26,31 @@ public class PropertySearchNodeTest {
             searchNode.setName("sys:store" + specialChar + "identifier");
             assertEquals("sys:store\\" + specialChar + "identifier", searchNode.getName());
         }
+    }
+
+    @Test
+    public void escapeName_dbid() {
+        String unescaped = "sys:node-dbid";
+        String escaped = PropertySearchNode.escapeName(unescaped);
+        assertEquals("dbid not properly escaped", "sys:node\\-dbid", escaped);
+    }
+
+    @Test
+    public void unescapeName_dbid() {
+        String escaped = "sys:node\\-dbid";
+        String unescaped = PropertySearchNode.unescapeName(escaped);
+        assertEquals("dbid not properly unescaped", "sys:node-dbid", unescaped);
+    }
+
+    @Test
+    public void escape_roundtripEquals() {
+        List<String> strings = Arrays.asList("sys:node-dbid", "!@%^&*()-=+[];?,<>|", "nothing:special");
+        List<String> collect = strings.stream()
+                .map(PropertySearchNode::escapeName)
+                .map(PropertySearchNode::unescapeName)
+                .collect(Collectors.toList());
+        assertEquals("Round-trip of escaping and unescaping did not yield initial values", strings, collect);
+
     }
 
 }

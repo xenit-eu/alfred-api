@@ -7,6 +7,8 @@ import eu.xenit.apix.search.visitors.ISearchSyntaxVisitor;
  */
 public class PropertySearchNode implements SearchSyntaxNode {
 
+    private static final String ESCAPE_GROUP_REGEX = "([!@%^&*()\\-=+\\[\\];?,<>|])";
+
     private String name;
     private String value;
     private RangeValue range;
@@ -41,8 +43,7 @@ public class PropertySearchNode implements SearchSyntaxNode {
         // Solr queries where the property name contains any of the characters in the regex below trigger an error
         // in solr. This error is propagated through alfresco and apix. To prevent this, we escape the characters
         // before the terms enter solr.
-        String replacement = name.replaceAll("([!@%^&*()\\-=+\\[\\];?,<>|])", "\\\\$1");
-        this.name = replacement;
+        this.name = escapeName(name);
     }
 
     public String getValue() {
@@ -72,5 +73,13 @@ public class PropertySearchNode implements SearchSyntaxNode {
 
     public void setExact(boolean exact) {
         this.exact = exact;
+    }
+
+    public static String escapeName(String name) {
+        return name.replaceAll(ESCAPE_GROUP_REGEX, "\\\\$1");
+    }
+
+    public static String unescapeName(String name) {
+        return name.replaceAll("\\\\" + ESCAPE_GROUP_REGEX, "$1");
     }
 }
