@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
@@ -52,7 +53,7 @@ public class UploadFileTest extends BaseTest {
     private NodeService alfrescoNodeService;
     private ContentService contentService;
     private NodeRef parentNodeRef;
-    private NodeRef[] initNodeRefArray;
+    private Map<String, NodeRef> initNodeRefArray;
 
     @org.junit.Before
     public void setUp() {
@@ -61,7 +62,7 @@ public class UploadFileTest extends BaseTest {
         contentService = this.serviceRegistry.getContentService();
 
         initNodeRefArray = init();
-        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initNodeRefArray[0]);
+        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initNodeRefArray.get(BaseTest.TESTFILE_NAME));
         final ChildParentAssociation primaryParentAssoc = parentAssociations.get(0);
         this.parentNodeRef = primaryParentAssoc.getTarget();
         assertTrue(primaryParentAssoc.isPrimary());
@@ -86,9 +87,9 @@ public class UploadFileTest extends BaseTest {
 
     @Test
     public void testUploadFileResultsInAccessDenied() throws IOException {
-        String url = createUrl("red", "red");
+        String url = createUrl(BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS);
         logger.info(">>>>> URL: " + url);
-        HttpEntity entity = createHttpEntity(initNodeRefArray[3].toString());
+        HttpEntity entity = createHttpEntity(initNodeRefArray.get(BaseTest.NOUSERRIGHTS_FILE_NAME).toString());
         try (CloseableHttpResponse response = doPost(url, entity)) {
             String resultString = EntityUtils.toString(response.getEntity());
             logger.debug(" resultString: " + resultString);

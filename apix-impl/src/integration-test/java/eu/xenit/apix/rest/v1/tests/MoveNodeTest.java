@@ -6,6 +6,7 @@ import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.node.ChildParentAssociation;
 import eu.xenit.apix.node.INodeService;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
@@ -44,9 +45,9 @@ public class MoveNodeTest extends BaseTest {
 
     @Test
     public void testMoveNode() throws IOException {
-        final NodeRef[] nodeRef = init();
+        final HashMap<String, NodeRef> initializedNodeRefs = init();
 
-        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(nodeRef[0]);
+        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initializedNodeRefs.get(BaseTest.TESTFILE_NAME));
         final ChildParentAssociation primaryParentAssocTestNode = (ChildParentAssociation) parentAssociations.get(0);
         final NodeRef testFolder = primaryParentAssocTestNode.getTarget();
 
@@ -70,7 +71,7 @@ public class MoveNodeTest extends BaseTest {
                     }
                 }, false, true);
 
-        final String url = this.makeNodesUrl(nodeRef[0], "/parent", "admin", "admin");
+        final String url = this.makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/parent", "admin", "admin");
         logger.info(" URL: " + url);
 
         doPut(url, null, "{\"parent\":\"%s\"}", mainTestFolder.toString());
@@ -83,9 +84,9 @@ public class MoveNodeTest extends BaseTest {
 
     @Test
     public void testMoveNodeReturnsAccesDenied() throws IOException {
-        final NodeRef[] nodeRef = init();
+        final HashMap<String, NodeRef> initializedNodeRefs = init();
 
-        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(nodeRef[3]);
+        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME));
         final ChildParentAssociation primaryParentAssocTestNode = parentAssociations.get(0);
         final NodeRef testFolder = primaryParentAssocTestNode.getTarget();
 
@@ -93,7 +94,7 @@ public class MoveNodeTest extends BaseTest {
         final ChildParentAssociation primaryParentAssocTestFolder = parentAssociations.get(0);
         final NodeRef mainTestFolder = primaryParentAssocTestFolder.getTarget();
 
-        final String url = this.makeNodesUrl(nodeRef[3], "/parent", "red", "red");
+        final String url = this.makeNodesUrl(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), "/parent", BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS);
         logger.info(" URL: " + url);
         final CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPut httpPut = new HttpPut(url);

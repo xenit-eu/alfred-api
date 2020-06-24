@@ -7,6 +7,7 @@ import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.node.ChildParentAssociation;
 import eu.xenit.apix.node.INodeService;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -48,8 +49,8 @@ public class CreateNodeTest extends BaseTest {
 
     @Test
     public void testCreateNode() throws IOException {
-        final NodeRef[] nodeRef = init();
-        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(nodeRef[0]);
+        final HashMap<String, NodeRef> initializedNodeRefs = init();
+        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initializedNodeRefs.get(BaseTest.TESTFILE_NAME));
         final ChildParentAssociation primaryParentAssoc = (ChildParentAssociation) parentAssociations.get(0);
         assertTrue(primaryParentAssoc.isPrimary());
         NodeRef parent = primaryParentAssoc.getTarget();
@@ -74,13 +75,13 @@ public class CreateNodeTest extends BaseTest {
 
     @Test
     public void testCreateNodeRespondsWithAccesDenied() throws IOException {
-        final NodeRef[] initArray = init();
-        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initArray[3]);
+        final HashMap<String, NodeRef> initializedNodeRefs = init();
+        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME));
         final ChildParentAssociation primaryParentAssoc = parentAssociations.get(0);
         NodeRef parent = primaryParentAssoc.getTarget();
         assertTrue(primaryParentAssoc.isPrimary());
 
-        final String url = makeAlfrescoBaseurl("red", "red") + "/apix/v1/nodes";
+        final String url = makeAlfrescoBaseurl(BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS) + "/apix/v1/nodes";
         final CloseableHttpClient httpclient = HttpClients.createDefault();
 
         transactionService.getRetryingTransactionHelper()

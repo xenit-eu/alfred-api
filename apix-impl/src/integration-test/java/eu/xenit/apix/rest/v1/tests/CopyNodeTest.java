@@ -4,6 +4,7 @@ import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.node.INodeService;
 import eu.xenit.apix.node.NodeAssociation;
 import eu.xenit.apix.node.ChildParentAssociation;
+import java.util.HashMap;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.transaction.TransactionService;
@@ -46,8 +47,8 @@ public class CopyNodeTest extends BaseTest {
 
     @Test
     public void testCopyNode() {
-        final NodeRef[] nodeRef = init();
-        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(nodeRef[0]);
+        final HashMap<String, NodeRef> initializedNodeRefs = init();
+        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initializedNodeRefs.get(BaseTest.TESTFILE_NAME));
         final ChildParentAssociation primaryParentAssoc = (ChildParentAssociation) parentAssociations.get(0);
         final NodeRef parentRef = primaryParentAssoc.getTarget();
 
@@ -56,7 +57,7 @@ public class CopyNodeTest extends BaseTest {
 
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
-                    doTestCopy(httpclient, url, parentRef, nodeRef[0].toString(), 200);
+                    doTestCopy(httpclient, url, parentRef, initializedNodeRefs.get(BaseTest.TESTFILE_NAME).toString(), 200);
                     return null;
                 }, false, true);
 
@@ -66,17 +67,17 @@ public class CopyNodeTest extends BaseTest {
 
     @Test
     public void copyNodeReturnsAccesDenied() {
-        final NodeRef[] initArray = init();
-        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initArray[3]);
+        final HashMap<String, NodeRef> initializedNodeRefs = init();
+        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME));
         final ChildParentAssociation primaryParentAssoc = parentAssociations.get(0);
         final NodeRef parentRef = primaryParentAssoc.getTarget();
 
-        final String url = makeAlfrescoBaseurl("red", "red") + "/apix/v1/nodes";
+        final String url = makeAlfrescoBaseurl(BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS) + "/apix/v1/nodes";
         final CloseableHttpClient httpclient = HttpClients.createDefault();
 
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
-                    doTestCopy(httpclient, url, parentRef, initArray[3].toString(), 403);
+                    doTestCopy(httpclient, url, parentRef, initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME).toString(), 403);
                     return null;
                 }, false, true);
 

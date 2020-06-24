@@ -1,6 +1,7 @@
 package eu.xenit.apix.rest.v2.tests;
 
 import eu.xenit.apix.data.NodeRef;
+import java.util.HashMap;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
@@ -22,7 +23,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
-public class AllNodeInfoTest extends BaseTest {
+public class AllNodeInfoTest extends eu.xenit.apix.rest.v2.tests.BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(AllNodeInfoTest.class);
 
@@ -33,8 +34,8 @@ public class AllNodeInfoTest extends BaseTest {
 
     @Test
     public void testGetAllNodeInfo() throws IOException {
-        NodeRef[] nodeRef = init();
-        String url = makeNodesUrl(nodeRef[0], "admin", "admin");
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "admin", "admin");
         logger.info(" URL: " + url);
         for (int i = 0; i < 20; i++) {
             logger.error("For the request of testGetAllNodeInfo");
@@ -49,9 +50,9 @@ public class AllNodeInfoTest extends BaseTest {
 
     @Test
     public void testGetAllNodeInfoOfMultipleNodes() throws IOException, JSONException {
-        NodeRef[] nodeRefs = init();
-        NodeRef nodeRef0 = nodeRefs[0];
-        NodeRef nodeRef1 = nodeRefs[1];
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        NodeRef nodeRef0 = initializedNodeRefs.get(BaseTest.TESTFILE_NAME);
+        NodeRef nodeRef1 = initializedNodeRefs.get(BaseTest.TESTFILE2_NAME);
 
         String jsonString = json(String.format(
                 "{" +
