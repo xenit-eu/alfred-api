@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +15,7 @@ public class PropertyTypeCheckService {
 
     private final static Logger logger = LoggerFactory.getLogger(PropertyTypeCheckService.class);
 
-    private final Map<String, Function<String, Boolean>> constraintMap = new HashMap<String, Function<String, Boolean>>() {{
+    private final Map<String, Predicate<String>> dataTypePredicates = new HashMap<String, Predicate<String>>() {{
         put("d:int", PropertyTypeCheckService::isInt);
         put("{http://www.alfresco.org/model/dictionary/1.0}int", PropertyTypeCheckService::isInt);
         put("d:long", PropertyTypeCheckService::isLong);
@@ -39,9 +40,9 @@ public class PropertyTypeCheckService {
         if (propertyDefinition == null || propertyDefinition.getDataType() == null) {
             return true;
         }
-        for (Entry<String, Function<String, Boolean>> entry : constraintMap.entrySet()) {
+        for (Entry<String, Predicate<String>> entry : dataTypePredicates.entrySet()) {
             if (entry.getKey().equals(propertyDefinition.getDataType().getValue())) {
-                return entry.getValue().apply(node.getValue());
+                return entry.getValue().test(node.getValue());
             }
         }
         return true;
