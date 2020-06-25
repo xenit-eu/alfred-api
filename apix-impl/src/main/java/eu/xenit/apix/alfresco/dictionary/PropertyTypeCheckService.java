@@ -5,8 +5,6 @@ import eu.xenit.apix.properties.PropertyDefinition;
 import eu.xenit.apix.search.nodes.PropertySearchNode;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
