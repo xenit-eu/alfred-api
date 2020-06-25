@@ -13,12 +13,11 @@ public class PropertyTypeCheckService {
 
     private final static Logger logger = LoggerFactory.getLogger(PropertyTypeCheckService.class);
 
-    private final Map<String, Predicate<String>> dataTypePredicates = new HashMap<String, Predicate<String>>() {{
-        put("d:int", PropertyTypeCheckService::isInt);
-        put("{http://www.alfresco.org/model/dictionary/1.0}int", PropertyTypeCheckService::isInt);
-        put("d:long", PropertyTypeCheckService::isLong);
-        put("{http://www.alfresco.org/model/dictionary/1.0}long", PropertyTypeCheckService::isLong);
-    }};
+    private final static Map<String, Predicate<String>> dataTypePredicates = new HashMap<>();
+    static {
+        dataTypePredicates.put("{http://www.alfresco.org/model/dictionary/1.0}int", PropertyTypeCheckService::isInt);
+        dataTypePredicates.put("{http://www.alfresco.org/model/dictionary/1.0}long", PropertyTypeCheckService::isLong);
+    }
 
     private final PropertyService propertyService;
 

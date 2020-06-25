@@ -24,9 +24,9 @@ public class FtsNodeVisitorTest {
     private final static Logger logger = LoggerFactory.getLogger(FtsNodeVisitorTest.class);
 
     private Map<QName, String> propertyToDataType = new HashMap<QName, String>() {{
-        put(new QName("{tenant.model}stringProperty1"), "d:text");
-        put(new QName("{tenant.model}stringProperty2"), "d:text");
-        put(new QName("{tenant.model}intProperty"), "d:int");
+        put(new QName("{tenant.model}stringProperty1"), "{http://www.alfresco.org/model/dictionary/1.0}text");
+        put(new QName("{tenant.model}stringProperty2"), "{http://www.alfresco.org/model/dictionary/1.0}text");
+        put(new QName("{tenant.model}intProperty"), "{http://www.alfresco.org/model/dictionary/1.0}int");
     }};
 
     @Test
