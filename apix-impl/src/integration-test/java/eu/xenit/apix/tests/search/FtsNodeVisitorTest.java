@@ -28,7 +28,8 @@ public class FtsNodeVisitorTest {
 
     @Test
     public void TestTerm() {
-        java.util.List<String> terms = Arrays.asList("type", "aspect", "path", "parent", "text", "category");
+        java.util.List<String> terms = Arrays.asList("type", "aspect", "path", "parent", "text", "category",
+                "isunset", "isnull", "isnotnull");
         for (String t : terms) {
             builder = new QueryBuilder();
             SearchSyntaxNode node = builder.term(t, "myVal").create();
@@ -38,6 +39,33 @@ public class FtsNodeVisitorTest {
         builder = new QueryBuilder();
         SearchSyntaxNode node = builder.term("noderef", "workspace://SpacesStore/some-uuid").create();
         Assert.assertEquals("ID:\"workspace://SpacesStore/some-uuid\"", toFts(node));
+    }
+
+    @Test
+    public void testTermIsunset() {
+        builder = new QueryBuilder();
+        String term = "isunset";
+        String value = "cm:title";
+        SearchSyntaxNode node = builder.term(term, value).create();
+        Assert.assertEquals(term.toUpperCase() + ":\"" + value + "\"", toFts(node));
+    }
+
+    @Test
+    public void testTermIsnull() {
+        builder = new QueryBuilder();
+        String term = "isnull";
+        String value = "cm:content";
+        SearchSyntaxNode node = builder.term(term, value).create();
+        Assert.assertEquals(term.toUpperCase() + ":\"" + value + "\"", toFts(node));
+    }
+
+    @Test
+    public void testTermIsNotNull() {
+        builder = new QueryBuilder();
+        String term = "isnotnull";
+        String value = "cm:content";
+        SearchSyntaxNode node = builder.term(term, value).create();
+        Assert.assertEquals(term.toUpperCase() + ":\"" + value + "\"", toFts(node));
     }
 
     @Test
