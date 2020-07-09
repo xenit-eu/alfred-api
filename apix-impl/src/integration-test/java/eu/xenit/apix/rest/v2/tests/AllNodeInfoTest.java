@@ -79,6 +79,45 @@ public class AllNodeInfoTest extends eu.xenit.apix.rest.v2.tests.BaseTest {
         }
     }
 
+    @Test
+    public void testGetAllNodeInfoWithNoNodesListed() throws IOException {
+        String jsonString = json("{}");
+
+        final CloseableHttpClient httpclient = HttpClients.createDefault();
+        final String url = makeAlfrescoBaseurl("admin", "admin") + "/apix/v2/nodes/nodeInfo";
+        logger.error("url: " + url);
+        HttpPost httppost = new HttpPost(url);
+        httppost.setEntity(new StringEntity(jsonString));
+
+        try (CloseableHttpResponse response = httpclient.execute(httppost)) {
+            assertEquals(400, response.getStatusLine().getStatusCode());
+        }
+    }
+
+    @Test
+    public void testGetAllNodeInfoForNodeWithoutPermissions() throws IOException {
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url =
+                makeAlfrescoBaseurl(BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS) + "/apix/v2/nodes/nodeInfo";
+        logger.info("url: {}", url);
+        String jsonString = json(
+                "{" +
+                        "\"noderefs\": [\"" +
+                        initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME).toString() +
+                        "\"" +
+                        "]}");
+        final CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpPost httppost = new HttpPost(url);
+        httppost.setEntity(new StringEntity(jsonString));
+
+        try (CloseableHttpResponse response = httpclient.execute(httppost)) {
+            assertEquals(200, response.getStatusLine().getStatusCode());
+            String responseString = EntityUtils.toString(response.getEntity());
+            JSONArray responseJsonArray = new JSONArray(responseString);
+            assertEquals(0, responseJsonArray.length());
+        }
+    }
+
     @After
     public void cleanUp() {
         this.removeMainTestFolder();
