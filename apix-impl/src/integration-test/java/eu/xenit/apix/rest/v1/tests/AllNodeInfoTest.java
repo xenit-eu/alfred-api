@@ -18,7 +18,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,6 +78,45 @@ public class AllNodeInfoTest extends BaseTest {
             String responseString = EntityUtils.toString(response.getEntity());
             JSONArray responseJsonArray = new JSONArray(responseString);
             assertEquals(2, responseJsonArray.length());
+        }
+    }
+
+    @Test
+    public void testGetAllNodeInfoWithNoNodesListed() throws IOException {
+        String jsonString = json("{}");
+
+        final CloseableHttpClient httpclient = HttpClients.createDefault();
+        final String url = makeAlfrescoBaseurl("admin", "admin") + "/apix/v1/nodes/nodeInfo";
+        logger.error("url: " + url);
+        HttpPost httppost = new HttpPost(url);
+        httppost.setEntity(new StringEntity(jsonString));
+
+        try (CloseableHttpResponse response = httpclient.execute(httppost)) {
+            assertEquals(400, response.getStatusLine().getStatusCode());
+        }
+    }
+
+    @Test
+    public void testGetAllNodeInfoForNodeWithoutPermissions() throws IOException {
+        HashMap<String, NodeRef> initializedNodeRefs = init();
+        String url =
+                makeAlfrescoBaseurl(BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS) + "/apix/v1/nodes/nodeInfo";
+        logger.info("url: {}", url);
+        String jsonString = json(
+                "{" +
+                        "\"noderefs\": [\"" +
+                        initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME).toString() +
+                        "\"" +
+                        "]}");
+        final CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpPost httppost = new HttpPost(url);
+        httppost.setEntity(new StringEntity(jsonString));
+
+        try (CloseableHttpResponse response = httpclient.execute(httppost)) {
+            assertEquals(200, response.getStatusLine().getStatusCode());
+            String responseString = EntityUtils.toString(response.getEntity());
+            JSONArray responseJsonArray = new JSONArray(responseString);
+            assertEquals(0, responseJsonArray.length());
         }
     }
 
