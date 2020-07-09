@@ -44,6 +44,17 @@ public class ApixV2Webscript extends ApixV1Webscript {
             boolean retrieveTargetAssocs, boolean retrieveSourceAssocs) {
         List<NodeInfo> nodeInfoList = new ArrayList<NodeInfo>();
         for (NodeRef nodeRef : nodeRefs) {
+
+            if (!permissionService.hasPermission(nodeRef, IPermissionService.READ)) {
+                logger.warn("Excluding node {} from results due to insufficient permissions", nodeRef);
+                continue;
+            }
+
+            if (!nodeService.exists(nodeRef)) {
+                logger.debug("Excluding node {} from results because it does not exist", nodeRef);
+                continue;
+            }
+
             logger.debug("######################################################");
 
             logger.debug("start getPath");

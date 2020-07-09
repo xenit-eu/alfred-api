@@ -104,6 +104,11 @@ public class ApixV1Webscript {
             return null;
         }
 
+        if (!nodeService.exists(nodeRef)) {
+            logger.debug("Excluding node {} from results because it does not exist", nodeRef);
+            return null;
+        }
+
         eu.xenit.apix.filefolder.NodePath path = null;
         if (retrievePath) {
             path = fileFolderService.getPath(nodeRef);
