@@ -1,6 +1,7 @@
 package eu.xenit.apix.rest.v1.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import eu.xenit.apix.data.NodeRef;
 import java.io.IOException;
@@ -117,6 +118,10 @@ public class AllNodeInfoTest extends BaseTest {
             String responseString = EntityUtils.toString(response.getEntity());
             JSONArray responseJsonArray = new JSONArray(responseString);
             assertEquals(0, responseJsonArray.length());
+        } catch (JSONException jsonException) {
+            String message = "failed to deserialise responsestring";
+            logger.error(message);
+            fail(message);
         }
     }
 
