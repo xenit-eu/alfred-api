@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class AllNodeInfoTest extends eu.xenit.apix.rest.v2.tests.BaseTest {
 
@@ -115,6 +116,10 @@ public class AllNodeInfoTest extends eu.xenit.apix.rest.v2.tests.BaseTest {
             String responseString = EntityUtils.toString(response.getEntity());
             JSONArray responseJsonArray = new JSONArray(responseString);
             assertEquals(0, responseJsonArray.length());
+        } catch (JSONException jsonException) {
+            String message = "failed to deserialise responsestring";
+            logger.error(message);
+            fail(message);
         }
     }
 
