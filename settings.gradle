@@ -20,6 +20,7 @@ include ':apix-docker:docker-51'
 include ':apix-docker:docker-52'
 include ':apix-docker:docker-60'
 include ':apix-docker:docker-61'
+include ':apix-docker:docker-62'
 
 include ':apix-integrationtests'
 include ':apix-integrationtests:test-50'
@@ -40,6 +41,7 @@ project(':apix-docker:docker-51').projectDir = "$rootDir/apix-docker/51" as File
 project(':apix-docker:docker-52').projectDir = "$rootDir/apix-docker/52" as File
 project(':apix-docker:docker-60').projectDir = "$rootDir/apix-docker/60" as File
 project(':apix-docker:docker-61').projectDir = "$rootDir/apix-docker/61" as File
+project(':apix-docker:docker-62').projectDir = "$rootDir/apix-docker/62" as File
 project(':apix-integrationtests:test-50').projectDir = "$rootDir/apix-integrationtests/50" as File
 project(':apix-integrationtests:test-51').projectDir = "$rootDir/apix-integrationtests/51" as File
 project(':apix-integrationtests:test-52').projectDir = "$rootDir/apix-integrationtests/52" as File

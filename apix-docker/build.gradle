@@ -16,9 +16,11 @@ subprojects {
 
     // Isolate the version number ("docker-52" -> "52"). We should find a cleaner way
     def subproject_alfresco_version = project.name.substring(project.name.length() - 2)
+    //TODO clean up when
+    def apix_impl_version = "62".equals(subproject_alfresco_version) ? "61" : subproject_alfresco_version
 
     dependencies {
-        alfrescoAmp project(path: ":apix-impl:apix-impl-${subproject_alfresco_version}", configuration: 'ampArtifact')
+        alfrescoAmp project(path: ":apix-impl:apix-impl-${apix_impl_version}", configuration: 'ampArtifact')
         alfrescoAmp project(path: ':apix-integrationtests-model-amp', configuration: 'ampArchives')
         alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${subproject_alfresco_version}:${de_version}@amp"
     }
