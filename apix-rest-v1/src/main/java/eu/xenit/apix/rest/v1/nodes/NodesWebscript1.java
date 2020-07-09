@@ -448,14 +448,21 @@ public class NodesWebscript1 extends ApixV1Webscript {
                     "Set 'retrieveTargetAssocs' to false to omit the peer target associations from the result.\n" +
                     "Set 'retrieveSourceAssocs' to false to omit the peer source associations from the result.\n")
     @Uri(value = "/nodes/nodeInfo", method = HttpMethod.POST)
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NodeInfo[].class))
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success", response = NodeInfo[].class),
+            @ApiResponse(code = 400, message = "Bad Request")
+    })
     public void getAllInfoOfNodes(WebScriptRequest request, WebScriptResponse response)
             throws IOException, JSONException {
         String requestString = request.getContent().getContent();
         logger.debug("request content: " + requestString);
         JSONObject jsonObject = new JSONObject(requestString);
         if (jsonObject == null) {
-            throw new NullPointerException("jsonObject is null");
+            response.setStatus(400);
+            String message = String
+                    .format("Malfromed body: request string could not be parsed to jsonObject: %s", requestString);
+            logger.debug(message);
+            writeJsonResponse(response, message);
         }
         logger.debug("json: " + jsonObject.toString());
 
@@ -497,8 +504,10 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
             JSONArray nodeRefsJsonArray = jsonObject.getJSONArray("noderefs");
             if (nodeRefsJsonArray == null) {
-                logger.error("noderefsJsonArray is null");
-                throw new NullPointerException("noderefsJsonArray is null");
+                response.setStatus(400);
+                String message = String.format("Could not retrieve target noderefs from body: %s", jsonObject);
+                logger.debug(message);
+                writeJsonResponse(response, message);
             }
             int nodeRefsJsonArrayLength = nodeRefsJsonArray.length();
             logger.debug("nodeRefsJsonArrayLength: " + nodeRefsJsonArrayLength);
@@ -509,8 +518,10 @@ public class NodesWebscript1 extends ApixV1Webscript {
                 nodeRefs.add(nodeRef);
             }
         } catch (JSONException e) {
-            e.printStackTrace();
-            return;
+            logger.error("Error deserializing json body", e);
+            String message = String.format("Malformed json body {}", jsonObject);
+            response.setStatus(400);
+            writeJsonResponse(response, message);
         }
 
         //logger.error("done parsing request data");
