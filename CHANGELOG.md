@@ -17,6 +17,7 @@
 * [ALFREDAPI-422](https://xenitsupport.jira.com/browse/ALFREDAPI-422): Fix totalResults and limits for TDMQ's
 * [ALFREDAPI-427](https://xenitsupport.jira.com/browse/ALFREDAPI-427): Add workaround to prevent Solr Exceptions when searching for numeric values that overflow when parsed as int or long
 * [ALFREDAPI-412](https://xenitsupport.jira.com/browse/ALFREDAPI-427): Fix getAllNodeInfo endpoint to handle null values and non-existing nodes better
+* [ALFREDAPI-388](https://xenitsupport.jira.com/browse/ALFREDAPI-388): Add handling for preexisting file in upload
 
 ### Deleted
 
