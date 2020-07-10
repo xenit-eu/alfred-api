@@ -43,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class UploadFileTest extends BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(UploadFileTest.class);
+    private static final String LOCAL_TESTFILE_NAME = "test.txt";
 
     @Autowired
     ServiceRegistry serviceRegistry;
@@ -62,10 +63,7 @@ public class UploadFileTest extends BaseTest {
         contentService = this.serviceRegistry.getContentService();
 
         initNodeRefArray = init();
-        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initNodeRefArray.get(BaseTest.TESTFILE_NAME));
-        final ChildParentAssociation primaryParentAssoc = parentAssociations.get(0);
-        this.parentNodeRef = primaryParentAssoc.getTarget();
-        assertTrue(primaryParentAssoc.isPrimary());
+        this.parentNodeRef = initNodeRefArray.get(BaseTest.TESTFOLDER_NAME);
     }
 
     @Before
@@ -77,7 +75,7 @@ public class UploadFileTest extends BaseTest {
     public void testUploadFile() throws IOException {
         String url = createUrl(null, null);
         logger.info(" URL: " + url);
-        HttpEntity entity = createHttpEntity(parentNodeRef.toString());
+        HttpEntity entity = createHttpEntity(parentNodeRef.toString(), LOCAL_TESTFILE_NAME);
         try (CloseableHttpResponse response = doPost(url, entity)) {
             String resultString = EntityUtils.toString(response.getEntity());
             logger.debug(" resultString: " + resultString);
@@ -86,10 +84,19 @@ public class UploadFileTest extends BaseTest {
     }
 
     @Test
+    public void testUploadFileWhereFileAlreadyExists() throws IOException {
+        String url = createUrl("admin", "admin");
+        HttpEntity entity = createHttpEntity(parentNodeRef.toString(), BaseTest.TESTFILE_NAME);
+        try (CloseableHttpResponse response = doPost(url, entity)) {
+            assertEquals(400, response.getStatusLine().getStatusCode());
+        }
+    }
+
+    @Test
     public void testUploadFileResultsInAccessDenied() throws IOException {
         String url = createUrl(BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS);
         logger.info(">>>>> URL: " + url);
-        HttpEntity entity = createHttpEntity(initNodeRefArray.get(BaseTest.NOUSERRIGHTS_FILE_NAME).toString());
+        HttpEntity entity = createHttpEntity(initNodeRefArray.get(BaseTest.NOUSERRIGHTS_FILE_NAME).toString(), LOCAL_TESTFILE_NAME);
         try (CloseableHttpResponse response = doPost(url, entity)) {
             String resultString = EntityUtils.toString(response.getEntity());
             logger.debug(" resultString: " + resultString);
@@ -107,11 +114,11 @@ public class UploadFileTest extends BaseTest {
         return urlBuilder.toString();
     }
 
-    private HttpEntity createHttpEntity(String parentRef) throws IOException {
+    private HttpEntity createHttpEntity(String parentRef, String filename) throws IOException {
         return MultipartEntityBuilder.create()
                 .addTextBody("parent", parentRef)
                 .addTextBody("type", ContentModel.TYPE_CONTENT.toString())
-                .addBinaryBody("file", createTestFile())
+                .addBinaryBody("file", createTestFile(filename))
                 .build();
     }
 
@@ -132,7 +139,7 @@ public class UploadFileTest extends BaseTest {
         HttpEntity entity = MultipartEntityBuilder.create()
                 .addTextBody("parent", this.parentNodeRef.toString())
                 .addTextBody("type", ContentModel.TYPE_CONTENT.toString())
-                .addBinaryBody("file", createTestFile())
+                .addBinaryBody("file", createTestFile(LOCAL_TESTFILE_NAME))
                 .addTextBody("metadata", json(metadata))
                 .build();
 
@@ -188,8 +195,8 @@ public class UploadFileTest extends BaseTest {
         }
     }
 
-    private File createTestFile() throws IOException {
-        File result = new File("test.txt");
+    private File createTestFile(String pathName) throws IOException {
+        File result = new File(pathName);
 
         Boolean newFileCreated;
         newFileCreated = result.createNewFile();
@@ -198,7 +205,7 @@ public class UploadFileTest extends BaseTest {
         } else {
             logger.debug(" Did not create new file. ");
         }
-        PrintWriter writer = new PrintWriter("test.txt", "UTF-8");
+        PrintWriter writer = new PrintWriter(pathName, "UTF-8");
         String contentString = "This is the content";
         writer.println(contentString);
         writer.close();
