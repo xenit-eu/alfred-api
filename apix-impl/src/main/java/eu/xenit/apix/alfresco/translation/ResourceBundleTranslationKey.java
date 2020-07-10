@@ -120,9 +120,9 @@ public class ResourceBundleTranslationKey {
         try {
             result = QName.createQName(shortQname, namespaceService);
         } catch (InvalidQNameException iqe) {
-            LOGGER.info("Unable to create QName, " + shortQname + " is an invallid qname");
+            LOGGER.debug("Unable to create QName, " + shortQname + " is an invallid qname");
         } catch (NamespaceException ne) {
-            LOGGER.info("Unable to create QName, " + shortQname + " has an invallid namespace");
+            LOGGER.debug("Unable to create QName, " + shortQname + " has an invallid namespace");
         }
 
         return result;
