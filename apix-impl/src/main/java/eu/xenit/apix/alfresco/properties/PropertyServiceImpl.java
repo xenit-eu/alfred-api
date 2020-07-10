@@ -50,7 +50,7 @@ public class PropertyServiceImpl implements IPropertyService {
 
     public eu.xenit.apix.properties.PropertyDefinition GetPropertyDefinition(eu.xenit.apix.data.QName qname) {
         if (!IsValidPropertyQName(qname)) {
-            logger.info("The given property is no valid property: " + qname.toString());
+            logger.debug("The given property is no valid property: " + qname.toString());
             return null;
         }
         PropertyDefinition definition = dictionaryService.getProperty(c.alfresco(qname));
