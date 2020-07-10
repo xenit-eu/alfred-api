@@ -2,6 +2,7 @@ package eu.xenit.apix.rest.v2.tests;
 
 import eu.xenit.apix.data.NodeRef;
 import java.util.HashMap;
+import java.util.Map;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
@@ -120,6 +121,29 @@ public class AllNodeInfoTest extends eu.xenit.apix.rest.v2.tests.BaseTest {
             String message = "failed to deserialise responsestring";
             logger.error(message);
             fail(message);
+        }
+    }
+
+    @Test
+    public void testGetAllNodeInfoWithoutNodeWithoutPermissions() throws IOException {
+        Map<String, NodeRef> initializedNodes = init();
+        String jsonString = json("{\"noderefs\":["
+                + "\"" + initializedNodes.get(eu.xenit.apix.rest.v1.tests.BaseTest.TESTFILE_NAME).toString() + "\"," //regular node
+                + "\"workspace://SpacesStore/12345678-1234-1234-1234-123456789012\"," //non-existing node
+                + "\"" + initializedNodes.get(eu.xenit.apix.rest.v1.tests.BaseTest.NOUSERRIGHTS_FILE_NAME).toString() + "\"" //no-permissions node
+                + "]}");
+        final CloseableHttpClient httpclient = HttpClients.createDefault();
+        final String url = makeAlfrescoBaseurl(
+                eu.xenit.apix.rest.v1.tests.BaseTest.USERWITHOUTRIGHTS, eu.xenit.apix.rest.v1.tests.BaseTest.USERWITHOUTRIGHTS) + "/apix/v1/nodes/nodeInfo";
+        logger.error("url: " + url);
+        HttpPost httppost = new HttpPost(url);
+        httppost.setEntity(new StringEntity(jsonString));
+
+        try (CloseableHttpResponse response = httpclient.execute(httppost)) {
+            assertEquals(200, response.getStatusLine().getStatusCode());
+            String responseString = EntityUtils.toString(response.getEntity());
+            JSONArray responseJsonArray = new JSONArray(responseString);
+            assertEquals(1, responseJsonArray.length());
         }
     }
 

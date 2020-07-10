@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 import eu.xenit.apix.data.NodeRef;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
@@ -94,6 +95,28 @@ public class AllNodeInfoTest extends BaseTest {
 
         try (CloseableHttpResponse response = httpclient.execute(httppost)) {
             assertEquals(400, response.getStatusLine().getStatusCode());
+        }
+    }
+
+    @Test
+    public void testGetAllNodeInfoWithoutNodeWithoutPermissions() throws IOException {
+        Map<String, NodeRef> initializedNodes = init();
+        String jsonString = json("{\"noderefs\":["
+                + "\"" + initializedNodes.get(BaseTest.TESTFILE_NAME).toString() + "\"," //regular node
+                + "\"workspace://SpacesStore/12345678-1234-1234-1234-123456789012\"," //non-existing node
+                + "\"" + initializedNodes.get(BaseTest.NOUSERRIGHTS_FILE_NAME).toString() + "\"" //no-permissions node
+                + "]}");
+        final CloseableHttpClient httpclient = HttpClients.createDefault();
+        final String url = makeAlfrescoBaseurl(BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS) + "/apix/v1/nodes/nodeInfo";
+        logger.error("url: " + url);
+        HttpPost httppost = new HttpPost(url);
+        httppost.setEntity(new StringEntity(jsonString));
+
+        try (CloseableHttpResponse response = httpclient.execute(httppost)) {
+            assertEquals(200, response.getStatusLine().getStatusCode());
+            String responseString = EntityUtils.toString(response.getEntity());
+            JSONArray responseJsonArray = new JSONArray(responseString);
+            assertEquals(1, responseJsonArray.length());
         }
     }
 
