@@ -45,6 +45,7 @@ import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.ServiceRegistry;
+import org.alfresco.service.cmr.model.FileExistsException;
 import org.alfresco.service.cmr.repository.InvalidNodeRefException;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
@@ -778,31 +779,41 @@ public class NodesWebscript1 extends ApixV1Webscript {
         final String finalType = type;
         final MetadataChanges finalMetadata = metadata;
         final Boolean finalExtractMetadata = extractMetadata;
-        Object resultRef = transactionHelper
-                .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
-                    @Override
-                    public Object execute() throws Throwable {
-                        NodeRef newNode = nodeService
-                                .createNode(new NodeRef(finalParent), finalFile.getFilename(),
-                                        new QName(finalType));
-                        nodeService.setContent(newNode, finalFile.getInputStream(), finalFile.getFilename());
+        Object resultRef = null;
+        try {
+            resultRef = transactionHelper
+                    .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
+                        @Override
+                        public Object execute() throws Throwable {
+                            NodeRef newNode = nodeService
+                                    .createNode(new NodeRef(finalParent), finalFile.getFilename(),
+                                            new QName(finalType));
+                            nodeService.setContent(newNode, finalFile.getInputStream(), finalFile.getFilename());
 
-                        if (finalMetadata != null) {
-                            nodeService.setMetadata(newNode, finalMetadata);
-                        }
-
-                        if (finalExtractMetadata) {
-                            try {
-                                nodeService.extractMetadata(newNode);
-                                logger.debug("Metadata extracted");
-                            } catch (Exception ex) {
-                                logger.warn("Exception while extracting metadata", ex);
+                            if (finalMetadata != null) {
+                                nodeService.setMetadata(newNode, finalMetadata);
                             }
-                        }
-                        return newNode;
-                    }
-                }, false, true);
 
+                            if (finalExtractMetadata) {
+                                try {
+                                    nodeService.extractMetadata(newNode);
+                                    logger.debug("Metadata extracted");
+                                } catch (Exception ex) {
+                                    logger.warn("Exception while extracting metadata", ex);
+                                }
+                            }
+                            return newNode;
+                        }
+                    }, false, true);
+        } catch (FileExistsException fileExistsException) {
+            response.setStatus(400);
+            String message = String
+                    .format("A child node with name %s already exists for parent %s", finalFile.getFilename(),
+                            finalParent);
+            logger.debug(message);
+            writeJsonResponse(response, message);
+            return;
+        }
         NodeInfo nodeInfo = this
                 .nodeRefToNodeInfo((NodeRef) resultRef, fileFolderService, nodeService, permissionService);
         writeJsonResponse(response, nodeInfo);

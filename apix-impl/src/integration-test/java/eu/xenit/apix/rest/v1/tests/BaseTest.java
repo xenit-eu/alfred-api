@@ -198,6 +198,7 @@ public abstract class BaseTest {
                         ContentModel.TYPE_FOLDER);
                 FileInfo testFolder = createTestNode(mainTestFolder.getNodeRef(), TESTFOLDER_NAME,
                         ContentModel.TYPE_FOLDER);
+                initializedNodeRefs.put(TESTFOLDER_NAME, new eu.xenit.apix.data.NodeRef(testFolder.getNodeRef().toString()));
                 FileInfo testNode = createTestNode(testFolder.getNodeRef(), TESTFILE_NAME, ContentModel.TYPE_CONTENT);
                 NodeRef testNodeRef = testNode.getNodeRef();
                 eu.xenit.apix.data.NodeRef apixTestNodeRef = new eu.xenit.apix.data.NodeRef(testNodeRef.toString());
