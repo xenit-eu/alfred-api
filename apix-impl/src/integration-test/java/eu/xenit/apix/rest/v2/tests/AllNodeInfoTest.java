@@ -125,7 +125,7 @@ public class AllNodeInfoTest extends eu.xenit.apix.rest.v2.tests.BaseTest {
     }
 
     @Test
-    public void testGetAllNodeInfoWithoutNodeWithoutPermissions() throws IOException {
+    public void testGetAllNodeInfoWithoutNodeWithoutPermissions() throws IOException, JSONException {
         Map<String, NodeRef> initializedNodes = init();
         String jsonString = json("{\"noderefs\":["
                 + "\"" + initializedNodes.get(eu.xenit.apix.rest.v1.tests.BaseTest.TESTFILE_NAME).toString() + "\"," //regular node
