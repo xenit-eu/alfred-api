@@ -1,7 +1,7 @@
 # Alfred API - Changelog
 
 
-## 2.4.1 (Unreleased)
+## 2.5.0 (2020-07-15)
 
 ### Added
 * [HA-29](https://xenitsupport.jira.com/browse/HA-29): Added webscript for retrieving available sites + webscript for retrieving ancestors of a node
