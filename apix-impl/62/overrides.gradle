@@ -1,4 +1,4 @@
-description = "Xenit API-X implementation Alfresco 6.1"
+description = "Xenit API-X implementation Alfresco 6.2"
 
 ext {
     alfresco_version = alfresco_62_version
