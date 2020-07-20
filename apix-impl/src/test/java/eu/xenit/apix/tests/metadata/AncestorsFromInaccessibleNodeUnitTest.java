@@ -35,7 +35,7 @@ public class AncestorsFromInaccessibleNodeUnitTest extends AncestorsBaseUnitTest
 
     protected PermissionService initPermissionServiceMock() {
         PermissionService permissionServiceMock = super.initPermissionServiceMock();
-        when(permissionServiceMock.hasReadPermission(eq(testNode2)))
+        when(permissionServiceMock.hasPermission(eq(testNode2), eq(PermissionService.READ_PERMISSIONS)))
                 .thenReturn(AccessStatus.DENIED);
 
         return permissionServiceMock;
