@@ -454,97 +454,13 @@ public class NodesWebscript1 extends ApixV1Webscript {
             @ApiResponse(code = 200, message = "Success", response = NodeInfo[].class),
             @ApiResponse(code = 400, message = "Bad Request")
     })
-    public void getAllInfoOfNodes(WebScriptRequest request, WebScriptResponse response)
-            throws IOException, JSONException {
-        String requestString = request.getContent().getContent();
-        logger.debug("request content: " + requestString);
-        JSONObject jsonObject = new JSONObject(requestString);
-        if (jsonObject == null) {
-            response.setStatus(400);
-            String message = String
-                    .format("Malfromed body: request string could not be parsed to jsonObject: %s", requestString);
-            logger.debug(message);
-            writeJsonResponse(response, message);
-        }
-        logger.debug("json: " + jsonObject.toString());
-
-        boolean retrieveMetadata = true;
-        boolean retrievePath = true;
-        boolean retrievePermissions = true;
-        boolean retrieveAssocs = true;
-        boolean retrieveChildAssocs = true;
-        boolean retrieveParentAssocs = true;
-        boolean retrieveTargetAssocs = true;
-        boolean retrieveSourceAssocs = true;
-
-        List<NodeRef> nodeRefs = new ArrayList<NodeRef>();
-        try {
-            if (jsonObject.has("retrieveMetadata")) {
-                retrieveMetadata = jsonObject.getBoolean("retrieveMetadata");
-            }
-            if (jsonObject.has("retrievePath")) {
-                retrievePath = jsonObject.getBoolean("retrievePath");
-            }
-            if (jsonObject.has("retrievePermissions")) {
-                retrievePermissions = jsonObject.getBoolean("retrievePermissions");
-            }
-            if (jsonObject.has("retrieveAssocs")) {
-                retrieveAssocs = jsonObject.getBoolean("retrieveAssocs");
-            }
-            if (jsonObject.has("retrieveChildAssocs")) {
-                retrieveChildAssocs = jsonObject.getBoolean("retrieveChildAssocs");
-            }
-            if (jsonObject.has("retrieveParentAssocs")) {
-                retrieveParentAssocs = jsonObject.getBoolean("retrieveParentAssocs");
-            }
-            if (jsonObject.has("retrieveTargetAssocs")) {
-                retrieveTargetAssocs = jsonObject.getBoolean("retrieveTargetAssocs");
-            }
-            if (jsonObject.has("retrieveSourceAssocs")) {
-                retrieveSourceAssocs = jsonObject.getBoolean("retrieveSourceAssocs");
-            }
-
-            JSONArray nodeRefsJsonArray = jsonObject.getJSONArray("noderefs");
-            if (nodeRefsJsonArray == null) {
-                response.setStatus(400);
-                String message = String.format("Could not retrieve target noderefs from body: %s", jsonObject);
-                logger.debug(message);
-                writeJsonResponse(response, message);
-            }
-            int nodeRefsJsonArrayLength = nodeRefsJsonArray.length();
-            logger.debug("nodeRefsJsonArrayLength: " + nodeRefsJsonArrayLength);
-            for (int i = 0; i < nodeRefsJsonArrayLength; i++) {
-                String nodeRefString = (String) nodeRefsJsonArray.get(i);
-                logger.debug("nodeRefString: " + nodeRefString);
-                NodeRef nodeRef = new NodeRef(nodeRefString);
-                nodeRefs.add(nodeRef);
-            }
-        } catch (JSONException e) {
-            logger.error("Error deserializing json body", e);
-            String message = String.format("Malformed json body {}", jsonObject);
-            response.setStatus(400);
-            writeJsonResponse(response, message);
-        }
-
-        //logger.error("done parsing request data");
-        //logger.error("start nodeRefToNodeInfo");
-        List<NodeInfo> nodeInfoList = this.nodeRefToNodeInfo(nodeRefs,
-                this.fileFolderService,
+    public void getAllInfoOfNodes(@RequestParam(required = true) NodeInfoOptions nodeInfoOptions, WebScriptResponse response)
+            throws IOException {
+        List<NodeInfo> nodeInfoList = this.nodeRefToNodeInfo(fileFolderService,
                 this.nodeService,
                 this.permissionService,
-                retrievePath,
-                retrieveMetadata,
-                retrievePermissions,
-                retrieveAssocs,
-                retrieveChildAssocs,
-                retrieveParentAssocs,
-                retrieveTargetAssocs,
-                retrieveSourceAssocs);
-        //logger.error("end nodeRefToNodeInfo");
-
-        //logger.error("start writeJsonResponse");
+                 nodeInfoOptions);
         writeJsonResponse(response, nodeInfoList);
-        //logger.error("end writeJsonResponse");
     }
 
     @ApiOperation(value = "Retrieves the ancestors of the nodes",

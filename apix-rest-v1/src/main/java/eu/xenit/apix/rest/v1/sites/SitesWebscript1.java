@@ -12,6 +12,7 @@ import eu.xenit.apix.permissions.IPermissionService;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
 import eu.xenit.apix.rest.v1.RestV1Config;
 import eu.xenit.apix.rest.v1.nodes.NodeInfo;
+import eu.xenit.apix.rest.v1.nodes.NodeInfoFlags;
 import eu.xenit.apix.sites.ISite;
 import eu.xenit.apix.sites.ISiteService;
 import io.swagger.annotations.ApiOperation;
@@ -76,22 +77,24 @@ public class SitesWebscript1 extends ApixV1Webscript {
             @RequestParam(required = false, defaultValue = "false") boolean retrieveSourceAssocs,
             WebScriptResponse response)
             throws IOException {
-        logger.debug("retrieveMetadata: " + retrieveMetadata);
-        logger.debug("retrievePath: " + retrievePath);
-        logger.debug("retrievePermissions: " + retrievePermissions);
-        logger.debug("retrieveChildAssocs: " + retrieveChildAssocs);
-        logger.debug("retrieveParentAssocs: " + retrieveParentAssocs);
-        logger.debug("retrieveTargetAssocs: " + retrieveTargetAssocs);
-        logger.debug("retrieveSourceAssocs: " + retrieveSourceAssocs);
+        NodeInfoFlags nodeInfoFlags = new NodeInfoFlags(
+            retrievePath,
+            retrieveMetadata,
+            retrievePermissions,
+            true,
+            retrieveChildAssocs,
+            retrieveParentAssocs,
+            retrieveTargetAssocs,
+            retrieveSourceAssocs
+        );
 
         AuthenticationService authService = serviceRegistry.getAuthenticationService();
         List<ISite> sites = siteService.getUserSites(authService.getCurrentUserName());
         List<SiteInfo> siteInfoList = new ArrayList<>();
         for (ISite site : sites) {
             NodeRef siteRef = site.getNodeRef();
-            NodeInfo nodeInfo = nodeRefToNodeInfo(siteRef, fileFolderService, nodeService, permissionService,
-                    retrievePath, retrieveMetadata, retrievePermissions, true, retrieveChildAssocs,
-                    retrieveParentAssocs, retrieveTargetAssocs, retrieveSourceAssocs);
+            NodeInfo nodeInfo = nodeRefToNodeInfo(siteRef, fileFolderService,
+                    nodeService, permissionService, nodeInfoFlags);
             SiteInfo siteInfo = new SiteInfo(site, nodeInfo);
             siteInfoList.add(siteInfo);
         }

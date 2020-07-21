@@ -18,6 +18,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+
+import eu.xenit.apix.rest.v1.nodes.NodeInfoFlags;
+import eu.xenit.apix.rest.v1.nodes.NodeInfoOptions;
 import org.alfresco.repo.admin.SysAdminParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,24 +56,18 @@ public class ApixV1Webscript {
         return str.replace("\\", "");
     }
 
-    protected List<NodeInfo> nodeRefToNodeInfo(List<NodeRef> nodeRefs,
+    protected List<NodeInfo> nodeRefToNodeInfo(
             IFileFolderService fileFolderService,
             INodeService nodeService,
             IPermissionService permissionService,
-            boolean retrievePath,
-            boolean retrieveMetadata,
-            boolean retrievePermissions,
-            boolean retrieveAssocs,
-            boolean retrieveChildAssocs,
-            boolean retrieveParentAssocs,
-            boolean retrieveTargetAssocs,
-            boolean retrieveSourceAssocs
+            NodeInfoOptions nodeInfoOptions
     ) {
         List<NodeInfo> nodeInfoList = new ArrayList<>();
-        for (NodeRef nodeRef : nodeRefs) {
-            NodeInfo nodeInfo = nodeRefToNodeInfo(nodeRef, fileFolderService, nodeService, permissionService,
-                    retrievePath, retrieveMetadata, retrievePermissions, retrieveAssocs, retrieveChildAssocs,
-                    retrieveParentAssocs, retrieveTargetAssocs, retrieveSourceAssocs);
+        for (NodeRef nodeRef : nodeInfoOptions.getNodeReferences()) {
+            NodeInfo nodeInfo = nodeRefToNodeInfo(nodeRef, fileFolderService,
+                    nodeService, permissionService,
+                    nodeInfoOptions.getNodeInfoFlags());
+
             if (nodeInfo == null) {
                 continue;
             }
@@ -80,25 +78,18 @@ public class ApixV1Webscript {
         return nodeInfoList;
     }
 
+    private static NodeInfoFlags nodeInfoWithAllFlagsOn = NodeInfoFlags.CreateNewNodeInfoFlagsWithAllFlagsTrue();
     protected NodeInfo nodeRefToNodeInfo(NodeRef nodeRef, IFileFolderService fileFolderService,
             INodeService nodeService, IPermissionService permissionService) {
-        return nodeRefToNodeInfo(nodeRef, fileFolderService, nodeService, permissionService,
-                true, true, true, true,
-                true, true, true, true);
+        return nodeRefToNodeInfo(nodeRef, fileFolderService, nodeService,
+                                    permissionService, nodeInfoWithAllFlagsOn);
     }
 
     protected NodeInfo nodeRefToNodeInfo(NodeRef nodeRef,
             IFileFolderService fileFolderService,
             INodeService nodeService,
             IPermissionService permissionService,
-            boolean retrievePath,
-            boolean retrieveMetadata,
-            boolean retrievePermissions,
-            boolean retrieveAssocs,
-            boolean retrieveChildAssocs,
-            boolean retrieveParentAssocs,
-            boolean retrieveTargetAssocs,
-            boolean retrieveSourceAssocs) {
+            NodeInfoFlags nodeInfoFlags) {
         if (!permissionService.hasPermission(nodeRef, IPermissionService.READ)) {
             logger.warn("Excluding node {} from results due to insufficient permissions", nodeRef);
             return null;
@@ -109,43 +100,33 @@ public class ApixV1Webscript {
             return null;
         }
 
-        eu.xenit.apix.filefolder.NodePath path = null;
-        if (retrievePath) {
-            path = fileFolderService.getPath(nodeRef);
-        }
-
-        NodeMetadata nodeMetadata = null;
-        if (retrieveMetadata) {
-            nodeMetadata = nodeService.getMetadata(nodeRef);
-        }
-
-        Map<String, PermissionValue> permissions = null;
-        if (retrievePermissions) {
-            permissions = permissionService.getPermissions(nodeRef);
-        }
-
-        NodeAssociations associations = null;
-        if (retrieveAssocs) {
-            List<ChildParentAssociation> childAssocs = null;
-            if (retrieveChildAssocs) {
-                childAssocs = nodeService.getChildAssociations(nodeRef);
-            }
-            List<ChildParentAssociation> parentAssociations = null;
-            if (retrieveParentAssocs) {
-                parentAssociations = nodeService.getParentAssociations(nodeRef);
-            }
-            List<NodeAssociation> targetAssociations = null;
-            if (retrieveTargetAssocs) {
-                targetAssociations = nodeService.getTargetAssociations(nodeRef);
-            }
-            List<NodeAssociation> sourceAssociationts = null;
-            if (retrieveSourceAssocs) {
-                sourceAssociationts = nodeService.getSourceAssociations(nodeRef);
-            }
-            associations = new NodeAssociations(childAssocs, parentAssociations, targetAssociations,
-                    sourceAssociationts);
-        }
+        eu.xenit.apix.filefolder.NodePath path =
+            createOptionally(nodeRef, fileFolderService::getPath, nodeInfoFlags.getRetrievePath());
+        NodeMetadata nodeMetadata =
+            createOptionally(nodeRef, nodeService::getMetadata, nodeInfoFlags.getRetrieveMetadata());
+        Map<String, PermissionValue> permissions =
+            createOptionally(nodeRef, permissionService::getPermissions, nodeInfoFlags.getRetrievePermissions());
+        NodeAssociations associations = createNodeAssociationsOptionally(nodeRef, nodeService, nodeInfoFlags);
 
         return new NodeInfo(nodeRef, nodeMetadata, permissions, associations, path);
+    }
+
+    private static <R> R createOptionally(NodeRef nodeRef, Function<NodeRef, R> transformation, Boolean factCheck) {
+        return factCheck ? transformation.apply(nodeRef) : null;
+    }
+
+    private static NodeAssociations createNodeAssociationsOptionally(NodeRef nodeRef, INodeService nodeService, NodeInfoFlags nodeInfoFlags) {
+        if(!nodeInfoFlags.getRetrieveAssocs()) {
+            return null;
+        }
+        List<ChildParentAssociation> childAssocs =
+            createOptionally(nodeRef, nodeService::getChildAssociations, nodeInfoFlags.getRetrieveChildAssocs());
+        List<ChildParentAssociation> parentAssociations =
+            createOptionally(nodeRef, nodeService::getParentAssociations, nodeInfoFlags.getRetrieveParentAssocs());
+        List<NodeAssociation> targetAssociations =
+            createOptionally(nodeRef, nodeService::getTargetAssociations, nodeInfoFlags.getRetrieveTargetAssocs());
+        List<NodeAssociation> sourceAssociationts =
+            createOptionally(nodeRef, nodeService::getSourceAssociations, nodeInfoFlags.getRetrieveSourceAssocs());
+        return new NodeAssociations(childAssocs, parentAssociations, targetAssociations, sourceAssociationts);
     }
 }
