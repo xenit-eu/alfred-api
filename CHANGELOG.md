@@ -1,5 +1,10 @@
 # Alfred API - Changelog
 
+## 2.5.1 UNRELEASED
+
+### Fixed
+* [ALFREDAPI-438](https://xenitsupport.jira.com/browse/ALFREDAPI-438): Replace hasReadPermission with hasPermission to avoid an Alfresco bug that prevents usage of that method and throws AcessDeniedException
+* [ALFREDAPI-439](https://xenitsupport.jira.com/browse/ALFREDAPI-439): Fixed issue where category facet values would be displayed with their noderef instead of their name
 
 ## 2.5.0 (2020-07-15)
 
