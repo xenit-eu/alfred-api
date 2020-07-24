@@ -97,7 +97,8 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
     }
 
     @Override
-    public void addFacetSearchParameters(SearchQuery.FacetOptions opts, SearchParameters sp, String ftsQuery, SearchSyntaxNode searchNode) {
+    public void addFacetSearchParameters(SearchQuery.FacetOptions opts, SearchParameters sp, String ftsQuery,
+            SearchSyntaxNode searchNode) {
         if (!opts.isEnabled()) {
             return;
         }
@@ -141,13 +142,15 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
                     // For backwards compatability, this is still in use when using the @Deprecated overload
                     // that calls into this method with argument SearchSyntaxNode = null
                     if (searchNode != null) {
-                        List<String> filterQueries = searchNode.accept(new FtsFilterQueryNodeVisitor(fieldFacetQName.toString()));
+                        List<String> filterQueries = searchNode
+                                .accept(new FtsFilterQueryNodeVisitor(fieldFacetQName.toString()));
                         for (String fq : filterQueries) {
                             sp.addFacetQuery(fq);
                         }
                     } else {
                         // @Deprecated AND buggy
-                        String fq = solrFacetHelper.createFacetQueriesFromSearchQuery(fieldFacetQName.toString(), query);
+                        String fq = solrFacetHelper
+                                .createFacetQueriesFromSearchQuery(fieldFacetQName.toString(), query);
                         if (fq != null) {
                             sp.addFacetQuery(fq);
                         }
@@ -306,8 +309,7 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
         DataTypeDefinition dataType = propertyDefinition.getDataType();
         if (DataTypeDefinition.CATEGORY.equals(dataType.getName())) {
             return new CategoryFacetLabelDisplayHandler(nodeService);
-        }
-        else {
+        } else {
             return ListOfValuesFacetLabelDisplayHandler.createFromProperty(propertyDefinition, dictionaryService);
         }
     }
@@ -365,8 +367,7 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
                 Serializable nameProperty = nodeService.getProperty(nodeRef, ContentModel.PROP_NAME);
                 String name = DefaultTypeConverter.INSTANCE.convert(String.class, nameProperty);
                 return new FacetLabel(value, name, -1);
-            }
-            catch (InvalidNodeRefException ex) {
+            } catch (InvalidNodeRefException ex) {
                 logger.error("Node with node reference {} could not be found", nodeRef);
                 return new FacetLabel(value, value, -1);
             }
