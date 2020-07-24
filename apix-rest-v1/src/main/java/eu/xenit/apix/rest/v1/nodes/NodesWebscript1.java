@@ -8,6 +8,9 @@ import com.github.dynamicextensionsalfresco.webscripts.annotations.Transaction;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.UriVariable;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.WebScript;
+import eu.xenit.apix.comments.Comment;
+import eu.xenit.apix.comments.Conversation;
+import eu.xenit.apix.comments.ICommentService;
 import eu.xenit.apix.data.ContentInputStream;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
@@ -44,10 +47,10 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
-import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.model.FileExistsException;
 import org.alfresco.service.cmr.repository.InvalidNodeRefException;
+import org.alfresco.service.cmr.security.PermissionService;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
@@ -79,6 +82,9 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
     @Autowired
     IFileFolderService fileFolderService;
+
+    @Autowired
+    ICommentService commentService;
 
     @Autowired
     ServiceRegistry serviceRegistry;
@@ -651,6 +657,92 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
     }
 
+    @ApiOperation(value = "Retrieves all comments for a given node")
+    @Uri(value = "/nodes/{space}/{store}/{guid}/comments", method = HttpMethod.GET)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 403, message = "Not Authorized"),
+            @ApiResponse(code = 404, message = "Not Found")
+    })
+    public void getComments(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
+            @RequestParam int skipcount, @RequestParam int pagesize, WebScriptResponse response) throws IOException {
+        final NodeRef target = new NodeRef(space, store, guid);
+        if (nodeService.exists(target)) {
+            Conversation comments = commentService.getComments(target, skipcount, pagesize);
+            boolean canCreate = permissionService.hasPermission(target, PermissionService.CREATE_CHILDREN);
+            comments.setCanCreate(canCreate);
+            writeJsonResponse(response, comments);
+        } else {
+            writeNotFoundResponse(response, target);
+        }
+    }
+
+    @ApiOperation(value = "Appends a new comment to the given node.")
+    @Uri(value = "/nodes/{space}/{store}/{guid}/comments", method = HttpMethod.POST)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 403, message = "Not Authorized"),
+            @ApiResponse(code = 404, message = "Not Found")
+    })
+    public void postComment(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
+            WebScriptRequest request, WebScriptResponse response) throws IOException {
+        final NodeRef target = new NodeRef(space, store, guid);
+        if (nodeService.exists(target)) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String content = objectMapper.readTree(request.getContent().getInputStream()).textValue();
+            Comment newComment = commentService.addNewComment(target, content);
+            writeJsonResponse(response, newComment);
+        } else {
+            writeNotFoundResponse(response, target);
+        }
+    }
+
+    @ApiOperation(value = "Updates a given comment on the given node.")
+    @Uri(value = "/nodes/{docspace}/{docstore}/{docguid}/comments/{commentspace}/{commentstore}/{commentguid}",
+            method = HttpMethod.POST)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 403, message = "Not Authorized"),
+            @ApiResponse(code = 404, message = "Not Found")
+    })
+    public void updateComment(@UriVariable String docspace, @UriVariable String docstore, @UriVariable String docguid,
+            @UriVariable String commentspace, @UriVariable String commentstore, @UriVariable String commentguid,
+            WebScriptRequest request, WebScriptResponse response) throws IOException {
+        final NodeRef targetDocument = new NodeRef(docspace, docspace, docspace);
+        final NodeRef targetComment = new NodeRef(commentspace, commentspace, commentguid);
+        if (nodeService.exists(targetComment)) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String content = objectMapper.readTree(request.getContent().getInputStream()).textValue();
+            Comment updatedComment = commentService.updateComment(targetComment, content);
+            response.setStatus(200);
+            writeJsonResponse(response, updatedComment);
+        } else {
+            writeNotFoundResponse(response, targetComment);
+        }
+    }
+
+    @ApiOperation(value = "Deletes a given comment on the given node.")
+    @Uri(value = "/nodes/{docspace}/{docstore}/{docguid}/comments/{commentspace}/{commentstore}/{commentguid}",
+            method = HttpMethod.POST)
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "Success"),
+            @ApiResponse(code = 403, message = "Not Authorized"),
+            @ApiResponse(code = 404, message = "Not Found")
+    })
+    public void deleteComment(@UriVariable String docspace, @UriVariable String docstore, @UriVariable String docguid,
+            @UriVariable String commentspace, @UriVariable String commentstore, @UriVariable String commentguid,
+            WebScriptRequest request, WebScriptResponse response) throws IOException {
+        final NodeRef targetDocument = new NodeRef(docspace, docspace, docspace);
+        final NodeRef targetComment = new NodeRef(commentspace, commentspace, commentguid);
+        if (nodeService.exists(targetComment)) {
+            commentService.deleteComment(targetComment);
+            response.setStatus(204);
+            writeJsonResponse(response, "Comment deleted");
+        } else {
+            writeNotFoundResponse(response, targetComment);
+        }
+    }
+
     @ApiOperation(value = "Downloads content file for given node")
     @Uri(value = "/nodes/{space}/{store}/{guid}/content", method = HttpMethod.GET)
     @ApiResponses({
@@ -847,5 +939,11 @@ public class NodesWebscript1 extends ApixV1Webscript {
         logger.debug("Not Authorized: ", exception);
         response.setStatus(403);
         writeJsonResponse(response, "Not authorised to execute this operation");
+    }
+
+    private void writeNotFoundResponse(WebScriptResponse response, NodeRef requestedNode) throws IOException {
+        logger.debug("Not Found: {}", requestedNode);
+        response.setStatus(404);
+        writeJsonResponse(response, "Node Not Found");
     }
 }
