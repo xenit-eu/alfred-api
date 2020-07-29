@@ -23,6 +23,7 @@ import org.alfresco.repo.search.impl.solr.facet.SolrFacetService;
 import org.alfresco.repo.search.impl.solr.facet.handler.FacetLabelDisplayHandlerRegistry;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.dictionary.ConstraintDefinition;
+import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.i18n.MessageLookup;
@@ -54,6 +55,9 @@ public class SearchFacetServiceUnitTest {
         when(serviceRegistryMock.getFacetLabelDisplayHandlerRegistry())
                 .thenReturn(facetLabelDisplayHandlerRegistryStub);
 
+        DataTypeDefinition textDataTypeDef = mock(DataTypeDefinition.class);
+        when(textDataTypeDef.getName()).thenReturn(DataTypeDefinition.TEXT);
+
         DictionaryService dictionaryServiceMock = mock(DictionaryService.class);
 
         QName languageQName = QName.createQName("{http://test.apix.xenit.eu/model/content}language");
@@ -70,6 +74,7 @@ public class SearchFacetServiceUnitTest {
         when(theLanguageConstraintDefinition.getConstraint()).thenReturn(theListOfValuesConstraint);
         languageConstraintDefinitions.add(theLanguageConstraintDefinition);
         when(languagePropDefMock.getConstraints()).thenReturn(languageConstraintDefinitions);
+        when(languagePropDefMock.getDataType()).thenReturn(textDataTypeDef);
         when(dictionaryServiceMock.getProperty(languageQName)).thenReturn(languagePropDefMock);
 
         QName documentStatusQName = QName.createQName("{http://test.apix.xenit.eu/model/content}documentStatus");
@@ -86,6 +91,7 @@ public class SearchFacetServiceUnitTest {
         when(documentStatusConDef.getConstraint()).thenReturn(docStatLOVConstr);
         documnetStatusConDefList.add(documentStatusConDef);
         when(documentStatusPropDefMock.getConstraints()).thenReturn(documnetStatusConDefList);
+        when(documentStatusPropDefMock.getDataType()).thenReturn(textDataTypeDef);
         when(dictionaryServiceMock.getProperty(documentStatusQName)).thenReturn(documentStatusPropDefMock);
 
         when(serviceRegistryMock.getDictionaryService()).thenReturn(dictionaryServiceMock);
