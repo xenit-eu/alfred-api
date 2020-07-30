@@ -127,7 +127,7 @@ public class PeopleService implements IPeopleService {
 
     @Override
     public Person GetPerson(String userName) {
-        return GetPerson(c.apix(alfrescoPersonService.getPerson(normalizeUserName(userName))));
+        return GetPerson(c.apix(alfrescoPersonService.getPersonOrNull(normalizeUserName(userName))));
     }
 
     @Override

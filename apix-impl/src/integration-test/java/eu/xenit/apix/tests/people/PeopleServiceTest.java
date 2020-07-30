@@ -83,6 +83,19 @@ public class PeopleServiceTest extends BaseTest {
 
     }
 
+    public void TestGetNonExistentPerson() {
+        serviceRegistry.getRetryingTransactionHelper()
+                .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>() {
+                    @Override
+                    public Void execute() throws Throwable {
+
+                        Person p = peopleService.GetPerson("nonExistentUserName");
+                        assertEquals(p, null);
+                        return null;
+                    }
+                }, false, true);
+    }
+
     public void TestGetPeople() {
         final HashMap<QName, Serializable> propsA = new HashMap<QName, Serializable>();
         final HashMap<QName, Serializable> propsB = new HashMap<QName, Serializable>();
