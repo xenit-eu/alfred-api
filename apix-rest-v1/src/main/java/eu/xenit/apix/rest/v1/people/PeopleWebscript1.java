@@ -40,13 +40,13 @@ public class PeopleWebscript1 extends ApixV1Webscript {
     public void getPerson(@UriVariable final String space, @UriVariable final String store,
             @UriVariable final String guid, WebScriptResponse webScriptResponse) throws IOException {
         logger.debug("Asked person with guid: " + guid);
-        Person p = personService.GetPerson(createNodeRef(space, store, guid));
-        if (p == null) {
+        try {
+            Person p = personService.GetPerson(createNodeRef(space, store, guid));
+            writeJsonResponse(webScriptResponse, p);
+        } catch (Exception e) {
             webScriptResponse.setStatus(404);
-            webScriptResponse.getWriter().write("Person does not exist");
-            return;
+            writeJsonResponse(webScriptResponse, e);
         }
-        writeJsonResponse(webScriptResponse, p);
     }
 
     @Uri(value = "/people", method = HttpMethod.GET)
@@ -55,12 +55,12 @@ public class PeopleWebscript1 extends ApixV1Webscript {
     public void getPersonViaUserName(@RequestParam final String userName, WebScriptResponse webScriptResponse)
             throws IOException {
         logger.debug("Asked person with name: " + userName);
-        Person p = personService.GetPerson(userName);
-        if (p == null) {
+        try{
+            Person p = personService.GetPerson(userName);
+            writeJsonResponse(webScriptResponse, p);
+        } catch (Exception e) {
             webScriptResponse.setStatus(404);
-            webScriptResponse.getWriter().write("Person does not exist");
-            return;
+            writeJsonResponse(webScriptResponse, e);
         }
-        writeJsonResponse(webScriptResponse, p);
     }
 }
