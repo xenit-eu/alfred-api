@@ -43,6 +43,11 @@ public class PeopleWebscript extends ApixV2Webscript {
             @UriVariable final String guid, WebScriptResponse webScriptResponse) throws IOException {
         logger.debug("Asked person with guid: " + guid);
         Person p = personService.GetPerson(createNodeRef(space, store, guid));
+        if (p == null) {
+            webScriptResponse.setStatus(404);
+            webScriptResponse.getWriter().write("Person does not exist");
+            return;
+        }
         writeJsonResponse(webScriptResponse, p);
     }
 
