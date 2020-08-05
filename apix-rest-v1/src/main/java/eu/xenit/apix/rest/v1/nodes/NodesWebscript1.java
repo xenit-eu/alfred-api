@@ -601,6 +601,8 @@ public class NodesWebscript1 extends ApixV1Webscript {
                                             null);
                         } else {
                             nodeRef = nodeService.copyNode(copyFrom, parent, true);
+                            MetadataChanges metadataChanges = new MetadataChanges(new QName(createNodeOptions.type), null, null, createNodeOptions.properties );
+                            nodeService.setMetadata(nodeRef, metadataChanges);
                         }
                         return nodeRef;
                     }
