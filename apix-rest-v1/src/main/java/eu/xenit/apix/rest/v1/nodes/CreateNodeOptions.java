@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.alfresco.model.ContentModel;
+import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.NodeService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created by Michiel Huygen on 12/05/2016.
@@ -24,6 +27,9 @@ public class CreateNodeOptions {
     public String copyFrom;
     private ObjectMapper mapper = new ObjectMapper();
 
+    @Autowired
+    NodeService nodeService;
+
     @JsonCreator
     public CreateNodeOptions(@JsonProperty("parent") String parent,
             @JsonProperty("name") String name,
@@ -33,6 +39,9 @@ public class CreateNodeOptions {
         this.parent = parent;
         this.name = name;
         this.type = type;
+        if (type == null && copyFrom != null) {
+            this.type = nodeService.getType(new NodeRef(copyFrom)).toString();
+        }
         this.properties = properties;
         if (this.properties == null) {
             this.properties = new HashMap<>(1);

@@ -57,7 +57,7 @@ public class CopyNodeTest extends BaseTest {
 
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
-                    doTestCopy(httpclient, url, parentRef, initializedNodeRefs.get(BaseTest.TESTFILE_NAME).toString(), 200);
+                    doTestCopy(httpclient, url, parentRef, initializedNodeRefs.get(BaseTest.TESTFILE_NAME).toString(),200);
                     return null;
                 }, false, true);
 
