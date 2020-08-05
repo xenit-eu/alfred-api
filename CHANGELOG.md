@@ -1,6 +1,6 @@
 # Alfred API - Changelog
 
-## 2.5.1 UNRELEASED
+## 2.5.1 (2020-08-05)
 
 ### Fixed
 
@@ -25,9 +25,6 @@
 * [ALFREDAPI-427](https://xenitsupport.jira.com/browse/ALFREDAPI-427): Add workaround to prevent Solr Exceptions when searching for numeric values that overflow when parsed as int or long
 * [ALFREDAPI-412](https://xenitsupport.jira.com/browse/ALFREDAPI-427): Fix getAllNodeInfo endpoint to handle null values and non-existing nodes better
 * [ALFREDAPI-388](https://xenitsupport.jira.com/browse/ALFREDAPI-388): Add handling for preexisting file in upload
-
-### Deleted
-
 
 
 ## 2.4.0 (2020-03-26)
