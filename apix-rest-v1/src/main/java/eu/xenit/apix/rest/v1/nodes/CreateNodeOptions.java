@@ -22,6 +22,8 @@ public class CreateNodeOptions {
     public String type;
     public Map<QName, String[]> properties;
     public String copyFrom;
+    public QName[] aspectsToAdd;
+    public QName[] aspectsToRemove;
     private ObjectMapper mapper = new ObjectMapper();
 
     @JsonCreator
@@ -29,17 +31,22 @@ public class CreateNodeOptions {
             @JsonProperty("name") String name,
             @JsonProperty("type") String type,
             @JsonProperty("properties") Map<QName, String[]> properties,
-            @JsonProperty("copyFrom") String copyFrom) throws IOException {
+            @JsonProperty("copyFrom") String copyFrom,
+            @JsonProperty("aspectsToAdd") QName[] aspectsToAdd,
+            @JsonProperty("aspectsToRemove") QName[] aspectsToRemove) throws IOException {
         this.parent = parent;
         this.name = name;
         this.type = type;
         this.properties = properties;
+
         if (this.properties == null) {
             this.properties = new HashMap<>(1);
         }
         if ((name != null && !this.properties.containsKey(PROP_NAME_QNAME))) {
             this.properties.put(PROP_NAME_QNAME, new String[]{name});
         }
+        this.aspectsToAdd = aspectsToAdd;
+        this.aspectsToRemove = aspectsToRemove;
         this.copyFrom = copyFrom;
     }
 
@@ -62,4 +69,10 @@ public class CreateNodeOptions {
     public String getCopyFrom() {
         return copyFrom;
     }
+
+    public QName[] getAspectsToAdd() {
+        return aspectsToAdd;
+    }
+
+    public QName[] getAspectsToRemove() { return aspectsToRemove; }
 }
