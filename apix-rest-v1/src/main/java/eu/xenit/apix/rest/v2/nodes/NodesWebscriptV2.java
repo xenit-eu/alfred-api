@@ -9,6 +9,7 @@ import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.filefolder.IFileFolderService;
 import eu.xenit.apix.node.INodeService;
+import eu.xenit.apix.node.MetadataChanges;
 import eu.xenit.apix.permissions.IPermissionService;
 import eu.xenit.apix.permissions.PermissionValue;
 import eu.xenit.apix.rest.v1.nodes.CreateNodeOptions;
@@ -224,19 +225,25 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
                     public Object execute() throws Throwable {
                         NodeRef parent = new NodeRef(createNodeOptions.parent);
                         NodeRef copyFrom = null;
-
+                        MetadataChanges metadataChanges = null;
                         if (createNodeOptions.copyFrom != null) {
                             copyFrom = new NodeRef(createNodeOptions.copyFrom);
+                            logger.debug("Type : " + createNodeOptions.type);
                         }
 
                         NodeRef nodeRef;
                         if (copyFrom == null) {
                             nodeRef = nodeService
-                                    .createNode(parent, createNodeOptions.properties, new QName(createNodeOptions.type),
-                                            null);
+                                    .createNode(parent, createNodeOptions.name,
+                                            new QName(createNodeOptions.type));
                         } else {
                             nodeRef = nodeService.copyNode(copyFrom, parent, true);
                         }
+
+                        metadataChanges = new MetadataChanges(new QName(createNodeOptions.type),
+                                null, null, createNodeOptions.properties);
+
+                        nodeService.setMetadata(nodeRef, metadataChanges);
                         return nodeRef;
                     }
                 }, false, true);
