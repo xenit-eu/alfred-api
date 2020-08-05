@@ -11,8 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
-
-import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.query.PagingRequest;
 import org.alfresco.query.PagingResults;
@@ -59,7 +57,7 @@ public class PeopleService implements IPeopleService {
         }
         org.alfresco.service.cmr.repository.NodeRef alfrescoNodeRef = c.alfresco(nodeRef);
         if (!nodeService.exists(alfrescoNodeRef)) {
-            throw new NoSuchElementException("Person with NodeRef=" + alfrescoNodeRef.toString() + " does not exist");
+            throw new NoSuchElementException("User with NodeRef=" + alfrescoNodeRef.toString() + " does not exist");
         }
         PersonService.PersonInfo info = alfrescoPersonService.getPerson(alfrescoNodeRef);
         String username = info.getUserName();
@@ -129,13 +127,13 @@ public class PeopleService implements IPeopleService {
     }
 
     @Override
-    public Person GetPerson(String userName) throws NoSuchElementException {
+    public Person GetPerson(String userName) throws IllegalArgumentException, NoSuchElementException {
         if (userName == null || userName.equals("")) {
             throw new IllegalArgumentException("Username cannot be null or empty");
         }
         NodeRef personRef = c.apix(alfrescoPersonService.getPersonOrNull(userName));
         if (personRef == null) {
-            throw new NoSuchElementException("Person " + userName + " does not exist");
+            throw new NoSuchElementException("User " + userName + " does not exist");
         }
         return GetPerson(personRef);
     }
