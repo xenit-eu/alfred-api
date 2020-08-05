@@ -16,7 +16,10 @@ import io.swagger.annotations.ApiResponses;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
+
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +48,12 @@ public class PeopleWebscript extends ApixV2Webscript {
         try {
             Person p = personService.GetPerson(createNodeRef(space, store, guid));
             writeJsonResponse(webScriptResponse, p);
-        } catch (Exception e) {
-            webScriptResponse.setStatus(404);
-            writeJsonResponse(webScriptResponse, e);
+        } catch (NoSuchElementException noSuchElementException) {
+            webScriptResponse.setStatus(HttpStatus.SC_NOT_FOUND);
+            writeJsonResponse(webScriptResponse, noSuchElementException);
+        } catch (IllegalArgumentException illegalArgumentException) {
+            webScriptResponse.setStatus(HttpStatus.SC_BAD_REQUEST);
+            writeJsonResponse(webScriptResponse, illegalArgumentException);
         }
     }
 
@@ -76,9 +82,12 @@ public class PeopleWebscript extends ApixV2Webscript {
         try{
             Person p = personService.GetPerson(name);
             writeJsonResponse(webScriptResponse, p);
-        } catch (Exception e) {
-            webScriptResponse.setStatus(404);
-            writeJsonResponse(webScriptResponse, e);
+        } catch (NoSuchElementException noSuchElementException) {
+            webScriptResponse.setStatus(HttpStatus.SC_NOT_FOUND);
+            writeJsonResponse(webScriptResponse, noSuchElementException.getMessage());
+        } catch (IllegalArgumentException illegalArgumentException) {
+            webScriptResponse.setStatus(HttpStatus.SC_BAD_REQUEST);
+            writeJsonResponse(webScriptResponse, illegalArgumentException.getMessage());
         }
     }
 

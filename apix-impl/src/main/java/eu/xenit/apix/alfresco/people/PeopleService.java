@@ -9,6 +9,7 @@ import eu.xenit.apix.people.Person;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.alfresco.error.AlfrescoRuntimeException;
@@ -52,13 +53,13 @@ public class PeopleService implements IPeopleService {
     }
 
     @Override
-    public Person GetPerson(NodeRef nodeRef) throws UserNotFoundException {
+    public Person GetPerson(NodeRef nodeRef) throws IllegalArgumentException, NoSuchElementException {
         if (nodeRef == null) {
-            throw new UserNotFoundException("NodeRef cannot be null");
+            throw new IllegalArgumentException("NodeRef cannot be null");
         }
         org.alfresco.service.cmr.repository.NodeRef alfrescoNodeRef = c.alfresco(nodeRef);
         if (!nodeService.exists(alfrescoNodeRef)) {
-            throw new UserNotFoundException("Person does not exist");
+            throw new NoSuchElementException("Person with NodeRef=" + alfrescoNodeRef.toString() + " does not exist");
         }
         PersonService.PersonInfo info = alfrescoPersonService.getPerson(alfrescoNodeRef);
         String username = info.getUserName();
@@ -128,13 +129,15 @@ public class PeopleService implements IPeopleService {
     }
 
     @Override
-    public Person GetPerson(String userName) {
+    public Person GetPerson(String userName) throws NoSuchElementException {
+        if (userName == null || userName.equals("")) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
         NodeRef personRef = c.apix(alfrescoPersonService.getPersonOrNull(userName));
         if (personRef == null) {
-            throw new UserNotFoundException("Person does not exist");
-        } else {
-            return GetPerson(personRef);
+            throw new NoSuchElementException("Person " + userName + " does not exist");
         }
+        return GetPerson(personRef);
     }
 
     @Override
@@ -225,11 +228,6 @@ public class PeopleService implements IPeopleService {
         return name;
     }
 
-    public class UserNotFoundException extends AlfrescoRuntimeException {
-        public UserNotFoundException(String msgId) {
-            super(msgId);
-        }
-    }
 }
 
 
