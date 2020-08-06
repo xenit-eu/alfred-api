@@ -4,14 +4,12 @@ import eu.xenit.apix.search.FacetSearchResult;
 import eu.xenit.apix.search.SearchQuery;
 import eu.xenit.apix.search.nodes.SearchSyntaxNode;
 import eu.xenit.apix.translation.ITranslationService;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.alfresco.model.ContentModel;
 import org.alfresco.repo.dictionary.constraint.ListOfValuesConstraint;
 import org.alfresco.repo.jscript.ScriptFacetResult;
 import org.alfresco.repo.search.impl.solr.facet.SolrFacetHelper;
@@ -23,14 +21,9 @@ import org.alfresco.repo.search.impl.solr.facet.handler.FacetLabelDisplayHandler
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.dictionary.Constraint;
 import org.alfresco.service.cmr.dictionary.ConstraintDefinition;
-import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.i18n.MessageLookup;
-import org.alfresco.service.cmr.repository.InvalidNodeRefException;
-import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.cmr.repository.NodeService;
-import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.search.SearchParameters.FieldFacet;
@@ -50,7 +43,6 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
     private final FacetLabelDisplayHandlerRegistry facetLabelDisplayHandlerRegistry;
     private SolrFacetHelper solrFacetHelper;
     private DictionaryService dictionaryService;
-    private NodeService nodeService;
     @Autowired
     private SolrFacetService facetService;
     @Autowired
@@ -63,7 +55,6 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
         facetLabelDisplayHandlerRegistry = serviceRegistry.getFacetLabelDisplayHandlerRegistry();
         solrFacetHelper = serviceRegistry.getSolrFacetHelper();
         dictionaryService = serviceRegistry.getDictionaryService();
-        nodeService = serviceRegistry.getNodeService();
     }
 
     public List<SolrFacetProperties> filterFacets(SearchQuery.FacetOptions opts, List<SolrFacetProperties> facets) {
@@ -220,6 +211,7 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
         }
 
         for (SearchParameters.FieldFacet fieldFacet : fieldFacets) {
+
             // For each requested facet, get the facet results
             List<Pair<String, Integer>> fieldFacetResults = resultSet.getFieldFacet(fieldFacet.getField());
             if (fieldFacetResults == null || fieldFacetResults.size() == 0) {
@@ -282,7 +274,8 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
             if (propertyDefinition == null) {
                 logger.error("Property definition of " + fieldQname + " is null.");
             } else {
-                handler = CreateFacetLabelDisplayHandler(propertyDefinition);
+                handler = ListOfValuesFacetLabelDisplayHandler
+                        .createFromProperty(propertyDefinition, dictionaryService);
             }
         }
         for (Pair<String, Integer> fieldFacetResult : fieldFacetResults) {
@@ -300,16 +293,6 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
             response.add(new ScriptFacetResult(facetValue, label, -1, hits));
         }
         return response;
-    }
-
-    private FacetLabelDisplayHandler CreateFacetLabelDisplayHandler(PropertyDefinition propertyDefinition) {
-        DataTypeDefinition dataType = propertyDefinition.getDataType();
-        if (DataTypeDefinition.CATEGORY.equals(dataType.getName())) {
-            return new CategoryFacetLabelDisplayHandler(nodeService);
-        }
-        else {
-            return ListOfValuesFacetLabelDisplayHandler.createFromProperty(propertyDefinition, dictionaryService);
-        }
     }
 
 
@@ -348,28 +331,5 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
             return null;
         }
 
-    }
-
-    public static class CategoryFacetLabelDisplayHandler implements FacetLabelDisplayHandler {
-
-        private NodeService nodeService;
-
-        private CategoryFacetLabelDisplayHandler(NodeService nodeService) {
-            this.nodeService = nodeService;
-        }
-
-        @Override
-        public FacetLabel getDisplayLabel(String value) {
-            NodeRef nodeRef = new NodeRef(value);
-            try {
-                Serializable nameProperty = nodeService.getProperty(nodeRef, ContentModel.PROP_NAME);
-                String name = DefaultTypeConverter.INSTANCE.convert(String.class, nameProperty);
-                return new FacetLabel(value, name, -1);
-            }
-            catch (InvalidNodeRefException ex) {
-                logger.error("Node with node reference {} could not be found", nodeRef);
-                return new FacetLabel(value, value, -1);
-            }
-        }
     }
 }
