@@ -52,7 +52,6 @@ abstract public class SearchServiceTest extends BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(SearchServiceTest.class);
     private static final String ADMIN_USER_NAME = "admin";
-    public static final String DESCRIPTION_SET_OF_1001 = "descriptionSetOf1001";
     @Autowired
     ISearchService searchService;
     @Autowired
@@ -205,18 +204,24 @@ abstract public class SearchServiceTest extends BaseTest {
                 }, false, true);
     }
 
-    private void create1001TestDocs() throws InterruptedException {
+    private boolean alreadyCreated = false;
+    private void createThousandTestDocs() throws InterruptedException {
+        if (alreadyCreated) {
+            System.out.println("1000 test docs already created");
+            return;
+        }
+        System.out.println("Creating 1000 test docs");
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction((RetryingTransactionCallback<NodeRef>) () -> {
                     NodeRef companyHomeRef = repository.getCompanyHome();
 
                     FileInfo mainTestFolder = createMainTestFolder(companyHomeRef);
-                    FileInfo testFolder = createTestFolder(mainTestFolder.getNodeRef(), "testFolderSetOf1001");
+                    FileInfo testFolder = createTestFolder(mainTestFolder.getNodeRef(), "testFolderSetOf1000");
                     Map<QName, Serializable> props = new HashMap<QName, Serializable>() {{
-                        put(ContentModel.PROP_DESCRIPTION, DESCRIPTION_SET_OF_1001);
+                        put(ContentModel.PROP_DESCRIPTION, "descriptionSetOf1000");
                     }};
                     for (int i = 0; i < 1001 ; i++) {
-                        FileInfo testNode = createTestNode(testFolder.getNodeRef(), "testNode-1001-" + i);
+                        FileInfo testNode = createTestNode(testFolder.getNodeRef(), "testNode" + i);
                         nodeService.addProperties(testNode.getNodeRef(), props);
                     }
                     return null;
@@ -225,16 +230,17 @@ abstract public class SearchServiceTest extends BaseTest {
         solrTestHelper.waitForSolrSync();
         // solrTestHelper has a bug. TODO ticket ALFREDAPI-425
         Thread.sleep(15000);
+        alreadyCreated = true;
     }
 
     @Test
-    public void TestLimitedByMaxPermissionChecks_transactional() throws InterruptedException {
-        create1001TestDocs();
+    public void TestLimitedByMaxPermissionChecks_transactional() throws IOException, InterruptedException {
+        createThousandTestDocs();
         QueryBuilder builder = new QueryBuilder();
         SearchSyntaxNode node = builder
                 .property(
                         ContentModel.PROP_DESCRIPTION.toPrefixString(namespacePrefixResolver),
-                        DESCRIPTION_SET_OF_1001,
+                        "descriptionSetOf1000",
                         true)
                 .create();
 
@@ -248,13 +254,13 @@ abstract public class SearchServiceTest extends BaseTest {
     }
 
     @Test
-    public void TestLimitedByMaxPermissionChecks_transactional_if_possible() throws InterruptedException {
-        create1001TestDocs();
+    public void TestLimitedByMaxPermissionChecks_transactional_if_possible() throws IOException, InterruptedException {
+        createThousandTestDocs();
         QueryBuilder builder = new QueryBuilder();
         SearchSyntaxNode node = builder
                 .property(
                         ContentModel.PROP_DESCRIPTION.toPrefixString(namespacePrefixResolver),
-                        DESCRIPTION_SET_OF_1001,
+                        "descriptionSetOf1000",
                         true)
                 .create();
 
@@ -268,13 +274,13 @@ abstract public class SearchServiceTest extends BaseTest {
     }
 
     @Test
-    public void TestLimitedByMaxPermissionChecks_eventual() throws InterruptedException {
-        create1001TestDocs();
+    public void TestLimitedByMaxPermissionChecks_eventual() throws IOException, InterruptedException {
+        createThousandTestDocs();
         QueryBuilder builder = new QueryBuilder();
         SearchSyntaxNode node = builder
                 .property(
                         ContentModel.PROP_DESCRIPTION.toPrefixString(namespacePrefixResolver),
-                        DESCRIPTION_SET_OF_1001,
+                        "descriptionSetOf1000",
                         true)
                 .create();
 
