@@ -365,10 +365,6 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
             NodeRef nodeRef = new NodeRef(value);
             try {
                 Serializable nameProperty = nodeService.getProperty(nodeRef, ContentModel.PROP_NAME);
-                if (nameProperty == null) {
-                    return new FacetLabel(value, value, -1);
-                }
-
                 String name = DefaultTypeConverter.INSTANCE.convert(String.class, nameProperty);
                 return new FacetLabel(value, name, -1);
             } catch (InvalidNodeRefException ex) {
