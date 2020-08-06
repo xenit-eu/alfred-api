@@ -23,7 +23,6 @@
 * [ALFREDAPI-437](https://xenitsupport.jira.com/browse/ALFREDAPI-437): Fixed issue where paged searches for transactional queries could not fetch more than 1000 results
 * [ALFREDAPI-338](https://xenitsupport.jira.com/browse/ALFREDAPI-439): Fixed issue when the provided name would not be set while copying a node 
 
->>>>>>> ALFREDAPI-338 Changed CopyFrom behaviour to also set the provide properties in the request
 ## 2.5.0 (2020-07-15)
 
 ### Added

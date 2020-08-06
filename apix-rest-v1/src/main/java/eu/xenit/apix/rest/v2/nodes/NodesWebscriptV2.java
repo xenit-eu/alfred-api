@@ -224,25 +224,41 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
                     @Override
                     public Object execute() throws Throwable {
                         NodeRef parent = new NodeRef(createNodeOptions.parent);
-                        NodeRef copyFrom = null;
                         MetadataChanges metadataChanges = null;
-                        if (createNodeOptions.copyFrom != null) {
-                            copyFrom = new NodeRef(createNodeOptions.copyFrom);
-                            logger.debug("Type : " + createNodeOptions.type);
+
+                        if (!nodeService.exists(parent)) {
+                            response.setStatus(404);
+                            writeJsonResponse(response, "Parent does not exist");
+                            return null;
                         }
 
                         NodeRef nodeRef;
-                        if (copyFrom == null) {
+                        NodeRef copyFrom = null;
+                        if (createNodeOptions.copyFrom == null) {
                             nodeRef = nodeService
                                     .createNode(parent, createNodeOptions.name,
                                             new QName(createNodeOptions.type));
                         } else {
+                            copyFrom = new NodeRef(createNodeOptions.copyFrom);
+                            if (!nodeService.exists(copyFrom)) {
+                                response.setStatus(404);
+                                writeJsonResponse(response, "CopyFrom does not exist");
+                                return null;
+                            }
                             nodeRef = nodeService.copyNode(copyFrom, parent, true);
                         }
 
-                        metadataChanges = new MetadataChanges(new QName(createNodeOptions.type),
-                                null, null, createNodeOptions.properties);
-
+                        if (createNodeOptions.type != null) {
+                            metadataChanges = new MetadataChanges(new QName(createNodeOptions.type),
+                                    null, null, createNodeOptions.properties);
+                        } else if ( createNodeOptions.type == null && createNodeOptions.copyFrom != null ) {
+                            metadataChanges = new MetadataChanges(nodeService.getMetadata(copyFrom).type,
+                                    null, null, createNodeOptions.properties);
+                        } else {
+                            response.setStatus(400);
+                            writeJsonResponse(response, "Please provide parameter: type when creating a new node");
+                            return null;
+                        }
                         nodeService.setMetadata(nodeRef, metadataChanges);
                         return nodeRef;
                     }

@@ -39,9 +39,6 @@ public class CreateNodeOptions {
         this.parent = parent;
         this.name = name;
         this.type = type;
-        if (type == null && copyFrom != null) {
-            this.type = nodeService.getType(new NodeRef(copyFrom)).toString();
-        }
         this.properties = properties;
         if (this.properties == null) {
             this.properties = new HashMap<>(1);
