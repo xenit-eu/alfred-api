@@ -1,8 +1,5 @@
 dependencies {
     baseAlfrescoWar "org.alfresco:content-services:6.0.1.2@war"
-    if (!ci.isCi()) {
-        alfrescoAmp(group: 'eu.xenit.care4alf', name: 'care4alf-6x', version: "${care4alfVersion}", ext: 'amp')
-    }
 }
 
 dockerAlfresco {

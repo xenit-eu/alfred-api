@@ -5,11 +5,3 @@ services:
       - 8000:8000
     environment:
       - DEBUG=true
-      - SHARE_HOST=alfresco-share
-  alfresco-share:
-    image: hub.xenit.eu/alfresco-enterprise/alfresco-share-enterprise:5.1
-    ports:
-      - 8090:8080
-    environment:
-      - DEBUG=true
-      - ALFRESCO_HOST=alfresco-core

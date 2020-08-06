@@ -62,8 +62,6 @@ ext {
     alfresco_52_dm_version = "6.16"
     alfresco_60_dm_version = "8.9"
     alfresco_61_dm_version = "8.25.1"
-    
-    care4alfVersion = '2.3.0'
 }
 
 subprojects {
