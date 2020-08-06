@@ -40,6 +40,7 @@ buildscript {
 ext {
     versionWithoutQualifier = '2.5.0'
 
+
     jackson_version = '2.6.3'
     swagger_version = "1.5.7"
     de_version = "2.0.1"
