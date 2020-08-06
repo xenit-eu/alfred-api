@@ -15,7 +15,6 @@ import eu.xenit.apix.util.SolrTestHelper;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import javax.sql.DataSource;
@@ -24,7 +23,6 @@ import org.alfresco.repo.management.subsystems.SwitchableApplicationContextFacto
 import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
-import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
@@ -202,95 +200,6 @@ abstract public class SearchServiceTest extends BaseTest {
                         return null;
                     }
                 }, false, true);
-    }
-
-    private boolean alreadyCreated = false;
-    private void createThousandTestDocs() throws InterruptedException {
-        if (alreadyCreated) {
-            System.out.println("1000 test docs already created");
-            return;
-        }
-        System.out.println("Creating 1000 test docs");
-        transactionService.getRetryingTransactionHelper()
-                .doInTransaction((RetryingTransactionCallback<NodeRef>) () -> {
-                    NodeRef companyHomeRef = repository.getCompanyHome();
-
-                    FileInfo mainTestFolder = createMainTestFolder(companyHomeRef);
-                    FileInfo testFolder = createTestFolder(mainTestFolder.getNodeRef(), "testFolderSetOf1000");
-                    Map<QName, Serializable> props = new HashMap<QName, Serializable>() {{
-                        put(ContentModel.PROP_DESCRIPTION, "descriptionSetOf1000");
-                    }};
-                    for (int i = 0; i < 1001 ; i++) {
-                        FileInfo testNode = createTestNode(testFolder.getNodeRef(), "testNode" + i);
-                        nodeService.addProperties(testNode.getNodeRef(), props);
-                    }
-                    return null;
-                }, false, true);
-
-        solrTestHelper.waitForSolrSync();
-        // solrTestHelper has a bug. TODO ticket ALFREDAPI-425
-        Thread.sleep(15000);
-        alreadyCreated = true;
-    }
-
-    @Test
-    public void TestLimitedByMaxPermissionChecks_transactional() throws IOException, InterruptedException {
-        createThousandTestDocs();
-        QueryBuilder builder = new QueryBuilder();
-        SearchSyntaxNode node = builder
-                .property(
-                        ContentModel.PROP_DESCRIPTION.toPrefixString(namespacePrefixResolver),
-                        "descriptionSetOf1000",
-                        true)
-                .create();
-
-        SearchQuery query = new SearchQuery();
-        query.setQuery(node);
-        query.getPaging().setSkip(800);
-        query.getPaging().setLimit(400);
-        query.setConsistency(SearchQueryConsistency.TRANSACTIONAL);
-        SearchQueryResult result = searchService.query(query);
-        assertEquals(201, result.getNoderefs().size());
-    }
-
-    @Test
-    public void TestLimitedByMaxPermissionChecks_transactional_if_possible() throws IOException, InterruptedException {
-        createThousandTestDocs();
-        QueryBuilder builder = new QueryBuilder();
-        SearchSyntaxNode node = builder
-                .property(
-                        ContentModel.PROP_DESCRIPTION.toPrefixString(namespacePrefixResolver),
-                        "descriptionSetOf1000",
-                        true)
-                .create();
-
-        SearchQuery query = new SearchQuery();
-        query.setQuery(node);
-        query.getPaging().setSkip(800);
-        query.getPaging().setLimit(400);
-        query.setConsistency(SearchQueryConsistency.TRANSACTIONAL_IF_POSSIBLE);
-        SearchQueryResult result = searchService.query(query);
-        assertEquals(201, result.getNoderefs().size());
-    }
-
-    @Test
-    public void TestLimitedByMaxPermissionChecks_eventual() throws IOException, InterruptedException {
-        createThousandTestDocs();
-        QueryBuilder builder = new QueryBuilder();
-        SearchSyntaxNode node = builder
-                .property(
-                        ContentModel.PROP_DESCRIPTION.toPrefixString(namespacePrefixResolver),
-                        "descriptionSetOf1000",
-                        true)
-                .create();
-
-        SearchQuery query = new SearchQuery();
-        query.setQuery(node);
-        query.getPaging().setSkip(800);
-        query.getPaging().setLimit(400);
-        query.setConsistency(SearchQueryConsistency.EVENTUAL);
-        SearchQueryResult result = searchService.query(query);
-        assertEquals(201, result.getNoderefs().size());
     }
 
     @Test
