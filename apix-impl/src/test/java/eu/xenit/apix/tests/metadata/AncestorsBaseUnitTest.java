@@ -36,9 +36,9 @@ public abstract class AncestorsBaseUnitTest {
 
     protected PermissionService initPermissionServiceMock() {
         PermissionService permissionServiceMock = mock(PermissionService.class);
-        when(permissionServiceMock.hasPermission(eq(testNode1), eq(PermissionService.READ_PERMISSIONS))).thenReturn(AccessStatus.ALLOWED);
-        when(permissionServiceMock.hasPermission(eq(testNode2), eq(PermissionService.READ_PERMISSIONS))).thenReturn(AccessStatus.ALLOWED);
-        when(permissionServiceMock.hasPermission(eq(testNode3), eq(PermissionService.READ_PERMISSIONS))).thenReturn(AccessStatus.ALLOWED);
+        when(permissionServiceMock.hasReadPermission(eq(testNode1))).thenReturn(AccessStatus.ALLOWED);
+        when(permissionServiceMock.hasReadPermission(eq(testNode2))).thenReturn(AccessStatus.ALLOWED);
+        when(permissionServiceMock.hasReadPermission(eq(testNode3))).thenReturn(AccessStatus.ALLOWED);
 
         return permissionServiceMock;
     }
