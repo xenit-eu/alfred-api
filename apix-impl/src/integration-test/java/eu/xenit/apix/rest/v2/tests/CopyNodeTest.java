@@ -1,4 +1,4 @@
-package eu.xenit.apix.rest.v1.tests;
+package eu.xenit.apix.rest.v2.tests;
 
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
@@ -61,7 +61,7 @@ public class CopyNodeTest extends BaseTest {
         final ChildParentAssociation primaryParentAssoc = (ChildParentAssociation) parentAssociations.get(0);
         final NodeRef parentRef = primaryParentAssoc.getTarget();
 
-        final String url = makeAlfrescoBaseurl("admin", "admin") + "/apix/v1/nodes";
+        final String url = makeAlfrescoBaseurl("admin", "admin") + "/apix/v2/nodes";
         final CloseableHttpClient httpclient = HttpClients.createDefault();
 
         transactionService.getRetryingTransactionHelper()
@@ -74,29 +74,6 @@ public class CopyNodeTest extends BaseTest {
         assertEquals(2, newChildAssocs.size());
     }
 
-    @Test
-    public void testCopyNodeWithName() throws Throwable {
-        final HashMap<String, NodeRef> initializedNodeRefs = init();
-        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initializedNodeRefs.get(BaseTest.TESTFILE_NAME));
-        final ChildParentAssociation primaryParentAssoc = (ChildParentAssociation) parentAssociations.get(0);
-        final NodeRef parentRef = primaryParentAssoc.getTarget();
-
-        final String url = makeAlfrescoBaseurl("admin", "admin") + "/apix/v1/nodes";
-        final CloseableHttpClient httpclient = HttpClients.createDefault();
-
-        final String newName = "NewName";
-        JSONObject response = transactionService.getRetryingTransactionHelper()
-                .doInTransaction(() -> {
-                    return doTestCopy(httpclient, url, parentRef, initializedNodeRefs.get(BaseTest.TESTFILE_NAME).toString(),newName, null, 200);
-                }, false, true);
-        String newRef = (String) response.get("noderef");
-        JSONObject responseProperties = (JSONObject) ((JSONObject) response.get("metadata")).get("properties");
-        JSONArray responseNameProperty = (JSONArray) responseProperties.get(ContentModel.PROP_NAME.toString());
-        JSONArray responseTitleProperty = (JSONArray) responseProperties.get(ContentModel.PROP_TITLE.toString());
-        assertEquals(true, nodeService.exists(new NodeRef(newRef)));
-        assertEquals(newName, (String) responseNameProperty.get(0));
-
-    }
 
     @Test
     public void testCopyNodeWithProperties() throws Throwable {
@@ -105,17 +82,17 @@ public class CopyNodeTest extends BaseTest {
         final ChildParentAssociation primaryParentAssoc = (ChildParentAssociation) parentAssociations.get(0);
         final NodeRef parentRef = primaryParentAssoc.getTarget();
 
-        final String url = makeAlfrescoBaseurl("admin", "admin") + "/apix/v1/nodes";
+        final String url = makeAlfrescoBaseurl("admin", "admin") + "/apix/v2/nodes";
         final CloseableHttpClient httpclient = HttpClients.createDefault();
 
-        final String newName = "NewName1";
-        final String newTitle = "NewTitle1";
+        final String newName = "NewName";
+        final String newTitle = "NewTitle";
         String[] titleProperty = new String[]{newTitle};
         HashMap<QName, String[]> properties = new HashMap<>();
         properties.put(new QName(ContentModel.PROP_TITLE.toString()) , titleProperty);
         JSONObject response = transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
-                    return doTestCopy(httpclient, url, parentRef, initializedNodeRefs.get(BaseTest.TESTFILE_NAME).toString(), newName, properties, 200);
+                    return doTestCopy(httpclient, url, parentRef, initializedNodeRefs.get(BaseTest.TESTFILE_NAME).toString(),newName, properties, 200);
                 }, false, true);
 
         String newRef = (String) response.get("noderef");
@@ -128,25 +105,6 @@ public class CopyNodeTest extends BaseTest {
 
     }
 
-    @Test
-    public void copyNodeReturnsAccesDenied() {
-        final HashMap<String, NodeRef> initializedNodeRefs = init();
-        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME));
-        final ChildParentAssociation primaryParentAssoc = parentAssociations.get(0);
-        final NodeRef parentRef = primaryParentAssoc.getTarget();
-
-        final String url = makeAlfrescoBaseurl(BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS) + "/apix/v1/nodes";
-        final CloseableHttpClient httpclient = HttpClients.createDefault();
-
-        transactionService.getRetryingTransactionHelper()
-                .doInTransaction(() -> {
-                    doTestCopy(httpclient, url, parentRef, initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME).toString(), null, null, 403);
-                    return null;
-                }, false, true);
-
-        List<ChildParentAssociation> newChildAssocs = nodeService.getChildAssociations(parentRef);
-        assertEquals(1, newChildAssocs.size());
-    }
 
     private JSONObject doTestCopy(CloseableHttpClient httpClient, String url, NodeRef parentRef, String copyFrom, String name, HashMap<QName, String[]> properties, int expectedResponseCode) throws Throwable {
         HttpPost httppost = new HttpPost(url);
@@ -164,12 +122,12 @@ public class CopyNodeTest extends BaseTest {
             jsonBody += "\"properties\":{";
             for (Map.Entry<QName, String[]> entry : properties.entrySet()){
                 jsonBody += "\""+ entry.getKey().toString() +"\":[";
-                    for (String value : entry.getValue()) {
-                        jsonBody += "\"" + value + "\",";
-                    }
-                    //Cut off last comma
-                    jsonBody = jsonBody.substring(0, jsonBody.length() - 1);
-                    jsonBody +=  "],";
+                for (String value : entry.getValue()) {
+                    jsonBody += "\"" + value + "\",";
+                }
+                //Cut off last comma
+                jsonBody = jsonBody.substring(0, jsonBody.length() - 1);
+                jsonBody +=  "],";
             }
             //Cut off last comma
             jsonBody = jsonBody.substring(0, jsonBody.length() - 1);
