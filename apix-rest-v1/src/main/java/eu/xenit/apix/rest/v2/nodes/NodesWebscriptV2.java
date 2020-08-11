@@ -224,7 +224,7 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
                     @Override
                     public Object execute() throws Throwable {
                         NodeRef parent = new NodeRef(createNodeOptions.parent);
-                        MetadataChanges metadataChanges = null;
+                        MetadataChanges metadataChanges;
 
                         if (!nodeService.exists(parent)) {
                             response.setStatus(404);
