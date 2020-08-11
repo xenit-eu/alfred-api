@@ -28,6 +28,7 @@ import java.util.Map;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.ServiceRegistry;
+import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -224,10 +225,9 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
                     @Override
                     public Object execute() throws Throwable {
                         NodeRef parent = new NodeRef(createNodeOptions.parent);
-                        MetadataChanges metadataChanges;
 
                         if (!nodeService.exists(parent)) {
-                            response.setStatus(404);
+                            response.setStatus(HttpStatus.SC_NOT_FOUND);
                             writeJsonResponse(response, "Parent does not exist");
                             return null;
                         }
@@ -241,25 +241,33 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
                         } else {
                             copyFrom = new NodeRef(createNodeOptions.copyFrom);
                             if (!nodeService.exists(copyFrom)) {
-                                response.setStatus(404);
+                                response.setStatus(HttpStatus.SC_NOT_FOUND);
                                 writeJsonResponse(response, "CopyFrom does not exist");
                                 return null;
                             }
                             nodeRef = nodeService.copyNode(copyFrom, parent, true);
                         }
 
+                        MetadataChanges metadataChanges;
+                        QName type;
                         if (createNodeOptions.type != null) {
-                            metadataChanges = new MetadataChanges(new QName(createNodeOptions.type),
-                                    null, null, createNodeOptions.properties);
+                            type = new QName(createNodeOptions.type);
                         } else if ( createNodeOptions.type == null && createNodeOptions.copyFrom != null ) {
-                            metadataChanges = new MetadataChanges(nodeService.getMetadata(copyFrom).type,
-                                    null, null, createNodeOptions.properties);
+                            type = nodeService.getMetadata(copyFrom).type;
                         } else {
-                            response.setStatus(400);
-                            writeJsonResponse(response, "Please provide parameter: type when creating a new node");
+                            response.setStatus(HttpStatus.SC_BAD_REQUEST);
+                            writeJsonResponse(response,
+                                    "Please provide parameter \"type\" when creating a new node");
                             return null;
                         }
-                        nodeService.setMetadata(nodeRef, metadataChanges);
+                        metadataChanges = new MetadataChanges(type, null, null,
+                                createNodeOptions.properties);
+                        try {
+                            nodeService.setMetadata(nodeRef, metadataChanges);
+                        } catch (RuntimeException ex) {
+                            response.setStatus(HttpStatus.SC_BAD_REQUEST);
+                            writeJsonResponse(response, ex.getMessage());
+                        }
                         return nodeRef;
                     }
                 }, false, true);
