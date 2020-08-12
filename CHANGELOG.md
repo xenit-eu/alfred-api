@@ -1,5 +1,20 @@
 # Alfred API - Changelog
 
+## 2.5.3 UNRELEASED
+
+### Added
+
+
+### Changed
+
+
+### Fixed
+
+
+### Deleted
+
+
+
 ## 2.5.2 (2020-08-12)
 
 ### Fixed
