@@ -1,6 +1,5 @@
 package eu.xenit.apix.alfresco.comments;
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.comments.Comment;
 import eu.xenit.apix.comments.Conversation;
@@ -13,8 +12,8 @@ import eu.xenit.apix.node.NodeMetadata;
 import eu.xenit.apix.permissions.IPermissionService;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
+import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.query.PagingRequest;
 import org.alfresco.query.PagingResults;
@@ -22,23 +21,18 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-
-@OsgiService
-@Component("eu.xenit.apix.alfresco.comments.CommentService")
 public class CommentService implements ICommentService {
 
     private static final Logger log = LoggerFactory.getLogger(CommentService.class);
 
-    private org.alfresco.repo.forum.CommentService commentService;
+    protected org.alfresco.repo.forum.CommentService commentService;
 
-    private IContentService contentService;
-    private INodeService nodeService;
-    private IPermissionService permissionService;
-    private ApixToAlfrescoConversion apixConverter;
+    protected IContentService contentService;
+    protected INodeService nodeService;
+    protected IPermissionService permissionService;
+    protected ApixToAlfrescoConversion apixConverter;
 
-    @Autowired
     public CommentService(org.alfresco.repo.forum.CommentService commentService, IContentService contentService,
             INodeService nodeService, IPermissionService permissionService, ApixToAlfrescoConversion apixConverter) {
         this.commentService = commentService;
@@ -59,11 +53,11 @@ public class CommentService implements ICommentService {
         org.alfresco.service.cmr.repository.NodeRef alfTargetNode = apixConverter.alfresco(targetNode);
         PagingResults<org.alfresco.service.cmr.repository.NodeRef> commentAlfNodes =
                 commentService.listComments(alfTargetNode, new PagingRequest(skipCount, pageSize));
-        return new Conversation()
-                .comments(commentAlfNodes.getPage().stream()
-                        .map(alfCommentNode -> toComment(alfTargetNode, alfCommentNode)).collect(Collectors.toList()))
-                .hasMore(commentAlfNodes.hasMoreItems())
-                .canCreate(canCreateComment(targetNode));
+        return new Conversation(
+                commentAlfNodes.getPage().stream().map(alfCommentNode -> toComment(alfTargetNode, alfCommentNode))
+                        .collect(Collectors.toList()),
+                commentAlfNodes.hasMoreItems(),
+                canCreateComment(targetNode));
     }
 
     @Override
@@ -95,16 +89,16 @@ public class CommentService implements ICommentService {
         return permissionService.hasPermission(targetNodeRef, IPermissionService.CREATE_CHILDREN);
     }
 
-    private Comment toComment(org.alfresco.service.cmr.repository.NodeRef documentNode,
+    protected Comment toComment(org.alfresco.service.cmr.repository.NodeRef documentNode,
             org.alfresco.service.cmr.repository.NodeRef commentNodeRef) {
         NodeRef apixCommentNodeRef = apixConverter.apix(commentNodeRef);
         NodeMetadata commentMetadata = nodeService.getMetadata(apixCommentNodeRef);
         String content;
         try {
             content = IOUtils.toString(contentService.getContent(apixCommentNodeRef).getInputStream());
-        } catch (IOException ioException) {
-            log.error("Error reading content for comment {}", commentNodeRef, ioException);
-            content = "Comment not available: error reading content";
+        } catch (IOException e) {
+            String message = String.format("Encountered an IOException while handling comment %s", commentNodeRef);
+            throw new AlfrescoRuntimeException(message, e);
         }
         Comment response = new Comment();
         response.setId(apixCommentNodeRef);
@@ -129,9 +123,12 @@ public class CommentService implements ICommentService {
         if (property != null && !property.isEmpty()) {
             response.setModifiedBy(property.get(0));
         }
-        Map<String, Boolean> commentPermissionMap = commentService.getCommentPermissions(documentNode, commentNodeRef);
-        response.setCanEdit(commentPermissionMap.get(org.alfresco.repo.forum.CommentService.CAN_EDIT));
-        response.setCanDelete(commentPermissionMap.get(org.alfresco.repo.forum.CommentService.CAN_DELETE));
+        setPermissions(documentNode, commentNodeRef, response);
         return response;
+    }
+
+    protected Comment setPermissions(org.alfresco.service.cmr.repository.NodeRef documentNode,
+            org.alfresco.service.cmr.repository.NodeRef commentNodeRef, Comment targetComment) {
+        return targetComment;
     }
 }

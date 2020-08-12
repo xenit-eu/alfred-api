@@ -23,22 +23,12 @@ public class Comment {
         this.id = id;
     }
 
-    public Comment id(NodeRef id) {
-        setId(id);
-        return this;
-    }
-
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public Comment title(String title) {
-        setTitle(title);
-        return this;
     }
 
     public String getContent() {
@@ -49,22 +39,12 @@ public class Comment {
         this.content = content;
     }
 
-    public Comment content(String content) {
-        setContent(content);
-        return this;
-    }
-
     public String getCreatedAt() {
         return createdAt;
     }
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public Comment createdAt(String createdAt) {
-        setCreatedAt(createdAt);
-        return this;
     }
 
     public String getCreatedBy() {
@@ -75,22 +55,12 @@ public class Comment {
         this.createdBy = createdBy;
     }
 
-    public Comment createdBy(String createdBy) {
-        setCreatedBy(createdBy);
-        return this;
-    }
-
     public String getModifiedAt() {
         return modifiedAt;
     }
 
     public void setModifiedAt(String modifiedAt) {
         this.modifiedAt = modifiedAt;
-    }
-
-    public Comment modifiedAt(String modifiedAt) {
-        setModifiedAt(modifiedAt);
-        return this;
     }
 
     public String getModifiedBy() {
@@ -101,11 +71,6 @@ public class Comment {
         this.modifiedBy = modifiedBy;
     }
 
-    public Comment modifiedBy(String modifiedBy) {
-        setModifiedBy(modifiedBy);
-        return this;
-    }
-
     public boolean isCanEdit() {
         return canEdit;
     }
@@ -114,22 +79,12 @@ public class Comment {
         this.canEdit = canEdit;
     }
 
-    public Comment canEdit(boolean canEdit) {
-        setCanEdit(canEdit);
-        return this;
-    }
-
     public boolean isCanDelete() {
         return canDelete;
     }
 
     public void setCanDelete(boolean canDelete) {
         this.canDelete = canDelete;
-    }
-
-    public Comment canDelete(boolean canDelete) {
-        setCanDelete(canDelete);
-        return this;
     }
 
     @Override

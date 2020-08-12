@@ -9,17 +9,21 @@ public class Conversation {
     private boolean hasMore;
     private boolean canCreate;
 
+    public Conversation() {
+    }
+
+    public Conversation(List<Comment> comments, boolean hasMore, boolean canCreate) {
+        this.comments = comments;
+        this.hasMore = hasMore;
+        this.canCreate = canCreate;
+    }
+
     public List<Comment> getComments() {
         return comments;
     }
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
-    }
-
-    public Conversation comments(List<Comment> comments) {
-        setComments(comments);
-        return this;
     }
 
     public boolean isHasMore() {
@@ -30,22 +34,12 @@ public class Conversation {
         this.hasMore = hasMore;
     }
 
-    public Conversation hasMore(boolean hasMore) {
-        setHasMore(hasMore);
-        return this;
-    }
-
     public boolean isCanCreate() {
         return canCreate;
     }
 
     public void setCanCreate(boolean canCreate) {
         this.canCreate = canCreate;
-    }
-
-    public Conversation canCreate(boolean canCreate) {
-        setCanCreate(canCreate);
-        return this;
     }
 
     @Override
