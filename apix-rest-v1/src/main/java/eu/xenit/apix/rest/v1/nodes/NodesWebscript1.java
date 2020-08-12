@@ -587,21 +587,45 @@ public class NodesWebscript1 extends ApixV1Webscript {
                     @Override
                     public Object execute() throws Throwable {
                         NodeRef parent = new NodeRef(createNodeOptions.parent);
-                        NodeRef copyFrom = null;
 
-                        if (createNodeOptions.copyFrom != null) {
-                            copyFrom = new NodeRef(createNodeOptions.copyFrom);
+                        if (!nodeService.exists(parent)) {
+                            response.setStatus(HttpStatus.SC_NOT_FOUND);
+                            writeJsonResponse(response, "Parent does not exist");
+                            return null;
                         }
 
                         NodeRef nodeRef;
-                        if (copyFrom == null) {
+                        NodeRef copyFrom = null;
+                        if (createNodeOptions.copyFrom == null) {
                             nodeRef = nodeService
-                                    .createNode(parent, createNodeOptions.properties,
-                                            new QName(createNodeOptions.type),
-                                            null);
+                                    .createNode(parent, createNodeOptions.name,
+                                            new QName(createNodeOptions.type));
                         } else {
+                            copyFrom = new NodeRef(createNodeOptions.copyFrom);
+                            if (!nodeService.exists(copyFrom)) {
+                                response.setStatus(HttpStatus.SC_NOT_FOUND);
+                                writeJsonResponse(response, "CopyFrom does not exist");
+                                return null;
+                            }
                             nodeRef = nodeService.copyNode(copyFrom, parent, true);
                         }
+
+                        MetadataChanges metadataChanges;
+                        QName type;
+                        if (createNodeOptions.type != null) {
+                            type = new QName(createNodeOptions.type);
+                        } else if ( createNodeOptions.type == null && createNodeOptions.copyFrom != null ) {
+                            type = nodeService.getMetadata(copyFrom).type;
+                        } else {
+                            response.setStatus(HttpStatus.SC_BAD_REQUEST);
+                            writeJsonResponse(response,
+                                    "Please provide parameter \"type\" when creating a new node");
+                            return null;
+                        }
+                        metadataChanges = new MetadataChanges(type, null, null,
+                                createNodeOptions.properties);
+                        nodeService.setMetadata(nodeRef, metadataChanges);
+
                         return nodeRef;
                     }
                 }, false, true);
