@@ -262,12 +262,8 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
                         }
                         metadataChanges = new MetadataChanges(type, null, null,
                                 createNodeOptions.properties);
-                        try {
-                            nodeService.setMetadata(nodeRef, metadataChanges);
-                        } catch (RuntimeException ex) {
-                            response.setStatus(HttpStatus.SC_BAD_REQUEST);
-                            writeJsonResponse(response, ex.getMessage());
-                        }
+                        nodeService.setMetadata(nodeRef, metadataChanges);
+
                         return nodeRef;
                     }
                 }, false, true);
