@@ -668,10 +668,14 @@ public class NodesWebscript1 extends ApixV1Webscript {
             @RequestParam int skipcount, @RequestParam int pagesize, WebScriptResponse response) throws IOException {
         final NodeRef target = new NodeRef(space, store, guid);
         if (nodeService.exists(target)) {
-            Conversation comments = commentService.getComments(target, skipcount, pagesize);
-            boolean canCreate = permissionService.hasPermission(target, PermissionService.CREATE_CHILDREN);
-            comments.setCanCreate(canCreate);
-            writeJsonResponse(response, comments);
+            if(permissionService.hasPermission(target, PermissionService.READ)) {
+                Conversation comments = commentService.getComments(target, skipcount, pagesize);
+                boolean canCreate = permissionService.hasPermission(target, PermissionService.CREATE_CHILDREN);
+                comments.setCanCreate(canCreate);
+                writeJsonResponse(response, comments);
+            } else {
+                throw new AccessDeniedException("User does not have permission to read parent node");
+            }
         } else {
             writeNotFoundResponse(response, target);
         }

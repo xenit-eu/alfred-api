@@ -1,6 +1,7 @@
 package eu.xenit.apix.comments;
 
 import eu.xenit.apix.data.NodeRef;
+import java.util.Objects;
 
 public class Comment {
 
@@ -129,5 +130,25 @@ public class Comment {
     public Comment canDelete(boolean canDelete) {
         setCanDelete(canDelete);
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Comment)) {
+            return false;
+        }
+        Comment comment = (Comment) o;
+        return getId().equals(comment.getId()) &&
+                getContent().equals(comment.getContent()) &&
+                Objects.equals(getCreatedBy(), comment.getCreatedBy()) &&
+                Objects.equals(getModifiedBy(), comment.getModifiedBy());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getContent(), getCreatedBy(), getModifiedBy());
     }
 }

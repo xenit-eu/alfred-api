@@ -1,6 +1,7 @@
 package eu.xenit.apix.comments;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Conversation {
 
@@ -45,6 +46,25 @@ public class Conversation {
     public Conversation canCreate(boolean canCreate) {
         setCanCreate(canCreate);
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Conversation)) {
+            return false;
+        }
+        Conversation that = (Conversation) o;
+        return isHasMore() == that.isHasMore() &&
+                isCanCreate() == that.isCanCreate() &&
+                getComments().equals(that.getComments());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getComments(), isHasMore(), isCanCreate());
     }
 }
 

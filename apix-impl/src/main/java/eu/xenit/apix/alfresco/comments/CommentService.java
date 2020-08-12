@@ -90,6 +90,11 @@ public class CommentService implements ICommentService {
         commentService.deleteComment(apixConverter.alfresco(targetCommentNode));
     }
 
+    @Override
+    public boolean canCreateComment(NodeRef targetNodeRef) {
+        return permissionService.hasPermission(targetNodeRef, IPermissionService.CREATE_CHILDREN);
+    }
+
     private Comment toComment(org.alfresco.service.cmr.repository.NodeRef documentNode,
             org.alfresco.service.cmr.repository.NodeRef commentNodeRef) {
         NodeRef apixCommentNodeRef = apixConverter.apix(commentNodeRef);
@@ -126,12 +131,7 @@ public class CommentService implements ICommentService {
         }
         Map<String, Boolean> commentPermissionMap = commentService.getCommentPermissions(documentNode, commentNodeRef);
         response.setCanEdit(commentPermissionMap.get(org.alfresco.repo.forum.CommentService.CAN_EDIT));
-        response.setCanEdit(commentPermissionMap.get(org.alfresco.repo.forum.CommentService.CAN_DELETE));
+        response.setCanDelete(commentPermissionMap.get(org.alfresco.repo.forum.CommentService.CAN_DELETE));
         return response;
-    }
-
-    @Override
-    public boolean canCreateComment(NodeRef targetNodeRef) {
-        return permissionService.hasPermission(targetNodeRef, IPermissionService.CREATE_CHILDREN);
     }
 }
