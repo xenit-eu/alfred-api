@@ -1,19 +1,9 @@
 # Alfred API - Changelog
 
-## 2.5.2 UNRELEASED
-
-### Added
-
-
-## Changed
-
+## 2.5.2 (2020-08-12)
 
 ### Fixed
-* [ALFREDAPI-338](https://xenitsupport.jira.com/browse/ALFREDAPI-338): Fixed issue when the provided name would not be set while copying a node 
-
-
-### Deleted
-
+* [ALFREDAPI-338](https://xenitsupport.jira.com/browse/ALFREDAPI-338): Fixed issue when the provided name would not be set while copying a node
 
 
 ## 2.5.1 (2020-08-05)
