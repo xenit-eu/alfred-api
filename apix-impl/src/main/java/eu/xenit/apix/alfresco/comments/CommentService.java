@@ -22,9 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class CommentService implements ICommentService {
-
-    private static final Logger log = LoggerFactory.getLogger(CommentService.class);
+public abstract class CommentService implements ICommentService {
 
     protected org.alfresco.repo.forum.CommentService commentService;
 
@@ -127,8 +125,6 @@ public class CommentService implements ICommentService {
         return response;
     }
 
-    protected Comment setPermissions(org.alfresco.service.cmr.repository.NodeRef documentNode,
-            org.alfresco.service.cmr.repository.NodeRef commentNodeRef, Comment targetComment) {
-        return targetComment;
-    }
+    protected abstract Comment setPermissions(org.alfresco.service.cmr.repository.NodeRef documentNode,
+            org.alfresco.service.cmr.repository.NodeRef commentNodeRef, Comment targetComment);
 }

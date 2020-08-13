@@ -19,7 +19,6 @@ import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.QName;
-import org.alfresco.util.ISO8601DateFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +62,7 @@ public class CommentServiceTest extends BaseTest {
         NodeRef commentNode = alfrescoCommentService
                 .createComment(testDocumentNode.getNodeRef(), commentTitle, commentContent, false);
         Conversation actual = commentService.getComments(apixConversion.apix(testDocumentNode.getNodeRef()), 0, 10);
-        assertTrue(actual.isCanCreate());
+        assertTrue(actual.isCreatable());
         assertFalse(actual.isHasMore());
         assertEquals(1, actual.getComments().size());
         Comment apixComment = actual.getComments().get(0);
@@ -73,8 +72,8 @@ public class CommentServiceTest extends BaseTest {
         Map<QName, Serializable> commentProperties = alfrescoNodeService.getProperties(commentNode);
         assertEquals(commentProperties.get(ContentModel.PROP_CREATOR), apixComment.getCreatedBy());
         assertEquals(commentProperties.get(ContentModel.PROP_MODIFIER), apixComment.getModifiedBy());
-        assertTrue(apixComment.isCanEdit());
-        assertTrue(apixComment.isCanDelete());
+        assertTrue(apixComment.isEditable());
+        assertTrue(apixComment.isDeletable());
     }
 
     @Test

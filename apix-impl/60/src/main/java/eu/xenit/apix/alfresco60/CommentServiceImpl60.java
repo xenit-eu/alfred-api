@@ -8,6 +8,7 @@ import eu.xenit.apix.content.IContentService;
 import eu.xenit.apix.node.INodeService;
 import eu.xenit.apix.permissions.IPermissionService;
 import java.util.Map;
+import org.alfresco.service.cmr.repository.NodeRef;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,11 +25,10 @@ public class CommentServiceImpl60 extends CommentService {
     }
 
     @Override
-    protected Comment setPermissions(org.alfresco.service.cmr.repository.NodeRef documentNode,
-            org.alfresco.service.cmr.repository.NodeRef commentNodeRef, Comment targetComment) {
+    protected Comment setPermissions(NodeRef documentNode, NodeRef commentNodeRef, Comment targetComment) {
         Map<String, Boolean> commentPermissionMap = commentService.getCommentPermissions(documentNode, commentNodeRef);
-        targetComment.setCanEdit(commentPermissionMap.get(org.alfresco.repo.forum.CommentService.CAN_EDIT));
-        targetComment.setCanDelete(commentPermissionMap.get(org.alfresco.repo.forum.CommentService.CAN_DELETE));
+        targetComment.setEditable(commentPermissionMap.get(org.alfresco.repo.forum.CommentService.CAN_EDIT));
+        targetComment.setDeletable(commentPermissionMap.get(org.alfresco.repo.forum.CommentService.CAN_DELETE));
         return targetComment;
     }
 }

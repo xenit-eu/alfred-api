@@ -671,7 +671,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
             if(permissionService.hasPermission(target, PermissionService.READ)) {
                 Conversation comments = commentService.getComments(target, skipcount, pagesize);
                 boolean canCreate = permissionService.hasPermission(target, PermissionService.CREATE_CHILDREN);
-                comments.setCanCreate(canCreate);
+                comments.setCreatable(canCreate);
                 writeJsonResponse(response, comments);
             } else {
                 throw new AccessDeniedException("User does not have permission to read parent node");
@@ -689,35 +689,29 @@ public class NodesWebscript1 extends ApixV1Webscript {
             @ApiResponse(code = 404, message = "Not Found")
     })
     public void postComment(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
-            WebScriptRequest request, WebScriptResponse response) throws IOException {
+            final Comment newComment, WebScriptRequest request, WebScriptResponse response) throws IOException {
         final NodeRef target = new NodeRef(space, store, guid);
         if (nodeService.exists(target)) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String content = objectMapper.readTree(request.getContent().getInputStream()).textValue();
-            Comment newComment = commentService.addNewComment(target, content);
-            writeJsonResponse(response, newComment);
+            Comment responseComment = commentService.addNewComment(target, newComment.getContent());
+            writeJsonResponse(response, responseComment);
         } else {
             writeNotFoundResponse(response, target);
         }
     }
 
     @ApiOperation(value = "Updates a given comment on the given node.")
-    @Uri(value = "/nodes/{docspace}/{docstore}/{docguid}/comments/{commentspace}/{commentstore}/{commentguid}",
-            method = HttpMethod.POST)
+    @Uri(value = "/nodes/{space}/{store}/{guid}/comment",
+            method = HttpMethod.PUT)
     @ApiResponses({
             @ApiResponse(code = 200, message = "Success"),
             @ApiResponse(code = 403, message = "Not Authorized"),
             @ApiResponse(code = 404, message = "Not Found")
     })
-    public void updateComment(@UriVariable String docspace, @UriVariable String docstore, @UriVariable String docguid,
-            @UriVariable String commentspace, @UriVariable String commentstore, @UriVariable String commentguid,
-            WebScriptRequest request, WebScriptResponse response) throws IOException {
-        final NodeRef targetDocument = new NodeRef(docspace, docspace, docspace);
-        final NodeRef targetComment = new NodeRef(commentspace, commentspace, commentguid);
+    public void updateComment(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
+            final Comment newComment, WebScriptRequest request, WebScriptResponse response) throws IOException {
+        final NodeRef targetComment = new NodeRef(space, store, guid);
         if (nodeService.exists(targetComment)) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String content = objectMapper.readTree(request.getContent().getInputStream()).textValue();
-            Comment updatedComment = commentService.updateComment(targetComment, content);
+            Comment updatedComment = commentService.updateComment(targetComment, newComment.getContent());
             response.setStatus(200);
             writeJsonResponse(response, updatedComment);
         } else {
@@ -726,18 +720,16 @@ public class NodesWebscript1 extends ApixV1Webscript {
     }
 
     @ApiOperation(value = "Deletes a given comment on the given node.")
-    @Uri(value = "/nodes/{docspace}/{docstore}/{docguid}/comments/{commentspace}/{commentstore}/{commentguid}",
-            method = HttpMethod.POST)
+    @Uri(value = "/nodes/{space}/{store}/{guid}/comment",
+            method = HttpMethod.DELETE)
     @ApiResponses({
             @ApiResponse(code = 204, message = "Success"),
             @ApiResponse(code = 403, message = "Not Authorized"),
             @ApiResponse(code = 404, message = "Not Found")
     })
-    public void deleteComment(@UriVariable String docspace, @UriVariable String docstore, @UriVariable String docguid,
-            @UriVariable String commentspace, @UriVariable String commentstore, @UriVariable String commentguid,
+    public void deleteComment(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             WebScriptRequest request, WebScriptResponse response) throws IOException {
-        final NodeRef targetDocument = new NodeRef(docspace, docspace, docspace);
-        final NodeRef targetComment = new NodeRef(commentspace, commentspace, commentguid);
+        final NodeRef targetComment = new NodeRef(space, store, guid);
         if (nodeService.exists(targetComment)) {
             commentService.deleteComment(targetComment);
             response.setStatus(204);

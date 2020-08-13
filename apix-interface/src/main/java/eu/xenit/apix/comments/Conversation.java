@@ -7,15 +7,15 @@ public class Conversation {
 
     private List<Comment> comments;
     private boolean hasMore;
-    private boolean canCreate;
+    private boolean creatable;
 
     public Conversation() {
     }
 
-    public Conversation(List<Comment> comments, boolean hasMore, boolean canCreate) {
+    public Conversation(List<Comment> comments, boolean hasMore, boolean creatable) {
         this.comments = comments;
         this.hasMore = hasMore;
-        this.canCreate = canCreate;
+        this.creatable = creatable;
     }
 
     public List<Comment> getComments() {
@@ -34,12 +34,12 @@ public class Conversation {
         this.hasMore = hasMore;
     }
 
-    public boolean isCanCreate() {
-        return canCreate;
+    public boolean isCreatable() {
+        return creatable;
     }
 
-    public void setCanCreate(boolean canCreate) {
-        this.canCreate = canCreate;
+    public void setCreatable(boolean creatable) {
+        this.creatable = creatable;
     }
 
     @Override
@@ -52,13 +52,13 @@ public class Conversation {
         }
         Conversation that = (Conversation) o;
         return isHasMore() == that.isHasMore() &&
-                isCanCreate() == that.isCanCreate() &&
+                isCreatable() == that.isCreatable() &&
                 getComments().equals(that.getComments());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getComments(), isHasMore(), isCanCreate());
+        return Objects.hash(getComments(), isHasMore(), isCreatable());
     }
 }
 

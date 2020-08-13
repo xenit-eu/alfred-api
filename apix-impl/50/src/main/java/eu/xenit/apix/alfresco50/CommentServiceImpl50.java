@@ -54,12 +54,12 @@ public class CommentServiceImpl50 extends CommentService {
             NodeRef commentNodeRef, Comment targetComment) {
         boolean canEdit = false;
         boolean canDelete = false;
-        if(!isWorkingCopyOrLocked(documentNode)) {
+        if (!isWorkingCopyOrLocked(documentNode)) {
             canEdit = canEditPermission(commentNodeRef);
             canDelete = canDeletePermission(commentNodeRef);
         }
-        targetComment.setCanEdit(canEdit);
-        targetComment.setCanDelete(canDelete);
+        targetComment.setEditable(canEdit);
+        targetComment.setDeletable(canDelete);
         return targetComment;
     }
 
@@ -82,13 +82,14 @@ public class CommentServiceImpl50 extends CommentService {
         String creator = (String) alfNodeService.getProperty(commentNodeRef, ContentModel.PROP_CREATOR);
         Serializable owner = alfNodeService.getProperty(commentNodeRef, ContentModel.PROP_OWNER);
         String currentUser = AuthenticationUtil.getFullyAuthenticatedUser();
-        boolean isSiteManager = alfPermissionService.hasPermission(commentNodeRef, SiteModel.SITE_MANAGER) == (AccessStatus.ALLOWED);
-        boolean isCoordinator = alfPermissionService.hasPermission(commentNodeRef, PermissionService.COORDINATOR) == (AccessStatus.ALLOWED);
+        boolean isSiteManager =
+                alfPermissionService.hasPermission(commentNodeRef, SiteModel.SITE_MANAGER) == (AccessStatus.ALLOWED);
+        boolean isCoordinator = alfPermissionService.hasPermission(commentNodeRef, PermissionService.COORDINATOR)
+                == (AccessStatus.ALLOWED);
         return (isSiteManager || isCoordinator || currentUser.equals(creator) || currentUser.equals(owner));
     }
 
-    protected boolean canDeletePermission(NodeRef commentNodeRef)
-    {
+    protected boolean canDeletePermission(NodeRef commentNodeRef) {
         return alfPermissionService.hasPermission(commentNodeRef, PermissionService.DELETE) == AccessStatus.ALLOWED;
     }
 }

@@ -12,8 +12,8 @@ public class Comment {
     private String createdBy;
     private String modifiedAt;
     private String modifiedBy;
-    private boolean canEdit;
-    private boolean canDelete;
+    private boolean editable;
+    private boolean deletable;
 
     public NodeRef getId() {
         return id;
@@ -71,20 +71,20 @@ public class Comment {
         this.modifiedBy = modifiedBy;
     }
 
-    public boolean isCanEdit() {
-        return canEdit;
+    public boolean isEditable() {
+        return editable;
     }
 
-    public void setCanEdit(boolean canEdit) {
-        this.canEdit = canEdit;
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 
-    public boolean isCanDelete() {
-        return canDelete;
+    public boolean isDeletable() {
+        return deletable;
     }
 
-    public void setCanDelete(boolean canDelete) {
-        this.canDelete = canDelete;
+    public void setDeletable(boolean deletable) {
+        this.deletable = deletable;
     }
 
     @Override
