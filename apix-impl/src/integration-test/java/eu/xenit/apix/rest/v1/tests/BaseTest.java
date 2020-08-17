@@ -2,7 +2,13 @@ package eu.xenit.apix.rest.v1.tests;
 
 import static org.junit.Assert.assertEquals;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.xenit.apix.integrationtesting.runner.ApixIntegration;
+import eu.xenit.apix.node.NodeMetadata;
+import eu.xenit.apix.rest.v1.nodes.CreateNodeOptions;
+import eu.xenit.apix.rest.v1.nodes.NodeInfo;
 import eu.xenit.apix.tests.ApixImplBundleFilter;
 import eu.xenit.testing.integrationtesting.runner.UseSpringContextOfBundle;
 import java.io.IOException;
@@ -11,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.admin.SysAdminParams;
 import org.alfresco.repo.model.Repository;
@@ -26,7 +33,9 @@ import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -36,13 +45,16 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.codehaus.jackson.map.ObjectMapper;
+
+import org.codehaus.jackson.JsonParser;
+import org.json.JSONTokener;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.extensions.surf.util.URLEncoder;
+import org.springframework.http.HttpEntity;
 
 /**
  * Created by kenneth on 14.03.16.
@@ -239,6 +251,30 @@ public abstract class BaseTest {
         return initializedNodeRefs;
     }
 
+    protected CreateNodeOptions getCreateNodeOptions(eu.xenit.apix.data.NodeRef parentRef, String name, eu.xenit.apix.data.QName type, HashMap<eu.xenit.apix.data.QName, String[]> properties, eu.xenit.apix.data.NodeRef copyFrom) {
+        String parentRefString = (parentRef != null) ? parentRef.toString() : null;
+        String copyFromString = (copyFrom != null) ? copyFrom.toString() : null;
+        String typeString = (type != null) ? type.toString() : null;
+
+        try {
+            return new CreateNodeOptions(parentRefString, name, typeString, properties, copyFromString);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public NodeInfo doPostNodes(CreateNodeOptions createNodeOptions, int expectedResponseCode) throws Throwable {
+        final String url = getSimpleNodesUrl();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        String requestBody = objectMapper.writeValueAsString(createNodeOptions);
+
+        System.out.println("RequestBody : " + requestBody);
+        return doPostExpected(url, NodeInfo.class, requestBody, expectedResponseCode);
+    }
+
+
     protected String makeNodesUrl(eu.xenit.apix.data.NodeRef nodeRef, String userName, String passWord) {
         return this.makeNodesUrl(nodeRef, "", userName, passWord);
     }
@@ -273,6 +309,10 @@ public abstract class BaseTest {
         String store = "SpacesStore";
 
         return this.makeNodesUrlWithTicket(space, store, guid, action);
+    }
+
+    protected String getSimpleNodesUrl() {
+        return makeAlfrescoBaseurlAdmin() + "/apix/" + getVersion() + "/nodes";
     }
 
     protected NodeRef getMainTestFolder() {
@@ -364,14 +404,55 @@ public abstract class BaseTest {
     }
 
     public <T> T doPost(String checkoutUrl, Class<T> returnType, String jsonBody, Object... args) throws IOException {
-        return doWithBody(new HttpPost(checkoutUrl), returnType, jsonBody, args);
+        return doWithBody(new HttpPost(checkoutUrl), returnType, HttpStatus.SC_OK, jsonBody,  args);
+    }
+
+    public <T> T doPostExpected(String checkoutUrl, Class<T> returnType, String jsonBody, int expectedResponse, Object... args) throws IOException {
+        return doWithBody(new HttpPost(checkoutUrl), returnType, expectedResponse, jsonBody, args);
     }
 
     public <T> T doPut(String checkoutUrl, Class<T> returnType, String jsonBody, Object... args) throws IOException {
-        return doWithBody(new HttpPut(checkoutUrl), returnType, jsonBody, args);
+        return doWithBody(new HttpPut(checkoutUrl), returnType, HttpStatus.SC_OK, jsonBody, args);
     }
 
-    private <T> T doWithBody(HttpEntityEnclosingRequestBase req, Class<T> returnType, String jsonBody, Object... args)
+    public <T> T doPutExpected(String checkoutUrl, Class<T> returnType, String jsonBody, int expectedResponse, Object... args) throws IOException {
+        return doWithBody(new HttpPut(checkoutUrl), returnType, expectedResponse, jsonBody, args);
+    }
+
+//    private <T> T doWithBody(HttpEntityEnclosingRequestBase req, Class<T> returnType, int expectedResponseCode, String jsonBody, Object... args)
+//            throws IOException {
+//        final CloseableHttpClient checkoutHttpclient = HttpClients.createDefault();
+//        if (jsonBody != null) {
+//            String checkoutJsonString = json(String.format(jsonBody, args));
+//            System.out.println("CheckoutString: " + checkoutJsonString);
+//            req.setEntity(new StringEntity(checkoutJsonString));
+//        }
+//        req.setHeader("Accept", "application/json");
+//        req.setHeader("Content-Type", "application/json");
+//
+//        String result;
+//        try (CloseableHttpResponse response = checkoutHttpclient.execute(req)) {
+//            //System.out.println("Testing post response" + response);
+////            for (Header header : response.getAllHeaders()) {
+////                System.out.println(header.getName() + ": " + header.getValue());
+////                response.setHeader("Content-Type", "application/json");
+////            }
+//            if (returnType == null) {
+//                return null;
+//            }
+//
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            //NodeMetadata nodeMetadata = objectMapper.readValue(response.getEntity().getContent(), eu.xenit.apix.node.NodeMetadata.class);
+//            //System.out.println("Result " + nodeMetadata);
+//            T ret = objectMapper.readValue(response.getEntity().getContent(), returnType);
+//            //System.out.println("Result " + response.getEntity().getContent());
+//            //assertEquals(expectedResponseCode, response.getStatusLine().getStatusCode());
+//
+//            return ret;
+//        }
+//    }
+
+    private <T> T doWithBody(HttpEntityEnclosingRequestBase req, Class<T> returnType, int expectedResponseCode, String jsonBody, Object... args)
             throws IOException {
         final CloseableHttpClient checkoutHttpclient = HttpClients.createDefault();
         if (jsonBody != null) {
@@ -380,7 +461,7 @@ public abstract class BaseTest {
         }
 
         try (CloseableHttpResponse response = checkoutHttpclient.execute(req)) {
-            String result = EntityUtils.toString(response.getEntity());
+            byte[] result = EntityUtils.toByteArray(response.getEntity());
             assertEquals(200, response.getStatusLine().getStatusCode());
             if (returnType == null) {
                 return null;

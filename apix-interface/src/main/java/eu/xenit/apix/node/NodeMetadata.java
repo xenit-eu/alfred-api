@@ -1,6 +1,7 @@
 package eu.xenit.apix.node;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
 
@@ -26,6 +27,7 @@ public class NodeMetadata {
 
     //public NodeAssociation[] associations;
 
+    @JsonCreator
     public NodeMetadata(NodeRef id, QName type, QName baseType, long transactionId, Map<QName, List<String>> properties,
             List<QName> aspects) {
         this.id = id;
@@ -36,15 +38,67 @@ public class NodeMetadata {
         this.aspects = aspects;
     }
 
-    @Override
-    public String toString() {
-        return "NodeMetadata{" +
-                "id='" + id + '\'' +
-                ", type='" + type + '\'' +
-                ", baseType=" + baseType + '\'' +
-                ", transactionId=" + transactionId +
-                ", properties=" + (properties != null ? properties.entrySet() : "") +
-                ", aspects=" + aspects +
-                '}';
+    public NodeRef getId() {
+        return id;
     }
+
+    public void setId(NodeRef id) {
+        this.id = id;
+    }
+
+    public QName getType() {
+        return type;
+    }
+
+    public void setType(QName type) {
+        this.type = type;
+    }
+
+    public QName getBaseType() {
+        return baseType;
+    }
+
+    public void setBaseType(QName baseType) {
+        this.baseType = baseType;
+    }
+
+    public long getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(long transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public Map<QName, List<String>> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Map<QName, List<String>> properties) {
+        this.properties = properties;
+    }
+
+    public List<QName> getAspects() {
+        return aspects;
+    }
+
+    public void setAspects(List<QName> aspects) {
+        this.aspects = aspects;
+    }
+
+    public NodeMetadata() {
+
+    }
+
+//    @Override
+//    public String toString() {
+//        return "NodeMetadata{" +
+//                "id='" + id + '\'' +
+//                ", type='" + type + '\'' +
+//                ", baseType=" + baseType + '\'' +
+//                ", transactionId=" + transactionId +
+//                ", properties=" + (properties != null ? properties.entrySet() : "") +
+//                ", aspects=" + aspects +
+//                '}';
+//    }
 }
