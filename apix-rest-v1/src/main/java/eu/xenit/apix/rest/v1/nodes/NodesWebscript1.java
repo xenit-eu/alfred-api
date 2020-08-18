@@ -938,8 +938,9 @@ public class NodesWebscript1 extends ApixV1Webscript {
     }
 
     private void writeNotFoundResponse(WebScriptResponse response, NodeRef requestedNode) throws IOException {
-        logger.debug("Not Found: {}", requestedNode);
+        String message = String.format("Node Not Found: %s", requestedNode);
+        logger.debug(message);
         response.setStatus(404);
-        writeJsonResponse(response, "Node Not Found");
+        writeJsonResponse(response, message);
     }
 }
