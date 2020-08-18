@@ -9,6 +9,7 @@ import eu.xenit.apix.people.Person;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import org.alfresco.model.ContentModel;
 import org.alfresco.query.PagingRequest;
@@ -50,13 +51,13 @@ public class PeopleService implements IPeopleService {
     }
 
     @Override
-    public Person GetPerson(NodeRef nodeRef) {
+    public Person GetPerson(NodeRef nodeRef) throws IllegalArgumentException, NoSuchElementException {
         if (nodeRef == null) {
-            return null;
+            throw new IllegalArgumentException("NodeRef cannot be null");
         }
         org.alfresco.service.cmr.repository.NodeRef alfrescoNodeRef = c.alfresco(nodeRef);
         if (!nodeService.exists(alfrescoNodeRef)) {
-            return null;
+            throw new NoSuchElementException("User with NodeRef=" + alfrescoNodeRef.toString() + " does not exist");
         }
         PersonService.PersonInfo info = alfrescoPersonService.getPerson(alfrescoNodeRef);
         String username = info.getUserName();
@@ -126,8 +127,15 @@ public class PeopleService implements IPeopleService {
     }
 
     @Override
-    public Person GetPerson(String userName) {
-        return GetPerson(c.apix(alfrescoPersonService.getPerson(normalizeUserName(userName))));
+    public Person GetPerson(String userName) throws IllegalArgumentException, NoSuchElementException {
+        if (userName == null || userName.equals("")) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+        NodeRef personRef = c.apix(alfrescoPersonService.getPersonOrNull(userName));
+        if (personRef == null) {
+            throw new NoSuchElementException("User " + userName + " does not exist");
+        }
+        return GetPerson(personRef);
     }
 
     @Override
@@ -217,6 +225,7 @@ public class PeopleService implements IPeopleService {
         logger.debug("Keeping " + name);
         return name;
     }
+
 }
 
 

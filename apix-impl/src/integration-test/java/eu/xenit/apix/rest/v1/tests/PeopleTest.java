@@ -14,6 +14,7 @@ import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -91,6 +92,16 @@ public class PeopleTest extends BaseTest {
         Assert.assertEquals(userName, person.getUserName());
         Assert.assertEquals(firstName, person.getFirstName());
         Assert.assertEquals(lastName, person.getLastName());
+    }
+
+    @Test
+    public void testGetNonExistentPerson() throws IOException {
+        final String userName = "NonexistentUsername";
+        String url = createApixUrl("/people/%s", userName);
+
+        HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
+        Assert.assertEquals(httpResponse.getStatusLine().getStatusCode(), HttpStatus.SC_NOT_FOUND);
+
     }
 
     @After
