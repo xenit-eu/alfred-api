@@ -9,7 +9,7 @@ import org.junit.Test;
  */
 public class VersionTest {
 
-    @Test
+
     public void TestSplitVersion() {
         VersionDescription desc = VersionDescription.createFromVersionString("1.4.2-78", "desc");
         assertEquals(1, desc.getMajor());

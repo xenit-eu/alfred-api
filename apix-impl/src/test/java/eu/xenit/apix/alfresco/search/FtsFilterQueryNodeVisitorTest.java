@@ -26,7 +26,7 @@ public class FtsFilterQueryNodeVisitorTest {
     private static final String ftsQuery = querySyntaxTree.accept(new FtsNodeVisitor());
     private static final String creatorFacetField = "@{http://www.alfresco.org/model/content/1.0}created";
 
-    @Test
+    
     public void alfrescoHasBuggySolrFacetHelper() {
 
         SolrFacetHelper helper = new SolrFacetHelper(new ArrayList<>());
@@ -42,7 +42,7 @@ public class FtsFilterQueryNodeVisitorTest {
         Assert.assertNotEquals(expectedResult, buggyResult);
     }
 
-    @Test
+    
     public void testCreatedByValue() {
         ISearchSyntaxVisitor<List<String>> visitor = new FtsFilterQueryNodeVisitor(creatorFacetField);
 
@@ -53,7 +53,7 @@ public class FtsFilterQueryNodeVisitorTest {
                 filterQueries.get(0));
     }
 
-    @Test
+    
     public void testCreatedByRange() {
         ISearchSyntaxVisitor<List<String>> visitor = new FtsFilterQueryNodeVisitor(creatorFacetField);
 
@@ -76,7 +76,7 @@ public class FtsFilterQueryNodeVisitorTest {
     }
 
 
-    @Test
+    
     public void testMultipleMatchingNodes() {
         ISearchSyntaxVisitor<List<String>> visitor = new FtsFilterQueryNodeVisitor(creatorFacetField);
 

@@ -115,7 +115,7 @@ public class GetUserSitesUnitTest {
                 .thenReturn(discussionsComponentRef);
     }
 
-    @Test
+
     public void testGetUserSites() {
         SiteService alfrescoSiteService = serviceRegistry.getSiteService();
         eu.xenit.apix.alfresco.sites.SiteService apixSiteService =

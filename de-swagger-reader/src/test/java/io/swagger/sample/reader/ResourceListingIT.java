@@ -16,7 +16,7 @@ import java.util.Collections;
 
 public class ResourceListingIT {
 
-    @Test
+    
     public void readerTest() throws IOException {
         final Swagger swagger = Json.mapper()
                 .readValue(new URL("http://localhost:8002/api/swagger.json"), Swagger.class);

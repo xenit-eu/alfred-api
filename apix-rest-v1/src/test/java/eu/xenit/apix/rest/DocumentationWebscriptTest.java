@@ -24,7 +24,7 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
  */
 public class DocumentationWebscriptTest {
 
-    @Test
+
     public void TestGenerate() throws JsonProcessingException {
         io.swagger.models.Swagger swag = generateSwagger();
 
@@ -33,7 +33,7 @@ public class DocumentationWebscriptTest {
 
     }
 
-    @Test
+
     public void TestPermissionsMap() {
         Swagger swag = generateSwagger();
         io.swagger.models.Path path = swag.getPath("/v1/nodes/{space}/{store}/{guid}/permissions");
@@ -52,7 +52,7 @@ public class DocumentationWebscriptTest {
         return web.generateSwagger();
     }
 
-    @Test
+
     public void testRedirectToSwaggerUi() {
         WebScriptRequest request = mock(WebScriptRequest.class);
         String serviceContextPath = "https://testdomain.com/alfresco/service";

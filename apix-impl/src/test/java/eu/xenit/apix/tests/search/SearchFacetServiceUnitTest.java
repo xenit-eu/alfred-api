@@ -150,7 +150,7 @@ public class SearchFacetServiceUnitTest {
         return expectedResult;
     }
 
-    @Test
+
     public void assertThat_getFacetResults_returnIncludes_translationsForListOfValueConstraints() {
         initMocks();
         List<FacetSearchResult> expectedResult = initExpectedResult_for_assertThat_getFacetResults_returnIncludes_translationsForListOfValueConstraints();

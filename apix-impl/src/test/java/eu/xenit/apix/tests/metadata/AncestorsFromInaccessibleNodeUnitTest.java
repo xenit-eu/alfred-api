@@ -41,7 +41,7 @@ public class AncestorsFromInaccessibleNodeUnitTest extends AncestorsBaseUnitTest
         return permissionServiceMock;
     }
 
-    @Test(expected = AccessDeniedException.class)
+    ( AccessDeniedException.class)
     public void getAncestorsOfNodeTest() {
         eu.xenit.apix.alfresco.metadata.NodeService apixNodeService = new eu.xenit.apix.alfresco.metadata.NodeService(
                 serviceRegistry, apixAlfrescoConverter);

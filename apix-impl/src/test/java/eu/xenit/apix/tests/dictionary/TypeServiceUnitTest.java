@@ -17,7 +17,7 @@ public class TypeServiceUnitTest {
 
     private static final Logger log = LoggerFactory.getLogger(TypeServiceUnitTest.class);
 
-    @Test
+
     public void testGetTypeDefinition_returnsNull_whenQnameInvalid() {
         QName invalidQname = new QName("someNamespace:someQname");
         DictionaryService dictionaryServiceMock = mock(DictionaryService.class);

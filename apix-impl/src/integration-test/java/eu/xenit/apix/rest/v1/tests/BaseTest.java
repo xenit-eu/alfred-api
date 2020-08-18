@@ -1,9 +1,11 @@
+
 package eu.xenit.apix.rest.v1.tests;
 
 import static org.junit.Assert.assertEquals;
 
 import eu.xenit.apix.integrationtesting.runner.ApixIntegration;
 import eu.xenit.apix.tests.ApixImplBundleFilter;
+import eu.xenit.testing.integrationtesting.runner.AlfrescoTestRunner;
 import eu.xenit.testing.integrationtesting.runner.UseSpringContextOfBundle;
 import java.io.IOException;
 import java.io.Serializable;
@@ -47,7 +49,7 @@ import org.springframework.extensions.surf.util.URLEncoder;
 /**
  * Created by kenneth on 14.03.16.
  */
-@RunWith(ApixIntegration.class)
+@RunWith(AlfrescoTestRunner.class)
 @UseSpringContextOfBundle(filter = ApixImplBundleFilter.class)
 public abstract class BaseTest {
 
@@ -121,13 +123,13 @@ public abstract class BaseTest {
     }
 
     protected String makeNodesUrl(String space, String store, String guid, String action, String userName,
-            String passWord) {
+                                  String passWord) {
         return String.format(makeAlfrescoBaseurl(userName, passWord) + "/apix/%s/nodes/%s/%s/%s%s", getVersion(), space,
                 store, guid, action);
     }
 
     protected String makeFormsUrl(String space, String store, String guid, String action, String userName,
-            String passWord) {
+                                  String passWord) {
         return String
                 .format(makeAlfrescoBaseurl(userName, passWord) + "/apix/%s/temp/forms/%s/%s/%s%s", getVersion(), space,
                         store, guid, action);
@@ -150,14 +152,14 @@ public abstract class BaseTest {
     }
 
     protected String makeWorkingCopiesUrl(String space, String store, String guid, String action, String userName,
-            String passWord) {
+                                          String passWord) {
         return String
                 .format(makeAlfrescoBaseurl(userName, passWord) + "/apix/%s/workingcopies/%s/%s/%s%s", getVersion(),
                         space, store, guid, action);
     }
 
     protected String makeWorkingCopiesUrl(eu.xenit.apix.data.NodeRef nodeRef, String action, String userName,
-            String passWord) {
+                                          String passWord) {
         String space = nodeRef.getStoreRefProtocol();
         String store = nodeRef.getStoreRefId();
         String guid = nodeRef.getGuid();

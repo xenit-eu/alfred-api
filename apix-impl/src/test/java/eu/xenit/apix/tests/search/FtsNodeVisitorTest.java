@@ -29,7 +29,7 @@ public class FtsNodeVisitorTest {
         put(new QName("{tenant.model}intProperty"), "{http://www.alfresco.org/model/dictionary/1.0}int");
     }};
 
-    @Test
+
     public void testIntTypeInvalid() {
         SearchSyntaxNode querySyntaxTree = generateAllQuery("5500012345");
         PropertyService propertyService = new PropertyServiceStub(propertyToDataType);
@@ -43,7 +43,7 @@ public class FtsNodeVisitorTest {
                 not(containsString("{tenant.model}intProperty")));
     }
 
-    @Test
+
     public void testIntTypeValid() {
         SearchSyntaxNode querySyntaxTree = generateAllQuery("1500012345");
         PropertyService propertyService = new PropertyServiceStub(propertyToDataType);

@@ -9,14 +9,14 @@ import org.junit.Test;
 
 public class PropertySearchNodeTest {
 
-    @Test
+    
     public void setName_regularOperation() {
         PropertySearchNode searchNode = new PropertySearchNode();
         searchNode.setName("cm:name");
         assertEquals("cm:name", searchNode.getName());
     }
 
-    @Test
+    
     public void setName_EscapesSpecialCharacters() {
         PropertySearchNode searchNode = new PropertySearchNode();
         String specialCharacters = "!@%^&*()-=+[];?,<>|";
@@ -28,21 +28,21 @@ public class PropertySearchNodeTest {
         }
     }
 
-    @Test
+    
     public void escapeName_dbid() {
         String unescaped = "sys:node-dbid";
         String escaped = PropertySearchNode.escapeName(unescaped);
         assertEquals("dbid not properly escaped", "sys:node\\-dbid", escaped);
     }
 
-    @Test
+    
     public void unescapeName_dbid() {
         String escaped = "sys:node\\-dbid";
         String unescaped = PropertySearchNode.unescapeName(escaped);
         assertEquals("dbid not properly unescaped", "sys:node-dbid", unescaped);
     }
 
-    @Test
+    
     public void escape_roundtripEquals() {
         List<String> strings = Arrays.asList("sys:node-dbid", "!@%^&*()-=+[];?,<>|", "nothing:special");
         List<String> collect = strings.stream()

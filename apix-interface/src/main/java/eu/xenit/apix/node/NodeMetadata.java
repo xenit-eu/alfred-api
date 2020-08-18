@@ -36,6 +36,58 @@ public class NodeMetadata {
         this.aspects = aspects;
     }
 
+    public NodeMetadata() {
+
+    }
+
+    public NodeRef getId() {
+        return id;
+    }
+
+    public void setId(NodeRef id) {
+        this.id = id;
+    }
+
+    public QName getType() {
+        return type;
+    }
+
+    public void setType(QName type) {
+        this.type = type;
+    }
+
+    public QName getBaseType() {
+        return baseType;
+    }
+
+    public void setBaseType(QName baseType) {
+        this.baseType = baseType;
+    }
+
+    public long getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(long transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public Map<QName, List<String>> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Map<QName, List<String>> properties) {
+        this.properties = properties;
+    }
+
+    public List<QName> getAspects() {
+        return aspects;
+    }
+
+    public void setAspects(List<QName> aspects) {
+        this.aspects = aspects;
+    }
+
     @Override
     public String toString() {
         return "NodeMetadata{" +

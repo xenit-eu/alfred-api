@@ -25,7 +25,7 @@ public class ProxyWebscriptTest {
     @Autowired
     ApplicationContext applicationContext;
 
-    @Test
+
     public void Test() throws NoSuchMethodException {
         Description description = new DescriptionImpl("test", "short", "desc", "url");
 

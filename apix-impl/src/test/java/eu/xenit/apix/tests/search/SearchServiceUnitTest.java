@@ -34,30 +34,30 @@ import org.mockito.ArgumentCaptor;
 
 public class SearchServiceUnitTest {
 
-    @Test
+
     public void TestSearchInDefaultStore() {
         assertAlfrescoSearchQueryStoreMatchesInput(null, StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
     }
 
-    @Test
+
     public void TestSearchInWorkspaceSpacesStoreStore() {
         assertAlfrescoSearchQueryStoreMatchesInput(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE,
                 StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
     }
 
-    @Test
+
     public void TestSearchInArchiveSpacesStoreStore() {
         assertAlfrescoSearchQueryStoreMatchesInput(StoreRef.STORE_REF_ARCHIVE_SPACESSTORE,
                 StoreRef.STORE_REF_ARCHIVE_SPACESSTORE);
     }
 
-    @Test
+
     public void testDefaultSearchQueryConsistencyIsTransactionalIfPossible() {
         SearchQuery searchQuery = new SearchQuery();
         Assert.assertEquals(SearchQueryConsistency.TRANSACTIONAL_IF_POSSIBLE, searchQuery.getConsistency());
     }
 
-    @Test
+
     public void testSearchQueryConsistencyIsSetToEventualIfFacetsIsEnabled() {
         org.alfresco.service.cmr.search.SearchService alfrescoSearchServiceMock = buildAlfrescoSearchServiceMock();
         SearchService apixSearchServiceMocked = buildApixSearchServiceWithMocks(
@@ -92,7 +92,7 @@ public class SearchServiceUnitTest {
         Assert.assertEquals(QueryConsistency.EVENTUAL, searchParamsArgument.getValue().getQueryConsistency());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    ( IllegalArgumentException.class)
     public void testOrderBy_withMultivalueProperty_throwsIllegalArgumentException() {
         SearchService apixSearchServiceMocked = buildApixSearchServiceWithMocks(
                 StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);

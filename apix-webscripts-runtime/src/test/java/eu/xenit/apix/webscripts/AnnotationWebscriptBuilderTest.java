@@ -29,7 +29,7 @@ public class AnnotationWebscriptBuilderTest {
     @Autowired
     TestDEWebscript1 webscript;
 
-    @Test
+
     public void TestCreateAnnotatedWebscript() throws NoSuchMethodException, IOException {
 
 //        String[] names = applicationContext.getBeanNamesForType(webscript.getClass());

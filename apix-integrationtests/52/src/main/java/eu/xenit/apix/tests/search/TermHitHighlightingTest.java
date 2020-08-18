@@ -48,7 +48,7 @@ public class TermHitHighlightingTest extends BaseTest {
         solrTestHelper = new SolrTestHelper("/solr", dataSource, searchSubSystem);
     }
 
-    @Test
+
     /** Test all major parameters for term hit highlighting */
     public void searchResponseContainsHighlights() throws IOException, InterruptedException {
         // Waiting for Solr's indexing process to catch up before executing test.

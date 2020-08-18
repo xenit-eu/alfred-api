@@ -35,7 +35,7 @@ public class AncestorsFromNodeUnitTest extends AncestorsBaseUnitTest {
         return nodeServiceMock;
     }
 
-    @Test
+
     public void getAncestorsOfNodeTest() {
         PermissionService alfrescoPermissionService = serviceRegistry.getPermissionService();
         NodeService alfrescoNodeService = serviceRegistry.getNodeService();

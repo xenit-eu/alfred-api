@@ -11,7 +11,7 @@ import org.junit.Test;
  */
 public class JMustacheTest {
 
-    @Test
+
     public void TestTemplateEngine() {
         String text = "One, two, {{three}}. Three sir!";
         Template tmpl = Mustache.compiler().compile(text);

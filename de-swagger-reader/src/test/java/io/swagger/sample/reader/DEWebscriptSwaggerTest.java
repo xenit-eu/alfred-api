@@ -41,19 +41,19 @@ public class DEWebscriptSwaggerTest {
         logger.debug(json);
     }
 
-    @Test
+
     public void TestParser() throws IOException {
 
         String json = Json.mapper().writeValueAsString(reader.getSwagger());
         logger.debug(json);
     }
 
-    @Test
+
     public void TestDetectWebscriptAnnotation() throws JsonProcessingException {
         assertFalse(reader.getSwagger().getPaths().isEmpty());
     }
 
-    @Test
+
     public void TestReadUriAnnotation() throws JsonProcessingException {
         Path path = reader.getSwagger().getPath("/de/home"); // Testing basepath
         assertNotNull(path);
@@ -69,7 +69,7 @@ public class DEWebscriptSwaggerTest {
         logger.debug(path.toString());
     }
 
-    @Test
+
     public void TestReadParameters() throws JsonProcessingException {
 
         Path path = reader.getSwagger().getPath("/de/home");
@@ -99,7 +99,7 @@ public class DEWebscriptSwaggerTest {
 
     }
 
-    @Test
+
     public void TestIgnoreWebscriptRequestAndResponse() throws JsonProcessingException {
 
         Path path = reader.getSwagger().getPath("/de/ignoreParams");

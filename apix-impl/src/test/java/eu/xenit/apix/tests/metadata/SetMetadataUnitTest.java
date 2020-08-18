@@ -197,7 +197,7 @@ public class SetMetadataUnitTest {
         return typeDefMock;
     }
 
-    @Test
+
     public void testGeneralizeTypeWithCleanUpEnabled() {
         QName initialType = QName.createQName(INITIAL_TYPE);
         DictionaryService dictionaryService = serviceRegistryMock.getDictionaryService();
@@ -220,7 +220,7 @@ public class SetMetadataUnitTest {
                 .addAspect(eq(testNodeRef), any(QName.class), any(HashMap.class));
     }
 
-    @Test
+
     public void testGeneralizeTypeWithCleanUpEnabledAndAdditionalAspects() {
         QName initialType = QName
                 .createQName(INITIAL_TYPE);
@@ -245,7 +245,7 @@ public class SetMetadataUnitTest {
         verify(nodeServiceAlfrescoMock).addAspect(eq(testNodeRef), eq(QName.createQName(ASPECT4)), any(Map.class));
     }
 
-    @Test
+
     public void testGeneralizeTypeWithCleanUpEnabledAndAddingAspectToBeCleanedUp() {
         QName initialType = QName.createQName(INITIAL_TYPE);
         DictionaryService dictionaryService = serviceRegistryMock.getDictionaryService();
@@ -269,7 +269,7 @@ public class SetMetadataUnitTest {
         inOrder.verify(nodeServiceAlfrescoMock).addAspect(eq(testNodeRef), eq(QName.createQName(ASPECT3)), any(Map.class));
     }
 
-    @Test
+
     public void testGeneralizeTypeWithCleanUpDisabled() {
         QName initialType = QName.createQName(INITIAL_TYPE);
         DictionaryService dictionaryService = serviceRegistryMock.getDictionaryService();

@@ -9,7 +9,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class StoreRefTest {
 
-    @Test
+
     public void TestParse() {
         StoreRef n = new StoreRef("workspace://SpacesStore");
         assertEquals("workspace", n.getProtocol());
@@ -20,7 +20,7 @@ public class StoreRefTest {
         assertEquals("VersionStore", n.getId());
     }
 
-    @Test
+
     public void TestParseMultiTenant() {
         StoreRef n = new StoreRef("workspace://SpacesStore@tenant");
         assertEquals("workspace", n.getProtocol());

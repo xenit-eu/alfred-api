@@ -15,7 +15,7 @@ import org.junit.Test;
  */
 public class NodeInfoSerializationTest {
 
-    @Test
+    
 
     public void TestDeserializeNodeInfoJson() throws IOException {
         NodeInfo nodeinfo = new NodeInfo();

@@ -26,21 +26,21 @@ public class TranslationsServiceUnitTest {
         when(messageServiceMock.getMessage(facetBucketMonthLabel)).thenReturn(facetBucketMonthLabel);
     }
 
-    @Test
+
     public void TestGetTranslatedMessage_GetMessageFromMessageService() {
         TranslationService ts = new TranslationService(serviceRegistryMock, null, null, messageServiceMock);
         Assert.assertEquals(facetBucketMonthLabel, ts.getMessageTranslation(facetBucketMonthLabel));
         Assert.assertNotNull(ts.getMessageTranslation(facetBucketMonthLabel));
     }
 
-    @Test
+
     public void TestGetTranslatedMessage_NullMessageService() {
         TranslationService ts = new TranslationService(serviceRegistryMock, null, null, null);
         Assert.assertEquals(facetBucketMonthLabel, ts.getMessageTranslation(facetBucketMonthLabel));
         Assert.assertNotNull(ts.getMessageTranslation(facetBucketMonthLabel));
     }
 
-    @Test
+
     public void TestGetTranslatedMessage_NullParameter() {
         TranslationService ts = new TranslationService(serviceRegistryMock, null, null, messageServiceMock);
         Assert.assertNull(ts.getMessageTranslation(null));

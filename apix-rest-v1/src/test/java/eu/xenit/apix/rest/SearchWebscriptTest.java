@@ -19,7 +19,7 @@ import org.junit.runner.RunWith;
 
 public class SearchWebscriptTest {
 
-    @Test
+
     public void Test() throws IOException {
         ObjectMapper m = new SearchNodeJsonParser().getObjectMapper();
         String jsonInput = "{\"query\":{\"property\":{\"name\":\"cm:name\",\"value\":\"Company Home\"}},\"paging\":{\"limit\":1,\"skip\":0},\"facets\":{\"enabled\":false}}";

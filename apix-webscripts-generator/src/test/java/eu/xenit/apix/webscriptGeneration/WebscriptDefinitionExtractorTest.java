@@ -37,7 +37,7 @@ public class WebscriptDefinitionExtractorTest {
 
     }
 
-    @Test
+
     public void TestUriAnnotation() {
         assertEquals("/base/method", def1.getUrl());
         assertEquals("get", def1.getMethod());
@@ -56,7 +56,7 @@ public class WebscriptDefinitionExtractorTest {
         assertEquals("testPost", def2.getTargetmethodname());
     }
 
-    @Test
+
     public void TestWebscriptAnnotation() {
         java.util.List<WebscriptDefinition> defs = extractor.extractWebscripts(TestDEWebscript1.class);
         assertEquals(2, defs.size());
@@ -69,7 +69,7 @@ public class WebscriptDefinitionExtractorTest {
     }
 
 
-    @Test
+
     public void TestAuthenticationAnnotation() {
         // Test on webscript annotation
         assertEquals("guest", def1.getAuthentication());

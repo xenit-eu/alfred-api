@@ -60,7 +60,7 @@ public class RenameUnitTest {
         apixAlfrescoConverter = new ApixToAlfrescoConversion(serviceRegistry);
     }
 
-    @Test
+
     public void testSetNameCallsRenameOfFileFolderService() {
         FileFolderService alfrescoFileFolderService = serviceRegistry.getFileFolderService();
         NodeService alfrescoNodeService = serviceRegistry.getNodeService();

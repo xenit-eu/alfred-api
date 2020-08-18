@@ -26,7 +26,7 @@ public class WebscriptGeneratorTest {
         gen = new WebscriptGenerator();
     }
 
-    @Test
+
     public void TestGenerateDescXmlFilename() {
         WebscriptDefinition def = new WebscriptDefinition();
 
@@ -52,7 +52,7 @@ public class WebscriptGeneratorTest {
         assertEquals("eu/xenit/apix/webscriptGeneration/testScript2.put.desc.xml", gen.generateDescXmlFilename(def));
     }
 
-    @Test
+
     public void TestGenerateDescXml() {
         WebscriptDefinition def = new WebscriptDefinition();
 
@@ -80,7 +80,7 @@ public class WebscriptGeneratorTest {
 
     }
 
-    @Test
+
     public void TestGenerateSpringXml() {
         WebscriptDefinition def1 = new WebscriptDefinition();
         WebscriptDefinition def2 = new WebscriptDefinition();
@@ -114,7 +114,7 @@ public class WebscriptGeneratorTest {
         assertTrue(contents.contains("bean id=\"webscript.eu.xenit.apix.webgen.test.simpleTest2.post"));
     }
 
-    @Test(expected = Exception.class)
+    (expected = Exception.class)
     public void TestGenerateSpringXml_DontAllowEmptyPackage1() {
         WebscriptDefinition def1 = new WebscriptDefinition();
         def1.setId("simpleTest1");
@@ -124,7 +124,7 @@ public class WebscriptGeneratorTest {
         String contents = gen.generateSpringXml(Arrays.asList(def1));
     }
 
-    @Test(expected = Exception.class)
+    (expected = Exception.class)
     public void TestGenerateSpringXml_DontAllowEmptyPackage2() {
         WebscriptDefinition def1 = new WebscriptDefinition();
         def1.setId("simpleTest1");
@@ -134,7 +134,7 @@ public class WebscriptGeneratorTest {
         String contents = gen.generateSpringXml(Arrays.asList(def1));
     }
 
-    @Test
+
     public void TestGenerateJavaAdapterClass_Filename() {
         WebscriptDefinition def = new WebscriptDefinition();
 
@@ -149,7 +149,7 @@ public class WebscriptGeneratorTest {
 
     }
 
-    @Test
+
     public void TestGenerateJavaAdapterClass() throws NoSuchMethodException {
         WebscriptDefinition def = new WebscriptDefinition();
 
