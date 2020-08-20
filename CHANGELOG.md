@@ -8,6 +8,8 @@
 ### Changed
 
 ### Fixed
+* [ALFREDAPI-428](https://xenitsupport.jira.com/browse/ALFREDAPI-428): Replace PersonService#getPerson(String userName) with getPersonOrNull(String userName) to avoid creation of new users when getPerson is called with a nonexistent userName.
+
 
 ### Deleted
 

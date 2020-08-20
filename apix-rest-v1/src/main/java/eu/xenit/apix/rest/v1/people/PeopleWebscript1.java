@@ -15,6 +15,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.io.IOException;
+import java.util.NoSuchElementException;
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,13 +42,16 @@ public class PeopleWebscript1 extends ApixV1Webscript {
     public void getPerson(@UriVariable final String space, @UriVariable final String store,
             @UriVariable final String guid, WebScriptResponse webScriptResponse) throws IOException {
         logger.debug("Asked person with guid: " + guid);
-        Person p = personService.GetPerson(createNodeRef(space, store, guid));
-        if (p == null) {
-            webScriptResponse.setStatus(404);
-            webScriptResponse.getWriter().write("Person does not exist");
-            return;
+        try {
+            Person p = personService.GetPerson(createNodeRef(space, store, guid));
+            writeJsonResponse(webScriptResponse, p);
+        } catch (NoSuchElementException noSuchElementException) {
+            webScriptResponse.setStatus(HttpStatus.SC_NOT_FOUND);
+            writeJsonResponse(webScriptResponse, noSuchElementException.getMessage());
+        } catch (IllegalArgumentException illegalArgumentException) {
+            webScriptResponse.setStatus(HttpStatus.SC_BAD_REQUEST);
+            writeJsonResponse(webScriptResponse, illegalArgumentException.getMessage());
         }
-        writeJsonResponse(webScriptResponse, p);
     }
 
     @Uri(value = "/people", method = HttpMethod.GET)
@@ -55,12 +60,15 @@ public class PeopleWebscript1 extends ApixV1Webscript {
     public void getPersonViaUserName(@RequestParam final String userName, WebScriptResponse webScriptResponse)
             throws IOException {
         logger.debug("Asked person with name: " + userName);
-        Person p = personService.GetPerson(userName);
-        if (p == null) {
-            webScriptResponse.setStatus(404);
-            webScriptResponse.getWriter().write("Person does not exist");
-            return;
+        try{
+            Person p = personService.GetPerson(userName);
+            writeJsonResponse(webScriptResponse, p);
+        } catch (NoSuchElementException noSuchElementException) {
+            webScriptResponse.setStatus(HttpStatus.SC_NOT_FOUND);
+            writeJsonResponse(webScriptResponse, noSuchElementException.getMessage());
+        } catch (IllegalArgumentException illegalArgumentException) {
+            webScriptResponse.setStatus(HttpStatus.SC_BAD_REQUEST);
+            writeJsonResponse(webScriptResponse, illegalArgumentException.getMessage());
         }
-        writeJsonResponse(webScriptResponse, p);
     }
 }

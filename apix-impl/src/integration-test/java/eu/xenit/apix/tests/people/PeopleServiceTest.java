@@ -9,6 +9,7 @@ import eu.xenit.apix.tests.BaseTest;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
+import java.util.NoSuchElementException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -83,6 +84,21 @@ public class PeopleServiceTest extends BaseTest {
 
     }
 
+    @Test(expected = NoSuchElementException.class)
+    public void TestGetNonExistentPerson() {
+        serviceRegistry.getRetryingTransactionHelper()
+                .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>() {
+                    @Override
+                    public Void execute() throws Throwable {
+
+                        Person p = peopleService.GetPerson("NonExistentUser");
+                        //Will return NoSuchElementException for non-existing users
+                        return null;
+                    }
+                }, false, true);
+    }
+
+    @Test
     public void TestGetPeople() {
         final HashMap<QName, Serializable> propsA = new HashMap<QName, Serializable>();
         final HashMap<QName, Serializable> propsB = new HashMap<QName, Serializable>();
