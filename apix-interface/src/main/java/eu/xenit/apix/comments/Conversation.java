@@ -26,7 +26,7 @@ public class Conversation {
         this.comments = comments;
     }
 
-    public boolean isHasMore() {
+    public boolean hasMore() {
         return hasMore;
     }
 
@@ -51,14 +51,14 @@ public class Conversation {
             return false;
         }
         Conversation that = (Conversation) o;
-        return isHasMore() == that.isHasMore() &&
+        return hasMore() == that.hasMore() &&
                 isCreatable() == that.isCreatable() &&
                 getComments().equals(that.getComments());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getComments(), isHasMore(), isCreatable());
+        return Objects.hash(getComments(), hasMore(), isCreatable());
     }
 }
 

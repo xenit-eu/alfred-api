@@ -63,7 +63,7 @@ public class CommentServiceTest extends BaseTest {
                 .createComment(testDocumentNode.getNodeRef(), commentTitle, commentContent, false);
         Conversation actual = commentService.getComments(apixConversion.apix(testDocumentNode.getNodeRef()), 0, 10);
         assertTrue(actual.isCreatable());
-        assertFalse(actual.isHasMore());
+        assertFalse(actual.hasMore());
         assertEquals(1, actual.getComments().size());
         Comment apixComment = actual.getComments().get(0);
         assertEquals(apixConversion.apix(commentNode), apixComment.getId());
@@ -81,7 +81,7 @@ public class CommentServiceTest extends BaseTest {
         alfrescoCommentService.createComment(testDocumentNode.getNodeRef(), commentTitle, commentContent, false);
         alfrescoCommentService.createComment(testDocumentNode.getNodeRef(), commentTitle, commentContent, false);
         Conversation actual = commentService.getComments(apixConversion.apix(testDocumentNode.getNodeRef()), 0, 1);
-        assertTrue(actual.isHasMore());
+        assertTrue(actual.hasMore());
         assertEquals(1, actual.getComments().size());
     }
 

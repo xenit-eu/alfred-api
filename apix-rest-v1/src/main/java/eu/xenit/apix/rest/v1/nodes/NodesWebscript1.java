@@ -688,7 +688,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
             @ApiResponse(code = 403, message = "Not Authorized"),
             @ApiResponse(code = 404, message = "Not Found")
     })
-    public void postComment(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
+    public void addComment(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
             final Comment newComment, WebScriptRequest request, WebScriptResponse response) throws IOException {
         final NodeRef target = new NodeRef(space, store, guid);
         if (nodeService.exists(target)) {
@@ -723,7 +723,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
     @Uri(value = "/nodes/{space}/{store}/{guid}/comment",
             method = HttpMethod.DELETE)
     @ApiResponses({
-            @ApiResponse(code = 204, message = "Success"),
+            @ApiResponse(code = 200, message = "Success"),
             @ApiResponse(code = 403, message = "Not Authorized"),
             @ApiResponse(code = 404, message = "Not Found")
     })
@@ -732,7 +732,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         final NodeRef targetComment = new NodeRef(space, store, guid);
         if (nodeService.exists(targetComment)) {
             commentService.deleteComment(targetComment);
-            response.setStatus(204);
+            response.setStatus(200);
             writeJsonResponse(response, "Comment deleted");
         } else {
             writeNotFoundResponse(response, targetComment);
