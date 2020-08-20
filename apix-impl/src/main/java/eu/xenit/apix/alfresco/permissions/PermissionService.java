@@ -155,7 +155,7 @@ public class PermissionService implements IPermissionService {
             case DENIED:
             case UNDETERMINED:
             default:
-                logger.warn("User {} does not have permission {} on node {} due to access status {}",
+                logger.debug("User {} does not have permission {} on node {} due to access status {}",
                         fullyAuthenticatedUser, permission, nodeRef, accessStatus);
                 return false;
         }
