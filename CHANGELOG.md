@@ -1,9 +1,9 @@
 # Alfred API - Changelog
 
-## 2.6.0 (UNRELEASED)
+## 2.6.0 (2020-08-26)
 
 ### Added
-* [ALFREDAPI-298](https://xenitsupport.jira.com/browse/ALFREDAPI-438): Add CRUD api for comments
+* [ALFREDAPI-298](https://xenitsupport.jira.com/browse/ALFREDAPI-298): Add CRUD api for comments
 * [ALFREDAPI-403](https://xenitsupport.jira.com/browse/ALFREDAPI-403): Added support for special search terms 'isunset', 'isnull', 'isnotnull' and 'exists'
 
 ### Changed
@@ -11,9 +11,6 @@
 
 ### Fixed
 * [ALFREDAPI-428](https://xenitsupport.jira.com/browse/ALFREDAPI-428): Replace PersonService#getPerson(String userName) with getPersonOrNull(String userName) to avoid creation of new users when getPerson is called with a nonexistent userName.
-
-
-### Deleted
 
 
 ## 2.5.2 (2020-08-12)
