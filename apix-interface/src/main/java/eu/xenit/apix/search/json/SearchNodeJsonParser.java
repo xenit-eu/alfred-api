@@ -26,7 +26,8 @@ public class SearchNodeJsonParser {
 
         // TODO: improve Type configuration location, use annotation in nodes?
 
-        for (String term : newArrayList("type", "aspect", "noderef", "path", "text", "parent", "category", "all")) {
+        for (String term : newArrayList("type", "aspect", "noderef", "path", "text", "parent", "category",
+                "all", "isunset", "isnull", "isnotnull", "exists")) {
             mapper.registerSubtypes(new NamedType(TermSearchNode.class, term));
         }
         for (String operand : newArrayList("and", "or")) {

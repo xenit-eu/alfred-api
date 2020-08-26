@@ -3,6 +3,7 @@ package eu.xenit.apix.tests.search;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import eu.xenit.apix.alfresco.dictionary.PropertyService;
 import eu.xenit.apix.alfresco.search.FtsNodeVisitor;
@@ -10,6 +11,7 @@ import eu.xenit.apix.data.QName;
 import eu.xenit.apix.properties.PropertyDefinition;
 import eu.xenit.apix.search.QueryBuilder;
 import eu.xenit.apix.search.nodes.SearchSyntaxNode;
+import eu.xenit.apix.search.nodes.TermSearchNode;
 import eu.xenit.apix.search.visitors.SearchSyntaxPrinter;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +24,10 @@ import org.slf4j.LoggerFactory;
 public class FtsNodeVisitorTest {
 
     private final static Logger logger = LoggerFactory.getLogger(FtsNodeVisitorTest.class);
+    private final static String IS_UNSET = "isunset";
+    private final static String IS_NULL = "isnull";
+    private final static String IS_NOT_NULL = "isnotnull";
+    private final static String EXISTS = "exists";
 
     private Map<QName, String> propertyToDataType = new HashMap<QName, String>() {{
         put(new QName("{tenant.model}stringProperty1"), "{http://www.alfresco.org/model/dictionary/1.0}text");
@@ -55,6 +61,34 @@ public class FtsNodeVisitorTest {
                 containsString("{tenant.model}stringProperty2"));
         assertThat("Fts search String does not contain wanted term", ftsQuery,
                 containsString("{tenant.model}intProperty"));
+    }
+
+    @Test
+    public void testIsUnsetTerm() {
+        assertEquals("ISUNSET:\"prefix:test_prop\"", convertToFtsTerm(IS_UNSET));
+    }
+
+    @Test
+    public void testIsNullTerm() {
+        assertEquals("ISNULL:\"prefix:test_prop\"", convertToFtsTerm(IS_NULL));
+    }
+
+    @Test
+    public void testIsNotNullTerm() {
+        assertEquals("ISNOTNULL:\"prefix:test_prop\"", convertToFtsTerm(IS_NOT_NULL));
+    }
+
+    @Test
+    public void testExistsTerm() {
+        assertEquals("EXISTS:\"prefix:test_prop\"", convertToFtsTerm(EXISTS));
+    }
+
+    private String convertToFtsTerm(String apixTerm) {
+        PropertyService propertyService = new PropertyServiceStub(propertyToDataType);
+        FtsNodeVisitor ftsnodeVisitor = new FtsNodeVisitor(propertyService);
+        TermSearchNode searchNode = new TermSearchNode(apixTerm, "prefix:test_prop");
+
+        return ftsnodeVisitor.visit(searchNode);
     }
 
     private SearchSyntaxNode generateAllQuery(String value) {
