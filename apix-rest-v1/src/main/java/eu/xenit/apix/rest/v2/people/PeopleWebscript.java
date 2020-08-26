@@ -16,7 +16,9 @@ import io.swagger.annotations.ApiResponses;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +44,16 @@ public class PeopleWebscript extends ApixV2Webscript {
     public void getPerson(@UriVariable final String space, @UriVariable final String store,
             @UriVariable final String guid, WebScriptResponse webScriptResponse) throws IOException {
         logger.debug("Asked person with guid: " + guid);
-        Person p = personService.GetPerson(createNodeRef(space, store, guid));
-        writeJsonResponse(webScriptResponse, p);
+        try {
+            Person p = personService.GetPerson(createNodeRef(space, store, guid));
+            writeJsonResponse(webScriptResponse, p);
+        } catch (NoSuchElementException noSuchElementException) {
+            webScriptResponse.setStatus(HttpStatus.SC_NOT_FOUND);
+            writeJsonResponse(webScriptResponse, noSuchElementException);
+        } catch (IllegalArgumentException illegalArgumentException) {
+            webScriptResponse.setStatus(HttpStatus.SC_BAD_REQUEST);
+            writeJsonResponse(webScriptResponse, illegalArgumentException);
+        }
     }
 
     @Uri(value = "/people", method = HttpMethod.GET)
@@ -68,13 +78,16 @@ public class PeopleWebscript extends ApixV2Webscript {
     public void getPersonWithName(@UriVariable final String name, WebScriptResponse webScriptResponse)
             throws IOException {
         logger.debug("Asked person with name: " + name);
-        Person p = personService.GetPerson(name);
-        if (p == null) {
-            webScriptResponse.setStatus(404);
-            webScriptResponse.getWriter().write("Person does not exist");
-            return;
+        try{
+            Person p = personService.GetPerson(name);
+            writeJsonResponse(webScriptResponse, p);
+        } catch (NoSuchElementException noSuchElementException) {
+            webScriptResponse.setStatus(HttpStatus.SC_NOT_FOUND);
+            writeJsonResponse(webScriptResponse, noSuchElementException.getMessage());
+        } catch (IllegalArgumentException illegalArgumentException) {
+            webScriptResponse.setStatus(HttpStatus.SC_BAD_REQUEST);
+            writeJsonResponse(webScriptResponse, illegalArgumentException.getMessage());
         }
-        writeJsonResponse(webScriptResponse, p);
     }
 
     @Uri(value = "/people/containergroups/{name}", method = HttpMethod.GET)
