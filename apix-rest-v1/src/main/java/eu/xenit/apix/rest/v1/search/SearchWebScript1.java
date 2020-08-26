@@ -55,7 +55,7 @@ public class SearchWebScript1 extends ApixV1Webscript {
           + "- path: searches the nodes with that path (for example: \"path\" : \"/\")\n"
           + "- category: searches the nodes with that category (for example: \"category\" : \"workspace://SpacesStore/f0d15919-3841-4170-807f-b81d2ebdeb80\")\n"
           + "- text: searches the nodes with content containing that text (for example: \"text\" : \"this text\")\n"
-          + "- all: searches the nodes with content containing the value (for example: \"all\" : \"search term\")\n"
+          + "- all: searches the nodes with content, cm:name, cm:creator, cm:modifier or cm:author containing the value (for example: \"all\" : \"search term\")\n"
           + "- isunset: searches the nodes with where the value of the property is not set (for example: \"isunset\" : \"cm:author\")\n"
           + "- isnull: searches the nodes with where the value of the property is null (for example: \"isnull\" : \"cm:author\")\n"
           + "- isnotnull: searches the nodes with where the value of the property is not null (for example: \"isnotnull\" : \"cm:author\")\n"
