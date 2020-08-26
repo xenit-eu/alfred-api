@@ -4,6 +4,7 @@
 
 ### Added
 * [ALFREDAPI-298](https://xenitsupport.jira.com/browse/ALFREDAPI-438): Add CRUD api for comments
+* [ALFREDAPI-403](https://xenitsupport.jira.com/browse/ALFREDAPI-403): Added support for special search terms 'isunset', 'isnull', 'isnotnull' and 'exists'
 
 ### Changed
 * [ALFREDAPI-395](https://xenitsupport.jira/com/browse/ALFREDAPI-395): Change loglevels of PermissionSerivce#hasPermission
