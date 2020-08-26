@@ -38,6 +38,10 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
         termToFtsTerm.put("category", "CATEGORY");
         termToFtsTerm.put("text", "TEXT");
         termToFtsTerm.put("all", "ALL");
+        termToFtsTerm.put("isunset", "ISUNSET");
+        termToFtsTerm.put("isnull", "ISNULL");
+        termToFtsTerm.put("isnotnull", "ISNOTNULL");
+        termToFtsTerm.put("exists", "EXISTS");
         this.propertyTypeCheckService = new PropertyTypeCheckService(propertyService);
         //termToFtsTerm.put("","");
     }

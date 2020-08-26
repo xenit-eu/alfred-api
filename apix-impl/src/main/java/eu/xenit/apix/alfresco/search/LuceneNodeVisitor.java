@@ -26,6 +26,10 @@ public class LuceneNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
         termDictionary.put("category", "CATEGORY");
         termDictionary.put("text", "TEXT");
         termDictionary.put("all", "ALL");
+        termDictionary.put("isunset", "ISUNSET");
+        termDictionary.put("isnull", "ISNULL");
+        termDictionary.put("isnotnull", "ISNOTNULL");
+        termDictionary.put("exists", "EXISTS");
         //termDictionary.put("","");
     }
 
