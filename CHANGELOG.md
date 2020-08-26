@@ -3,6 +3,9 @@
 
 
 ## 2.6.1 (2020-09-07)
+### Added
+* [ALFREDAPI-298](https://xenitsupport.jira.com/browse/ALFREDAPI-438): Add CRUD api for comments
+* [ALFREDAPI-443](https://xenitsupport.jira.com/browse/ALFREDAPI-442): Add webscript to get all properties and aspects
 
 ### Changed
 * [ALFREDAPI-444](https://xenitsupport.jira.com/browse/ALFREDAPI-444): Updated and extended Create & Copy node integrationtests for "/nodes"
