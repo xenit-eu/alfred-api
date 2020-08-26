@@ -65,30 +65,22 @@ public class FtsNodeVisitorTest {
 
     @Test
     public void testIsUnsetTerm() {
-        String ftsQuery = convertToFtsTerm(IS_UNSET);
-        String expectedResult = "ISUNSET:\"prefix:test_prop\"";
-        assertEquals(expectedResult, ftsQuery);
+        assertEquals("ISUNSET:\"prefix:test_prop\"", convertToFtsTerm(IS_UNSET));
     }
 
     @Test
     public void testIsNullTerm() {
-        String ftsQuery = convertToFtsTerm(IS_NULL);
-        String expectedResult = "ISNULL:\"prefix:test_prop\"";
-        assertEquals(expectedResult, ftsQuery);
+        assertEquals("ISNULL:\"prefix:test_prop\"", convertToFtsTerm(IS_NULL));
     }
 
     @Test
     public void testIsNotNullTerm() {
-        String ftsQuery = convertToFtsTerm(IS_NOT_NULL);
-        String expectedResult = "ISNOTNULL:\"prefix:test_prop\"";
-        assertEquals(expectedResult, ftsQuery);
+        assertEquals("ISNOTNULL:\"prefix:test_prop\"", convertToFtsTerm(IS_NOT_NULL));
     }
 
     @Test
     public void testExistsTerm() {
-        String ftsQuery = convertToFtsTerm(EXISTS);
-        String expectedResult = "EXISTS:\"prefix:test_prop\"";
-        assertEquals(expectedResult, ftsQuery);
+        assertEquals("EXISTS:\"prefix:test_prop\"", convertToFtsTerm(EXISTS));
     }
 
     private String convertToFtsTerm(String apixTerm) {
