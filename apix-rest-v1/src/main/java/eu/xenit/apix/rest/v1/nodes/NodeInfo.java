@@ -39,6 +39,14 @@ public class NodeInfo {
         this.path = path;
     }
 
+    public NodeRef getNoderef() {
+        return noderef;
+    }
+
+    public void setNoderef(NodeRef noderef) {
+        this.noderef = noderef;
+    }
+
     public NodeMetadata getMetadata() {
         return metadata;
     }
@@ -47,13 +55,6 @@ public class NodeInfo {
         this.metadata = metadata;
     }
 
-    public NodeRef getNoderef() {
-        return noderef;
-    }
-
-    public void setNoderef(NodeRef noderef) {
-        this.noderef = noderef;
-    }
 
     public Map<String, PermissionValue> getPermissions() {
         return permissions;

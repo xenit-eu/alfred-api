@@ -2,6 +2,9 @@ package eu.xenit.apix.node;
 
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
 
@@ -14,7 +17,9 @@ import java.util.Map;
  * properties, which is a Map from QName to String list. The aspects of the node, which is a list of qnames.
  */
 public class NodeMetadata {
-
+    @JsonSubTypes({
+            @JsonSubTypes.Type(value=NodeRef.class, name = "id")
+    })
     public NodeRef id;
     public QName type; // qname
     public QName baseType; //qname
@@ -28,8 +33,13 @@ public class NodeMetadata {
     //public NodeAssociation[] associations;
 
     @JsonCreator
-    public NodeMetadata(NodeRef id, QName type, QName baseType, long transactionId, Map<QName, List<String>> properties,
-            List<QName> aspects) {
+    public NodeMetadata(
+            @JsonProperty("id") NodeRef id,
+            @JsonProperty("type") QName type,
+            @JsonProperty("baseType") QName baseType,
+            @JsonProperty("transactionId") long transactionId,
+            @JsonProperty("properties") Map<QName, List<String>> properties,
+            @JsonProperty("aspects") List<QName> aspects) {
         this.id = id;
         this.type = type;
         this.baseType = baseType;
@@ -86,19 +96,16 @@ public class NodeMetadata {
         this.aspects = aspects;
     }
 
-    public NodeMetadata() {
 
+    @Override
+    public String toString() {
+        return "NodeMetadata{" +
+                "id='" + id + '\'' +
+                ", type='" + type + '\'' +
+                ", baseType=" + baseType + '\'' +
+                ", transactionId=" + transactionId +
+                ", properties=" + (properties != null ? properties.entrySet() : "") +
+                ", aspects=" + aspects +
+                '}';
     }
-
-//    @Override
-//    public String toString() {
-//        return "NodeMetadata{" +
-//                "id='" + id + '\'' +
-//                ", type='" + type + '\'' +
-//                ", baseType=" + baseType + '\'' +
-//                ", transactionId=" + transactionId +
-//                ", properties=" + (properties != null ? properties.entrySet() : "") +
-//                ", aspects=" + aspects +
-//                '}';
-//    }
 }
