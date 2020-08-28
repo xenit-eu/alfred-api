@@ -19,12 +19,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
@@ -51,21 +48,19 @@ public abstract class NodesBaseTest extends BaseTest {
         return properties;
     }
 
-
-
     public eu.xenit.apix.data.NodeRef doPostNodes(CreateNodeOptions createNodeOptions, int expectedResponseCode, String username, String password) throws Throwable {
         // If username || password is null, admin account is used
         final String url = (username == null || password == null ) ? getSimpleNodesUrl() : getSimpleNodesUrl(username, password);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         String requestBody = objectMapper.writeValueAsString(createNodeOptions);
-        System.out.println("RequestBody : " + requestBody);
 
+        //Jackson setup needs to be fixed to use full deserialization
         NodeInfo nodeInfo = null; //doPostExpected(url, NodeInfo.class, requestBody, expectedResponseCode);
 
         if (nodeInfo != null) {
             //deserialization succeeded
-            return nodeInfo.getNoderef();
+            return nodeInfo.noderef;
         } else {
             //deserialization failed
             HttpEntityEnclosingRequestBase req = new HttpPost(url);
@@ -105,19 +100,16 @@ public abstract class NodesBaseTest extends BaseTest {
 
         if (createNodeOptions.type != null) {
             assertEquals(createNodeOptions.type, nodeService.getMetadata(newRef).type.toString());
-            System.out.println("Type test succeeded");
         }
 
         if (createNodeOptions.copyFrom != null) {
             assertEquals(true, nodeService.exists(new NodeRef(createNodeOptions.copyFrom)));
-            System.out.println("copyfrom test succeeded");
         }
 
         if (createNodeOptions.properties != null) {
             for (Map.Entry<QName, String[]> property : createNodeOptions.properties.entrySet()) {
                 assertArrayEquals(property.getValue(), nodeService.getMetadata(newRef).properties.get(property.getKey()).toArray());
             }
-            System.out.println("properties test succeeded");
         }
     }
 

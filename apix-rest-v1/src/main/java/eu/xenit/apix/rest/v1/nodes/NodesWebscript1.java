@@ -585,8 +585,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
     @ApiOperation("Creates or copies a node")
     @Uri(value = "/nodes", method = HttpMethod.POST)
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Success", response = NodeInfo.class),
+    @ApiResponses({@ApiResponse(code = 200, message = "Success", response = NodeInfo.class),
             @ApiResponse(code = 403, message = "Not Authorized")})
     public void createNode(final CreateNodeOptions createNodeOptions, WebScriptResponse response) throws IOException {
         Object resultObject = serviceRegistry.getRetryingTransactionHelper()

@@ -1,7 +1,6 @@
 package eu.xenit.apix.data;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.io.Serializable;
 
@@ -16,11 +15,10 @@ public class NodeRef implements Serializable {
     private static final String FORWARD_SLASH = "/";
     private static final String SPACESTORE_DIVIDER = "://";
 
-
-    public String value;
+    private String value;
 
     @JsonCreator
-    public NodeRef(@JsonProperty("value") String s) {
+    public NodeRef(String s) {
         value = s;
     }
 

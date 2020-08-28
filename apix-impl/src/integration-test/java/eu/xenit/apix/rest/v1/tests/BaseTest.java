@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.admin.SysAdminParams;
 import org.alfresco.repo.model.Repository;
@@ -188,7 +187,6 @@ public abstract class BaseTest {
         String ticket = authenticationService.getCurrentTicket();
         return String.format(makeAlfrescoBaseurl() + "/apix/" + getVersion() + "/bulk?alf_ticket=" + ticket);
     }
-
 
     protected HashMap<String, eu.xenit.apix.data.NodeRef> init() {
         final HashMap<String, eu.xenit.apix.data.NodeRef> initializedNodeRefs = new HashMap<>();
@@ -408,8 +406,6 @@ public abstract class BaseTest {
             return null;
         }
     }
-
-
 
     public <T> T doGet(String checkoutUrl, Class<T> returnType) throws IOException {
         final HttpResponse response = Request.Get(checkoutUrl).execute().returnResponse();
