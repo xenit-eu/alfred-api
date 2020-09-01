@@ -2,6 +2,9 @@ package eu.xenit.apix.rest.v1.tests;
 
 import static org.junit.Assert.assertEquals;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.xenit.apix.integrationtesting.runner.ApixIntegration;
 import eu.xenit.apix.tests.ApixImplBundleFilter;
 import eu.xenit.testing.integrationtesting.runner.UseSpringContextOfBundle;
@@ -27,6 +30,7 @@ import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -36,7 +40,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -364,14 +367,22 @@ public abstract class BaseTest {
     }
 
     public <T> T doPost(String checkoutUrl, Class<T> returnType, String jsonBody, Object... args) throws IOException {
-        return doWithBody(new HttpPost(checkoutUrl), returnType, jsonBody, args);
+        return doWithBody(new HttpPost(checkoutUrl), returnType, HttpStatus.SC_OK, jsonBody,  args);
+    }
+
+    public <T> T doPostExpected(String checkoutUrl, Class<T> returnType, String jsonBody, int expectedResponse, Object... args) throws IOException {
+        return doWithBody(new HttpPost(checkoutUrl), returnType, expectedResponse, jsonBody, args);
     }
 
     public <T> T doPut(String checkoutUrl, Class<T> returnType, String jsonBody, Object... args) throws IOException {
-        return doWithBody(new HttpPut(checkoutUrl), returnType, jsonBody, args);
+        return doWithBody(new HttpPut(checkoutUrl), returnType, HttpStatus.SC_OK, jsonBody, args);
     }
 
-    private <T> T doWithBody(HttpEntityEnclosingRequestBase req, Class<T> returnType, String jsonBody, Object... args)
+    public <T> T doPutExpected(String checkoutUrl, Class<T> returnType, String jsonBody, int expectedResponse, Object... args) throws IOException {
+        return doWithBody(new HttpPut(checkoutUrl), returnType, expectedResponse, jsonBody, args);
+    }
+
+    private <T> T doWithBody(HttpEntityEnclosingRequestBase req, Class<T> returnType, int expectedResponseCode, String jsonBody, Object... args)
             throws IOException {
         final CloseableHttpClient checkoutHttpclient = HttpClients.createDefault();
         if (jsonBody != null) {
@@ -380,14 +391,19 @@ public abstract class BaseTest {
         }
 
         try (CloseableHttpResponse response = checkoutHttpclient.execute(req)) {
-            String result = EntityUtils.toString(response.getEntity());
-            assertEquals(200, response.getStatusLine().getStatusCode());
+            byte[] result = EntityUtils.toByteArray(response.getEntity());
+            assertEquals(expectedResponseCode, response.getStatusLine().getStatusCode());
             if (returnType == null) {
                 return null;
             }
-            T ret = new ObjectMapper().readValue(result, returnType);
-            return ret;
 
+            try {
+                T ret = new ObjectMapper().readValue(result, returnType);
+                return ret;
+            } catch (JsonMappingException | JsonParseException jsonException) {
+                logger.error("Jackson was not able to automatically deserialise: " + returnType);
+            }
+            return null;
         }
     }
 

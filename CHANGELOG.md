@@ -6,7 +6,7 @@
 
 
 ### Changed
-
+* [ALFREDAPI-444](https://xenitsupport.jira.com/browse/ALFREDAPI-444): Updated and extended Create & Copy node integrationtests for "/nodes"
 
 ### Fixed
 
