@@ -12,6 +12,7 @@
 
 
 ### Deleted
+* [ALFREDAPI-447](https://xenitsupport.jira.com/browse/ALFREDAPI-447): Removed unused class LuceneNodeVisitor. This does not affect functionality of the API.
 
 ## 2.6.0 (2020-08-26)
 
