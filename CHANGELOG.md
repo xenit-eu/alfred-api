@@ -9,7 +9,7 @@
 * [ALFREDAPI-444](https://xenitsupport.jira.com/browse/ALFREDAPI-444): Updated and extended Create & Copy node integrationtests for "/nodes"
 
 ### Fixed
-
+* [ALFREDAPI-438](https://xenitsupport.jira.com/browse/ALFREDAPI-438): Fixed issue where wrong permissions would be checked when retrieving ancestors of a node
 
 ### Deleted
 * [ALFREDAPI-447](https://xenitsupport.jira.com/browse/ALFREDAPI-447): Removed unused class LuceneNodeVisitor. This does not affect functionality of the API.
