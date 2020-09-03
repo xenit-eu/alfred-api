@@ -654,7 +654,6 @@ public class NodesWebscript1 extends ApixV1Webscript {
         NodeRef parent = new NodeRef(location.parent);
         NodeRef nodeToMove = createNodeRef(space, store, guid);
         nodeService.moveNode(nodeToMove, parent);
-
     }
 
     @ApiOperation(value = "Retrieves all comments for a given node")
@@ -665,8 +664,8 @@ public class NodesWebscript1 extends ApixV1Webscript {
             @ApiResponse(code = 404, message = "Not Found")
     })
     public void getComments(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
-            @RequestParam int skipcount, @RequestParam int pagesize, WebScriptResponse response) throws IOException {
-        final NodeRef target = new NodeRef(space, store, guid);
+            @RequestParam(defaultValue = "0") int skipcount, @RequestParam(defaultValue = "10") int pagesize, WebScriptResponse response) throws IOException {
+        final NodeRef target = this.createNodeRef(space, store, guid);
         if (nodeService.exists(target)) {
             if(permissionService.hasPermission(target, PermissionService.READ)) {
                 Conversation comments = commentService.getComments(target, skipcount, pagesize);
@@ -714,8 +713,9 @@ public class NodesWebscript1 extends ApixV1Webscript {
         final NodeRef targetComment = new NodeRef(space, store, guid);
         if (nodeService.exists(targetComment)) {
             if(permissionService.hasPermission(targetComment, PermissionService.READ)) {
+                Comment comment = commentService.getComment(targetComment);
                 response.setStatus(HttpStatus.SC_OK);
-                writeJsonResponse(response, targetComment);
+                writeJsonResponse(response, comment);
             } else {
                 throw new AccessDeniedException(String.format("User does not have permission " +
                         "to read the comment node %s", targetComment.toString()));
