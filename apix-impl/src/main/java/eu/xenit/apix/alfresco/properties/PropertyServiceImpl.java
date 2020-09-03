@@ -57,19 +57,14 @@ public class PropertyServiceImpl implements IPropertyService {
     private eu.xenit.apix.properties.PropertyDefinition propertyDefinitionConstructor(
             PropertyDefinition definition) {
 
-        eu.xenit.apix.properties.PropertyDefinition propertyDefinitionUnderConstruction = new eu.xenit.apix.properties.PropertyDefinition();
-        propertyDefinitionUnderConstruction.setName(c.apix(definition.getName()));
-        propertyDefinitionUnderConstruction.setContainer(c.apix(definition.getContainerClass().getName()));
-        propertyDefinitionUnderConstruction.setTitle(definition.getTitle(messageService));
-        propertyDefinitionUnderConstruction.setDescription(definition.getDescription(messageService));
-        propertyDefinitionUnderConstruction.setDefaultValue(definition.getDefaultValue());
-        propertyDefinitionUnderConstruction.setDataType(c.apix(definition.getDataType().getName()));
-        propertyDefinitionUnderConstruction.setMultiValued(definition.isMultiValued());
-        propertyDefinitionUnderConstruction.setMandatory(definition.isMandatory());
-        propertyDefinitionUnderConstruction.setEnforced(definition.isMandatoryEnforced());
-        propertyDefinitionUnderConstruction.setIsProtected(definition.isProtected());
-        propertyDefinitionUnderConstruction.setIndexed(this.GetPropertyIndexOptions(definition));
-        propertyDefinitionUnderConstruction.setConstraints(this.GetConstraints(definition));
+        eu.xenit.apix.properties.PropertyDefinition propertyDefinitionUnderConstruction = new eu.xenit.apix.properties.PropertyDefinition(
+                c.apix(definition.getName()), c.apix(definition.getContainerClass().getName()),
+                definition.getTitle(messageService),
+                definition.getDescription(messageService), definition.getDefaultValue(),
+                c.apix(definition.getDataType().getName()), definition.isMultiValued(), definition.isMandatory(),
+                definition.isMandatoryEnforced(), definition.isProtected(), this.GetPropertyIndexOptions(definition),
+                this.GetConstraints(definition));
+
         return propertyDefinitionUnderConstruction;
 
     }

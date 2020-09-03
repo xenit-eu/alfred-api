@@ -1,6 +1,5 @@
 package eu.xenit.apix.dictionary.properties;
 
-import eu.xenit.apix.data.QName;
 import eu.xenit.apix.properties.Properties;
 import eu.xenit.apix.properties.PropertyDefinition;
 
