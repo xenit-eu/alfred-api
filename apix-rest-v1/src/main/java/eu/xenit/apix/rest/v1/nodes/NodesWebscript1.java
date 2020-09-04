@@ -700,7 +700,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         }
     }
 
-    @ApiOperation(value = "Gets the comment on the given node.")
+    @ApiOperation(value = "Returns the comment with the given id.")
     @Uri(value = "/comments/{space}/{store}/{guid}",
             method = HttpMethod.GET)
     @ApiResponses({
@@ -725,7 +725,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         }
     }
 
-    @ApiOperation(value = "Updates the comment on the given node.")
+    @ApiOperation(value = "Updates the comment with the given id.")
     @Uri(value = "/comments/{space}/{store}/{guid}",
             method = HttpMethod.PUT)
     @ApiResponses({
@@ -745,7 +745,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         }
     }
 
-    @ApiOperation(value = "Deletes the comment on the given node.")
+    @ApiOperation(value = "Deletes the comment with the given id.")
     @Uri(value = "/comments/{space}/{store}/{guid}",
             method = HttpMethod.DELETE)
     @ApiResponses({
