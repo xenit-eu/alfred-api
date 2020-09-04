@@ -18,8 +18,11 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.query.PagingRequest;
 import org.alfresco.query.PagingResults;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class CommentService implements ICommentService {
+    private final Logger logger = LoggerFactory.getLogger(CommentService.class);
 
     protected org.alfresco.repo.forum.CommentService commentService;
 
@@ -53,6 +56,12 @@ public abstract class CommentService implements ICommentService {
                         .collect(Collectors.toList()),
                 commentAlfNodes.hasMoreItems(),
                 canCreateComment(targetNode));
+    }
+
+    @Override
+    public Comment getComment(NodeRef commentNode) {
+        NodeRef alfTargetNode = getTargetDocumentForComment(commentNode);
+        return toComment(apixConverter.alfresco(alfTargetNode), apixConverter.alfresco(commentNode));
     }
 
     @Override

@@ -188,6 +188,19 @@ public abstract class BaseTest {
         return String.format(makeAlfrescoBaseurl() + "/apix/" + getVersion() + "/bulk?alf_ticket=" + ticket);
     }
 
+    protected String makeCommentsUrl(String space, String store, String guid, String userName,
+        String password) {
+        return String.format(makeAlfrescoBaseurl(userName, password) + "/apix/%s/comments/%s/%s/%s", getVersion(),
+                        space, store, guid);
+    }
+
+    protected String makeCommentsUrl(eu.xenit.apix.data.NodeRef nodeRef, String userName, String password) {
+        String space = nodeRef.getStoreRefProtocol();
+        String store = nodeRef.getStoreRefId();
+        String guid = nodeRef.getGuid();
+        return this.makeCommentsUrl(space, store, guid, userName, password);
+    }
+
     protected HashMap<String, eu.xenit.apix.data.NodeRef> init() {
         final HashMap<String, eu.xenit.apix.data.NodeRef> initializedNodeRefs = new HashMap<>();
         TransactionService transactionService = serviceRegistry.getTransactionService();

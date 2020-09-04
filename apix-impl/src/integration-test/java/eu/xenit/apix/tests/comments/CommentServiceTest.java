@@ -48,7 +48,7 @@ public class CommentServiceTest extends BaseTest {
     }
 
     @Test
-    public void test_getDocumentForComment() {
+    public void testGetDocumentForComment() {
         NodeRef commentNode = alfrescoCommentService
                 .createComment(testDocumentNode.getNodeRef(), commentTitle, commentContent, false);
         eu.xenit.apix.data.NodeRef documentApixNode = commentService
@@ -57,7 +57,7 @@ public class CommentServiceTest extends BaseTest {
     }
 
     @Test
-    public void test_getComments_withHasMoreIsFalse() {
+    public void testGetCommentsWithHasMoreIsFalse() {
         NodeService alfrescoNodeService = serviceRegistry.getNodeService();
         NodeRef commentNode = alfrescoCommentService
                 .createComment(testDocumentNode.getNodeRef(), commentTitle, commentContent, false);
@@ -77,7 +77,7 @@ public class CommentServiceTest extends BaseTest {
     }
 
     @Test
-    public void test_getComments_withHasMoreIsTrue_withPageSize() {
+    public void testFetCommentsWithHasMoreIsTrueWithPageSize() {
         alfrescoCommentService.createComment(testDocumentNode.getNodeRef(), commentTitle, commentContent, false);
         alfrescoCommentService.createComment(testDocumentNode.getNodeRef(), commentTitle, commentContent, false);
         Conversation actual = commentService.getComments(apixConversion.apix(testDocumentNode.getNodeRef()), 0, 1);
@@ -86,7 +86,7 @@ public class CommentServiceTest extends BaseTest {
     }
 
     @Test
-    public void test_getComments_withSkipCount_withPageSize() {
+    public void testGetCommentsWithSkipCountWithPageSize() {
         //order is of nodes chronologically descending (highest index = oldest node)
         NodeRef oldestNode = alfrescoCommentService
                 .createComment(testDocumentNode.getNodeRef(), commentTitle, commentContent, false);
@@ -97,7 +97,7 @@ public class CommentServiceTest extends BaseTest {
     }
 
     @Test
-    public void test_addNewComment() {
+    public void testAddNewComment() {
         eu.xenit.apix.data.NodeRef apixTestDocNode = apixConversion.apix(testDocumentNode.getNodeRef());
         Comment newComment = commentService.addNewComment(apixTestDocNode, commentContent);
         Conversation actual = commentService.getComments(apixTestDocNode, 0, 10);
@@ -106,7 +106,7 @@ public class CommentServiceTest extends BaseTest {
     }
 
     @Test
-    public void test_updateComment() {
+    public void testUpdateComment() {
         NodeRef alfrescoCommentNode = alfrescoCommentService
                 .createComment(testDocumentNode.getNodeRef(), commentTitle, commentContent, false);
         eu.xenit.apix.data.NodeRef apixCommentNode = apixConversion.apix(alfrescoCommentNode);
@@ -120,7 +120,7 @@ public class CommentServiceTest extends BaseTest {
     }
 
     @Test
-    public void test_deleteComment() {
+    public void testDeleteComment() {
         NodeRef alfrescoCommentNodeRef = alfrescoCommentService
                 .createComment(testDocumentNode.getNodeRef(), commentTitle, commentContent, false);
         commentService.deleteComment(apixConversion.apix(alfrescoCommentNodeRef));

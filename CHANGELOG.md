@@ -7,6 +7,7 @@
 
 ### Changed
 * [ALFREDAPI-444](https://xenitsupport.jira.com/browse/ALFREDAPI-444): Updated and extended Create & Copy node integrationtests for "/nodes"
+* [ALFREDAPI-449](https://xenitsupport.jira.com/browse/ALFREDAPI-449): Changed enpoints of the v1 CRUD comments api (!breaking change!)
 
 ### Fixed
 * [ALFREDAPI-438](https://xenitsupport.jira.com/browse/ALFREDAPI-438): Fixed issue where wrong permissions would be checked when retrieving ancestors of a node
