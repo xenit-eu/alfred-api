@@ -10,7 +10,7 @@
 * [ALFREDAPI-449](https://xenitsupport.jira.com/browse/ALFREDAPI-449): Changed enpoints of the v1 CRUD comments api (!breaking change!)
 
 ### Fixed
-
+* [ALFREDAPI-438](https://xenitsupport.jira.com/browse/ALFREDAPI-438): Fixed issue where wrong permissions would be checked when retrieving ancestors of a node
 
 ### Deleted
 * [ALFREDAPI-447](https://xenitsupport.jira.com/browse/ALFREDAPI-447): Removed unused class LuceneNodeVisitor. This does not affect functionality of the API.
