@@ -48,9 +48,9 @@ public class AncestorsFromNodeUnitTest extends AncestorsBaseUnitTest {
         Assert.assertEquals(2, ancestors.size());
         Assert.assertEquals(testNode2.toString(), ancestors.get(0).toString());
         Assert.assertEquals(testNode3.toString(), ancestors.get(1).toString());
-        verify(alfrescoPermissionService, times(1)).hasPermission(eq(testNode1), eq(PermissionService.READ_PERMISSIONS));
-        verify(alfrescoPermissionService, times(1)).hasPermission(eq(testNode2), eq(PermissionService.READ_PERMISSIONS));
-        verify(alfrescoPermissionService, times(0)).hasPermission(eq(testNode3), eq(PermissionService.READ_PERMISSIONS));
+        verify(alfrescoPermissionService, times(1)).hasPermission(eq(testNode1), eq(PermissionService.READ));
+        verify(alfrescoPermissionService, times(1)).hasPermission(eq(testNode2), eq(PermissionService.READ));
+        verify(alfrescoPermissionService, times(0)).hasPermission(eq(testNode3), eq(PermissionService.READ));
         verify(alfrescoNodeService, times(1)).exists(eq(testNode1));
         verify(alfrescoNodeService, times(0)).exists(eq(testNode2));
         verify(alfrescoNodeService, times(0)).exists(eq(testNode3));

@@ -449,7 +449,7 @@ public class NodeService implements INodeService {
         if (!nodeService.exists(nodeRef)) {
             throw new InvalidNodeRefException(String.format(nodeDoesNotExistMesage, nodeRef), nodeRef);
         }
-        if (permissionService.hasPermission(nodeRef, PermissionService.READ_PERMISSIONS) != AccessStatus.ALLOWED) {
+        if (permissionService.hasPermission(nodeRef, PermissionService.READ) != AccessStatus.ALLOWED) {
             throw new AccessDeniedException(String.format(accessDeniedMessage, nodeRef));
         }
 
@@ -460,7 +460,7 @@ public class NodeService implements INodeService {
             if (parentRef.equals(alfrescoRootRef)) {
                 break;
             }
-            if (permissionService.hasPermission(parentRef, PermissionService.READ_PERMISSIONS) != AccessStatus.ALLOWED) {
+            if (permissionService.hasPermission(parentRef, PermissionService.READ) != AccessStatus.ALLOWED) {
                 throw new AccessDeniedException(String.format(accessDeniedMessage, parentRef));
             }
             ChildAssociationRef parentAssoc = nodeService.getPrimaryParent(parentRef);
