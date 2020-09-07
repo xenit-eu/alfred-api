@@ -1,19 +1,20 @@
+
 # Alfred API - Changelog
 
-## 2.6.1 (UNRELEASED)
 
-### Added
-
+## 2.6.1 (2020-09-07)
 
 ### Changed
 * [ALFREDAPI-444](https://xenitsupport.jira.com/browse/ALFREDAPI-444): Updated and extended Create & Copy node integrationtests for "/nodes"
-* [ALFREDAPI-449](https://xenitsupport.jira.com/browse/ALFREDAPI-449): Changed enpoints of the v1 CRUD comments api (!breaking change!)
+* [ALFREDAPI-449](https://xenitsupport.jira.com/browse/ALFREDAPI-449): Changed endpoints of the v1 CRUD comments api. 
+**This changes the comment REST API added in 2.6.0 based on received feedback.** 
 
 ### Fixed
 * [ALFREDAPI-438](https://xenitsupport.jira.com/browse/ALFREDAPI-438): Fixed issue where wrong permissions would be checked when retrieving ancestors of a node
 
 ### Deleted
 * [ALFREDAPI-447](https://xenitsupport.jira.com/browse/ALFREDAPI-447): Removed unused class LuceneNodeVisitor. This does not affect functionality of the API.
+
 
 ## 2.6.0 (2020-08-26)
 
