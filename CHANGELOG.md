@@ -2,6 +2,18 @@
 # Alfred API - Changelog
 
 
+
+## 2.6.2 (UNRELEASED)
+
+### Added
+
+### Changed
+
+### Fixed
+
+### Deleted
+
+
 ## 2.6.1 (2020-09-07)
 ### Added
 * [ALFREDAPI-298](https://xenitsupport.jira.com/browse/ALFREDAPI-438): Add CRUD api for comments
