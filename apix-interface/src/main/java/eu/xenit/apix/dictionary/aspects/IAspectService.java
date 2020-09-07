@@ -5,4 +5,6 @@ import eu.xenit.apix.data.QName;
 public interface IAspectService {
 
     AspectDefinition GetAspectDefinition(QName qname);
+
+    Aspects getAspects();
 }

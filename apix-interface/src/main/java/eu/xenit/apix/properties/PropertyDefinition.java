@@ -124,4 +124,21 @@ public class PropertyDefinition {
     public void setContainer(QName container) {
         this.container = container;
     }
+
+    public PropertyDefinition(QName name, QName container, String title, String description, String defaultValue,
+            QName dataType, boolean multiValued, boolean mandatory, boolean enforced, boolean isProtected,
+            PropertyIndexOptions indexed, List<PropertyConstraintDefinition> constraints) {
+        this.name = name;
+        this.container = container;
+        this.title = title;
+        this.description = description;
+        this.defaultValue = defaultValue;
+        this.dataType = dataType;
+        this.multiValued = multiValued;
+        this.mandatory = mandatory;
+        this.enforced = enforced;
+        this.isProtected = isProtected;
+        this.indexed = indexed;
+        this.constraints = constraints;
+    }
 }
