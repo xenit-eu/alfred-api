@@ -1,121 +1,124 @@
 package eu.xenit.apix.rest.v1.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.NodeRef;
-import eu.xenit.apix.node.ChildParentAssociation;
-import eu.xenit.apix.node.INodeService;
-import java.io.IOException;
+import eu.xenit.apix.data.QName;
 import java.util.HashMap;
-import java.util.List;
+import eu.xenit.apix.rest.v1.nodes.CreateNodeOptions;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.repo.transaction.RetryingTransactionHelper;
-import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.transaction.TransactionService;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.commons.httpclient.HttpStatus;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-/**
- * Created by kenneth on 16.03.16.
- */
-public class CreateNodeTest extends BaseTest {
+public class CreateNodeTest extends NodesBaseTest {
 
-    public static final String TITLE_VALUE = "newTitle";
-    @Autowired
-    INodeService nodeService;
-
-    @Autowired
-    @Qualifier("NodeService")
-    NodeService alfrescoNodeService;
+    private NodeRef mainTestFolder;
+    private NodeRef parentTestFolder;
 
     @Autowired
     @Qualifier("TransactionService")
     TransactionService transactionService;
 
+    @Autowired
+    private ApixToAlfrescoConversion c;
+
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        final HashMap<String, NodeRef> initializedNodeRefs = init();
+        mainTestFolder = c.apix(getMainTestFolder());
+        parentTestFolder = initializedNodeRefs.get(BaseTest.TESTFOLDER_NAME);
     }
 
     @Test
-    public void testCreateNode() throws IOException {
-        final HashMap<String, NodeRef> initializedNodeRefs = init();
-        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initializedNodeRefs.get(BaseTest.TESTFILE_NAME));
-        final ChildParentAssociation primaryParentAssoc = (ChildParentAssociation) parentAssociations.get(0);
-        assertTrue(primaryParentAssoc.isPrimary());
-        NodeRef parent = primaryParentAssoc.getTarget();
-
-        final String url = makeAlfrescoBaseurl("admin", "admin") + "/apix/v1/nodes";
-        final CloseableHttpClient httpclient = HttpClients.createDefault();
-
-        String responseBody = transactionService.getRetryingTransactionHelper()
+    public void testCreateFile() {
+        String name = "newFile";
+        CreateNodeOptions createNodeOptions = getCreateNodeOptions(parentTestFolder, name,
+                c.apix(ContentModel.TYPE_CONTENT), null, null);
+        NodeRef newRef = transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
-                    doCreateNode(url, parent, httpclient, 200);
-                    return null;
+                    return doPostNodes(createNodeOptions, HttpStatus.SC_OK, null, null);
                 }, false, true);
-
-//         FIXME : Test that METADATA has been filled
-//        ObjectMapper mapper = new ObjectMapper();
-//        NodeMetadata nodeMetadata =  mapper.readValue(responseBody, new TypeReference<NodeMetadata>() {});
-//        String nodeTitle = nodeMetadata.properties.get(new QName(ContentModel.PROP_TITLE.toString())).get(0);
-        List<ChildParentAssociation> newChildAssocs = nodeService.getChildAssociations(parent);
-        assertEquals(2, newChildAssocs.size());
-//        assertEquals(TITLE_VALUE, nodeTitle);
+        checkCreatedNode(newRef, createNodeOptions);
     }
 
     @Test
-    public void testCreateNodeRespondsWithAccesDenied() throws IOException {
-        final HashMap<String, NodeRef> initializedNodeRefs = init();
-        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME));
-        final ChildParentAssociation primaryParentAssoc = parentAssociations.get(0);
-        NodeRef parent = primaryParentAssoc.getTarget();
-        assertTrue(primaryParentAssoc.isPrimary());
+    public void testCreateFolder() {
+        String name = "newFolder";
+        CreateNodeOptions createNodeOptions = getCreateNodeOptions(parentTestFolder, name,
+                c.apix(ContentModel.TYPE_FOLDER), null, null);
+        NodeRef newRef = transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    return doPostNodes(createNodeOptions, HttpStatus.SC_OK, null, null);
+                }, false, true);
+        checkCreatedNode(newRef, createNodeOptions);
+    }
 
-        final String url = makeAlfrescoBaseurl(BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS) + "/apix/v1/nodes";
-        final CloseableHttpClient httpclient = HttpClients.createDefault();
+    @Ignore
+    public void testCreateFileWithNoType() {
+        String name = "noType";
+        CreateNodeOptions createNodeOptions = getCreateNodeOptions(parentTestFolder, name,
+                null, null, null);
+        //TODO : Should return SC_BAD_REQUEST
+        NodeRef newRef = transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    return doPostNodes(createNodeOptions, HttpStatus.SC_INTERNAL_SERVER_ERROR, null, null);
+                }, false, true);
+        checkCreatedNode(newRef, createNodeOptions);
+    }
 
+    @Test
+    public void testCreateFileWithProperties() {
+        String name = "newFile1";
+        HashMap<QName, String[]> properties = getBasicProperties();
+        CreateNodeOptions createNodeOptions = getCreateNodeOptions(parentTestFolder, name,
+                c.apix(ContentModel.TYPE_CONTENT), properties, null);
+        NodeRef newRef = transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    return doPostNodes(createNodeOptions, HttpStatus.SC_OK, null, null);
+                }, false, true);
+        checkCreatedNode(newRef, createNodeOptions);
+    }
+
+    @Test
+    public void testCreateFileDuplicateName() {
+        String name = "duplicate";
+        CreateNodeOptions createNodeOptions = getCreateNodeOptions(parentTestFolder, name,
+                c.apix(ContentModel.TYPE_CONTENT), null, null);
+        NodeRef newRef = transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    return doPostNodes(createNodeOptions, HttpStatus.SC_OK, null, null);
+                }, false, true);
+        checkCreatedNode(newRef, createNodeOptions);
+        //ALFREDAPI-445 -> return 409 conflict HttpStatus.SC_CONFLICT
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
-                    doCreateNode(url, parent, httpclient, 403);
-                    return null;
+                    return doPostNodes(createNodeOptions, HttpStatus.SC_INTERNAL_SERVER_ERROR, null, null);
                 }, false, true);
-
-        List<ChildParentAssociation> newChildAssocs = nodeService.getChildAssociations(parent);
-        assertEquals(1, newChildAssocs.size());
     }
 
-    private void doCreateNode(String url, NodeRef parentRef, CloseableHttpClient httpClient, int expectedReponseCode)
-            throws Throwable {
-        HttpPost httppost = new HttpPost(url);
-        String jsonString = json(String.format(
-                "{" +
-                        "\"parent\":\"%s\"," +
-                        "\"name\":\"createNode\"," +
-                        "\"properties\":{" +
-                        "'%s' : ['" + TITLE_VALUE + "']" +
-                        "}," +
-                        "\"type\":\"%s\"" +
-                        "}"
-                , parentRef.toString(), ContentModel.PROP_TITLE.toString(),
-                ContentModel.TYPE_CONTENT.toString()));
-        httppost.setEntity(new StringEntity(jsonString));
-        try (CloseableHttpResponse response = httpClient.execute(httppost)) {
-            assertEquals(expectedReponseCode, response.getStatusLine().getStatusCode());
-        }
+    @Test
+    public void testCreateNodeReturnsAccessDenied() {
+        String name = "Forbidden";
+        CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, name,
+                c.apix(ContentModel.TYPE_CONTENT), null, null);
+        transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    doPostNodes(createNodeOptions, HttpStatus.SC_FORBIDDEN,
+                            BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS );
+                    return null;
+                }, false, true);
     }
 
     @After
     public void cleanUp() {
         this.removeMainTestFolder();
     }
+
 }

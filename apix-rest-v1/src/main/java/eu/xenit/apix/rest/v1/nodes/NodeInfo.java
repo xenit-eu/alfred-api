@@ -23,10 +23,10 @@ public class NodeInfo {
     }
 
     public NodeInfo(NodeRef nodeRef,
-            NodeMetadata metadata,
-            Map<String, PermissionValue> permissions,
-            NodeAssociations associations,
-            NodePath path) {
+                    NodeMetadata metadata,
+                    Map<String, PermissionValue> permissions,
+                    NodeAssociations associations,
+                    NodePath path) {
         this.noderef = nodeRef;
         this.metadata = metadata;
         this.permissions = permissions;

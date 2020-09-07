@@ -1,25 +1,15 @@
 package eu.xenit.apix.rest.v1.tests;
 
+import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.node.INodeService;
-import eu.xenit.apix.node.NodeAssociation;
-import eu.xenit.apix.node.ChildParentAssociation;
 import java.util.HashMap;
-
+import eu.xenit.apix.rest.v1.nodes.CreateNodeOptions;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.transaction.TransactionService;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.apache.commons.httpclient.HttpStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,18 +18,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-
-/**
- * Created by kenneth on 17.03.16.
- */
-public class CopyNodeTest extends BaseTest {
+public class CopyNodeTest extends NodesBaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(CopyNodeTest.class);
+    private NodeRef mainTestFolder;
+    private NodeRef parentTestFolder;
+    private NodeRef copyFromFile;
+    private NodeRef copyFromFolder;
 
     @Autowired
     INodeService nodeService;
@@ -48,158 +33,175 @@ public class CopyNodeTest extends BaseTest {
     @Qualifier("TransactionService")
     TransactionService transactionService;
 
+    @Autowired
+    private ApixToAlfrescoConversion c;
 
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        final HashMap<String, NodeRef> initializedNodeRefs = init();
+        mainTestFolder = c.apix(getMainTestFolder());
+        parentTestFolder = initializedNodeRefs.get(BaseTest.TESTFOLDER_NAME);
+        copyFromFile = initializedNodeRefs.get(BaseTest.TESTFILE_NAME);
+        copyFromFolder = initializedNodeRefs.get(BaseTest.TESTFOLDER_NAME);
     }
 
     @Test
-    public void testCopyNode() {
-        final HashMap<String, NodeRef> initializedNodeRefs = init();
-        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initializedNodeRefs.get(BaseTest.TESTFILE_NAME));
-        final ChildParentAssociation primaryParentAssoc = (ChildParentAssociation) parentAssociations.get(0);
-        final NodeRef parentRef = primaryParentAssoc.getTarget();
+    public void testCopyFileNode() {
+        CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, null,
+                null, null , copyFromFile);
+        NodeRef newRef = transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    return doPostNodes(createNodeOptions, HttpStatus.SC_OK, null,null);
+                }, false, true);
+        checkCreatedNode(newRef, createNodeOptions);
+    }
 
-        final String url = makeAlfrescoBaseurl("admin", "admin") + "/apix/v1/nodes";
-        final CloseableHttpClient httpclient = HttpClients.createDefault();
+    @Test
+    public void testCopyFolderNode() {
+        CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, null,
+                null, null , copyFromFolder);
+        NodeRef newRef = transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    return doPostNodes(createNodeOptions, HttpStatus.SC_OK, null,null);
+                }, false, true);
+        checkCreatedNode(newRef, createNodeOptions);
+    }
 
+    @Test
+    public void testCopyFileWithName() {
+        final String newName = "Copy";
+        CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, newName,
+                null, null, copyFromFile);
+        NodeRef newRef = transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    return doPostNodes(createNodeOptions, HttpStatus.SC_OK, null, null);
+                }, false, true);
+        checkCreatedNode(newRef, createNodeOptions);
+    }
+
+    @Test
+    public void testCopyFolderWithName() {
+        final String newName = "CopiedFolder";
+        CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, newName, null,
+                null, copyFromFolder);
+        NodeRef newRef = transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    return doPostNodes(createNodeOptions, HttpStatus.SC_OK, null, null);
+                }, false, true);
+        checkCreatedNode(newRef, createNodeOptions);
+    }
+
+    @Test
+    public void testCopyFileDuplicateName() {
+        final String duplicateName = "duplicateName";
+        CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, duplicateName, null,
+                null, copyFromFile);
+        //First copy should succeed
+        NodeRef newRef = transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    return doPostNodes(createNodeOptions, HttpStatus.SC_OK, null, null);
+                }, false, true);
+        checkCreatedNode(newRef, createNodeOptions);
+
+        //Second copy should fail
+        //ALFREDAPI-445 -> return 409 conflict HttpStatus.SC_CONFLICT
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
-                    doTestCopy(httpclient, url, parentRef, initializedNodeRefs.get(BaseTest.TESTFILE_NAME).toString(),null, null, 200);
-                    return null;
+                        doPostNodes(createNodeOptions, HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                                null, null);
+                        return null;
                 }, false, true);
-
-        List<ChildParentAssociation> newChildAssocs = nodeService.getChildAssociations(parentRef);
-        assertEquals(2, newChildAssocs.size());
     }
 
     @Test
-    public void testCopyNodeWithName() throws Throwable {
-        final HashMap<String, NodeRef> initializedNodeRefs = init();
-        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initializedNodeRefs.get(BaseTest.TESTFILE_NAME));
-        final ChildParentAssociation primaryParentAssoc = (ChildParentAssociation) parentAssociations.get(0);
-        final NodeRef parentRef = primaryParentAssoc.getTarget();
+    public void testCopyFolderDuplicateName() {
+        final NodeRef childRef = nodeService.getChildAssociations(mainTestFolder).get(0).getTarget();
+        final String newName = nodeService.getMetadata(childRef).properties.get(c.apix(ContentModel.PROP_NAME)).get(0);
+        CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, newName,
+                null, null, copyFromFolder);
+        //ALFREDAPI-445 -> return 409 conflict HttpStatus.SC_CONFLICT
+        NodeRef newRef = transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    return doPostNodes(createNodeOptions, HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                            null, null);
+                }, false, true);
+    }
 
-        final String url = makeAlfrescoBaseurl("admin", "admin") + "/apix/v1/nodes";
-        final CloseableHttpClient httpclient = HttpClients.createDefault();
-
+    @Test
+    public void testCopyNodeWithProperties() {
         final String newName = "NewName";
-        JSONObject response = transactionService.getRetryingTransactionHelper()
+        HashMap<QName, String[]> properties = getBasicProperties();
+        CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, newName,
+                null, properties, copyFromFile);
+        NodeRef newRef = transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
-                    return doTestCopy(httpclient, url, parentRef, initializedNodeRefs.get(BaseTest.TESTFILE_NAME).toString(),newName, null, 200);
+                    return doPostNodes(createNodeOptions, HttpStatus.SC_OK, null, null);
                 }, false, true);
-        String newRef = (String) response.get("noderef");
-        JSONObject responseProperties = (JSONObject) ((JSONObject) response.get("metadata")).get("properties");
-        JSONArray responseNameProperty = (JSONArray) responseProperties.get(ContentModel.PROP_NAME.toString());
-        JSONArray responseTitleProperty = (JSONArray) responseProperties.get(ContentModel.PROP_TITLE.toString());
-        assertEquals(true, nodeService.exists(new NodeRef(newRef)));
-        assertEquals(newName, (String) responseNameProperty.get(0));
-
+        checkCreatedNode(newRef, createNodeOptions);
     }
 
     @Test
-    public void testCopyNodeWithProperties() throws Throwable {
-        final HashMap<String, NodeRef> initializedNodeRefs = init();
-        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initializedNodeRefs.get(BaseTest.TESTFILE_NAME));
-        final ChildParentAssociation primaryParentAssoc = (ChildParentAssociation) parentAssociations.get(0);
-        final NodeRef parentRef = primaryParentAssoc.getTarget();
-
-        final String url = makeAlfrescoBaseurl("admin", "admin") + "/apix/v1/nodes";
-        final CloseableHttpClient httpclient = HttpClients.createDefault();
-
-        final String newName = "NewName1";
-        final String newTitle = "NewTitle1";
-        String[] titleProperty = new String[]{newTitle};
-        HashMap<QName, String[]> properties = new HashMap<>();
-        properties.put(new QName(ContentModel.PROP_TITLE.toString()) , titleProperty);
-        JSONObject response = transactionService.getRetryingTransactionHelper()
-                .doInTransaction(() -> {
-                    return doTestCopy(httpclient, url, parentRef, initializedNodeRefs.get(BaseTest.TESTFILE_NAME).toString(), newName, properties, 200);
-                }, false, true);
-
-        String newRef = (String) response.get("noderef");
-        JSONObject responseProperties = (JSONObject) ((JSONObject) response.get("metadata")).get("properties");
-        JSONArray responseNameProperty = (JSONArray) responseProperties.get(ContentModel.PROP_NAME.toString());
-        JSONArray responseTitleProperty = (JSONArray) responseProperties.get(ContentModel.PROP_TITLE.toString());
-        assertEquals(true, nodeService.exists(new NodeRef(newRef)));
-        assertEquals(newName, (String) responseNameProperty.get(0));
-        assertEquals(newTitle, (String) responseTitleProperty.get(0));
-
-    }
-
-    @Test
-    public void copyNodeReturnsAccesDenied() {
-        final HashMap<String, NodeRef> initializedNodeRefs = init();
-        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME));
-        final ChildParentAssociation primaryParentAssoc = parentAssociations.get(0);
-        final NodeRef parentRef = primaryParentAssoc.getTarget();
-
-        final String url = makeAlfrescoBaseurl(BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS) + "/apix/v1/nodes";
-        final CloseableHttpClient httpclient = HttpClients.createDefault();
-
+    public void testCopyNodeReturnsAccesDenied() {
+        CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, null,
+                null, null, copyFromFile);
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
-                    doTestCopy(httpclient, url, parentRef, initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME).toString(), null, null, 403);
+                    doPostNodes(createNodeOptions, HttpStatus.SC_FORBIDDEN,
+                            BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS );
                     return null;
                 }, false, true);
-
-        List<ChildParentAssociation> newChildAssocs = nodeService.getChildAssociations(parentRef);
-        assertEquals(1, newChildAssocs.size());
     }
 
-    private JSONObject doTestCopy(CloseableHttpClient httpClient, String url, NodeRef parentRef, String copyFrom, String name, HashMap<QName, String[]> properties, int expectedResponseCode) throws Throwable {
-        HttpPost httppost = new HttpPost(url);
-        String jsonBody = "{";
-        if ( parentRef != null ) {
-            jsonBody += "\"parent\":\"" + parentRef +  "\",";
-        }
-        if ( copyFrom != null ) {
-            jsonBody += "\"copyFrom\":\"" + copyFrom +  "\",";
-        }
-        if ( name != null ) {
-            jsonBody += "\"name\":\"" + name +  "\",";
-        }
-        if ( properties != null ) {
-            jsonBody += "\"properties\":{";
-            for (Map.Entry<QName, String[]> entry : properties.entrySet()){
-                jsonBody += "\""+ entry.getKey().toString() +"\":[";
-                    for (String value : entry.getValue()) {
-                        jsonBody += "\"" + value + "\",";
-                    }
-                    //Cut off last comma
-                    jsonBody = jsonBody.substring(0, jsonBody.length() - 1);
-                    jsonBody +=  "],";
-            }
-            //Cut off last comma
-            jsonBody = jsonBody.substring(0, jsonBody.length() - 1);
-            jsonBody += "}";
-        }
-        //Cut off last comma
-        System.out.println("Json body : " + jsonBody);
-        if (properties == null) {
-            jsonBody = jsonBody.substring(0, jsonBody.length() - 1);
-        }
-        jsonBody += "}";
-        String jsonString = json(jsonBody);
-        httppost.setEntity(new StringEntity(jsonString));
+    @Test
+    public void testCopyFolderInception() {
+        CreateNodeOptions createNodeOptions = getCreateNodeOptions(copyFromFolder, null,
+                null, null, copyFromFolder);
+        transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    doPostNodes(createNodeOptions, HttpStatus.SC_OK, null, null );
+                    return null;
+                }, false, true);
+    }
 
-        String nodeInfo;
-        try (CloseableHttpResponse response = httpClient.execute(httppost)) {
-            nodeInfo = EntityUtils.toString(response.getEntity());
-            assertEquals(expectedResponseCode, response.getStatusLine().getStatusCode());
-        }
+    @Test
+    public void testCopyFolderTypeChange() {
+        CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, null,
+                c.apix(ContentModel.TYPE_CONTENT), null, copyFromFolder);
+        transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    doPostNodes(createNodeOptions, HttpStatus.SC_INTERNAL_SERVER_ERROR, null, null );
+                    return null;
+                }, false, true);
+    }
 
-        if (expectedResponseCode == 200) {
-            JSONParser parser = new JSONParser();
-            JSONObject json = (JSONObject) parser.parse(nodeInfo);
-            return json;
+    @Test
+    public void testCopyFolderSubTyping() {
+        CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, null,
+                c.apix(ContentModel.TYPE_DICTIONARY_MODEL), null, copyFromFile);
+        transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    doPostNodes(createNodeOptions, HttpStatus.SC_OK, null, null );
+                    return null;
+                }, false, true);
+    }
+
+    @Test
+    public void testMultipleCopies() {
+        CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, null,
+                null, null, copyFromFolder);
+        for (int i = 0 ; i < 5 ; i++) {
+            NodeRef newRef = transactionService.getRetryingTransactionHelper()
+                    .doInTransaction(() -> {
+                        return doPostNodes(createNodeOptions, HttpStatus.SC_OK, null, null );
+                    }, false, true);
+            checkCreatedNode(newRef, createNodeOptions);
         }
-        return null;
     }
 
     @After
     public void cleanUp() {
         this.removeMainTestFolder();
     }
+
 }

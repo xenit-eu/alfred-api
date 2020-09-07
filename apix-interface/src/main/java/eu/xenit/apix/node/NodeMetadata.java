@@ -27,7 +27,7 @@ public class NodeMetadata {
     //public NodeAssociation[] associations;
 
     public NodeMetadata(NodeRef id, QName type, QName baseType, long transactionId, Map<QName, List<String>> properties,
-            List<QName> aspects) {
+                        List<QName> aspects) {
         this.id = id;
         this.type = type;
         this.baseType = baseType;
