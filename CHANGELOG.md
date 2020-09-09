@@ -6,6 +6,7 @@
 ## 2.6.2 (UNRELEASED)
 
 ### Added
+* [ALFREDAPI-418](https://xenitsupport.jira.com/browse/ALFREDAPI-418): Add support for Alfresco 6.2
 
 ### Changed
 
@@ -15,6 +16,7 @@
 
 
 ## 2.6.1 (2020-09-07)
+
 ### Added
 * [ALFREDAPI-298](https://xenitsupport.jira.com/browse/ALFREDAPI-438): Add CRUD api for comments
 * [ALFREDAPI-442](https://xenitsupport.jira.com/browse/ALFREDAPI-442): Add webscript to get all properties and aspects
