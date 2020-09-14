@@ -20,11 +20,7 @@ subprojects {
     dependencies {
         alfrescoAmp project(path: ":apix-impl:apix-impl-${subproject_alfresco_version}", configuration: 'ampArtifact')
         alfrescoAmp project(path: ':apix-integrationtests-model-amp', configuration: 'ampArchives')
-        if(subproject_alfresco_version.equals("62")) {
-            alfrescoAmp files("../temp/alfresco-dynamic-extensions-repo-62-2.0.5-SNAPSHOT.amp")
-        } else {
-            alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${subproject_alfresco_version}:${de_version}@amp"
-        }
+        alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${subproject_alfresco_version}:${de_version}@amp"
     }
 
     dockerCompose {
