@@ -59,11 +59,9 @@ subprojects {
                 'Bundle-ClassPath': bundleClassPath(configurations.compile),
                 'Bundle-SymbolicName': "${project.group}.${project.name}",
                 'Bundle-Description': 'Alfred API: Integration tests',
-                'Import-Package': 'net.sf.cglib.core,'
-                        + 'net.sf.cglib.proxy,'
-                        + 'net.sf.cglib.reflect,'
+                'Import-Package': 
                         // Unintuitively, the notation 'version="1.0"' means any version >= 1.0
-                        + 'org.json;version="1.0",'
+                         'org.json;version="1.0",'
                         + "!com.google.errorprone.annotations.concurrent,"
                         + '!org.joda.convert,'
                         + '!org.apache.log,'

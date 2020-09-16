@@ -1,0 +1,9 @@
+dependencies {
+    baseAlfrescoWar 'org.alfresco:content-services:6.2.1@war'
+    // Fix for https://github.com/xenit-eu/dynamic-extensions-for-alfresco#alfresco-61---wrong-version-of-commons-annotations-used
+    alfrescoAmp(group: 'eu.xenit.alfresco', name: 'alfresco-hotfix-MNT-20557', version: '1.0.2', ext: 'amp')
+}
+
+dockerAlfresco {
+    baseImage = 'hub.xenit.eu/alfresco-enterprise/alfresco-repository-enterprise:6.2.1'
+}

@@ -43,8 +43,9 @@ node {
             // Execute  before the integration testing so we can catch potential errors early
             sh "${gradleCommand} :apix-interface:build :apix-interface:javadoc"
         }
+
         stage("Build 50") {
-            BuildVersionX( "50")
+            BuildVersionX("50")
         }
         stage("Build 51") {
             BuildVersionX("51")
@@ -58,6 +59,10 @@ node {
         stage("Build 61") {
             BuildVersionX("61")
         }
+        stage("Build 62") {
+            BuildVersionX("62")
+        }
+        
         stage("Publishing") {
             def gitBranch = env.BRANCH_NAME
             if(gitBranch.startsWith("release") || gitBranch == "master") {
