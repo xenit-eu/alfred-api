@@ -11,6 +11,7 @@
 ### Changed
 
 ### Fixed
+* [ALFREDAPI-390](https://xenitsupport.jira.com/browse/ALFREDAPI-390): Remove symlinks in code
 
 ### Deleted
 
