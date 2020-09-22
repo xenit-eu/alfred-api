@@ -4,6 +4,7 @@ Fixes https://xenitsupport.jira.com/browse/ALFREDAPI-<**YOUR TICKET ID**>
 - [ ] Does this PR avoid breaking the API? 
     Breaking changes include adding, changing or removing endpoints and/or JSON objects used in requests and responses.
 - [ ] Does the PR comply to REST HTTP result codes policy outlined in the [developer guide](https://github.com/xenit-eu/alfred-api/blob/master/developer-documentation)?
+- [ ] If PR changes the webscript classes, is the errorhandling done through an `@ExcpetionHandler`annotated method on the changed webscript classes?
 - [ ] Does the PR follow our [coding styleguide and other active procedures](https://xenitsupport.jira.com/wiki/spaces/XEN/pages/624558081/XeniT+Enhancement+Proposals+XEP)?
 - [ ] Is usage of `this.` prefix avoided?
 
