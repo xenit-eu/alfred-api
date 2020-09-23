@@ -45,6 +45,24 @@ allprojects {
     artifacts {
         ampArtifact amp
     }
+    
+    sourceSets {
+        main {
+            java {
+                srcDirs = ['src/main/java', '../src/main/java']
+            }
+            amp {
+                dynamicExtension()
+                module("src/main/config/module.properties")
+            }
+        }
+        test {
+            java {
+                srcDirs = ['../src/test/java']
+            }
+            testResultsDirName = "${buildDir}/test-results/test"
+        }
+    }
 
     dependencies {
         compile(project(":apix-interface"))
@@ -148,26 +166,6 @@ public class Version {
                 host = project.hasProperty('host') ? project.host : 'localhost'
                 port = project.hasProperty('port') ? project.port : 8080
             }
-        }
-    }
-}
-
-subprojects {
-    sourceSets {
-        main {
-            java {
-                srcDirs = ['src/main/java', '../src/main/java']
-            }
-            amp {
-                dynamicExtension()
-                module("src/main/config/module.properties")
-            }
-        }
-        test {
-            java {
-                srcDirs = ['../src/test/java']
-            }
-            testResultsDirName = "${buildDir}/test-results/test"
         }
     }
 }
