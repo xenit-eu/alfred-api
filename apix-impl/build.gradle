@@ -4,7 +4,6 @@ plugins {
     id 'eu.xenit.alfresco' version '1.0.0' apply false
 }
 
-
 // Give IntelliJ a default source of non-shared classes
 ext {
     alfresco_version = alfresco_62_version
@@ -17,6 +16,9 @@ sourceSets.main.java.srcDirs += 'src/main/java'
 
 subprojects {
     apply from: "${project.projectDir}/overrides.gradle"
+    dependencies {
+        compile(project(":apix-impl"))
+    }
 }
 
 allprojects {
