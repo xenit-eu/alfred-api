@@ -37,7 +37,6 @@ node {
     try {
         stage("Checkout") {
             checkout scm
-            sh "./setup.sh"
         }
         stage("Build interface") {
             // Execute  before the integration testing so we can catch potential errors early

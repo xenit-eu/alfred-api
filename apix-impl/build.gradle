@@ -4,9 +4,27 @@ plugins {
     id 'eu.xenit.alfresco' version '1.0.0' apply false
 }
 
+// Give IntelliJ a default source of non-shared classes
+ext {
+    alfresco_version = alfresco_62_version
+    alfresco_repo_version = '7.199.0'
+    alfresco_dm_version = alfresco_62_dm_version
+    alfresco_min_version = '6.2'
+}
+
+sourceSets.main.java.srcDirs += 'src/main/java'
+
 subprojects {
-    apply from: "${rootProject.projectDir}/publish.gradle"
     apply from: "${project.projectDir}/overrides.gradle"
+    dependencies {
+        compile(project(":apix-impl"))
+    }
+}
+
+allprojects {
+    // allprojects also applies to shared code (under apix-impl/src) that needs to work in IntelliJ
+
+    apply from: "${rootProject.projectDir}/publish.gradle"
     apply plugin: 'eu.xenit.de'
     apply plugin: 'eu.xenit.amp'
     apply plugin: 'eu.xenit.alfresco'
@@ -27,11 +45,11 @@ subprojects {
     artifacts {
         ampArtifact amp
     }
-
+    
     sourceSets {
         main {
             java {
-                srcDirs = ['src/main/java', 'src/main/java-shared']
+                srcDirs = ['src/main/java', '../src/main/java']
             }
             amp {
                 dynamicExtension()
@@ -40,7 +58,7 @@ subprojects {
         }
         test {
             java {
-                srcDirs = ['src/test/java', 'src/test/java-shared']
+                srcDirs = ['../src/test/java']
             }
             testResultsDirName = "${buildDir}/test-results/test"
         }
