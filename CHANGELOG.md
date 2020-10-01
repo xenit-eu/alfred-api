@@ -3,25 +3,21 @@
 
 
 
-## 2.6.2 (UNRELEASED)
+## 2.7.0 (2020-10-01)
 
 ### Added
 * [ALFREDAPI-418](https://xenitsupport.jira.com/browse/ALFREDAPI-418): Add support for Alfresco 6.2
-
-### Changed
+* [ALFREDAPI-442](https://xenitsupport.jira.com/browse/ALFREDAPI-442): Add webscript to get all properties and aspects
 
 ### Fixed
 * [ALFREDAPI-390](https://xenitsupport.jira.com/browse/ALFREDAPI-390): Remove symlinks in code
 * [ALFREDAPI-259](https://xenitsupport.jira.com/browse/ALFREDAPI-259): Intellij does not load the code of the integration tests project correctly
-
-### Deleted
 
 
 ## 2.6.1 (2020-09-07)
 
 ### Added
 * [ALFREDAPI-298](https://xenitsupport.jira.com/browse/ALFREDAPI-438): Add CRUD api for comments
-* [ALFREDAPI-442](https://xenitsupport.jira.com/browse/ALFREDAPI-442): Add webscript to get all properties and aspects
 
 ### Changed
 * [ALFREDAPI-444](https://xenitsupport.jira.com/browse/ALFREDAPI-444): Updated and extended Create & Copy node integrationtests for "/nodes"
