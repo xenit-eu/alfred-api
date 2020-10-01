@@ -16,9 +16,6 @@
 
 ## 2.6.1 (2020-09-07)
 
-### Added
-* [ALFREDAPI-298](https://xenitsupport.jira.com/browse/ALFREDAPI-438): Add CRUD api for comments
-
 ### Changed
 * [ALFREDAPI-444](https://xenitsupport.jira.com/browse/ALFREDAPI-444): Updated and extended Create & Copy node integrationtests for "/nodes"
 * [ALFREDAPI-449](https://xenitsupport.jira.com/browse/ALFREDAPI-449): Changed endpoints of the v1 CRUD comments api. 
