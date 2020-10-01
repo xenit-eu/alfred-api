@@ -2,6 +2,18 @@
 # Alfred API - Changelog
 
 
+
+## 2.7.0 (2020-10-01)
+
+### Added
+* [ALFREDAPI-418](https://xenitsupport.jira.com/browse/ALFREDAPI-418): Add support for Alfresco 6.2
+* [ALFREDAPI-442](https://xenitsupport.jira.com/browse/ALFREDAPI-442): Add webscript to get all properties and aspects
+
+### Fixed
+* [ALFREDAPI-390](https://xenitsupport.jira.com/browse/ALFREDAPI-390): Remove symlinks in code
+* [ALFREDAPI-259](https://xenitsupport.jira.com/browse/ALFREDAPI-259): Intellij does not load the code of the integration tests project correctly
+
+
 ## 2.6.1 (2020-09-07)
 
 ### Changed

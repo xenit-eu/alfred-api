@@ -31,20 +31,15 @@ Alfresco version used.
 * *apix-impl* builds the AMP which is the main deliverable for Alfred API. The AMP contains the JARs of 
 *apix-interface* and *apix-rest-v1*.
   * The top directory also contains code shared over different Alfresco versions.
-  * *apix-impl/xx* contains all code per Alfresco version. It has a *src/java* folder
-  for code specific to that Alfresco version and a *src/java-shared code* for the code shared between
-  versions. This code is automatically symlinked from the *apix-impl* directory.   
+  * *apix-impl/xx* contains all code per Alfresco version. It has a *apix-impl/xx/src/main/java* folder for
+  code specific to that Alfresco version and also includes *apix-impl/src/main/java* folder in its source sets 
+  for the code shared between versions.   
 * *apix-integrationtests* contains the integration tests for each Alfresco version.
 
 
 ## How to
 
 ### Run
-If it is the first time you build Alfred API on your machine:
-```bash
-./setup.sh  # or ./setup.bat on Windows
-```
-Then:
 ```bash
 ./gradlew :apix-docker:docker-${VERSION}:composeUp --info
 ```
@@ -59,8 +54,8 @@ This starts up all docker containers required for an Alfresco running Alfred API
 Again, where `VERSION` is e.g. `51`.
 
 However, this starts (and afterwards stops) docker containers. This includes starting an Alfresco container,
- adding a startup time of several minutes. To circumvent this you also run the test on already running containers with
- for example:
+ adding a startup time of several minutes. To circumvent this you also run the test on already running containers 
+ with for example:
  ```bash
 ./gradlew -x composeUp -x composeDown :apix-integrationtests:test-61:integrationTest -Pprotocol=http -Phost=localhost -Pport=8061
 ```

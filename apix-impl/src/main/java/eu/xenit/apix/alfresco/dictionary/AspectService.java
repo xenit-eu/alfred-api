@@ -4,8 +4,10 @@ import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.dictionary.aspects.AspectDefinition;
+import eu.xenit.apix.dictionary.aspects.Aspects;
 import eu.xenit.apix.dictionary.aspects.IAspectService;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.slf4j.Logger;
@@ -54,6 +56,20 @@ public class AspectService implements IAspectService {
             return null;
         }
         return GetAspectDefinition(c.alfresco((qname)));
+    }
+
+
+    @Override
+    public Aspects getAspects() {
+        Collection<org.alfresco.service.namespace.QName> aspects = dictionaryService
+                .getAllAspects();
+        List<AspectDefinition> ret = new ArrayList<>(aspects.size());
+        for (org.alfresco.service.namespace.QName aspect : aspects) {
+            AspectDefinition aspectDefinition = GetAspectDefinition(aspect);
+            assert aspectDefinition != null;
+            ret.add(aspectDefinition);
+        }
+        return new Aspects(ret);
     }
 
     private boolean HasAspectDefinition(org.alfresco.service.namespace.QName qname) {

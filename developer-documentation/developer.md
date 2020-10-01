@@ -27,6 +27,7 @@ Currently Alfred supports the following Alfresco versions:
 * 5.2
 * 6.0
 * 6.1
+* 6.2
 
 
 # Installation
@@ -49,15 +50,16 @@ To install the AMP, follow the Alfresco AMP installation guidelines your version
 [5.0](https://docs.alfresco.com/5.0/tasks/amp-install.html), 
 [5.1](https://docs.alfresco.com/5.1/tasks/amp-install.html),
 [5.2](https://docs.alfresco.com/5.2/tasks/amp-install.html),
-[6.0](https://docs.alfresco.com/6.0/tasks/amp-install.html) or
-[6.1](https://docs.alfresco.com/6.1/tasks/amp-install.html).
+[6.0](https://docs.alfresco.com/6.0/tasks/amp-install.html),
+[6.1](https://docs.alfresco.com/6.1/tasks/amp-install.html) or
+[6.2](https://docs.alfresco.com/6.2/tasks/amp-install.html).
 
 ### Development scenario
 Since the above scenario includes waiting for Alfresco to start this is slow when developing in Alfred API. 
 You can circumvent this by hot deploying Alfred API as a JAR (which is actually an OSGi *Bundle*).
  
 The JAR has the format `apix-impl-{ALFRESCO-VERSION}-{APIX-VERSION}.jar` and can be found under 
-`apix-impl/{ALFRESCO-VERSION}/build/libs/`, where `ALFRESCO-VERSION` is one of *(50|51|52|60|61)*.
+`apix-impl/{ALFRESCO-VERSION}/build/libs/`, where `ALFRESCO-VERSION` is one of *(50|51|52|60|61|62)*.
 
 You first need still need to install Alfred API as AMP as outlined in the production scenario.
 Afterwards you can either install the JAR via the Dynamic Extensions web interface, or via:

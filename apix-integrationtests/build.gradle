@@ -13,12 +13,12 @@ subprojects {
     sourceSets {
         main {
             java {
-                srcDirs = ['src/integration-test/java-shared', 'src/main/java']
+                srcDir '../../apix-impl/src/integration-test'
                 // This is needed because client side, these dependencies are not really provided
                 runtimeClasspath += configurations.compileOnly
             }
             resources {
-                srcDir "${project.parent.projectDir}/src/integration-test/resources"
+                srcDir '../src/integration-test/resources'
             }
         }
     }
@@ -59,11 +59,9 @@ subprojects {
                 'Bundle-ClassPath': bundleClassPath(configurations.compile),
                 'Bundle-SymbolicName': "${project.group}.${project.name}",
                 'Bundle-Description': 'Alfred API: Integration tests',
-                'Import-Package': 'net.sf.cglib.core,'
-                        + 'net.sf.cglib.proxy,'
-                        + 'net.sf.cglib.reflect,'
+                'Import-Package': 
                         // Unintuitively, the notation 'version="1.0"' means any version >= 1.0
-                        + 'org.json;version="1.0",'
+                         'org.json;version="1.0",'
                         + "!com.google.errorprone.annotations.concurrent,"
                         + '!org.joda.convert,'
                         + '!org.apache.log,'

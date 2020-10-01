@@ -6,6 +6,7 @@ import eu.xenit.apix.data.QName;
 import eu.xenit.apix.properties.IPropertyService;
 import eu.xenit.apix.properties.PropertyDefinition;
 import eu.xenit.apix.tests.BaseTest;
+import org.alfresco.repo.i18n.MessageService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -22,6 +23,8 @@ public class PropertyServiceTest extends BaseTest {
     private IPropertyService propertyService;
     @Autowired
     private ApixToAlfrescoConversion c;
+    @Autowired
+    private MessageService messageService;
 
     @Test
     public void TestGetNamePropertyLong() {

@@ -38,11 +38,11 @@ buildscript {
 }
 
 ext {
-    versionWithoutQualifier = '2.6.1'
+    versionWithoutQualifier = '2.7.0'
 
     jackson_version = '2.6.3'
     swagger_version = "1.5.7"
-    de_version = "2.0.1"
+    de_version = "2.0.5"
 
     http_core_version = "4.3.3"
     http_version = "4.3.4"
@@ -52,6 +52,7 @@ ext {
     alfresco_52_version = "5.2.f"
     alfresco_60_version = "6.0"
     alfresco_61_version = "6.1"
+    alfresco_62_version = "6.2"
 
     // The introduction of hit highlights in search 52 required general versions bump to 5.2.f
     // Additionally, an explicit dependency on the data-model was required, however
@@ -62,7 +63,8 @@ ext {
     alfresco_52_dm_version = "6.16"
     alfresco_60_dm_version = "8.9"
     alfresco_61_dm_version = "8.25.1"
-    
+    alfresco_62_dm_version = "8.50.18"
+
     care4alfVersion = '2.3.0'
 }
 

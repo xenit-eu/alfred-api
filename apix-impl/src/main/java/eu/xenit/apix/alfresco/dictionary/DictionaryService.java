@@ -5,6 +5,7 @@ import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.dictionary.IDictionaryService;
 import eu.xenit.apix.dictionary.aspects.AspectDefinition;
+import eu.xenit.apix.dictionary.aspects.Aspects;
 import eu.xenit.apix.dictionary.aspects.IAspectService;
 import eu.xenit.apix.dictionary.namespaces.Namespace;
 import eu.xenit.apix.dictionary.namespaces.Namespaces;
@@ -12,6 +13,7 @@ import eu.xenit.apix.dictionary.properties.IPropertyService;
 import eu.xenit.apix.dictionary.types.ITypeService;
 import eu.xenit.apix.dictionary.types.TypeDefinition;
 import eu.xenit.apix.dictionary.types.Types;
+import eu.xenit.apix.properties.Properties;
 import eu.xenit.apix.properties.PropertyDefinition;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -111,7 +113,17 @@ public class DictionaryService implements IDictionaryService {
     }
 
     @Override
+    public Properties getProperties() {
+        return propertyService.getProperties();
+    }
+
+    @Override
     public AspectDefinition GetAspectDefinition(eu.xenit.apix.data.QName qname) {
         return aspectService.GetAspectDefinition(qname);
+    }
+
+    @Override
+    public Aspects getAspects() {
+        return aspectService.getAspects();
     }
 }

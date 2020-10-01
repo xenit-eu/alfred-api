@@ -11,9 +11,11 @@ import com.github.dynamicextensionsalfresco.webscripts.annotations.WebScript;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.dictionary.IDictionaryService;
 import eu.xenit.apix.dictionary.aspects.AspectDefinition;
+import eu.xenit.apix.dictionary.aspects.Aspects;
 import eu.xenit.apix.dictionary.namespaces.Namespaces;
 import eu.xenit.apix.dictionary.types.TypeDefinition;
 import eu.xenit.apix.dictionary.types.Types;
+import eu.xenit.apix.properties.Properties;
 import eu.xenit.apix.properties.PropertyDefinition;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
 import eu.xenit.apix.rest.v1.RestV1Config;
@@ -51,6 +53,17 @@ public class DictionaryWebScript1 extends ApixV1Webscript {
         }
         writeJsonResponse(webScriptResponse, propDef);
     }
+
+
+    @Uri(value = "/properties", method = HttpMethod.GET, formatStyle = FormatStyle.ARGUMENT)
+    @ApiOperation(value = "Return properties", notes = "")
+    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Properties.class))
+    public void getProperties(
+            WebScriptResponse webScriptResponse) throws IOException {
+        Properties properties = dictionaryService.getProperties();
+        writeJsonResponse(webScriptResponse, properties);
+    }
+
 
     @Uri(value = "/types", method = HttpMethod.GET, formatStyle = FormatStyle.ARGUMENT)
     @ApiOperation(value = "Return the definitions of types", notes = "")
@@ -90,6 +103,15 @@ public class DictionaryWebScript1 extends ApixV1Webscript {
             webScriptResponse.setStatus(HttpStatus.SC_NOT_FOUND);
         }
         writeJsonResponse(webScriptResponse, classDef);
+    }
+
+
+    @Uri(value = "/aspects", method = HttpMethod.GET, formatStyle = FormatStyle.ARGUMENT)
+    @ApiOperation(value = "Return apects", notes = "")
+    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Aspects.class))
+    public void getAspects(WebScriptResponse webScriptResponse) throws IOException {
+        Aspects aspects = dictionaryService.getAspects();
+        writeJsonResponse(webScriptResponse, aspects);
     }
 
     @Uri(value = "/namespaces", method = HttpMethod.GET, formatStyle = FormatStyle.ARGUMENT)
