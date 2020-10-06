@@ -8,4 +8,4 @@ Fixes https://xenitsupport.jira.com/browse/ALFREDAPI-<**YOUR TICKET ID**>
 - [ ] Does the PR follow our [coding styleguide and other active procedures](https://xenitsupport.jira.com/wiki/spaces/XEN/pages/624558081/XeniT+Enhancement+Proposals+XEP)?
 - [ ] Is usage of `this.` prefix avoided?
 
-See [README.md](./README.md) for full explanation.
+See [the documentation](https://docs.xenit.eu/alfred-api/stable-developer) for full explanation.
