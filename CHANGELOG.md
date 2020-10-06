@@ -1,15 +1,10 @@
 
 # Alfred API - Changelog
 
-## 2.7.1 (UNRELEASED)
-
-### Added
-
+## 2.7.1 (Unreleased)
 
 ### Changed
-
-
-### Fixed
+* [ALFREDAPI-398](https://xenitsupport.jira.com/browse/ALFREDAPI-398): Move documentation to docs.xenit.eu/alfred-api
 
 
 ### Deleted
