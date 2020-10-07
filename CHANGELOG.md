@@ -1,9 +1,10 @@
 
 # Alfred API - Changelog
 
+## 2.7.0 (unreleased)
 
-
-## 2.7.0 (2020-10-01)
+### Changed
+* [ALFREDAPI-461](https://xenitsupport.jira.com/browse/ALFREDAPI-461): Reintroduce xenit maven repo definition
 
 ### Added
 * [ALFREDAPI-418](https://xenitsupport.jira.com/browse/ALFREDAPI-418): Add support for Alfresco 6.2
