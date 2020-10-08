@@ -71,7 +71,6 @@ ext {
 subprojects {
     apply plugin: 'java'
     apply plugin: 'maven'
-    apply plugin: 'maven-publish'
 
     group = 'eu.xenit.apix'
     version = versionWithoutQualifier + getVersionQualifier(System.env.BRANCH_NAME ?: 'local')
