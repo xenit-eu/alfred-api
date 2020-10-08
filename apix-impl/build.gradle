@@ -16,18 +16,12 @@ sourceSets.main.java.srcDirs += 'src/main/java'
 
 subprojects {
     apply from: "${project.projectDir}/overrides.gradle"
+    apply from: "${rootProject.projectDir}/publish.gradle"
+    apply plugin: 'eu.xenit.amp'
+
     dependencies {
         compile(project(":apix-impl"))
     }
-}
-
-allprojects {
-    // allprojects also applies to shared code (under apix-impl/src) that needs to work in IntelliJ
-
-    apply from: "${rootProject.projectDir}/publish.gradle"
-    apply plugin: 'eu.xenit.de'
-    apply plugin: 'eu.xenit.amp'
-    apply plugin: 'eu.xenit.alfresco'
 
     publishing {
         publications {
@@ -45,7 +39,7 @@ allprojects {
     artifacts {
         ampArtifact amp
     }
-    
+
     sourceSets {
         main {
             java {
@@ -63,6 +57,36 @@ allprojects {
             testResultsDirName = "${buildDir}/test-results/test"
         }
     }
+
+
+    // Extend amp plugin task:
+    // We want to add 'alfresco-global.properties' etc to the module-specific folder in the AMP
+    // (e.g. 'config/module/alfresco/module/apix-impl-51/') without hard-coding project name for each Alfresco version.
+    amp {
+        deBundles = files(
+                jar,
+                "${rootDir}/lib/swagger-ui_5x-1.1.0.jar", // Works for 6x too
+        )
+        into("config/alfresco/module/${project.name}") {
+            from("${project.parent.projectDir}/config/alfresco-global.properties")
+            from("${project.parent.projectDir}/config/log4j.properties")
+            from("${project.parent.projectDir}/config/module-context.xml")
+            expand(moduleId: project.name)
+        }
+        into("config/alfresco/module/${project.name}/messages") {
+            from("${project.parent.projectDir}/config/messages/")
+        }
+    }
+
+    afterEvaluate {
+        signMavenPublication.dependsOn amp
+    }
+}
+
+allprojects {
+    // allprojects also applies to shared code (under apix-impl/src) that needs to work in IntelliJ
+    apply plugin: 'eu.xenit.de'
+    apply plugin: 'eu.xenit.alfresco'
 
     dependencies {
         compile(project(":apix-interface"))
@@ -132,29 +156,6 @@ public class Version {
                         + '!org.joda.convert,'
                         + '*'
         )
-    }
-
-    // Extend amp plugin task:
-    // We want to add 'alfresco-global.properties' etc to the module-specific folder in the AMP
-    // (e.g. 'config/module/alfresco/module/apix-impl-51/') without hard-coding project name for each Alfresco version.
-    amp {
-        deBundles = files(
-                jar,
-                "${rootDir}/lib/swagger-ui_5x-1.1.0.jar", // Works for 6x too
-        )
-        into("config/alfresco/module/${project.name}") {
-            from("${project.parent.projectDir}/config/alfresco-global.properties")
-            from("${project.parent.projectDir}/config/log4j.properties")
-            from("${project.parent.projectDir}/config/module-context.xml")
-            expand(moduleId: project.name)
-        }
-        into("config/alfresco/module/${project.name}/messages") {
-            from("${project.parent.projectDir}/config/messages/")
-        }
-    }
-
-    afterEvaluate {
-        signMavenPublication.dependsOn amp
     }
 
     alfrescoDynamicExtensions {

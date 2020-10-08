@@ -1,9 +1,10 @@
 
 # Alfred API - Changelog
 
+## 2.7.0 (2020-10-09)
 
-
-## 2.7.0 (2020-10-01)
+### Changed
+* [ALFREDAPI-461](https://xenitsupport.jira.com/browse/ALFREDAPI-461): Reintroduce xenit maven repo definition
 
 ### Added
 * [ALFREDAPI-418](https://xenitsupport.jira.com/browse/ALFREDAPI-418): Add support for Alfresco 6.2
@@ -12,6 +13,7 @@
 ### Fixed
 * [ALFREDAPI-390](https://xenitsupport.jira.com/browse/ALFREDAPI-390): Remove symlinks in code
 * [ALFREDAPI-259](https://xenitsupport.jira.com/browse/ALFREDAPI-259): Intellij does not load the code of the integration tests project correctly
+* [ALFREDAPI-453](https://xenitsupport.jira.com/browse/ALFREDAPI-453): Fix publishing which was broken due to above fixes
 
 
 ## 2.6.1 (2020-09-07)
