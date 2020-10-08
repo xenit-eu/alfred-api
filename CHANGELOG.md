@@ -13,7 +13,7 @@
 ### Fixed
 * [ALFREDAPI-390](https://xenitsupport.jira.com/browse/ALFREDAPI-390): Remove symlinks in code
 * [ALFREDAPI-259](https://xenitsupport.jira.com/browse/ALFREDAPI-259): Intellij does not load the code of the integration tests project correctly
-* [ALFREDAPI-418](https://xenitsupport.jira.com/browse/ALFREDAPI-418): Fix publishing which was broken due to above fixes
+* [ALFREDAPI-453](https://xenitsupport.jira.com/browse/ALFREDAPI-453): Fix publishing which was broken due to above fixes
 
 
 ## 2.6.1 (2020-09-07)
