@@ -32,16 +32,6 @@ def BuildVersionX(version) {
     sh "${gradleCommand} :apix-integrationtests:test-${version}:integrationTest"
 }
 
-def Publish(sonatypeUsername, sonatypePassword, gpgPassPhrase, projectName) {
-    def gradleCommand = "./gradlew --info --stacktrace "
-    sh "${gradleCommand} ${projectName}:publish " +
-            " -Ppublish_username=${sonatypeUsername} " +
-            " -Ppublish_password=${sonatypePassword} " +
-            " -PkeyId=DF8285F0 " +
-            " -Ppassword=${gpgPassPhrase} " +
-            " -PsecretKeyRingFile=/var/jenkins_home/secring.gpg "
-}
-
 node {
     def gradleCommand = "./gradlew --info --stacktrace "
     try {
@@ -78,13 +68,12 @@ node {
                 withCredentials([
                         usernamePassword(credentialsId: 'sonatype', passwordVariable: 'sonatypePassword', usernameVariable: 'sonatypeUsername'),
                         string(credentialsId: 'gpgpassphrase', variable: 'gpgPassPhrase')]) {
-                    Publish(sonatypeUsername, sonatypePassword, gpgPassPhrase, "apix-interface")
-                    Publish(sonatypeUsername, sonatypePassword, gpgPassPhrase, "apix-impl:apix-impl-50")
-                    Publish(sonatypeUsername, sonatypePassword, gpgPassPhrase, "apix-impl:apix-impl-51")
-                    Publish(sonatypeUsername, sonatypePassword, gpgPassPhrase, "apix-impl:apix-impl-52")
-                    Publish(sonatypeUsername, sonatypePassword, gpgPassPhrase, "apix-impl:apix-impl-60")
-                    Publish(sonatypeUsername, sonatypePassword, gpgPassPhrase, "apix-impl:apix-impl-61")
-                    Publish(sonatypeUsername, sonatypePassword, gpgPassPhrase, "apix-impl:apix-impl-62")
+                    sh "${gradleCommand} publish " +
+                            " -Ppublish_username=${sonatypeUsername} " +
+                            " -Ppublish_password=${sonatypePassword} " +
+                            " -PkeyId=DF8285F0 " +
+                            " -Ppassword=${gpgPassPhrase} " +
+                            " -PsecretKeyRingFile=/var/jenkins_home/secring.gpg "
                 }
             }
         }
