@@ -54,7 +54,7 @@ public class FtsNodeVisitorTest {
     public void TestTermEscaped() {
         String t = "type";
         SearchSyntaxNode node = builder.term(t, "my\"Val").create();
-        Assert.assertEquals(t.toUpperCase() + ":\"my\"Val\"", toFts(node));
+        Assert.assertEquals(t.toUpperCase() + ":\"my\\\"Val\"", toFts(node));
     }
 
     @Test
@@ -67,8 +67,7 @@ public class FtsNodeVisitorTest {
     @Test
     public void TestPropertyEscaped() {
         SearchSyntaxNode node = builder.property("cm:content", "my\"Content").create();
-        Assert.assertEquals("cm:content:\"my\"Content\"", toFts(node));
-
+        Assert.assertEquals("cm:content:\"my\\\"Content\"", toFts(node));
     }
 
 
