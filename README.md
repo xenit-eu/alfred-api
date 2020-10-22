@@ -1,27 +1,20 @@
 # Alfred API
 
-## License
-
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
-
-## Continuous Integration Build
-
 [![Jenkins Build Status](https://jenkins-2.xenit.eu/buildStatus/icon?job=Xenit+Github%2Falfred-api%2Fmaster&subject=Jenkins)](https://jenkins-2.xenit.eu/job/Xenit%20Github/job/alfred-api/job/master/)
-
-## Publishing
-
 [![Maven Central](https://img.shields.io/maven-central/v/eu.xenit.apix/apix-interface.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22eu.xenit.apix%22%20AND%20a%3A%22apix-interface%22)
 
-## Documentation
+# Documentation
 
-### Full
-[![Developer guide](https://img.shields.io/badge/Developer_guide-docs.xenit.eu-yellow)](https://docs.xenit.eu/alfred-api)
+## Full
+
+[https://docs.xenit.eu/alfred-api/stable-user/index.html](https://docs.xenit.eu/alfred-api/stable-user/index.html)
 
 ## Quickstart
 
 ### Rules for pull requests
 * Common sense trumps all rules.
-* For every pull request please extend the [CHANGELOG.md](https://github.com/xenit-eu/alfred-api/blob/master/CHANGELOG.md).
+* For every pull request please extend the [CHANGELOG.md](./CHANGELOG.md).
 * Do not make breaking changes since this is an API used by customers. Breaking changes include 
   adding, changing or removing endpoints or JSON objects used in requests and responses.
   * If you are forced to make a breaking change:
@@ -29,7 +22,7 @@
     * Add a note to the changelog with upgrade instructions
     * Notify all customers at the next release
 * When working in REST code, please comply to **REST HTTP result codes** policy outlined in the
-  [user guide](https://docs.xenit.eu/alfred-api/stable-user).
+  [user guide](https://docs.xenit.eu/alfred-api/stable-user/rest-api/index.html#rest-http-result-codes).
 * Prefer unit tests over integration tests to keep builds fast
   
 ### Project structure
@@ -47,16 +40,12 @@ Alfresco version used.
 ### How to
 
 #### Run
-If it is the first time you build Alfred API on your machine:
-```bash
-./setup.sh  # or ./setup.bat on Windows
-```
-Then:
+
+The following command starts up all docker containers required for an Alfresco running Alfred API.
 ```bash
 ./gradlew :apix-docker:docker-${VERSION}:composeUp --info
 ```
 Where `VERSION` is e.g. `51`.
-This starts up all docker containers required for an Alfresco running Alfred API.
 
 
 #### Run integration tests
@@ -93,6 +82,7 @@ The new installation can be done either through the DE web interface, or with th
 ```bash
 ./gradlew :apix-impl:apix-impl-{ALFRESCO-VERSION}:installBundle -Phost={ALFRESCO-HOST} -Pport={ALFRESCO-PORT}
 ```
+Where `VERSION` is e.g. `51` and here `PORT` is the port mapping of the *alfresco-core* container e.g. `32774`.
 
 *Protip:* If you get tired of changing the port after every `docker-compose up`, you can temporarily put a
 fixed port in the *docker-compose.yml* of the version you are working with. (The rationale behind using 
@@ -121,53 +111,8 @@ and then restart the containers with:
 
 
 ### REST HTTP result codes
-REST responses can return the following HTTP status codes:
 
-
-#### 2xx Success
-
-Indicates request sent by client was understood and accepted.
-
-**Code**                    | **Meaning**
-----------------------      |-----------------------
-200 OK                      | Generic success.
-202 Accepted                | The request was successful and will be processed asynchronously.
-207 Multi-Status            | A bulk request completed successfully. These responses should contain multi-status response that can be correlated to each individual request in the bulk request. Can be returned even if individual requests fail.
-
-
-#### 3xx Redirection
-
-Indicates the client must take additional steps to complete the request.
-
-**Code**                    | **Meaning**
-----------------------      | -----------------------
-301 Moved Permanently       | This and all future requests should be directed to the given URI.
-
-
-#### 4xx Client error
-
-Indicates anticipated failures, such as requests for non-existant resources, 
-requests with missing input and malformed requests.
-
-A body *may* be provided in the response that clarifies the error.
-
-**Code**                    | **Meaning**
-----------------------      | -----------------------
-400 Bad Request             | Generic client error.
-401 Unauthorized            | User must log in.
-403 Forbidden               | User not authorized to use this resource.
-404 Not Found               | Requested resource not found. Returned also for e.g. requesting a node with an incorrect id, as well as unhandled URI's. For security reasons, a 404 can aso be returned when the requester has insufficient permissions.
-405 Method Not Allowed      | A request method is not supported (e.g. PUT on an endpoint that only accepts GET).
-
-
-#### 5xx Server error
-
-Indicates unexpected failures.
-
-**Code**                    | **Meaning**
-----------------------      | -----------------------
-500 Internal Server Error   | Generic server error.
-503 Service Unavailable     | Temporary server error. Retry later is sensible.
+[See documentation here.](https://docs.xenit.eu/alfred-api/stable-user/rest-api/index.html#rest-http-result-codes)
 
 ## Installation
 
