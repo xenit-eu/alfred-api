@@ -438,4 +438,30 @@ abstract public class SearchServiceTest extends BaseTest {
         searchService.query(searchQuery);
     }
 
+    @Test
+    public void testSearchForQuotationMarkProperty() {
+        final String testString = "For testing \"quotes\".";
+
+        transactionService.getRetryingTransactionHelper().doInTransaction(() -> {
+            NodeRef companyHomeRef = repository.getCompanyHome();
+
+            FileInfo mainTestFolder = createMainTestFolder(companyHomeRef);
+            FileInfo testNode = createTestNode(mainTestFolder.getNodeRef(), "testNode");
+            nodeService.setProperty(testNode.getNodeRef(), ContentModel.PROP_DESCRIPTION, testString);
+            return null;
+        }, false, true);
+
+        QueryBuilder builder = new QueryBuilder();
+        SearchSyntaxNode node = builder.property(
+                ContentModel.PROP_DESCRIPTION.toPrefixString(namespacePrefixResolver), testString, true)
+                .create();
+
+        SearchQuery query = new SearchQuery();
+        query.setQuery(node);
+        // Set consistency to transactional so we don't have to wait for Solr
+        query.setConsistency(SearchQueryConsistency.TRANSACTIONAL);
+        SearchQueryResult result = searchService.query(query);
+
+        Assert.assertEquals(1, result.getTotalResultCount());
+    }
 }
