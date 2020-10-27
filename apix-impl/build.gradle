@@ -150,7 +150,6 @@ public class Version {
                         + 'org.springframework.cglib.proxy,'
                         // Unintuitively, the notation 'version="1.0"' means any version >= 1.0
                         + 'org.json;version="1.0",'
-                        + '!org.codehaus.jackson.map,'
                         + '!com.google.appengine.api,'
                         + '!com.google.apphosting.api,'
                         + '!org.joda.convert,'
