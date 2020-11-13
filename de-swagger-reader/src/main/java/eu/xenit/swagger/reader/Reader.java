@@ -37,6 +37,8 @@ import io.swagger.util.BaseReaderUtils;
 import io.swagger.util.ParameterProcessor;
 import io.swagger.util.PathUtils;
 import io.swagger.util.ReflectionUtils;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -816,7 +818,14 @@ public class Reader {
         ApiOperation apiOperation = ReflectionUtils.getAnnotation(method, ApiOperation.class);
         ApiResponses responseAnnotation = ReflectionUtils.getAnnotation(method, ApiResponses.class);
 
-        String operationId = method.getName();
+        Pattern versionRegex = Pattern.compile(".*([vV]\\d).*");
+        Matcher versionMatcher = versionRegex.matcher(cls.getName());
+        String versionElement = "";
+        if(versionMatcher.matches()) {
+            versionElement = versionMatcher.group(1);
+        }
+
+        String operationId = method.getName() + versionElement;
         String responseContainer = null;
 
         Type responseType = null;
