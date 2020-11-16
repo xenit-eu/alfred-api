@@ -7,6 +7,7 @@
 
 
 ### Changed
+* [ALFREDAPI-401](https://xenitsupport.jira.com/browse/ALFREDAPI-463): Replace `org.codehaus.jackson` dependencies with `com.fasterxml` dependencies, and moved shared source of integration tests to integration tests module.
 
 
 ### Fixed
