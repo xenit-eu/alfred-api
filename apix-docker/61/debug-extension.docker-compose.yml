@@ -7,7 +7,7 @@ services:
       - DEBUG=true
       - SHARE_HOST=alfresco-share
   alfresco-share:
-    image: alfresco/alfresco-share:6.1.1
+    image: hub.xenit.eu/public/alfresco-share-community:6.1
     ports:
       - 8090:8080
     environment:

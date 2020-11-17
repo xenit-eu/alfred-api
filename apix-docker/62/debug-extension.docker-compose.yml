@@ -5,3 +5,10 @@ services:
       - 8000:8000
     environment:
       - DEBUG=true
+  alfresco-share:
+    image: hub.xenit.eu/public/alfresco-share-community:6.2
+    ports:
+      - 8090:8080
+    environment:
+      - DEBUG=true
+      - ALFRESCO_HOST=alfresco-core
