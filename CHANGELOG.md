@@ -5,6 +5,11 @@
 
 ### Changed
 * [ALFREDAPI-398](https://xenitsupport.jira.com/browse/ALFREDAPI-398): Move documentation to docs.xenit.eu/alfred-api
+* [ALFREDAPI-401](https://xenitsupport.jira.com/browse/ALFREDAPI-463): Replace `org.codehaus.jackson` dependencies with `com.fasterxml` dependencies, and moved shared source of integration tests to integration tests module.
+
+
+### Fixed
+* [ALFREDAPI-463](https://xenitsupport.jira.com/browse/ALFREDAPI-463): Fix quotation marks in searches being improperly escaped. Search queries can now be escaped properly. E.g. \"Compas Format\" instead of \\\"Compas Format\\\" as was needed previously.
 
 
 ### Deleted

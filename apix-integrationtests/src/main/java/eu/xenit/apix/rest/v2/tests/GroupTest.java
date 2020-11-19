@@ -1,5 +1,6 @@
 package eu.xenit.apix.rest.v2.tests;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.people.Person;
 import org.alfresco.model.ContentModel;
@@ -20,7 +21,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,5 +1,6 @@
 package eu.xenit.apix.rest.v0.categories;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.Authentication;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.AuthenticationType;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
@@ -8,7 +9,6 @@ import eu.xenit.apix.categories.ICategoryService;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.rest.v0.RestV0Config;
 import java.io.IOException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
