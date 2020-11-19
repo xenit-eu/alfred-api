@@ -24,6 +24,8 @@
 * When working in REST code, please comply to **REST HTTP result codes** policy outlined in the
   [user guide](https://docs.xenit.eu/alfred-api/stable-user/rest-api/index.html#rest-http-result-codes).
 * Prefer unit tests over integration tests to keep builds fast
+* Avoid `this.` prefix for consistency (unless the scope is ambiguous).i
+* Follow our [coding styleguide and other active procedures](https://xenitsupport.jira.com/wiki/spaces/XEN/pages/624558081/XeniT+Enhancement+Proposals+XEP).
   
 ### Project structure
 * *apix-interface* builds the interface of Alfred API. This part is agnostic of the 
