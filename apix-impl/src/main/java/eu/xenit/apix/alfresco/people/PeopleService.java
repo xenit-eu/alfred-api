@@ -32,7 +32,7 @@ import org.springframework.stereotype.Service;
 @Primary
 public class PeopleService implements IPeopleService {
 
-    Logger logger = LoggerFactory.getLogger(PeopleService.class);
+    private static final Logger logger = LoggerFactory.getLogger(PeopleService.class);
 
     private ApixToAlfrescoConversion c;
     private PersonService alfrescoPersonService;
@@ -131,9 +131,10 @@ public class PeopleService implements IPeopleService {
         if (userName == null || userName.equals("")) {
             throw new IllegalArgumentException("Username cannot be null or empty");
         }
-        NodeRef personRef = c.apix(alfrescoPersonService.getPersonOrNull(userName));
+        String normalizedUserName = normalizeUserName(userName);
+        NodeRef personRef = c.apix(alfrescoPersonService.getPersonOrNull(normalizedUserName));
         if (personRef == null) {
-            throw new NoSuchElementException("User " + userName + " does not exist");
+            throw new NoSuchElementException("User " + normalizedUserName + " does not exist");
         }
         return GetPerson(personRef);
     }

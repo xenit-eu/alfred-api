@@ -104,6 +104,19 @@ public class PeopleTest extends BaseTest {
 
     }
 
+    @Test
+    public void testGetSelf() throws IOException {
+        final String userName = "-me-";
+        String url = createApixUrl("/people?userName=%s", userName);
+        HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
+        String result = EntityUtils.toString(httpResponse.getEntity());
+        Person person = new ObjectMapper().readValue(result, Person.class);
+        Assert.assertEquals("admin@alfresco.com", person.getEmailAddress());
+        Assert.assertEquals("admin", person.getUserName());
+        Assert.assertEquals("Administrator", person.getFirstName());
+        Assert.assertEquals("", person.getLastName());
+    }
+
     @After
     public void cleanUp() {
         this.removeMainTestFolder();
