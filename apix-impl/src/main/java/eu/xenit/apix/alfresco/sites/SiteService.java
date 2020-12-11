@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.slf4j.Logger;
@@ -43,26 +45,47 @@ public class SiteService implements ISiteService {
         List<SiteInfo> userSites = siteService.listSites(userId);
 
         for (SiteInfo userSite : userSites) {
-            NodeRef nodeRef = c.apix(userSite.getNodeRef());
-            String shortName = userSite.getShortName();
-            String title = userSite.getTitle();
-            String description = userSite.getDescription();
-            boolean isPublic = userSite.getIsPublic();
-            NodeRef documentLibrary = c.apix(siteService.getContainer(shortName, DOCUMENT_LIBRARY_COMPONENT));
-            NodeRef links = c.apix(siteService.getContainer(shortName, LINKS_COMPONENT));
-            NodeRef dataLists = c.apix(siteService.getContainer(shortName, DATA_LISTS_COMPONENT));
-            NodeRef wiki = c.apix(siteService.getContainer(shortName, WIKI_COMPONENT));
-            NodeRef discussions = c.apix(siteService.getContainer(shortName, DISCUSSIONS_COMPONENT));
-            Map<String, NodeRef> componentsMap = new HashMap<>();
-            componentsMap.put(DOCUMENT_LIBRARY_COMPONENT, documentLibrary);
-            componentsMap.put(LINKS_COMPONENT, links);
-            componentsMap.put(DATA_LISTS_COMPONENT, dataLists);
-            componentsMap.put(WIKI_COMPONENT, wiki);
-            componentsMap.put(DISCUSSIONS_COMPONENT, discussions);
 
-            apixSites.add(new Site(nodeRef, shortName, title, description, isPublic, componentsMap));
+                NodeRef nodeRef = c.apix(userSite.getNodeRef());
+                String shortName = userSite.getShortName();
+                String title = userSite.getTitle();
+                String description = userSite.getDescription();
+                boolean isPublic = userSite.getIsPublic();
+                Map<String, NodeRef> componentsMap;
+                // Wrapping method for NYCSANSUP-34:
+                // Alfresco-RM blocked retrieval of components due to its onw permission model
+                // this caused the entire call to fail. Since the above call `siteService.listSites(userId)` implies
+                // that the user has at least read rights on the current site, we will retrieve it anyway for display
+                // purposes. If the user does indeed not have access to the component nodes, then they should be blocked
+                // when trying to access those specifically.
+                try {
+                    componentsMap = getSiteComponents(siteService, shortName);
+                } catch (AccessDeniedException accessDeniedException) {
+                    logger.debug("User {} does not have access to a site component for site {} according to exception."
+                            + " Overriding to return a complete list of all sites this user is member of.",
+                            userId, userSite, accessDeniedException);
+                    componentsMap = AuthenticationUtil.runAsSystem(() -> {
+                        return getSiteComponents(siteService, shortName);
+                    });
+                }
+                apixSites.add(new Site(nodeRef, shortName, title, description, isPublic, componentsMap));
         }
 
         return apixSites;
+    }
+
+    private Map<String, NodeRef> getSiteComponents(org.alfresco.service.cmr.site.SiteService siteService, String siteShortname) {
+        Map<String, NodeRef> componentsMap = new HashMap<>();
+        NodeRef documentLibrary = c.apix(siteService.getContainer(siteShortname, DOCUMENT_LIBRARY_COMPONENT));
+        NodeRef links = c.apix(siteService.getContainer(siteShortname, LINKS_COMPONENT));
+        NodeRef dataLists = c.apix(siteService.getContainer(siteShortname, DATA_LISTS_COMPONENT));
+        NodeRef wiki = c.apix(siteService.getContainer(siteShortname, WIKI_COMPONENT));
+        NodeRef discussions = c.apix(siteService.getContainer(siteShortname, DISCUSSIONS_COMPONENT));
+        componentsMap.put(DOCUMENT_LIBRARY_COMPONENT, documentLibrary);
+        componentsMap.put(LINKS_COMPONENT, links);
+        componentsMap.put(DATA_LISTS_COMPONENT, dataLists);
+        componentsMap.put(WIKI_COMPONENT, wiki);
+        componentsMap.put(DISCUSSIONS_COMPONENT, discussions);
+        return componentsMap;
     }
 }

@@ -11,6 +11,7 @@
 ### Fixed
 * [ALFREDAPI-463](https://xenitsupport.jira.com/browse/ALFREDAPI-463): Fix quotation marks in searches being improperly escaped. Search queries can now be escaped properly. E.g. \"Compas Format\" instead of \\\"Compas Format\\\" as was needed previously.
 * [ALFREDAPI-466](https://xenitsupport.jira.com/browse/ALFREDAPI-466): Fix usage of the special `-me-` argument for the peopleAPI v1 & v2
+* [NYCSANSUP-34](https://xenitsupport.jira.com/browse/NYCSANSUP-34): Fix AccessDeniedException from alfresco-rm in sitesService 
 
 ### Deleted
 
