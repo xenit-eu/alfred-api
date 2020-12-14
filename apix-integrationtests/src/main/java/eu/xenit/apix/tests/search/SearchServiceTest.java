@@ -3,6 +3,9 @@ package eu.xenit.apix.tests.search;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
+import eu.xenit.apix.alfresco.dictionary.PropertyService;
+import eu.xenit.apix.alfresco.search.SearchFacetsService;
 import eu.xenit.apix.search.FacetSearchResult;
 import eu.xenit.apix.search.ISearchService;
 import eu.xenit.apix.search.QueryBuilder;
@@ -55,6 +58,10 @@ abstract public class SearchServiceTest extends BaseTest {
     public static final String DESCRIPTION_SET_OF_1001 = "descriptionSetOf1001";
     @Autowired
     ISearchService searchService;
+    @Autowired
+    private SearchFacetsService facetsService;
+    @Autowired
+    private PropertyService propertyService;
     @Autowired
     NodeService nodeService;
     @Autowired
@@ -141,6 +148,27 @@ abstract public class SearchServiceTest extends BaseTest {
     }
 
     @Test
+    public void TestIntermediateLimit() throws InterruptedException {
+        final SearchServiceBaseSpy searchServiceBaseSpy = new SearchServiceBaseSpy(
+                serviceRegistry.getSearchService(),
+                facetsService,
+                new ApixToAlfrescoConversion(serviceRegistry),
+                propertyService
+        );
+        solrTestHelper.waitForSolrSync();
+        QueryBuilder builder = new QueryBuilder();
+        SearchSyntaxNode node = builder.term("type", "cm:folder").create();
+
+        SearchQuery query = new SearchQuery();
+        query.setQuery(node);
+        query.getPaging().setLimit(3);
+        SearchQueryResult result = searchServiceBaseSpy.query(query);
+
+        Assert.assertEquals(3, result.getNoderefs().size());
+        Assert.assertEquals(3, searchServiceBaseSpy.getProcessedResults());
+    }
+
+    @Test
     public void TestSkip() throws IOException, InterruptedException {
         solrTestHelper.waitForSolrSync();
         QueryBuilder builder = new QueryBuilder();
@@ -215,7 +243,7 @@ abstract public class SearchServiceTest extends BaseTest {
                     Map<QName, Serializable> props = new HashMap<QName, Serializable>() {{
                         put(ContentModel.PROP_DESCRIPTION, DESCRIPTION_SET_OF_1001);
                     }};
-                    for (int i = 0; i < 1001 ; i++) {
+                    for (int i = 0; i < 1001; i++) {
                         FileInfo testNode = createTestNode(testFolder.getNodeRef(), "testNode-1001-" + i);
                         nodeService.addProperties(testNode.getNodeRef(), props);
                     }
