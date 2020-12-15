@@ -51,23 +51,7 @@ public class SiteService implements ISiteService {
                 String title = userSite.getTitle();
                 String description = userSite.getDescription();
                 boolean isPublic = userSite.getIsPublic();
-                Map<String, NodeRef> componentsMap;
-                // Wrapping method for NYCSANSUP-34:
-                // Alfresco-RM blocked retrieval of components due to its onw permission model
-                // this caused the entire call to fail. Since the above call `siteService.listSites(userId)` implies
-                // that the user has at least read rights on the current site, we will retrieve it anyway for display
-                // purposes. If the user does indeed not have access to the component nodes, then they should be blocked
-                // when trying to access those specifically.
-                try {
-                    componentsMap = getSiteComponents(siteService, shortName);
-                } catch (AccessDeniedException accessDeniedException) {
-                    logger.debug("User {} does not have access to a site component for site {} according to exception."
-                            + " Overriding to return a complete list of all sites this user is member of.",
-                            userId, userSite, accessDeniedException);
-                    componentsMap = AuthenticationUtil.runAsSystem(() -> {
-                        return getSiteComponents(siteService, shortName);
-                    });
-                }
+                Map<String, NodeRef> componentsMap = getSiteComponents(siteService, shortName);
                 apixSites.add(new Site(nodeRef, shortName, title, description, isPublic, componentsMap));
         }
 
@@ -76,16 +60,22 @@ public class SiteService implements ISiteService {
 
     private Map<String, NodeRef> getSiteComponents(org.alfresco.service.cmr.site.SiteService siteService, String siteShortname) {
         Map<String, NodeRef> componentsMap = new HashMap<>();
-        NodeRef documentLibrary = c.apix(siteService.getContainer(siteShortname, DOCUMENT_LIBRARY_COMPONENT));
-        NodeRef links = c.apix(siteService.getContainer(siteShortname, LINKS_COMPONENT));
-        NodeRef dataLists = c.apix(siteService.getContainer(siteShortname, DATA_LISTS_COMPONENT));
-        NodeRef wiki = c.apix(siteService.getContainer(siteShortname, WIKI_COMPONENT));
-        NodeRef discussions = c.apix(siteService.getContainer(siteShortname, DISCUSSIONS_COMPONENT));
-        componentsMap.put(DOCUMENT_LIBRARY_COMPONENT, documentLibrary);
-        componentsMap.put(LINKS_COMPONENT, links);
-        componentsMap.put(DATA_LISTS_COMPONENT, dataLists);
-        componentsMap.put(WIKI_COMPONENT, wiki);
-        componentsMap.put(DISCUSSIONS_COMPONENT, discussions);
+        componentsMap.put(DOCUMENT_LIBRARY_COMPONENT, getSiteComponent(siteService, siteShortname, DOCUMENT_LIBRARY_COMPONENT));
+        componentsMap.put(LINKS_COMPONENT, getSiteComponent(siteService, siteShortname, LINKS_COMPONENT));
+        componentsMap.put(DATA_LISTS_COMPONENT, getSiteComponent(siteService, siteShortname, DATA_LISTS_COMPONENT));
+        componentsMap.put(WIKI_COMPONENT, getSiteComponent(siteService, siteShortname, WIKI_COMPONENT));
+        componentsMap.put(DISCUSSIONS_COMPONENT, getSiteComponent(siteService, siteShortname, DISCUSSIONS_COMPONENT));
         return componentsMap;
+    }
+
+    private NodeRef getSiteComponent(org.alfresco.service.cmr.site.SiteService siteService, String siteShortname, String componentName) {
+        NodeRef component = null;
+        // Wrapping call because Alfresco RM or other components my intercept and cause a failure.
+        try {
+            component = c.apix(siteService.getContainer(siteShortname, componentName));
+        } catch (AccessDeniedException accessDeniedException) {
+            logger.error("User does not have permission to component {} for site {} due to following error.", componentName, siteShortname, accessDeniedException);
+        }
+        return null;
     }
 }

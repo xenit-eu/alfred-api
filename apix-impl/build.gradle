@@ -96,6 +96,8 @@ allprojects {
         alfrescoProvided group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_version
         alfrescoProvided group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_version
 
+        compileOnly 'org.alfresco:alfresco-rm-enterprise-repo:2.6.0'
+
         compile group: 'org.yaml', name: 'snakeyaml', version: '1.15'
         compile group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
 

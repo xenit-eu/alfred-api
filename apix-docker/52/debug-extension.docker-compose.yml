@@ -5,7 +5,9 @@ services:
       - 8000:8000
     environment:
       - DEBUG=true
-      - SHARE_HOST=alfresco-share
+      - SHARE_HOST=localhost
+      - ALFRESCO_HOST=localhost
+#      - SHARE_HOST=alfresco-core
   alfresco-share:
     image: hub.xenit.eu/alfresco-enterprise/alfresco-share-enterprise:5.2
     ports:
