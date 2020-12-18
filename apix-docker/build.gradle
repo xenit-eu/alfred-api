@@ -33,6 +33,13 @@ subprojects {
                 useComposeFiles.add(extraComposeFile)
             }
         }
+        // Adding JVM error logging changes for DEVEM-468
+        if (ci.isCi()) {
+            def jvmLoggingOptionsComposeFile = '../jvm-logging-options.docker-compose.yml'
+            if (project.file(jvmLoggingOptionsComposeFile).exists()) {
+                useComposeFiles.add(jvmLoggingOptionsComposeFile);
+            }
+        }
     }
 
 }
