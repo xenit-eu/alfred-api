@@ -6,6 +6,7 @@
 ### Changed
 * [ALFREDAPI-398](https://xenitsupport.jira.com/browse/ALFREDAPI-398): Move documentation to docs.xenit.eu/alfred-api
 * [ALFREDAPI-401](https://xenitsupport.jira.com/browse/ALFREDAPI-463): Replace `org.codehaus.jackson` dependencies with `com.fasterxml` dependencies, and moved shared source of integration tests to integration tests module.
+* [ALFREDAPI-470](https://xenitsupport.jira.com/browse/ALFREDAPI-470): Introduce optional `maxItems` parameter to search queries
 
 
 ### Fixed
