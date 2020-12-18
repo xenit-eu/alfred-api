@@ -74,19 +74,19 @@ public class SearchService implements ISearchService {
 
         String query = toFtsQuery(postQuery);
         int argSkipCount = postQuery.getPaging().getSkip();
+        int argMaxItems = postQuery.getMaxItems();
 
-        // Max items
-        Optional<Integer> maxItemsOpt = Optional.ofNullable(postQuery.getPaging().getLimit());
+        Optional<Integer> limitOpt = Optional.ofNullable(postQuery.getPaging().getLimit());
         // XENFRED-1516
         // Bug in Solr: "an *ArrayIndexOutOfBoundsException* occurs if _rows_ + _start_ > 2147483647"
         // see also: http://lucene.472066.n3.nabble.com/jira-Created-SOLR-3513-specifying-2147483647-for-rows-parameter-causes-AIOOBE-td3987892.html
         // we're limiting the maxItems to MAX_ITEMS (==1000) here
-        int maxItems = Math.min(maxItemsOpt.orElse(MAX_ITEMS), MAX_ITEMS);
+        int limit = Math.min(limitOpt.orElse(MAX_ITEMS), MAX_ITEMS);
 
         // TODO: correctly implement skip and limit, now just manually limiting
         // 5.x will add maxItems to searchParameters
         // 4.2 will bodge it by putting maxItems in a variable for use during results parsing
-        setSearchLimit(searchParameters, maxItems);
+        setSearchLimit(searchParameters, argMaxItems, limit);
 
         // Skip count
         if (argSkipCount > 0) {
@@ -151,12 +151,12 @@ public class SearchService implements ISearchService {
     }
 
     // These 2 methods are overridden in the 4.2 impl
-    protected void setSearchLimit(SearchParameters searchParameters, int max) {
+    protected void setSearchLimit(SearchParameters searchParameters, int maxItems, int limit) {
         // MaxItems will impose a hard limit on the total number of results.
         // Setting it to -1 signifies all results should be counted in the totalCount
-        searchParameters.setMaxItems(-1);
+        searchParameters.setMaxItems(maxItems);
         // Limit is equivalent to page size. combine with ordering and skipcount to page through results
-        searchParameters.setLimit(max);
+        searchParameters.setLimit(limit);
     }
 
     protected int getSearchLimit(SearchParameters searchParameters) {
