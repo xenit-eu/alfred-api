@@ -3,5 +3,5 @@ services:
   alfresco-core:
     environment:
       - JAVA_OPTS_ErrorFileLocation="-XX:ErrorFile=/var/log/java/hs_err_%p.log"
-    volumes:
-      - :/var/log/java/
+#    volumes:
+#      - :/var/log/java/
