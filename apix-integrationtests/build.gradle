@@ -20,6 +20,7 @@ subprojects {
     sourceSets {
         main {
             java {
+                srcDirs '../src/main/java'
                 // This is needed because client side, these dependencies are not really provided
                 runtimeClasspath += configurations.compileOnly
             }
@@ -39,7 +40,7 @@ allprojects {
         integrationJar
         compileOnly.extendsFrom(integrationJar)
     }
-    
+
     dependencies {
         compileOnly project(":apix-rest-v1")
         compileOnly project(":apix-interface")
