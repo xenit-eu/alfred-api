@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 
 public class SearchService implements ISearchService {
 
-    public static final int MAX_ITEMS = 1000;
+    public static final int MAX_ITEMS_DEFAULT = 1000;
     private static final Logger logger = LoggerFactory.getLogger(SearchService.class);
     protected SearchFacetsService facetService;
     protected ApixToAlfrescoConversion c;
@@ -74,14 +74,16 @@ public class SearchService implements ISearchService {
 
         String query = toFtsQuery(postQuery);
         int argSkipCount = postQuery.getPaging().getSkip();
+        int maxItems = Optional.ofNullable(postQuery.getPaging().getLimit()).orElse(MAX_ITEMS_DEFAULT);
 
-        // Max items
-        Optional<Integer> maxItemsOpt = Optional.ofNullable(postQuery.getPaging().getLimit());
         // XENFRED-1516
         // Bug in Solr: "an *ArrayIndexOutOfBoundsException* occurs if _rows_ + _start_ > 2147483647"
-        // see also: http://lucene.472066.n3.nabble.com/jira-Created-SOLR-3513-specifying-2147483647-for-rows-parameter-causes-AIOOBE-td3987892.html
-        // we're limiting the maxItems to MAX_ITEMS (==1000) here
-        int maxItems = Math.min(maxItemsOpt.orElse(MAX_ITEMS), MAX_ITEMS);
+        // see also: https://issues.apache.org/jira/browse/SOLR-3513
+        // Fixed in Solr 6.4. Probably in earlier versions too, but cannot find the exact fix version.
+        final int SOLR_BUG_MAX = 2147483647;
+        if(argSkipCount + maxItems > SOLR_BUG_MAX) {
+            maxItems = SOLR_BUG_MAX - argSkipCount;
+        }
 
         // TODO: correctly implement skip and limit, now just manually limiting
         // 5.x will add maxItems to searchParameters
@@ -150,17 +152,16 @@ public class SearchService implements ISearchService {
         return searchParameters;
     }
 
-    // These 2 methods are overridden in the 4.2 impl
     protected void setSearchLimit(SearchParameters searchParameters, int max) {
         // MaxItems will impose a hard limit on the total number of results.
-        // Setting it to -1 signifies all results should be counted in the totalCount
-        searchParameters.setMaxItems(-1);
-        // Limit is equivalent to page size. combine with ordering and skipcount to page through results
-        searchParameters.setLimit(max);
+        // Setting it to -1 signifies all results should be counted in the totalCount.
+        // However, this can lead to dangerously high memory usage in Solr, leading to too much GC, leading to an
+        // unreactive system. See also https://lucene.apache.org/solr/guide/7_4/pagination-of-results.html
+        searchParameters.setMaxItems(max);
     }
 
     protected int getSearchLimit(SearchParameters searchParameters) {
-        return searchParameters.getLimit();
+        return searchParameters.getMaxItems();
     }
 
     protected void logQuery(SearchParameters searchParameters) {
@@ -183,11 +184,12 @@ public class SearchService implements ISearchService {
         SearchQueryResult results = new SearchQueryResult();
 
         int count = 0;
+        int limit = getSearchLimit(searchParameters);
         for (ResultSetRow row : rs) {
-            NodeRef nodeRef = row.getNodeRef();
-            results.addResult(c.apix(nodeRef));
-            count++;
-            if (count >= getSearchLimit(searchParameters)) {
+            results.addResult(c.apix(row.getNodeRef()));
+            ++count;
+            // limit < 0 means unlimited
+            if (limit > 0 && count >= limit) {
                 // TODO: correctly implement skip and limit, now just manually limiting
                 break;
             }
