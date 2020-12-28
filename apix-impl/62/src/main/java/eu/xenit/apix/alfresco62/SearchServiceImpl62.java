@@ -36,7 +36,7 @@ public class SearchServiceImpl62 extends SearchService {
     }
 
     @Override
-    protected SearchParameters buildSearchParameters(SearchQuery postQuery) {
+    public SearchParameters buildSearchParameters(SearchQuery postQuery) {
         // Build parameters normally
         SearchParameters parameters = super.buildSearchParameters(postQuery);
 

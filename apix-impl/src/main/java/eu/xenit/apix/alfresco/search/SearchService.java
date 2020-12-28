@@ -62,7 +62,7 @@ public class SearchService implements ISearchService {
         return ftsNodeVisitor.visit(q.getQuery());
     }
 
-    protected SearchParameters buildSearchParameters(SearchQuery postQuery) {
+    public SearchParameters buildSearchParameters(SearchQuery postQuery) {
         if (postQuery.getFacets().isEnabled() && postQuery.getConsistency() == SearchQueryConsistency.TRANSACTIONAL) {
             throw new RuntimeException(
                     "Transaction consistency does not support retrieval as facets. Either use query consistency eventual or disable facets in your query.");
