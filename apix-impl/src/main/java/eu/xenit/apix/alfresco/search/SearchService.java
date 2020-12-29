@@ -80,9 +80,9 @@ public class SearchService implements ISearchService {
         // Bug in Solr: "an *ArrayIndexOutOfBoundsException* occurs if _rows_ + _start_ > 2147483647"
         // see also: https://issues.apache.org/jira/browse/SOLR-3513
         // Fixed in Solr 6.4. Probably in earlier versions too, but cannot find the exact fix version.
-        final int SOLR_BUG_MAX = 2147483647;
-        if(argSkipCount + maxItems > SOLR_BUG_MAX) {
-            maxItems = SOLR_BUG_MAX - argSkipCount;
+        final long SOLR_BUG_MAX = 2147483647L;
+        if((long)argSkipCount + (long)maxItems > SOLR_BUG_MAX) {
+            maxItems = (int)SOLR_BUG_MAX - argSkipCount;
         }
 
         // TODO: correctly implement skip and limit, now just manually limiting
