@@ -10,6 +10,8 @@ task sourcesJar(type: Jar) {
 task javadocJar(type: Jar) {
     from javadoc
     classifier = 'javadoc'
+    // Temporary workaround for https://bugs.openjdk.java.net/browse/JDK-8244171
+    javadoc.options.addBooleanOption("-no-module-directories", true)
 }
 
 publishing {
