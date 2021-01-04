@@ -13,6 +13,7 @@
 * [ALFREDAPI-466](https://xenitsupport.jira.com/browse/ALFREDAPI-466): Fix usage of the special `-me-` argument for the peopleAPI v1 & v2
 * [ALFREDAPI-184](https://xenitsupport.jira.com/browse/ALFREDAPI-184): Improve graceful handling of bad input in ConfigurationWebscript1
 * [ALFREDAPI-472](https://xenitsupport.jira.com/browse/ALFREDAPI-472): Fix AccessDeniedException in sitesService (primarily from Alfresco Records Management)
+* [ALFREDAPI-473](https://xenitsupport.jira.com/browse/ALFREDAPI-473): Integration tests are again run
 
 ### Deleted
 
