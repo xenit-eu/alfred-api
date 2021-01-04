@@ -19,6 +19,7 @@ import eu.xenit.apix.node.INodeService;
 import eu.xenit.apix.node.NodeMetadata;
 import eu.xenit.apix.rest.v1.configuration.ConfigurationWebscript1;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.rest.framework.core.exceptions.InvalidArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,8 +67,15 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         logger.debug("Looking up directory {} inside datadictionary {}", searchDirectory, rootFolder);
 
         NodeRef searchDirectoryRef = rootFolder;
-        if (!searchDirectory.isEmpty()) {
-            searchDirectoryRef = fileFolderService.getChildNodeRef(rootFolder, searchDirectoryParts);
+        try {
+            if (!searchDirectory.isEmpty()) {
+                searchDirectoryRef = fileFolderService.getChildNodeRef(rootFolder, searchDirectoryParts);
+            }
+        } catch (InvalidArgumentException invalidArgumentException) {
+            // Wrapping exception in generic IllegalArgumentException since the original exception is an alfresco dependency,
+            // which we do not want to propagate into the interface (This would be required to have the webscript declare
+            // a catch clause)
+            throw new IllegalArgumentException(invalidArgumentException.getMessage(), invalidArgumentException);
         }
 
         logger.debug("Search directory: {}", searchDirectoryRef.getValue());

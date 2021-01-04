@@ -5,10 +5,12 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.Authentication;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.AuthenticationType;
+import com.github.dynamicextensionsalfresco.webscripts.annotations.ExceptionHandler;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.HttpMethod;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.RequestParam;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.WebScript;
+import com.sun.star.auth.InvalidArgumentException;
 import eu.xenit.apix.configuration.ConfigurationFileFlags;
 import eu.xenit.apix.configuration.ConfigurationService;
 import eu.xenit.apix.configuration.Configurations;
@@ -27,6 +29,8 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
@@ -37,6 +41,8 @@ import org.springframework.stereotype.Component;
 @Authentication(AuthenticationType.USER)
 @Component("eu.xenit.apix.rest.v1.configuration.ConfigurationWebscript1")
 public class ConfigurationWebscript1 extends ApixV1Webscript {
+
+    private static final Logger log = LoggerFactory.getLogger(ConfigurationWebscript1.class);
 
     @Autowired
     IFileFolderService fileFolderService;
@@ -96,5 +102,12 @@ public class ConfigurationWebscript1 extends ApixV1Webscript {
         writer.write(");");
         writer.flush();
         writer.close();
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    private void writeBadRequestResponse(IllegalArgumentException exception, WebScriptResponse response)  throws IOException{
+        log.debug("Bad input;", exception);
+        response.setStatus(400);
+        writeJsonResponse(response, exception.getMessage());
     }
 }
