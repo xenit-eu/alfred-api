@@ -12,7 +12,6 @@ import eu.xenit.apix.utils.java8.Optional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.QueryConsistency;
 import org.alfresco.service.cmr.search.ResultSet;
@@ -88,7 +87,7 @@ public class SearchService implements ISearchService {
         // TODO: correctly implement skip and limit, now just manually limiting
         // 5.x will add maxItems to searchParameters
         // 4.2 will bodge it by putting maxItems in a variable for use during results parsing
-        setSearchLimit(searchParameters, maxItems);
+        setSearchMaxItems(searchParameters, maxItems);
 
         // Skip count
         if (argSkipCount > 0) {
@@ -152,7 +151,7 @@ public class SearchService implements ISearchService {
         return searchParameters;
     }
 
-    protected void setSearchLimit(SearchParameters searchParameters, int max) {
+    protected void setSearchMaxItems(SearchParameters searchParameters, int max) {
         // MaxItems will impose a hard limit on the total number of results.
         // Setting it to -1 signifies all results should be counted in the totalCount.
         // However, this can lead to dangerously high memory usage in Solr, leading to too much GC, leading to an
@@ -160,7 +159,7 @@ public class SearchService implements ISearchService {
         searchParameters.setMaxItems(max);
     }
 
-    protected int getSearchLimit(SearchParameters searchParameters) {
+    protected int getSearchMaxItems(SearchParameters searchParameters) {
         return searchParameters.getMaxItems();
     }
 
@@ -184,12 +183,12 @@ public class SearchService implements ISearchService {
         SearchQueryResult results = new SearchQueryResult();
 
         int count = 0;
-        int limit = getSearchLimit(searchParameters);
+        int maxItems = getSearchMaxItems(searchParameters);
         for (ResultSetRow row : rs) {
             results.addResult(c.apix(row.getNodeRef()));
             ++count;
-            // limit < 0 means unlimited
-            if (limit > 0 && count >= limit) {
+            // maxItems < 0 means unlimited
+            if (maxItems > 0 && count >= maxItems) {
                 // TODO: correctly implement skip and limit, now just manually limiting
                 break;
             }
