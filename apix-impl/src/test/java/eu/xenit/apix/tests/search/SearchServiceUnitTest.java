@@ -18,6 +18,7 @@ import eu.xenit.apix.search.SearchQuery;
 import eu.xenit.apix.search.SearchQuery.FacetOptions;
 import eu.xenit.apix.search.SearchQuery.OrderBy;
 import eu.xenit.apix.search.SearchQuery.OrderBy.Order;
+import eu.xenit.apix.search.SearchQuery.PagingOptions;
 import eu.xenit.apix.search.SearchQueryConsistency;
 import eu.xenit.apix.search.nodes.SearchSyntaxNode;
 import java.util.ArrayList;
@@ -119,6 +120,27 @@ public class SearchServiceUnitTest {
         orderings.add(multivalueOrdering);
         query.setOrderBy(orderings);
         apixSearchServiceMocked.query(query);
+    }
+
+    @Test
+    public void testLimitDefault() {
+        SearchService searchService = buildApixSearchServiceWithMocks(null);
+
+        SearchQuery query = new SearchQuery();
+        query.setQuery(new QueryBuilder().property("foo", "bar").create());
+
+        Assert.assertEquals(1000, searchService.buildSearchParameters(query).getMaxItems());
+    }
+
+    @Test
+    public void testLimit() {
+        SearchService searchService = buildApixSearchServiceWithMocks(null);
+
+        SearchQuery query = new SearchQuery();
+        query.setQuery(new QueryBuilder().property("foo", "bar").create());
+        query.setPaging(new PagingOptions(26000, 0));
+
+        Assert.assertEquals(26000, searchService.buildSearchParameters(query).getMaxItems());
     }
 
     private void assertAlfrescoSearchQueryStoreMatchesInput(StoreRef store, StoreRef expectedStore) {

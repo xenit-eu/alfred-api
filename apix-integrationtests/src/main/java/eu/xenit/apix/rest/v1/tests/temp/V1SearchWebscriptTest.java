@@ -28,16 +28,12 @@ public class V1SearchWebscriptTest extends BaseTest {
         String checkoutUrl = makeAlfrescoBaseurl("admin", "admin") + "/apix/v1/search";
         final CloseableHttpClient checkoutHttpclient = HttpClients.createDefault();
         final HttpPost checkoutHttppost = new HttpPost(checkoutUrl);
-        String checkoutJsonString = json(String.format(
-                "{\n" +
-                        "  'paging':{'limit':15}, \n" +
-                        "  \"query\": {\n" +
-                        "    \"type\": \"cm:content\"\n" +
-                        "  },\n" +
-                        "  \"facets\": {\n" +
-                        "    \"enabled\": true\n" +
-                        "  }\n" +
-                        "}"));
+        String checkoutJsonString = json(
+                "{ \n" +
+                        "  'paging': { 'limit': 15 }, \n" +
+                        "  'query':  { 'type': 'cm:content' }, \n" +
+                        "  'facets': { 'enabled': true } \n" +
+                        "}");
 
         checkoutHttppost.setEntity(new StringEntity(checkoutJsonString));
 
