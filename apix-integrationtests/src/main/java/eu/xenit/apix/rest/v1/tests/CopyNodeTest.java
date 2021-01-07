@@ -105,10 +105,9 @@ public class CopyNodeTest extends NodesBaseTest {
         checkCreatedNode(newRef, createNodeOptions);
 
         //Second copy should fail
-        //ALFREDAPI-445 -> return 409 conflict HttpStatus.SC_CONFLICT
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
-                        doPostNodes(createNodeOptions, HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                        doPostNodes(createNodeOptions, HttpStatus.SC_BAD_REQUEST,
                                 null, null);
                         return null;
                 }, false, true);
@@ -120,10 +119,9 @@ public class CopyNodeTest extends NodesBaseTest {
         final String newName = nodeService.getMetadata(childRef).properties.get(c.apix(ContentModel.PROP_NAME)).get(0);
         CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, newName,
                 null, null, copyFromFolder);
-        //ALFREDAPI-445 -> return 409 conflict HttpStatus.SC_CONFLICT
         NodeRef newRef = transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
-                    return doPostNodes(createNodeOptions, HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                    return doPostNodes(createNodeOptions, HttpStatus.SC_BAD_REQUEST,
                             null, null);
                 }, false, true);
     }

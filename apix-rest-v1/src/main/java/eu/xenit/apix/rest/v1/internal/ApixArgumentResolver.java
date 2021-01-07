@@ -1,6 +1,7 @@
 package eu.xenit.apix.rest.v1.internal;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.dynamicextensionsalfresco.webscripts.AnnotationWebScriptRequest;
 import com.github.dynamicextensionsalfresco.webscripts.arguments.ArgumentResolver;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -33,11 +34,21 @@ public class ApixArgumentResolver implements ArgumentResolver<Object, Annotation
                     argumentType, expectedParameterType));
         }*/
 
-        //TODO: inject apix object mapper?
-        ObjectMapper map = new ObjectMapper();
-
         try {
-            return map.readValue(request.getContent().getContent(), argumentType);
+            if (Exception.class.isAssignableFrom(argumentType)) {
+                if (request instanceof AnnotationWebScriptRequest) {
+                    logger.debug("Resolving to Exception from request object");
+                    AnnotationWebScriptRequest annotationWSRequest = (AnnotationWebScriptRequest) request;
+                    return annotationWSRequest.getThrownException();
+                } else {
+                    logger.error("Exception encounted but cannot handle based on request object");
+                    return null;
+                }
+            } else {
+                //TODO: inject apix object mapper?
+                ObjectMapper map = new ObjectMapper();
+                return map.readValue(request.getContent().getContent(), argumentType);
+            }
         } catch (IOException e) {
             logger.warn("Cannot convert webscript argument with type from package eu.xenit.apix to json", e);
             throw new RuntimeException("Cannot convert webscript argument (" + name + ") " +
