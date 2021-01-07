@@ -9,6 +9,7 @@ import eu.xenit.apix.dictionary.types.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.namespace.InvalidQNameException;
 import org.alfresco.service.namespace.NamespaceException;
@@ -66,6 +67,10 @@ public class TypeService implements ITypeService {
             properties.add(c.apix((qName)));
         }
         ret.setProperties(properties);
+        List<QName> mandatoryAspects = typeDef.getDefaultAspects(true).stream()
+                .map(aspectDefinition -> c.apix(aspectDefinition.getName()))
+                .collect(Collectors.toList());
+        ret.setMandatoryAspects(mandatoryAspects);
         return ret;
 
     }
