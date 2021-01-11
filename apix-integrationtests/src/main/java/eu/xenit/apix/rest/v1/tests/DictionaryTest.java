@@ -1,5 +1,14 @@
 package eu.xenit.apix.rest.v1.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import org.alfresco.repo.dictionary.DictionaryDAO;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.M2Type;
@@ -16,13 +25,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class DictionaryTest extends BaseTest {
 
@@ -51,7 +53,8 @@ public class DictionaryTest extends BaseTest {
         assertEquals(cmNamespace, name);
     }
 
-    private void executeDictionaryTypeTest(String dictionaryType, String shortName, String longName, String mandatoryAspect)
+    private void executeDictionaryTypeTest(String dictionaryType, String shortName, String longName,
+            String mandatoryAspect)
             throws IOException, JSONException {
         String baseUrl = makeAlfrescoBaseurlAdmin() + "/apix/v1/dictionary/" + dictionaryType + "/";
 
@@ -82,7 +85,8 @@ public class DictionaryTest extends BaseTest {
 
     @Test
     public void testTypeDefinitionGet() throws IOException, JSONException {
-        executeDictionaryTypeTest("types", "cm:cmobject", "{http://www.alfresco.org/model/content/1.0}cmobject", "{http://www.alfresco.org/model/content/1.0}auditable");
+        executeDictionaryTypeTest("types", "cm:cmobject", "{http://www.alfresco.org/model/content/1.0}cmobject",
+                "{http://www.alfresco.org/model/content/1.0}auditable");
     }
 
 
@@ -119,7 +123,9 @@ public class DictionaryTest extends BaseTest {
 
     @Test
     public void testAspectDefinitionGet() throws IOException, JSONException {
-        executeDictionaryTypeTest("aspects", "cm:complianceable", "{http://www.alfresco.org/model/content/1.0}complianceable", "{http://www.alfresco.org/model/content/1.0}auditable");
+        executeDictionaryTypeTest("aspects", "cm:complianceable",
+                "{http://www.alfresco.org/model/content/1.0}complianceable",
+                "{http://www.alfresco.org/model/content/1.0}auditable");
     }
 
     @Autowired
@@ -150,23 +156,21 @@ public class DictionaryTest extends BaseTest {
         assertEquals(404, httpResponse.getStatusLine().getStatusCode());
     }
 
-    public void assertMandatoryAspects(JSONObject jsonObject, String expectedMandatoryAspect) {try {
-        JSONArray jsonArray = jsonObject.getJSONArray("mandatoryAspects");
-        boolean aspectFound = false;
-        int jsonArrayLength = jsonArray.length();
-        int arrayIndex = 0;
-        while (!aspectFound & arrayIndex < jsonArrayLength) {
-            String element = (String) jsonArray.get(arrayIndex);
-            if (expectedMandatoryAspect.equals(element)) {
-                aspectFound = true;
+    public void assertMandatoryAspects(JSONObject jsonObject, String expectedMandatoryAspect) {
+        try {
+            JSONArray jsonArray = jsonObject.getJSONArray("mandatoryAspects");
+            boolean aspectFound = false;
+            for (int arrayIndex = 0; !aspectFound && arrayIndex < jsonArray.length(); arrayIndex++) {
+                String element = jsonArray.getString(arrayIndex);
+                if (expectedMandatoryAspect.equals(element)) {
+                    aspectFound = true;
+                }
             }
-            arrayIndex++;
+            assertTrue("Retrieved Definition does not contain expected mandatory aspect.", aspectFound);
+        } catch (JSONException jsonException) {
+            logger.error("Caught JSONException for DictionaryTest", jsonException);
+            fail();
         }
-        assertTrue("Retrieved Definition does not contain expected mandatory aspect.", aspectFound);
-    } catch (JSONException jsonException) {
-        logger.error("Caught JSONException for DictionaryTest", jsonException);
-        fail();
-    }
 
     }
 

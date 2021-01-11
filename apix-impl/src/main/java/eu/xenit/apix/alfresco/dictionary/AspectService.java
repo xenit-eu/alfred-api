@@ -47,7 +47,7 @@ public class AspectService implements IAspectService {
             properties.add(c.apix((qName)));
         }
         ret.setProperties(properties);
-        List<QName> mandatoryAspects = aspectDef.getDefaultAspects(true).stream()
+        List<QName> mandatoryAspects = aspectDef.getDefaultAspects().stream()
                 .map(aspectDefinition -> c.apix(aspectDefinition.getName()))
                 .collect(Collectors.toList());
         ret.setMandatoryAspects(mandatoryAspects);

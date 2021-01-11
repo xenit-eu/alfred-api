@@ -67,7 +67,7 @@ public class TypeService implements ITypeService {
             properties.add(c.apix((qName)));
         }
         ret.setProperties(properties);
-        List<QName> mandatoryAspects = typeDef.getDefaultAspects(true).stream()
+        List<QName> mandatoryAspects = typeDef.getDefaultAspects().stream()
                 .map(aspectDefinition -> c.apix(aspectDefinition.getName()))
                 .collect(Collectors.toList());
         ret.setMandatoryAspects(mandatoryAspects);
