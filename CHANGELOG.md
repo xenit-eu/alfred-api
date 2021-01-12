@@ -11,6 +11,7 @@
   large datasets by not using 'unlimited' (-1) as a default.   
 * [ALFREDAPI-464](https://xenitsupport.jira.com/browse/ALFREDAPI-464): Change JavaDoc generation on AlfredApi Interface 
   to avoid jdk bug
+* [ALFREDAPI-296](https://xenitSupport.jira.com/browse/ALFREDAPI-296): Change dictionaryService to return mandatory aspects for type- and aspectdefinitions
 * [ALFREDAPI-445](https://xenitsupport.jira.com/browse/ALFREDAPI-445): Improve exceptionhandling for duplicate files in nodes Create/Copy/Move
 
 ### Fixed
