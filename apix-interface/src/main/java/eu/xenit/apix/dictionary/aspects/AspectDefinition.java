@@ -1,7 +1,6 @@
 package eu.xenit.apix.dictionary.aspects;
 
 import eu.xenit.apix.data.QName;
-
 import java.util.List;
 
 public class AspectDefinition {
@@ -11,6 +10,7 @@ public class AspectDefinition {
     private String title;
     private String description;
     private List<QName> properties;
+    private List<QName> mandatoryAspects;
 
     public QName getName() {
         return name;
@@ -50,5 +50,13 @@ public class AspectDefinition {
 
     public void setProperties(List<QName> properties) {
         this.properties = properties;
+    }
+
+    public List<QName> getMandatoryAspects() {
+        return mandatoryAspects;
+    }
+
+    public void setMandatoryAspects(List<QName> mandatoryAspects) {
+        this.mandatoryAspects = mandatoryAspects;
     }
 }

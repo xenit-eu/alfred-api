@@ -1,5 +1,14 @@
 package eu.xenit.apix.rest.v1.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import org.alfresco.repo.dictionary.DictionaryDAO;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.M2Type;
@@ -16,13 +25,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class DictionaryTest extends BaseTest {
 
@@ -51,7 +53,8 @@ public class DictionaryTest extends BaseTest {
         assertEquals(cmNamespace, name);
     }
 
-    private void executeDictionaryTypeTest(String dictionaryType, String shortName, String longName)
+    private void executeDictionaryTypeTest(String dictionaryType, String shortName, String longName,
+            String mandatoryAspect)
             throws IOException, JSONException {
         String baseUrl = makeAlfrescoBaseurlAdmin() + "/apix/v1/dictionary/" + dictionaryType + "/";
 
@@ -61,6 +64,9 @@ public class DictionaryTest extends BaseTest {
         assertEquals(200, httpResponse.getStatusLine().getStatusCode());
         JSONObject jsonObject = new JSONObject(EntityUtils.toString(httpResponse.getEntity()));
         assertEquals(longName, jsonObject.getString("name"));
+        if (mandatoryAspect != null) {
+            assertMandatoryAspects(jsonObject, mandatoryAspect);
+        }
 
         // full qname lookup
         httpResponse = Request.Get(baseUrl + URLEncoder.encode(longName, "utf-8").replaceAll("%2F", "/")).execute()
@@ -74,12 +80,13 @@ public class DictionaryTest extends BaseTest {
 
     @Test
     public void testPropertyDefinitionGet() throws IOException, JSONException {
-        executeDictionaryTypeTest("properties", "cm:name", "{http://www.alfresco.org/model/content/1.0}name");
+        executeDictionaryTypeTest("properties", "cm:name", "{http://www.alfresco.org/model/content/1.0}name", null);
     }
 
     @Test
     public void testTypeDefinitionGet() throws IOException, JSONException {
-        executeDictionaryTypeTest("types", "cm:content", "{http://www.alfresco.org/model/content/1.0}content");
+        executeDictionaryTypeTest("types", "cm:cmobject", "{http://www.alfresco.org/model/content/1.0}cmobject",
+                "{http://www.alfresco.org/model/content/1.0}auditable");
     }
 
 
@@ -116,7 +123,9 @@ public class DictionaryTest extends BaseTest {
 
     @Test
     public void testAspectDefinitionGet() throws IOException, JSONException {
-        executeDictionaryTypeTest("aspects", "exif:exif", "{http://www.alfresco.org/model/exif/1.0}exif");
+        executeDictionaryTypeTest("aspects", "cm:complianceable",
+                "{http://www.alfresco.org/model/content/1.0}complianceable",
+                "{http://www.alfresco.org/model/content/1.0}auditable");
     }
 
     @Autowired
@@ -136,7 +145,7 @@ public class DictionaryTest extends BaseTest {
 
         dictionaryDAO.putModel(model);
 
-        executeDictionaryTypeTest("types", "life:document", "{life.model}document");
+        executeDictionaryTypeTest("types", "life:document", "{life.model}document", null);
     }
 
     @Test
@@ -145,6 +154,24 @@ public class DictionaryTest extends BaseTest {
         HttpResponse httpResponse = Request.Get(baseUrl + "cm:foobar").execute().returnResponse();
 
         assertEquals(404, httpResponse.getStatusLine().getStatusCode());
+    }
+
+    public void assertMandatoryAspects(JSONObject jsonObject, String expectedMandatoryAspect) {
+        try {
+            JSONArray jsonArray = jsonObject.getJSONArray("mandatoryAspects");
+            boolean aspectFound = false;
+            for (int arrayIndex = 0; !aspectFound && arrayIndex < jsonArray.length(); arrayIndex++) {
+                String element = jsonArray.getString(arrayIndex);
+                if (expectedMandatoryAspect.equals(element)) {
+                    aspectFound = true;
+                }
+            }
+            assertTrue("Retrieved Definition does not contain expected mandatory aspect.", aspectFound);
+        } catch (JSONException jsonException) {
+            logger.error("Caught JSONException for DictionaryTest", jsonException);
+            fail();
+        }
+
     }
 
 }

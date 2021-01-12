@@ -9,6 +9,7 @@ import eu.xenit.apix.dictionary.aspects.IAspectService;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +47,10 @@ public class AspectService implements IAspectService {
             properties.add(c.apix((qName)));
         }
         ret.setProperties(properties);
+        List<QName> mandatoryAspects = aspectDef.getDefaultAspects().stream()
+                .map(aspectDefinition -> c.apix(aspectDefinition.getName()))
+                .collect(Collectors.toList());
+        ret.setMandatoryAspects(mandatoryAspects);
         return ret;
 
     }
