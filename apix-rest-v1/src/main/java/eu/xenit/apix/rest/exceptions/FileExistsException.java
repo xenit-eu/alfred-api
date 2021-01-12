@@ -28,6 +28,12 @@ public class FileExistsException extends RuntimeException {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
+    public FileExistsException(NodeRef source, NodeRef parent, String name) {
+        this.source = source;
+        this.parent = parent;
+        this.name = name;
+    }
+
     public FileExistsException(String message, NodeRef source, NodeRef parent, String name) {
         super(message);
         this.source = source;

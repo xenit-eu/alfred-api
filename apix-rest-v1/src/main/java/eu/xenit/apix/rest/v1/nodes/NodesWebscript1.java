@@ -644,7 +644,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
             writeJsonResponse(response, nodeInfo);
         } catch (org.alfresco.service.cmr.model.FileExistsException fileExistsException) {
-            throw new FileExistsException(fileExistsException,
+            throw new FileExistsException(
                     new NodeRef(createNodeOptions.copyFrom),
                     new NodeRef(fileExistsException.getParentNodeRef().toString()),
                     fileExistsException.getName());
@@ -663,7 +663,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         try {
             nodeService.moveNode(nodeToMove, parent);
         } catch (org.alfresco.service.cmr.model.FileExistsException fileExistsException) {
-            throw new FileExistsException(fileExistsException,
+            throw new FileExistsException(
                     nodeToMove,
                     new NodeRef(fileExistsException.getParentNodeRef().toString()),
                     fileExistsException.getName());
@@ -957,7 +957,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
                         return newNode;
                     }, false, true);
         } catch (org.alfresco.service.cmr.model.FileExistsException fileExistsException) {
-            throw new FileExistsException(fileExistsException,
+            throw new FileExistsException(
                     null,
                     new NodeRef(fileExistsException.getParentNodeRef().toString()),
                     fileExistsException.getName());
