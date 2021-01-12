@@ -1,7 +1,6 @@
 package eu.xenit.apix.rest.v1.internal;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.dynamicextensionsalfresco.webscripts.AnnotationWebScriptRequest;
 import com.github.dynamicextensionsalfresco.webscripts.arguments.ArgumentResolver;
 import java.io.IOException;
 import java.lang.annotation.Annotation;

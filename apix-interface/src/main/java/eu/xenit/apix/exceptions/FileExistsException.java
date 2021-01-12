@@ -1,4 +1,4 @@
-package eu.xenit.apix.rest.exceptions;
+package eu.xenit.apix.exceptions;
 
 import eu.xenit.apix.data.NodeRef;
 

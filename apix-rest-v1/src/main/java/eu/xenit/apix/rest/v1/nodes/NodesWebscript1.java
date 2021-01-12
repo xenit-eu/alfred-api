@@ -25,7 +25,7 @@ import eu.xenit.apix.node.NodeMetadata;
 import eu.xenit.apix.permissions.IPermissionService;
 import eu.xenit.apix.permissions.NodePermission;
 import eu.xenit.apix.permissions.PermissionValue;
-import eu.xenit.apix.rest.exceptions.FileExistsException;
+import eu.xenit.apix.exceptions.FileExistsException;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
 import eu.xenit.apix.rest.v1.RestV1Config;
 import eu.xenit.apix.rest.v1.nodes.ChangeAclsOptions.Access;
@@ -596,8 +596,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
                             NodeRef parent = new NodeRef(createNodeOptions.parent);
 
                             if (!nodeService.exists(parent)) {
-                                response.setStatus(HttpStatus.SC_NOT_FOUND);
-                                writeJsonResponse(response, "Parent does not exist");
+                                writeNotFoundResponse(response, parent);
                                 return null;
                             }
 
@@ -637,6 +636,9 @@ public class NodesWebscript1 extends ApixV1Webscript {
                         }
                     }, false, true);
 
+            if (resultObject == null) {
+                return;
+            }
             NodeRef resultRef = new NodeRef(resultObject.toString());
 
             NodeInfo nodeInfo = this
