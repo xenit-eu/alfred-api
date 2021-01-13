@@ -96,10 +96,9 @@ public class CreateNodeTest extends NodesBaseTest {
                     return doPostNodes(createNodeOptions, HttpStatus.SC_OK, null, null);
                 }, false, true);
         checkCreatedNode(newRef, createNodeOptions);
-        //ALFREDAPI-445 -> return 409 conflict HttpStatus.SC_CONFLICT
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
-                    return doPostNodes(createNodeOptions, HttpStatus.SC_INTERNAL_SERVER_ERROR, null, null);
+                    return doPostNodes(createNodeOptions, HttpStatus.SC_BAD_REQUEST, null, null);
                 }, false, true);
     }
 

@@ -21,7 +21,7 @@ public class ApixArgumentResolver implements ArgumentResolver<Object, Annotation
     @Override
     public final boolean supports(final Class<?> parameterType, final Class<? extends Annotation> annotationType) {
         /* Determine if using Class.isAssignableFrom() breaks backwards compatibility. */
-        return parameterType.getCanonicalName().startsWith("eu.xenit.apix");
+        return parameterType.getCanonicalName().startsWith("eu.xenit.apix") && !Exception.class.isAssignableFrom(parameterType);
     }
 
     @Override
@@ -33,10 +33,9 @@ public class ApixArgumentResolver implements ArgumentResolver<Object, Annotation
                     argumentType, expectedParameterType));
         }*/
 
-        //TODO: inject apix object mapper?
-        ObjectMapper map = new ObjectMapper();
-
         try {
+            //TODO: inject apix object mapper?
+            ObjectMapper map = new ObjectMapper();
             return map.readValue(request.getContent().getContent(), argumentType);
         } catch (IOException e) {
             logger.warn("Cannot convert webscript argument with type from package eu.xenit.apix to json", e);
