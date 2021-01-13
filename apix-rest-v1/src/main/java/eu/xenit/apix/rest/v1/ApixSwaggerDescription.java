@@ -2,6 +2,7 @@ package eu.xenit.apix.rest.v1;
 
 import io.swagger.annotations.Contact;
 import io.swagger.annotations.Info;
+import io.swagger.annotations.License;
 import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
 
@@ -12,12 +13,12 @@ import io.swagger.annotations.Tag;
         info = @Info(
                 description = "This is the swagger specification for Api-X REST API" +
                         "\n\n" +
-                        "Examples can be found at: https://xenitsupport.jira.com/wiki/display/APIX/REST+API+Examples",
+                        "Examples can be found at: https://docs.xenit.eu/alfred-api",
                 version = "2.0.0",
                 title = "Api-X REST API",
                 //termsOfService = "http://swagger.io/terms/",
-                contact = @Contact(name = "XeniT", email = "engineering@xenit.eu", url = "http://www.xenit.eu")
-                //license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0.html")
+                contact = @Contact(name = "XeniT", email = "engineering@xenit.eu", url = "http://www.xenit.eu"),
+                license = @License(name = "GNU Lesser General Public License v3", url = "https://www.gnu.org/licenses/lgpl-3.0.txt")
         ),
         //consumes = {"application/json", "application/xml"},
         produces = {"application/json"},

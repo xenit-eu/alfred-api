@@ -167,7 +167,7 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
         //public static readonly String FTS_ESCAPE_TEXT = @"[\\+\-\!\(\)\:\^\[\]\{\}\~\*\?\" + '"' + "]";
         //public static readonly Regex FTS_PATTERN_TEXT = new Regex(FTS_ESCAPE_TEXT);
         //public static readonly String REPLACEMENT_STRING = @"\$0";
-        return value.replaceAll("\"", "\\\"");
+        return value.replace("\"", "\\\"");
     }
 
 }

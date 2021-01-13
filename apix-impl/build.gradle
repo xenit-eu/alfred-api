@@ -140,7 +140,7 @@ public class Version {
         // apix-impl/src/integration-test/java/eu/xenit/apix/tests/ApixImplBundleFilter.java
         // to find which integration tests need to run, so when changing it, change it there too.
         bnd(
-                'Export-Package': 'eu.xenit.apix.*',
+                'Export-Package': 'eu.xenit.apix.*; -split-package:=merge-first',
                 'Include-Resource': includeResource(configurations.compile),
                 'Bundle-ClassPath': bundleClassPath(configurations.compile),
                 'Bundle-SymbolicName': "${project.group}.${project.name}",
@@ -150,7 +150,6 @@ public class Version {
                         + 'org.springframework.cglib.proxy,'
                         // Unintuitively, the notation 'version="1.0"' means any version >= 1.0
                         + 'org.json;version="1.0",'
-                        + '!org.codehaus.jackson.map,'
                         + '!com.google.appengine.api,'
                         + '!com.google.apphosting.api,'
                         + '!org.joda.convert,'

@@ -1,6 +1,34 @@
 
 # Alfred API - Changelog
 
+## 2.7.1 (2021-01-13)
+
+### Changed
+* [ALFREDAPI-398](https://xenitsupport.jira.com/browse/ALFREDAPI-398): Move documentation to docs.xenit.eu/alfred-api
+* [ALFREDAPI-401](https://xenitsupport.jira.com/browse/ALFREDAPI-463): Replace `org.codehaus.jackson` dependencies with 
+  `com.fasterxml` dependencies, and moved shared source of integration tests to integration tests module.
+* [ALFREDAPI-470](https://xenitsupport.jira.com/browse/ALFREDAPI-470): Prevent problematic memory usage using /search on 
+  large datasets by not using 'unlimited' (-1) as a default.   
+* [ALFREDAPI-464](https://xenitsupport.jira.com/browse/ALFREDAPI-464): Change JavaDoc generation on AlfredApi Interface 
+  to avoid jdk bug
+* [ALFREDAPI-296](https://xenitSupport.jira.com/browse/ALFREDAPI-296): Change dictionaryService to return mandatory aspects for type- and aspectdefinitions
+* [ALFREDAPI-445](https://xenitsupport.jira.com/browse/ALFREDAPI-445): Improve exceptionhandling for duplicate files in nodes Create/Copy/Move
+
+### Fixed
+* [ALFREDAPI-184](https://xenitsupport.jira.com/browse/ALFREDAPI-184): Improve graceful handling of bad input in 
+  ConfigurationWebscript1
+* [ALFREDAPI-463](https://xenitsupport.jira.com/browse/ALFREDAPI-463): Fix quotation marks in searches being improperly 
+  escaped. Search queries can now be escaped properly. E.g. \"Compas Format\" instead of \\\"Compas Format\\\" as was needed previously.
+* [ALFREDAPI-466](https://xenitsupport.jira.com/browse/ALFREDAPI-466): Fix usage of the special `-me-` argument for the 
+  peopleAPI v1 & v2
+* [ALFREDAPI-472](https://xenitsupport.jira.com/browse/ALFREDAPI-472): Fix AccessDeniedException in sitesService 
+  (primarily from Alfresco Records Management)
+* [ALFREDAPI-473](https://xenitsupport.jira.com/browse/ALFREDAPI-473): Integration tests are again run
+
+### Deleted
+
+
+
 ## 2.7.0 (2020-10-09)
 
 ### Changed

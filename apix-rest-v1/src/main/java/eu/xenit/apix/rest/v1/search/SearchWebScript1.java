@@ -46,7 +46,7 @@ public class SearchWebScript1 extends ApixV1Webscript {
           + "\n"
           + "## query\n"
           + "Object containing subcomponents that build the requested query.\n"
-          + "Info about the Search query syntax can be found here: https://xenitsupport.jira.com/wiki/display/APIX/Search+query+syntax\n"
+          + "Info about the Search query syntax can be found here: https://docs.xenit.eu/alfred-api/stable-user/rest-api\n"
           + "### special search terms:\n"
           + "- type: searches for nodes of that type (for example: \"type\" : \"cm:content\")\n"
           + "- aspect: searches for nodes with that aspect (for example: \"aspect\" : \"cm:titled\")\n"

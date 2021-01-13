@@ -14,6 +14,7 @@ public class TypeDefinition {
     private String title;
     private String description;
     private List<QName> properties;
+    private List<QName> mandatoryAspects;
 
     public TypeDefinition() {
     }
@@ -68,5 +69,13 @@ public class TypeDefinition {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<QName> getMandatoryAspects() {
+        return mandatoryAspects;
+    }
+
+    public void setMandatoryAspects(List<QName> mandatoryAspects) {
+        this.mandatoryAspects = mandatoryAspects;
     }
 }

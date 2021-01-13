@@ -25,6 +25,7 @@ import eu.xenit.apix.node.NodeMetadata;
 import eu.xenit.apix.permissions.IPermissionService;
 import eu.xenit.apix.permissions.NodePermission;
 import eu.xenit.apix.permissions.PermissionValue;
+import eu.xenit.apix.exceptions.FileExistsException;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
 import eu.xenit.apix.rest.v1.RestV1Config;
 import eu.xenit.apix.rest.v1.nodes.ChangeAclsOptions.Access;
@@ -48,7 +49,6 @@ import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.ServiceRegistry;
-import org.alfresco.service.cmr.model.FileExistsException;
 import org.alfresco.service.cmr.repository.InvalidNodeRefException;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.apache.commons.io.IOUtils;
@@ -588,60 +588,69 @@ public class NodesWebscript1 extends ApixV1Webscript {
     @ApiResponses({@ApiResponse(code = 200, message = "Success", response = NodeInfo.class),
             @ApiResponse(code = 403, message = "Not Authorized")})
     public void createNode(final CreateNodeOptions createNodeOptions, WebScriptResponse response) throws IOException {
-        Object resultObject = serviceRegistry.getRetryingTransactionHelper()
-                .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
-                    @Override
-                    public Object execute() throws Throwable {
-                        NodeRef parent = new NodeRef(createNodeOptions.parent);
+        try {
+            Object resultObject = serviceRegistry.getRetryingTransactionHelper()
+                    .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
+                        @Override
+                        public Object execute() throws Throwable {
+                            NodeRef parent = new NodeRef(createNodeOptions.parent);
 
-                        if (!nodeService.exists(parent)) {
-                            response.setStatus(HttpStatus.SC_NOT_FOUND);
-                            writeJsonResponse(response, "Parent does not exist");
-                            return null;
-                        }
-
-                        NodeRef nodeRef;
-                        NodeRef copyFrom = null;
-                        if (createNodeOptions.copyFrom == null) {
-                            nodeRef = nodeService
-                                    .createNode(parent, createNodeOptions.name,
-                                            new QName(createNodeOptions.type));
-                        } else {
-                            copyFrom = new NodeRef(createNodeOptions.copyFrom);
-                            if (!nodeService.exists(copyFrom)) {
-                                response.setStatus(HttpStatus.SC_NOT_FOUND);
-                                writeJsonResponse(response, "CopyFrom does not exist");
+                            if (!nodeService.exists(parent)) {
+                                writeNotFoundResponse(response, parent);
                                 return null;
                             }
-                            nodeRef = nodeService.copyNode(copyFrom, parent, true);
+
+                            NodeRef nodeRef;
+                            NodeRef copyFrom = null;
+                            if (createNodeOptions.copyFrom == null) {
+                                nodeRef = nodeService
+                                        .createNode(parent, createNodeOptions.name,
+                                                new QName(createNodeOptions.type));
+                            } else {
+                                copyFrom = new NodeRef(createNodeOptions.copyFrom);
+                                if (!nodeService.exists(copyFrom)) {
+                                    response.setStatus(HttpStatus.SC_NOT_FOUND);
+                                    writeJsonResponse(response, "CopyFrom does not exist");
+                                    return null;
+                                }
+                                nodeRef = nodeService.copyNode(copyFrom, parent, true);
+                            }
+
+                            MetadataChanges metadataChanges;
+                            QName type;
+                            if (createNodeOptions.type != null) {
+                                type = new QName(createNodeOptions.type);
+                            } else if (createNodeOptions.type == null && createNodeOptions.copyFrom != null) {
+                                type = nodeService.getMetadata(copyFrom).type;
+                            } else {
+                                response.setStatus(HttpStatus.SC_BAD_REQUEST);
+                                writeJsonResponse(response,
+                                        "Please provide parameter \"type\" when creating a new node");
+                                return null;
+                            }
+                            metadataChanges = new MetadataChanges(type, null, null,
+                                    createNodeOptions.properties);
+                            nodeService.setMetadata(nodeRef, metadataChanges);
+
+                            return nodeRef;
                         }
+                    }, false, true);
 
-                        MetadataChanges metadataChanges;
-                        QName type;
-                        if (createNodeOptions.type != null) {
-                            type = new QName(createNodeOptions.type);
-                        } else if ( createNodeOptions.type == null && createNodeOptions.copyFrom != null ) {
-                            type = nodeService.getMetadata(copyFrom).type;
-                        } else {
-                            response.setStatus(HttpStatus.SC_BAD_REQUEST);
-                            writeJsonResponse(response,
-                                    "Please provide parameter \"type\" when creating a new node");
-                            return null;
-                        }
-                        metadataChanges = new MetadataChanges(type, null, null,
-                                createNodeOptions.properties);
-                        nodeService.setMetadata(nodeRef, metadataChanges);
+            if (resultObject == null) {
+                return;
+            }
+            NodeRef resultRef = new NodeRef(resultObject.toString());
 
-                        return nodeRef;
-                    }
-                }, false, true);
+            NodeInfo nodeInfo = this
+                    .nodeRefToNodeInfo(resultRef, this.fileFolderService, this.nodeService, this.permissionService);
 
-        NodeRef resultRef = new NodeRef(resultObject.toString());
-
-        NodeInfo nodeInfo = this
-                .nodeRefToNodeInfo(resultRef, this.fileFolderService, this.nodeService, this.permissionService);
-
-        writeJsonResponse(response, nodeInfo);
+            writeJsonResponse(response, nodeInfo);
+        } catch (org.alfresco.service.cmr.model.FileExistsException fileExistsException) {
+            throw new FileExistsException(
+                    new NodeRef(createNodeOptions.copyFrom),
+                    new NodeRef(fileExistsException.getParentNodeRef().toString()),
+                    fileExistsException.getName());
+        }
 
     }
 
@@ -653,7 +662,14 @@ public class NodesWebscript1 extends ApixV1Webscript {
             throws IOException {
         NodeRef parent = new NodeRef(location.parent);
         NodeRef nodeToMove = createNodeRef(space, store, guid);
-        nodeService.moveNode(nodeToMove, parent);
+        try {
+            nodeService.moveNode(nodeToMove, parent);
+        } catch (org.alfresco.service.cmr.model.FileExistsException fileExistsException) {
+            throw new FileExistsException(
+                    nodeToMove,
+                    new NodeRef(fileExistsException.getParentNodeRef().toString()),
+                    fileExistsException.getName());
+        }
     }
 
     @ApiOperation(value = "Retrieves all comments for a given node")
@@ -664,10 +680,11 @@ public class NodesWebscript1 extends ApixV1Webscript {
             @ApiResponse(code = 404, message = "Not Found")
     })
     public void getComments(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
-            @RequestParam(defaultValue = "0") int skipcount, @RequestParam(defaultValue = "10") int pagesize, WebScriptResponse response) throws IOException {
+            @RequestParam(defaultValue = "0") int skipcount, @RequestParam(defaultValue = "10") int pagesize,
+            WebScriptResponse response) throws IOException {
         final NodeRef target = this.createNodeRef(space, store, guid);
         if (nodeService.exists(target)) {
-            if(permissionService.hasPermission(target, PermissionService.READ)) {
+            if (permissionService.hasPermission(target, PermissionService.READ)) {
                 Conversation comments = commentService.getComments(target, skipcount, pagesize);
                 boolean canCreate = permissionService.hasPermission(target, PermissionService.CREATE_CHILDREN);
                 comments.setCreatable(canCreate);
@@ -709,10 +726,10 @@ public class NodesWebscript1 extends ApixV1Webscript {
             @ApiResponse(code = 404, message = "Not Found")
     })
     public void getComment(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
-             WebScriptRequest request, WebScriptResponse response) throws IOException {
+            WebScriptRequest request, WebScriptResponse response) throws IOException {
         final NodeRef targetComment = new NodeRef(space, store, guid);
         if (nodeService.exists(targetComment)) {
-            if(permissionService.hasPermission(targetComment, PermissionService.READ)) {
+            if (permissionService.hasPermission(targetComment, PermissionService.READ)) {
                 Comment comment = commentService.getComment(targetComment);
                 response.setStatus(HttpStatus.SC_OK);
                 writeJsonResponse(response, comment);
@@ -941,14 +958,11 @@ public class NodesWebscript1 extends ApixV1Webscript {
                         }
                         return newNode;
                     }, false, true);
-        } catch (FileExistsException fileExistsException) {
-            response.setStatus(400);
-            String message = String
-                    .format("A child node with name %s already exists for parent %s", finalFile.getFilename(),
-                            finalParent);
-            logger.debug(message);
-            writeJsonResponse(response, message);
-            return;
+        } catch (org.alfresco.service.cmr.model.FileExistsException fileExistsException) {
+            throw new FileExistsException(
+                    null,
+                    new NodeRef(fileExistsException.getParentNodeRef().toString()),
+                    fileExistsException.getName());
         }
         NodeInfo nodeInfo = this
                 .nodeRefToNodeInfo((NodeRef) resultRef, fileFolderService, nodeService, permissionService);
@@ -961,6 +975,15 @@ public class NodesWebscript1 extends ApixV1Webscript {
         logger.debug("Not Authorized: ", exception);
         response.setStatus(403);
         writeJsonResponse(response, "Not authorised to execute this operation");
+    }
+
+    @ExceptionHandler(FileExistsException.class)
+    private void writeFileExistsResponse(FileExistsException fileExistsException, WebScriptResponse response)
+            throws IOException {
+        String message = fileExistsException.toString();
+        logger.debug(message);
+        response.setStatus(400);
+        writeJsonResponse(response, message);
     }
 
     private void writeNotFoundResponse(WebScriptResponse response, NodeRef requestedNode) throws IOException {

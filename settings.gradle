@@ -4,8 +4,6 @@ include ':apix-interface'
 include ':apix-rest-v1'
 include ':apix-webscripts-runtime'
 include ':de-swagger-reader'
-include ':developer-documentation:examples'
-include ':javadoc'
 
 include ':apix-impl'
 include ':apix-impl:apix-impl-50'
