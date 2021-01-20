@@ -42,7 +42,7 @@ allprojects {
     }
 
     dependencies {
-        compileOnly project(":apix-rest-v1")
+        compile project(":apix-rest-v1")
         compileOnly project(":apix-interface")
         compileOnly project(":apix-impl:apix-impl-${subproject_alfresco_version}")
 
