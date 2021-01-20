@@ -3,8 +3,6 @@ package eu.xenit.apix.alfresco.configuration;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dynamicextensionsalfresco.osgi.OsgiService;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.HttpMethod;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
 import eu.xenit.apix.configuration.ConfigurationFile;
 import eu.xenit.apix.configuration.ConfigurationFileFlags;
 import eu.xenit.apix.configuration.ConfigurationService;
@@ -17,7 +15,6 @@ import eu.xenit.apix.filefolder.IFileFolderService;
 import eu.xenit.apix.node.ChildParentAssociation;
 import eu.xenit.apix.node.INodeService;
 import eu.xenit.apix.node.NodeMetadata;
-import eu.xenit.apix.rest.v1.configuration.ConfigurationWebscript1;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.rest.framework.core.exceptions.InvalidArgumentException;
 import org.slf4j.Logger;
@@ -31,7 +28,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -44,7 +40,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     private static final String QNAME_FOLDER = TYPE_FOLDER.toString();
     private static final QName QNAME_NAME = new QName(PROP_NAME.toString());
-    Logger logger = LoggerFactory.getLogger(ConfigurationWebscript1.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConfigurationServiceImpl.class);
 
     @Autowired
     IFileFolderService fileFolderService;
