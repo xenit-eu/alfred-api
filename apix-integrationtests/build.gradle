@@ -79,6 +79,9 @@ allprojects {
                                 + "!com.google.errorprone.annotations.concurrent,"
                                 + '!org.joda.convert,'
                                 + '!org.apache.log,'
+                                + '!com.google.appengine.api,'
+                                + '!com.google.apphosting.api,'
+                                + '!org.joda.convert,'
                                 + '*'
         )
     }
