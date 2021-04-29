@@ -4,13 +4,23 @@
 [![Jenkins Build Status](https://jenkins-2.xenit.eu/buildStatus/icon?job=Xenit+Github%2Falfred-api%2Fmaster&subject=Jenkins)](https://jenkins-2.xenit.eu/job/Xenit%20Github/job/alfred-api/job/master/)
 [![Maven Central](https://img.shields.io/maven-central/v/eu.xenit.apix/apix-interface.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22eu.xenit.apix%22%20AND%20a%3A%22apix-interface%22)
 
-# Documentation
+Alfred API abstracts away past and future changes to the Alfresco, across major and minor versions, providing a stable 
+interface to Alfresco on which client-side applications can be built.
 
-## Full
+It also provides functional grouping of related operations from the Alfresco Public API, and additional endpoints that 
+are not supported by the Alfresco Public API.
 
-[https://docs.xenit.eu/alfred-api/stable-user/index.html](https://docs.xenit.eu/alfred-api/stable-user/index.html)
+## Usage
+Full documentation can be found at the [project's documentation](https://docs.xenit.eu/alfred-api/stable-user/index.html).
 
-## Quickstart
+## Installation
+
+### Pre-requisites
+Alfred API requires **_Dynamic Extensions For Alfresco_**, version 2.0.1 or later. This module should be installed first.
+Acquisition and installation instructions can be found [here](https://github.com/xenit-eu/dynamic-extensions-for-alfresco).
+
+
+## Contributing
 
 ### Rules for pull requests
 * Common sense trumps all rules.
@@ -110,14 +120,3 @@ and then restart the containers with:
 ```bash
 ./gradlew :apix-docker:docker-51:composeUp --info
 ```
-
-
-### REST HTTP result codes
-
-[See documentation here.](https://docs.xenit.eu/alfred-api/stable-user/rest-api/index.html#rest-http-result-codes)
-
-## Installation
-
-### Pre-requisites
-Alfred API requires **_Dynamic Extensions For Alfresco_**, version 2.0.1 or later. This module should be installed first.
-Acquisition and installation instructions can be found [here](https://github.com/xenit-eu/dynamic-extensions-for-alfresco).
