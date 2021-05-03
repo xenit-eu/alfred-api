@@ -4,6 +4,7 @@
 ## 2.7.2 (UNRELEASED)
 
 ### Changed
+* [ALFREDAPI-481](https://xenitsupport.jira.com/browse/ALFREDAPI-481): Add blurb about Xenit to README
 
 ### Fixed
 
