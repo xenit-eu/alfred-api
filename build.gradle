@@ -42,7 +42,7 @@ ext {
 
     jackson_version = '2.6.3'
     swagger_version = "1.5.7"
-    de_version = "2.0.5"
+    de_version = "2.1.0"
 
     http_core_version = "4.3.3"
     http_version = "4.3.4"
@@ -53,6 +53,7 @@ ext {
     alfresco_60_version = "6.0"
     alfresco_61_version = "6.1"
     alfresco_62_version = "6.2"
+    alfresco_70_version = "7.0"
 
     // The introduction of hit highlights in search 52 required general versions bump to 5.2.f
     // Additionally, an explicit dependency on the data-model was required, however
@@ -64,6 +65,7 @@ ext {
     alfresco_60_dm_version = "8.9"
     alfresco_61_dm_version = "8.25.1"
     alfresco_62_dm_version = "8.50.18"
+    alfresco_70_dm_version = "8.424"
 
     care4alfVersion = '2.3.0'
 }
