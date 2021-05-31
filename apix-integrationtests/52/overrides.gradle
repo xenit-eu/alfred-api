@@ -2,4 +2,6 @@ ext {
     subproject_alfresco_version = "52"
     alfresco_version = alfresco_52_version
     alfresco_dm_version = alfresco_52_dm_version
+    alfresco_repo_version = alfresco_version
+    alfresco_remote_api_version = alfresco_version
 }

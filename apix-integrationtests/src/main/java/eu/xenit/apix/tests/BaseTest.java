@@ -1,7 +1,7 @@
 package eu.xenit.apix.tests;
 
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
-import eu.xenit.apix.integrationtesting.runner.ApixIntegration;
+import eu.xenit.testing.integrationtesting.runner.AlfrescoTestRunner;
 import eu.xenit.testing.integrationtesting.runner.UseSpringContextOfBundle;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.model.Repository;
@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 
-@RunWith(ApixIntegration.class)
+@RunWith(AlfrescoTestRunner.class)
 @UseSpringContextOfBundle(filter = ApixImplBundleFilter.class)
 public abstract class BaseTest {
 

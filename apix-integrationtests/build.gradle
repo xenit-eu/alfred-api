@@ -1,7 +1,5 @@
-import com.github.dynamicextensionsalfresco.gradle.tasks.InstallBundle
-
 plugins {
-    id 'eu.xenit.de' version '2.0.2' apply false
+    id 'eu.xenit.de' apply false
     id 'eu.xenit.alfresco' version '1.0.0' apply false
 }
 
@@ -10,60 +8,106 @@ ext {
     alfresco_version = alfresco_62_version
     alfresco_repo_version = '7.199.0'
     alfresco_dm_version = alfresco_62_dm_version
+    alfresco_remote_api_version = '7.107.1'
     alfresco_min_version = '6.2'
     subproject_alfresco_version = 62
 }
 
 subprojects {
     apply from: "${project.projectDir}/overrides.gradle"
+    apply plugin: 'eu.xenit.de'
+    apply plugin: 'eu.xenit.alfresco-remote-testrunner'
 
     sourceSets {
-        main {
+        integrationTest {
             java {
-                srcDirs '../src/main/java'
+                srcDirs = ['./src/main/java', '../src/main/java']
                 // This is needed because client side, these dependencies are not really provided
                 runtimeClasspath += configurations.compileOnly
+            }
+            resources {
+                srcDirs '../src/main/resources', './src/main/resources'
             }
         }
     }
 
+    def projectDocker = project(":apix-docker:docker-${subproject_alfresco_version}")
+    def composeUpTask = projectDocker.tasks.getByName("composeUp")
+    def composeDownTask = projectDocker.tasks.getByName("composeDown")
+
+    alfrescoIntegrationTest {
+        integrationTestPackages = ["eu.xenit.apix"]
+    }
+
+    alfrescoDynamicExtensions {
+        repository {
+            endpoint {
+                protocol = "http"
+                serviceUrl = "/alfresco/service"
+            }
+            authentication {
+                username = "admin"
+                password = "admin"
+            }
+        }
+    }
+
+//    integrationTest.dependsOn composeUpTask
+//    integrationTest.finalizedBy composeDownTask
+
+    installBundle.enabled = false
+    
+    installIntegrationTestingBundle {
+        dependsOn composeUpTask
+        doFirst {
+//            files = tasks.jar.archivePath
+            def serviceInfo = composeUpTask.servicesInfos.get("alfresco-core")
+            def host = 'localhost'
+            def port = '8080'
+            if(serviceInfo != null) {
+                port = serviceInfo.ports[8080]
+                host = serviceInfo.getHost()
+            }
+            alfrescoDynamicExtensions.repository.endpoint.port = port
+            alfrescoDynamicExtensions.repository.endpoint.host = host
+        }
+    }
+//    integrationTest.finalizedBy composeDownTask
+
+
+    installBundle {
+        dependsOn jar
+        doFirst {
+//            files = tasks.jar.archivePath
+            def serviceInfo = composeUpTask.servicesInfos.get("alfresco-core")
+            def host = 'localhost'
+            def port = '8080'
+            if(serviceInfo != null) {
+                port = serviceInfo.ports[8080]
+                host = serviceInfo.getHost()
+            }
+            alfrescoDynamicExtensions.repository.endpoint.port = port
+            alfrescoDynamicExtensions.repository.endpoint.host = host
+        }
+//        doLast {
+//            println tasks.jar.archivePath
+//        }
+    }
+
     dependencies {
         compile(project(":apix-integrationtests"))
-    }
-}
 
-allprojects {
-    apply plugin: 'eu.xenit.de'
-    apply plugin: 'eu.xenit.alfresco'
-
-    configurations {
-        integrationJar
-        compileOnly.extendsFrom(integrationJar)
-    }
-
-    dependencies {
-        compileOnly project(":apix-rest-v1")
-        compileOnly project(":apix-interface")
-        compileOnly project(":apix-impl:apix-impl-${subproject_alfresco_version}")
-
-        alfrescoProvided group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_version
-        alfrescoProvided group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_version
-        alfrescoProvided group: 'org.alfresco', name: 'alfresco-data-model', version: alfresco_dm_version
-        alfrescoProvided group: 'org.osgi', name: 'org.osgi.core', version: '4.3.1'
-
-        integrationJar group: 'eu.xenit.testing', name: 'integration-testing', version: '1.1.0'
-
-        compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: http_version
-        compile group: 'org.apache.httpcomponents', name: 'httpclient', version: http_version
-        compile group: 'org.apache.httpcomponents', name: 'httpcore', version: http_core_version
-        compile group: 'org.apache.httpcomponents', name: 'httpmime', version: http_version
-        compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
-        compile group: 'commons-logging', name: 'commons-logging', version: '1.1.3'
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: jackson_version
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: jackson_version
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jackson_version
-        compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: jackson_version
-        compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-joda', version: jackson_version
+        integrationTestImplementationRemote group: 'org.apache.httpcomponents', name: 'fluent-hc', version: http_version
+        integrationTestImplementationRemote group: 'org.apache.httpcomponents', name: 'httpclient', version: http_version
+        integrationTestImplementationRemote group: 'org.apache.httpcomponents', name: 'httpcore', version: http_core_version
+        integrationTestImplementationRemote group: 'org.apache.httpcomponents', name: 'httpmime', version: http_version
+        integrationTestImplementationRemote group: 'commons-codec', name: 'commons-codec', version: '1.10'
+        integrationTestImplementationRemote group: 'commons-logging', name: 'commons-logging', version: '1.1.3'
+        integrationTestImplementationRemote group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: jackson_version
+        integrationTestImplementationRemote group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: jackson_version
+        integrationTestImplementationRemote group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jackson_version
+        integrationTestImplementationRemote group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: jackson_version
+        integrationTestImplementationRemote group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-joda', version: jackson_version
     }
 
     jar {
@@ -79,75 +123,66 @@ allprojects {
                                 + "!com.google.errorprone.annotations.concurrent,"
                                 + '!org.joda.convert,'
                                 + '!org.apache.log,'
+//                                + '!eu.xenit.testing.integration-testing.*'
+                                + "com.fasterxml.jackson;version=${jackson_version}"
                                 + '*'
         )
     }
+}
 
-    def projectDocker = project(":apix-docker:docker-${subproject_alfresco_version}")
-    def composeUpTask = projectDocker.tasks.getByName("composeUp")
-    def composeDownTask = projectDocker.tasks.getByName("composeDown")
+allprojects {
+    apply plugin: 'eu.xenit.de'
+    apply plugin: 'eu.xenit.alfresco'
+//    apply plugin: 'eu.xenit.alfresco-remote-testrunner'
 
-    task configureDynamicExtensions {
-        group 'verification'
-        dependsOn composeUpTask
-        doLast {
-            // Default values
-            def protocol = 'http'
-            def host = 'localhost'
-            def port = '8080'
-
-            // Service info values override defaults
-            // They are only available when composeUp tasks is in the current call graph
-            def serviceInfo = composeUpTask.servicesInfos.get("alfresco-core")
-            if(serviceInfo != null) {
-                port = serviceInfo.ports[8080]
-                host = serviceInfo.getHost()
-            }
-
-            // Values passed as properties override everything
-            if(project.hasProperty('protocol')) {
-                protocol = project.protocol
-            }
-            if(project.hasProperty('host')) {
-                host = project.host
-            }
-            if(project.hasProperty('port')) {
-                port = project.port
-            }
-
-            alfrescoDynamicExtensions.repository.endpoint.protocol = protocol
-            alfrescoDynamicExtensions.repository.endpoint.port = port
-            alfrescoDynamicExtensions.repository.endpoint.host = host
-        }
+    configurations {
+        integrationJar
+        compileOnly.extendsFrom(integrationJar)
     }
 
-    task installIntegrationJar(type: InstallBundle) {
-        group 'verification'
-        dependsOn configureDynamicExtensions
-        files = configurations.integrationJar { transitive = false }
+    dependencies {
+        alfrescoProvided project(":apix-rest-v1")
+        alfrescoProvided project(":apix-interface")
+        alfrescoProvided project(":apix-impl:apix-impl-${subproject_alfresco_version}")
+
+        alfrescoProvided group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_repo_version
+        alfrescoProvided group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_remote_api_version
+        alfrescoProvided group: 'org.alfresco', name: 'alfresco-data-model', version: alfresco_dm_version
+        alfrescoProvided group: 'org.osgi', name: 'org.osgi.core', version: '4.3.1'
+
+        integrationJar group: 'eu.xenit.testing.integration-testing', name: 'alfresco-remote-testrunner', version: '2.0.0-rc.4'
+
+//        compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: http_version
+//        compile group: 'org.apache.httpcomponents', name: 'httpclient', version: http_version
+//        compile group: 'org.apache.httpcomponents', name: 'httpcore', version: http_core_version
+//        compile group: 'org.apache.httpcomponents', name: 'httpmime', version: http_version
+//        compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
+//        compile group: 'commons-logging', name: 'commons-logging', version: '1.1.3'
+//        compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: jackson_version
+//        compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: jackson_version
+//        compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jackson_version
+//        compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: jackson_version
+//        compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-joda', version: jackson_version
     }
 
-    task installTestsOnDocker(type: InstallBundle) {
-        group 'verification'
-        dependsOn installIntegrationJar
-        dependsOn jar
-        files = jar
-    }
+//    jar {
+//        bnd(
+//                'Export-Package': 'eu.xenit.apix.tests.*,eu.xenit.apix.rest.*.tests.*',
+//                'Include-Resource': includeResource(configurations.compile),
+//                'Bundle-ClassPath': bundleClassPath(configurations.compile),
+//                'Bundle-SymbolicName': "${project.group}.${project.name}",
+//                'Bundle-Description': 'Alfred API: Integration tests',
+//                'Import-Package':
+//                // Unintuitively, the notation 'version="1.0"' means any version >= 1.0
+//                        'org.json;version="1.0",'
+//                                + "!com.google.errorprone.annotations.concurrent,"
+//                                + '!org.joda.convert,'
+//                                + '!org.apache.log,'
+//                                + '!eu.xenit.testing.integration-testing.*'
+//                                + '*'
+//        )
+//    }
 
-    task integrationTest(type: Test) {
-        group 'verification'
-        dependsOn installTestsOnDocker
-        testClassesDirs = sourceSets.main.output.classesDirs
-        classpath = sourceSets.main.runtimeClasspath
 
-        doFirst {
-            def endpoint = alfrescoDynamicExtensions.repository.endpoint
-            def alfresco_url = "${endpoint.protocol.get()}://admin:admin@${endpoint.host.get()}:${endpoint.port.get()}/alfresco"
-            println("Running integration tests on alfresco.url = ${alfresco_url}")
-            systemProperty("alfresco.url", alfresco_url)
-        }
-        outputs.upToDateWhen { false }
-        // After the tests, the docker setup should be stopped
-        finalizedBy(composeDownTask)
-    }
+
 }

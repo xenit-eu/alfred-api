@@ -1,0 +1,7 @@
+ext {
+    subproject_alfresco_version = "70"
+    alfresco_version = alfresco_70_version
+    alfresco_dm_version = alfresco_70_dm_version
+    alfresco_repo_version = '8.424'
+    alfresco_remote_api_version = '8.424'
+}
