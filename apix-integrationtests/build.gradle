@@ -110,24 +110,24 @@ subprojects {
         integrationTestImplementationRemote group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-joda', version: jackson_version
     }
 
-    jar {
-        bnd(
-                'Export-Package': 'eu.xenit.apix.tests.*,eu.xenit.apix.rest.*.tests.*',
-                'Include-Resource': includeResource(configurations.compile),
-                'Bundle-ClassPath': bundleClassPath(configurations.compile),
-                'Bundle-SymbolicName': "${project.group}.${project.name}",
-                'Bundle-Description': 'Alfred API: Integration tests',
-                'Import-Package':
-                // Unintuitively, the notation 'version="1.0"' means any version >= 1.0
-                        'org.json;version="1.0",'
-                                + "!com.google.errorprone.annotations.concurrent,"
-                                + '!org.joda.convert,'
-                                + '!org.apache.log,'
-//                                + '!eu.xenit.testing.integration-testing.*'
-                                + "com.fasterxml.jackson;version=${jackson_version}"
-                                + '*'
-        )
-    }
+//    jar {
+//        bnd(
+//                'Export-Package': 'eu.xenit.apix.tests.*,eu.xenit.apix.rest.*.tests.*',
+//                'Include-Resource': includeResource(configurations.compile),
+//                'Bundle-ClassPath': bundleClassPath(configurations.compile),
+//                'Bundle-SymbolicName': "${project.group}.${project.name}",
+//                'Bundle-Description': 'Alfred API: Integration tests',
+//                'Import-Package':
+//                // Unintuitively, the notation 'version="1.0"' means any version >= 1.0
+//                        'org.json;version="1.0",'
+//                                + "!com.google.errorprone.annotations.concurrent,"
+//                                + '!org.joda.convert,'
+//                                + '!org.apache.log,'
+////                                + '!eu.xenit.testing.integration-testing.*'
+//                                + "com.fasterxml.jackson;version=${jackson_version}"
+//                                + '*'
+//        )
+//    }
 }
 
 allprojects {
