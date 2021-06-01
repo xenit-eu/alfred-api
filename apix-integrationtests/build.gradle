@@ -1,6 +1,7 @@
 plugins {
-    id 'eu.xenit.de' apply false
+    id 'eu.xenit.de' version '2.0.5' apply false
     id 'eu.xenit.alfresco' version '1.0.0' apply false
+    id 'eu.xenit.alfresco-remote-testrunner' version '2.0.0-rc.4' apply false
 }
 
 // Give IntelliJ a default source of non-shared classes
@@ -56,7 +57,7 @@ subprojects {
 //    integrationTest.finalizedBy composeDownTask
 
     installBundle.enabled = false
-    
+
     installIntegrationTestingBundle {
         dependsOn composeUpTask
         doFirst {
@@ -133,12 +134,6 @@ subprojects {
 allprojects {
     apply plugin: 'eu.xenit.de'
     apply plugin: 'eu.xenit.alfresco'
-//    apply plugin: 'eu.xenit.alfresco-remote-testrunner'
-
-    configurations {
-        integrationJar
-        compileOnly.extendsFrom(integrationJar)
-    }
 
     dependencies {
         alfrescoProvided project(":apix-rest-v1")
@@ -149,8 +144,6 @@ allprojects {
         alfrescoProvided group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_remote_api_version
         alfrescoProvided group: 'org.alfresco', name: 'alfresco-data-model', version: alfresco_dm_version
         alfrescoProvided group: 'org.osgi', name: 'org.osgi.core', version: '4.3.1'
-
-        integrationJar group: 'eu.xenit.testing.integration-testing', name: 'alfresco-remote-testrunner', version: '2.0.0-rc.4'
 
 //        compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: http_version
 //        compile group: 'org.apache.httpcomponents', name: 'httpclient', version: http_version
@@ -182,7 +175,6 @@ allprojects {
 //                                + '*'
 //        )
 //    }
-
 
 
 }

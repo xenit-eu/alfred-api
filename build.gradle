@@ -31,13 +31,6 @@ buildscript {
         maven {
             url "https://maven.alfresco.com/nexus/content/groups/public"
         }
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-        // TODO: apply this in the modern way. (atow, could only apply through legacy)
-        dependencies {
-            classpath "eu.xenit.testing.integration-testing:alfresco-remote-testrunner-gradle-plugin:2.0.0-rc.4"
-        }
     }
 }
 
