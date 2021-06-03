@@ -41,6 +41,7 @@ subprojects {
     }
 
     def projectDocker = project(":apix-docker:docker-${subproject_alfresco_version}")
+    evaluationDependsOn(projectDocker.path)
     def composeUpTask = projectDocker.tasks.getByName("composeUp")
     def composeDownTask = projectDocker.tasks.getByName("composeDown")
 
@@ -61,46 +62,21 @@ subprojects {
         }
     }
 
-//    integrationTest.dependsOn composeUpTask
-//    integrationTest.finalizedBy composeDownTask
-
     installBundle.enabled = false
 
     installIntegrationTestingBundle {
         dependsOn composeUpTask
         doFirst {
-//            files = tasks.jar.archivePath
             def serviceInfo = composeUpTask.servicesInfos.get("alfresco-core")
             def host = 'localhost'
             def port = '8080'
-            if(serviceInfo != null) {
+            if (serviceInfo != null) {
                 port = serviceInfo.ports[8080]
                 host = serviceInfo.getHost()
             }
             alfrescoDynamicExtensions.repository.endpoint.port = port
             alfrescoDynamicExtensions.repository.endpoint.host = host
         }
-    }
-//    integrationTest.finalizedBy composeDownTask
-
-
-    installBundle {
-        dependsOn jar
-        doFirst {
-//            files = tasks.jar.archivePath
-            def serviceInfo = composeUpTask.servicesInfos.get("alfresco-core")
-            def host = 'localhost'
-            def port = '8080'
-            if(serviceInfo != null) {
-                port = serviceInfo.ports[8080]
-                host = serviceInfo.getHost()
-            }
-            alfrescoDynamicExtensions.repository.endpoint.port = port
-            alfrescoDynamicExtensions.repository.endpoint.host = host
-        }
-//        doLast {
-//            println tasks.jar.archivePath
-//        }
     }
 
     dependencies {
