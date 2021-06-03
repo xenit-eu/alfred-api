@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import eu.xenit.apix.content.IContentService;
 import eu.xenit.apix.node.INodeService;
 import eu.xenit.apix.tests.BaseTest;
+import eu.xenit.apix.util.SolrTestHelper;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +22,7 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
+import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +38,8 @@ public class ContentServiceTest extends BaseTest {
     IContentService contentService;
     @Autowired
     ServiceRegistry serviceRegistry;
+    @Autowired
+    SolrTestHelper solrHelper;
     //Test variables
     private NodeRef testNode;
     private FileInfo mainTestFolder;
@@ -80,6 +84,11 @@ public class ContentServiceTest extends BaseTest {
     @Test
     public void TestContentUrlExists() {
         Setup();
+        try {
+            solrHelper.waitForSolrSync();
+        } catch (InterruptedException e) {
+            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+        }
         NodeService alfNodeService = serviceRegistry.getNodeService();
         testNode = createContentNode(mainTestFolder.getNodeRef(), "testnode", "my content");
         ContentData d = (ContentData) alfNodeService.getProperty(testNode, ContentModel.PROP_CONTENT);
