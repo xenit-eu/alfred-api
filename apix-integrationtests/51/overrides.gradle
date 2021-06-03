@@ -5,3 +5,7 @@ ext {
     alfresco_repo_version = alfresco_version
     alfresco_remote_api_version = alfresco_version
 }
+
+dependencies {
+    integrationTestImplementationRemote group: 'org.apache.httpcomponents', name: 'httpmime', version: http_version
+}
