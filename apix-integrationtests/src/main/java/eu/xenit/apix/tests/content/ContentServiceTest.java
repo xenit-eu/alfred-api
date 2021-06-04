@@ -75,7 +75,7 @@ public class ContentServiceTest extends BaseTest {
     }
 
     public void Setup() {
-        this.cleanUp();{
+        this.cleanUp();
         try {
             solrHelper.waitForSolrSync();
         } catch (InterruptedException e) {
@@ -91,7 +91,7 @@ public class ContentServiceTest extends BaseTest {
     }
 
     @Test
-    public void TestContentUrlExists()
+    public void TestContentUrlExists() {
         Setup();
         NodeService alfNodeService = serviceRegistry.getNodeService();
         testNode = createContentNode(mainTestFolder.getNodeRef(), "testnode", "my content");
