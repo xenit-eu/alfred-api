@@ -25,7 +25,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * NOTICE:
@@ -40,16 +39,9 @@ public class SearchServiceFacetsTest extends SearchServiceTest {
     @Autowired
     private SolrFacetService facetService;
 
-    @Autowired
-    @Qualifier("global-properties")
-    private Properties properties;
-
     @Before
     public void Setup() {
         AuthenticationUtil.setFullyAuthenticatedUser(ADMIN_USER_NAME);
-        String subsystem = properties.getProperty("index.subsystem.name");
-        String solrBaseUrl = subsystem.equals("solr4") ? "/solr4" : "/solr";
-        solrTestHelper = new SolrTestHelper(solrBaseUrl, dataSource, searchSubSystem);
     }
 
     @Override
@@ -102,7 +94,7 @@ public class SearchServiceFacetsTest extends SearchServiceTest {
 
     @Test
     public void TestGetWithFacetsIncludesCustomFilterFacets() throws InterruptedException {
-        solrTestHelper.waitForSolrSync();
+        solrHelper.waitForSolrSync();
         // Add a new facet filter
         String newFacetFilterId = "test_filter";
         // Note that facets with 0 hits are not returned.
@@ -153,7 +145,7 @@ public class SearchServiceFacetsTest extends SearchServiceTest {
 
     @Test
     public void TestGetBucketedFacets() throws InterruptedException {
-        solrTestHelper.waitForSolrSync();
+        solrHelper.waitForSolrSync();
         // Query that should return default facets
         // There are 6 default facets: mimetype, modifier, creator, created, modified and size
         // These last 3 are bucketed facets, so we check that they're included

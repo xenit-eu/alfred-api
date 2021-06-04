@@ -10,8 +10,11 @@ import eu.xenit.apix.util.SolrTestHelper;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+import javax.sql.DataSource;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.content.MimetypeMap;
+import org.alfresco.repo.management.subsystems.SwitchableApplicationContextFactory;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.model.FileInfo;
@@ -23,10 +26,12 @@ import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 
 public class ContentServiceTest extends BaseTest {
@@ -38,8 +43,7 @@ public class ContentServiceTest extends BaseTest {
     IContentService contentService;
     @Autowired
     ServiceRegistry serviceRegistry;
-    @Autowired
-    SolrTestHelper solrHelper;
+
     //Test variables
     private NodeRef testNode;
     private FileInfo mainTestFolder;

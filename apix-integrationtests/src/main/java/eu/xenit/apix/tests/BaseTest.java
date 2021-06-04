@@ -1,9 +1,13 @@
 package eu.xenit.apix.tests;
 
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
+import eu.xenit.apix.util.SolrTestHelper;
 import eu.xenit.testing.integrationtesting.runner.AlfrescoTestRunner;
 import eu.xenit.testing.integrationtesting.runner.UseSpringContextOfBundle;
+import java.util.Properties;
+import javax.sql.DataSource;
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.management.subsystems.SwitchableApplicationContextFactory;
 import org.alfresco.repo.model.Repository;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.model.FileFolderService;
@@ -13,18 +17,21 @@ import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.SearchService;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 
 @RunWith(AlfrescoTestRunner.class)
 @UseSpringContextOfBundle(filter = ApixImplBundleFilter.class)
-public abstract class BaseTest {
+public abstract class BaseTest implements InitializingBean {
 
     private final static Logger logger = LoggerFactory.getLogger(BaseTest.class);
     private final static String mainTestFolderName = "ApixMainTestFolder";
@@ -35,6 +42,22 @@ public abstract class BaseTest {
     protected ServiceRegistry serviceRegistry;
     @Autowired
     protected Repository repository;
+    @Autowired
+    DataSource dataSource;
+    @Autowired
+    @Qualifier("Search")
+    SwitchableApplicationContextFactory searchSubSystem;
+    @Autowired
+    @Qualifier("global-properties")
+    Properties globalProperties;
+
+    public SolrTestHelper solrHelper;
+
+    public void afterPropertiesSet() {
+        String subsystem = globalProperties.getProperty("index.subsystem.name");
+        String solrBaseUrl = subsystem.equals("solr4") ? "/solr4" : "/solr";
+        solrHelper = new SolrTestHelper(solrBaseUrl, dataSource, searchSubSystem);
+    }
 
     protected NodeRef getNodeAtPath(String path) {
         SearchService searchService = serviceRegistry.getSearchService();

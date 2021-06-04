@@ -69,9 +69,6 @@ public class PermissionServiceTest extends BaseTest {
   @Qualifier("FileFolderService")
   private FileFolderService fileFolderService;
 
-  @Autowired
-  private SolrTestHelper solrHelper;
-
   @Before
   public void Setup() {
     AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();

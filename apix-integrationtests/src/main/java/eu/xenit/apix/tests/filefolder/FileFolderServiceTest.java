@@ -5,6 +5,9 @@ import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.filefolder.IFileFolderService;
 import eu.xenit.apix.tests.BaseTest;
 import eu.xenit.apix.util.SolrTestHelper;
+import java.util.Properties;
+import javax.sql.DataSource;
+import org.alfresco.repo.management.subsystems.SwitchableApplicationContextFactory;
 import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.ServiceRegistry;
@@ -67,8 +70,6 @@ public class FileFolderServiceTest extends BaseTest {
 
     @Autowired
     private Repository repository;
-    @Autowired
-    private SolrTestHelper solrHelper;
 
     @Before
     public void Setup() {
