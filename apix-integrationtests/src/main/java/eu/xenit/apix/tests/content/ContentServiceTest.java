@@ -75,7 +75,12 @@ public class ContentServiceTest extends BaseTest {
     }
 
     public void Setup() {
-        this.cleanUp();
+        this.cleanUp();{
+        try {
+            solrHelper.waitForSolrSync();
+        } catch (InterruptedException e) {
+            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+        }
         AuthenticationUtil.setFullyAuthenticatedUser("admin");
         NodeRef companyHomeNodeRef = this.getNodeAtPath("/app:company_home");
         mainTestFolder = this.createMainTestFolder(companyHomeNodeRef);
@@ -86,13 +91,8 @@ public class ContentServiceTest extends BaseTest {
     }
 
     @Test
-    public void TestContentUrlExists() {
+    public void TestContentUrlExists()
         Setup();
-        try {
-            solrHelper.waitForSolrSync();
-        } catch (InterruptedException e) {
-            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
-        }
         NodeService alfNodeService = serviceRegistry.getNodeService();
         testNode = createContentNode(mainTestFolder.getNodeRef(), "testnode", "my content");
         ContentData d = (ContentData) alfNodeService.getProperty(testNode, ContentModel.PROP_CONTENT);
