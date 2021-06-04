@@ -31,6 +31,9 @@ public class TermHitHighlightingTest extends BaseTest {
 
     private static final Logger log = LoggerFactory.getLogger(TermHitHighlightingTest.class);
 
+    @Autowired
+    SearchService searchService;
+
     private ObjectMapper mapper = new ObjectMapper();
 
     @Test
