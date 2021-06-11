@@ -89,8 +89,6 @@ subprojects {
         alfrescoProvided group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_remote_api_version
         alfrescoProvided group: 'org.alfresco', name: 'alfresco-data-model', version: alfresco_dm_version
         alfrescoProvided group: 'org.osgi', name: 'org.osgi.core', version: '4.3.1'
-
-        integrationTestImplementationRemote group: 'org.apache.httpcomponents', name: 'fluent-hc', version: http_version
     }
 }
 

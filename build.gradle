@@ -20,9 +20,8 @@ def includeResource(configuration) {
 def getVersionQualifier(String branch_name) {
     if(branch_name.startsWith('release'))
         return ''
-    if(branch_name == 'master')
-        return '-SNAPSHOT'
-    return '-' + branch_name + '-SNAPSHOT'
+    //Osgi in 5x accepts - in qualifier, 6x does not. Suggest removing branch section from snapshot qualifiers all together.
+    return '.SNAPSHOT'
 }
 
 buildscript {

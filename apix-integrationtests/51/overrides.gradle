@@ -8,4 +8,5 @@ ext {
 
 dependencies {
     integrationTestImplementationRemote group: 'org.apache.httpcomponents', name: 'httpmime', version: http_version
+    integrationTestImplementationRemote (group: 'org.apache.httpcomponents', name: 'fluent-hc', version: http_version)
 }

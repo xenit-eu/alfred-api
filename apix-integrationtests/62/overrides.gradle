@@ -5,3 +5,10 @@ ext {
     alfresco_repo_version = '7.134.1'
     alfresco_remote_api_version = '7.107.1'
 }
+
+dependencies {
+    integrationTestImplementationRemote(group: 'org.apache.httpcomponents', name: 'fluent-hc', version: http_version) {
+        exclude group: 'commons-logging'
+        exclude group: 'org.apache.httpcomponents', module: 'httpcore'
+    }
+}
