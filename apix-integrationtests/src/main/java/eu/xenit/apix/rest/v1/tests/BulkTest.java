@@ -38,7 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Created by kenneth on 18.03.16.
  */
-public class BulkTest extends BaseTest {
+public abstract class BulkTest extends BaseTest {
 
     public static final String AUTHENTICATION_IN_URL = "alf_ticket=";
     private final static Logger logger = LoggerFactory.getLogger(BulkTest.class);
@@ -89,12 +89,14 @@ public class BulkTest extends BaseTest {
             logger.info(" json object 1: " + jsonArray.get(1));
             JSONObject jsonObject0 = (JSONObject) jsonArray.get(0);
             JSONObject jsonObject1 = (JSONObject) jsonArray.get(1);
-            logger.info(" statusCode object 0: " + jsonObject0.getString("statusCode"));
-            logger.info(" statusCode object 1: " + jsonObject1.getString("statusCode"));
-            assertEquals("200", jsonObject0.getString("statusCode"));
-            assertEquals("200", jsonObject1.getString("statusCode"));
+            logger.info(" statusCode object 0: " + jsonObject_getString_fromInt_abridged(jsonObject0, "statusCode"));
+            logger.info(" statusCode object 1: " + jsonObject_getString_fromInt_abridged(jsonObject1,"statusCode"));
+            assertEquals("200", jsonObject_getString_fromInt_abridged(jsonObject0, "statusCode"));
+            assertEquals("200", jsonObject_getString_fromInt_abridged(jsonObject1,"statusCode"));
         }
     }
+
+    public abstract String jsonObject_getString_fromInt_abridged(JSONObject targetObject, String key);
 
     @Test
     public void testUrlEncode() throws IOException, JSONException {
@@ -127,12 +129,12 @@ public class BulkTest extends BaseTest {
             JSONObject jsonObject0 = (JSONObject) jsonArray.get(0);
             JSONObject jsonObject1 = (JSONObject) jsonArray.get(1);
             JSONObject jsonObject2 = (JSONObject) jsonArray.get(2);
-            logger.info(" statusCode object 0: " + jsonObject0.getString("statusCode"));
-            logger.info(" statusCode object 1: " + jsonObject1.getString("statusCode"));
-            logger.info(" statusCode object 2: " + jsonObject2.getString("statusCode"));
-            assertEquals("200", jsonObject0.getString("statusCode"));
-            assertEquals("200", jsonObject1.getString("statusCode"));
-            assertEquals("200", jsonObject2.getString("statusCode"));
+            logger.info(" statusCode object 0: " + jsonObject_getString_fromInt_abridged(jsonObject0,"statusCode"));
+            logger.info(" statusCode object 1: " + jsonObject_getString_fromInt_abridged(jsonObject1,"statusCode"));
+            logger.info(" statusCode object 2: " + jsonObject_getString_fromInt_abridged(jsonObject2,"statusCode"));
+            assertEquals("200", jsonObject_getString_fromInt_abridged(jsonObject0,"statusCode"));
+            assertEquals("200", jsonObject_getString_fromInt_abridged(jsonObject1,"statusCode"));
+            assertEquals("200", jsonObject_getString_fromInt_abridged(jsonObject2,"statusCode"));
         }
     }
 
