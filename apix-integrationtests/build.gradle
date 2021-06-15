@@ -2,7 +2,7 @@ plugins {
     id 'base'
     id 'eu.xenit.de' version '2.0.5' apply false
     id 'eu.xenit.alfresco' version '1.0.0' apply false
-    id 'eu.xenit.alfresco-remote-testrunner' version '2.0.0-rc.4' apply false
+    id 'eu.xenit.alfresco-remote-testrunner' version '2.0.0-rc.5' apply false
 }
 
 // Give IntelliJ a default source of non-shared classes
