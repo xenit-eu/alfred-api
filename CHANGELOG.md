@@ -5,6 +5,7 @@
 
 ### Changed
 * [ALFREDAPI-481](https://xenitsupport.jira.com/browse/ALFREDAPI-481): Add blurb about Xenit to README
+* [ALFREDAPI-482](https://xenitsupport.jira.com/browse/ALFREDAPI-482): Add support for alfresco 7.0
 
 ### Fixed
 
