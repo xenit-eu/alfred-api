@@ -6,9 +6,6 @@ services:
     environment:
       - DEBUG=true
       - SHARE_HOST=alfresco-share
-      # overload of jcl by spring 5, causes classloader conflict. Avoiding by declaring default logfactoryimpl.
-      # See http://commons.apache.org/proper/commons-logging/troubleshooting.html ,section `The Incompatible LogFactory Issue` for more info.
-      - JAVA_OPTS_designateLogFactoryImpl="-Dorg.apache.commons.logging.LogFactory=org.apache.commons.logging.impl.LogFactoryImpl"
   alfresco-share:
     image: hub.xenit.eu/public/alfresco-share-community:7.0.0
     ports:
