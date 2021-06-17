@@ -61,6 +61,9 @@ node {
         stage("Build 62") {
             BuildVersionX("62")
         }
+        stage("Build 70") {
+            BuildVersionX("70")
+        }
         
         stage("Publishing") {
             def gitBranch = env.BRANCH_NAME
