@@ -8,6 +8,7 @@ ext {
 
 dependencies {
     integrationTestImplementationRemote(group: 'org.apache.httpcomponents', name: 'fluent-hc', version: http_version) {
+        exclude group: 'commons-logging'
         exclude group: 'org.apache.httpcomponents', module: 'httpcore'
     }
 }
