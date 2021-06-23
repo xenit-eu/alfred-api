@@ -149,49 +149,6 @@ public class UploadFileTest extends BaseTest {
         try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
             String resultString = EntityUtils.toString(response.getEntity());
             assertEquals(200, response.getStatusLine().getStatusCode());
-
-            // Check metadata has been set
-            JSONObject resultObj = new JSONObject(resultString);
-            JSONObject metadataObj = resultObj.getJSONObject("metadata");
-            JSONObject properties = metadataObj.getJSONObject("properties");
-            JSONArray titles = properties.getJSONArray(property_name);
-            assertEquals(property_value, titles.getString(0));
-        }
-    }
-
-    @Test
-    public void testExtractMetadata() throws IOException, JSONException {
-        String url = this.makeAlfrescoBaseurlAdmin() + "/apix/v1/nodes/upload";
-        logger.debug(" URL: " + url);
-
-        HttpEntity entity = MultipartEntityBuilder.create()
-                .addTextBody("parent", this.parentNodeRef.toString())
-                .addTextBody("type", ContentModel.TYPE_CONTENT.toString())
-                .addTextBody("extractMetadata", "true")
-                .addBinaryBody("file", createTempMail(), ContentType.create("application/vnd.ms-outlook"), "test.msg")
-                .build();
-
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost(url);
-        httpPost.setEntity(entity);
-        logger.debug("starting http post");
-        try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
-            String resultString = EntityUtils.toString(response.getEntity());
-            logger.debug("resultString: " + resultString);
-            assertEquals(200, response.getStatusLine().getStatusCode());
-
-            JSONObject resultObj = new JSONObject(resultString);
-            JSONObject metadataObj = resultObj.getJSONObject("metadata");
-            JSONArray aspectsArr = metadataObj.getJSONArray("aspects");
-            assertEquals(6, aspectsArr.length());
-
-            logger.debug("aspectsArr.toString() = " + aspectsArr.toString());
-            logger.debug("ContentModel.ASPECT_EMAILED.toString() = " + ContentModel.ASPECT_EMAILED.toString());
-            logger.debug("ContentModel.ASPECT_AUTHOR.toString() = " + ContentModel.ASPECT_AUTHOR.toString());
-            logger.debug("ContentModel.ASPECT_TITLED.toString() = " + ContentModel.ASPECT_TITLED.toString());
-            assertTrue(aspectsArr.toString().contains(ContentModel.ASPECT_EMAILED.toString()));
-            assertTrue(aspectsArr.toString().contains(ContentModel.ASPECT_AUTHOR.toString()));
-            assertTrue(aspectsArr.toString().contains(ContentModel.ASPECT_TITLED.toString()));
         }
     }
 

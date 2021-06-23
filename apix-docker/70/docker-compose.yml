@@ -11,10 +11,8 @@ services:
     environment:
       - SOLR_HOST=solr
       - TERM=xterm
-      - GLOBAL_transform.service.enabled=false
-      - GLOBAL_local.transform.service.enabled=false
-      - GLOBAL_legacy.transform.service.enabled=false
       - GLOBAL_messaging.broker.url=failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true
+      - GLOBAL_localTransform.core-aio.url=http://transform-core-aio:8090/
 
   solr:
     image: hub.xenit.eu/alfresco-enterprise/alfresco-solr6:2.0.1
@@ -23,7 +21,6 @@ services:
     restart: unless-stopped
     environment:
       - ALFRESCO_HOST=alfresco-core
-      - SHARED_alfresco.cross.locale.property.9999={http://www.alfresco.org/model/content/1.0}description
 
   postgresql:
     image: docker.io/xenit/postgres
@@ -38,12 +35,12 @@ services:
   activemq:
     image: alfresco/alfresco-activemq:5.16.1
     mem_limit: 1g
-#    ports:
-#      - "8161:8161" # Web Console
-#      - 5672:5672 # AMQP
-#      - 61616:61616 # OpenWire
-#      - 61613:61613
 
+  transform-core-aio:
+    image: alfresco/alfresco-transform-core-aio:2.5.0
+    environment:
+      JAVA_OPTS: " -Xms256m -Xmx512m"
+      ACTIVEMQ_URL: "nio://activemq:61616"
 
 volumes:
   alfresco:
