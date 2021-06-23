@@ -156,7 +156,7 @@ public interface INodeService {
      * @param parent      The parent node of the new node.
      * @param fileName    Name for the target document.
      * @param contentType String representation of the target alfresco contenttype.
-     * @param metadata    Properties (& optionally, aspects) to set on the new node in MetadataChanges format.
+     * @param metadata    Properties (and optionally, aspects) to set on the new node in MetadataChanges format.
      * @param content     Inputstream for the content for this new node.
      * @return The noderef of the new node.
      */
