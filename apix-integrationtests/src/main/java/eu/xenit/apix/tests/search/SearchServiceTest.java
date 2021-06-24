@@ -75,13 +75,12 @@ abstract public class SearchServiceTest extends BaseTest {
     @Before
     public void Setup() {
         AuthenticationUtil.setFullyAuthenticatedUser(ADMIN_USER_NAME);
-        cleanUp();
     }
 
-//    @After
-//    public void tearDown() {
-//        cleanUp();
-//    }
+    @After
+    public void tearDown() {
+        cleanUp();
+    }
 
     @Test
     public void TestGetWithoutFacets() throws IOException, InterruptedException {
