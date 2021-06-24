@@ -89,14 +89,14 @@ public abstract class BulkTest extends BaseTest {
             logger.info(" json object 1: " + jsonArray.get(1));
             JSONObject jsonObject0 = (JSONObject) jsonArray.get(0);
             JSONObject jsonObject1 = (JSONObject) jsonArray.get(1);
-            logger.info(" statusCode object 0: " + jsonObject_getString_fromInt_abridged(jsonObject0, "statusCode"));
-            logger.info(" statusCode object 1: " + jsonObject_getString_fromInt_abridged(jsonObject1,"statusCode"));
-            assertEquals("200", jsonObject_getString_fromInt_abridged(jsonObject0, "statusCode"));
-            assertEquals("200", jsonObject_getString_fromInt_abridged(jsonObject1,"statusCode"));
+            logger.info(" statusCode object 0: " + jsonObjectGetStringFromInt(jsonObject0, "statusCode"));
+            logger.info(" statusCode object 1: " + jsonObjectGetStringFromInt(jsonObject1,"statusCode"));
+            assertEquals("200", jsonObjectGetStringFromInt(jsonObject0, "statusCode"));
+            assertEquals("200", jsonObjectGetStringFromInt(jsonObject1,"statusCode"));
         }
     }
 
-    public abstract String jsonObject_getString_fromInt_abridged(JSONObject targetObject, String key);
+    public abstract String jsonObjectGetStringFromInt(JSONObject targetObject, String key);
 
     @Test
     public void testUrlEncode() throws IOException, JSONException {
@@ -129,12 +129,12 @@ public abstract class BulkTest extends BaseTest {
             JSONObject jsonObject0 = (JSONObject) jsonArray.get(0);
             JSONObject jsonObject1 = (JSONObject) jsonArray.get(1);
             JSONObject jsonObject2 = (JSONObject) jsonArray.get(2);
-            logger.info(" statusCode object 0: " + jsonObject_getString_fromInt_abridged(jsonObject0,"statusCode"));
-            logger.info(" statusCode object 1: " + jsonObject_getString_fromInt_abridged(jsonObject1,"statusCode"));
-            logger.info(" statusCode object 2: " + jsonObject_getString_fromInt_abridged(jsonObject2,"statusCode"));
-            assertEquals("200", jsonObject_getString_fromInt_abridged(jsonObject0,"statusCode"));
-            assertEquals("200", jsonObject_getString_fromInt_abridged(jsonObject1,"statusCode"));
-            assertEquals("200", jsonObject_getString_fromInt_abridged(jsonObject2,"statusCode"));
+            logger.info(" statusCode object 0: " + jsonObjectGetStringFromInt(jsonObject0,"statusCode"));
+            logger.info(" statusCode object 1: " + jsonObjectGetStringFromInt(jsonObject1,"statusCode"));
+            logger.info(" statusCode object 2: " + jsonObjectGetStringFromInt(jsonObject2,"statusCode"));
+            assertEquals("200", jsonObjectGetStringFromInt(jsonObject0,"statusCode"));
+            assertEquals("200", jsonObjectGetStringFromInt(jsonObject1,"statusCode"));
+            assertEquals("200", jsonObjectGetStringFromInt(jsonObject2,"statusCode"));
         }
     }
 
