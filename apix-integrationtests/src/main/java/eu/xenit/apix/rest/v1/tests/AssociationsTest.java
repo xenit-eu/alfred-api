@@ -26,7 +26,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 /**
  * Created by kenneth on 17.03.16.
  */
-public class AssociationsTest extends BaseTest {
+public class AssociationsTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(AssociationsTest.class);
 
@@ -49,7 +49,7 @@ public class AssociationsTest extends BaseTest {
     @Test
     public void testAssociationsGet() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/associations", "admin", "admin");
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/associations", "admin", "admin");
 
         HttpResponse response = Request.Get(url).execute().returnResponse();
         String result = EntityUtils.toString(response.getEntity());
@@ -59,8 +59,8 @@ public class AssociationsTest extends BaseTest {
     @Test
     public void testAssociationsGetDenied() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), "/associations", BaseTest.USERWITHOUTRIGHTS,
-                BaseTest.USERWITHOUTRIGHTS);
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/associations", RestV1BaseTest.USERWITHOUTRIGHTS,
+                RestV1BaseTest.USERWITHOUTRIGHTS);
         HttpResponse response = Request.Get(url).execute().returnResponse();
         assertEquals(403, response.getStatusLine().getStatusCode());
     }
@@ -68,7 +68,7 @@ public class AssociationsTest extends BaseTest {
     @Test
     public void testParentAssociationsGet() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/associations/parents", "admin",
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/associations/parents", "admin",
                 "admin");
 
         HttpResponse response = Request.Get(url).execute().returnResponse();
@@ -79,7 +79,7 @@ public class AssociationsTest extends BaseTest {
     @Test
     public void testChildAssociationsGet() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/associations/children", "admin",
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/associations/children", "admin",
                 "admin");
 
         HttpResponse response = Request.Get(url).execute().returnResponse();
@@ -90,7 +90,7 @@ public class AssociationsTest extends BaseTest {
     @Test
     public void testPeerAssociationsGet() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/associations/targets", "admin",
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/associations/targets", "admin",
                 "admin");
 
         HttpResponse response = Request.Get(url).execute().returnResponse();
@@ -101,8 +101,8 @@ public class AssociationsTest extends BaseTest {
     @Test
     public void testCreateAssociation() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        final NodeRef nodeRefA = initializedNodeRefs.get(BaseTest.TESTFILE_NAME);
-        final NodeRef nodeRefB = initializedNodeRefs.get(BaseTest.TESTFILE2_NAME);
+        final NodeRef nodeRefA = initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME);
+        final NodeRef nodeRefB = initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME);
 
         final java.util.List<org.alfresco.service.cmr.repository.AssociationRef> assocs = nodeService
                 .getTargetAssocs(c.alfresco(nodeRefA), RegexQNamePattern.MATCH_ALL);
@@ -136,8 +136,8 @@ public class AssociationsTest extends BaseTest {
     @Test
     public void testRemoveAssociation() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        final NodeRef nodeRefA = initializedNodeRefs.get(BaseTest.TESTFILE_NAME);
-        final NodeRef nodeRefB = initializedNodeRefs.get(BaseTest.TESTFILE2_NAME);
+        final NodeRef nodeRefA = initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME);
+        final NodeRef nodeRefB = initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME);
 
         serviceRegistry.getRetryingTransactionHelper()
                 .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {

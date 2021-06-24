@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by kenneth on 16.03.16.
  */
-public class PermissionsTest extends BaseTest {
+public class PermissionsTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(PermissionsTest.class);
 
@@ -38,7 +38,7 @@ public class PermissionsTest extends BaseTest {
     @Test
     public void testPermissionsGet() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/permissions", "admin", "admin");
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/permissions", "admin", "admin");
 
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
         logger.debug(EntityUtils.toString(httpResponse.getEntity()));
@@ -49,7 +49,7 @@ public class PermissionsTest extends BaseTest {
     @Test
     public void testPermissionsShortGet() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME).getGuid(), "/permissions", "admin",
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getGuid(), "/permissions", "admin",
                 "admin");
 
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
@@ -64,7 +64,7 @@ public class PermissionsTest extends BaseTest {
     @Test
     public void testNodePermissionGetDefault() throws IOException, JSONException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME).getGuid(), "/acl", "admin", "admin");
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getGuid(), "/acl", "admin", "admin");
 
         checkNoPermissionOnNode(url);
     }
@@ -102,7 +102,7 @@ public class PermissionsTest extends BaseTest {
     @Test
     public void testNodePermissionApplyGetAndRemove() throws IOException, JSONException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME).getGuid(), "/acl", "admin", "admin");
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getGuid(), "/acl", "admin", "admin");
 
         doPut(url,
                 null,
@@ -155,8 +155,8 @@ public class PermissionsTest extends BaseTest {
     @Test
     public void testGetNodeAclsReturnsAccesDenied() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), "/acl",
-                BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS);
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/acl",
+                RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS);
 
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
         logger.debug(EntityUtils.toString(httpResponse.getEntity()));
@@ -166,8 +166,8 @@ public class PermissionsTest extends BaseTest {
     @Test
     public void testSetNodeAclsReturnsAccesDenied() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/acl", BaseTest.USERWITHOUTRIGHTS,
-                BaseTest.USERWITHOUTRIGHTS);
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/acl", RestV1BaseTest.USERWITHOUTRIGHTS,
+                RestV1BaseTest.USERWITHOUTRIGHTS);
 
         HttpResponse httpResponse = Request.Put(url).body(new StringEntity(
                 "{\n"
@@ -190,8 +190,8 @@ public class PermissionsTest extends BaseTest {
         HashMap<String, NodeRef> initializedNodeRefs = init();
         assertEquals(403,
                 Request.Post(
-                        makeNodesUrl(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), "/acl/inheritFromParent",
-                                BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS))
+                        makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/acl/inheritFromParent",
+                                RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS))
                         .body(new StringEntity("{\"inheritFromParent\":true}"))
                         .execute()
                         .returnResponse()

@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class GroupTest extends BaseTest {
+public class GroupTest extends RestV2BaseTest {
 
     private final String[] userNames = {"GroupTestUser", "GroupTestUser2", "GroupTestUser3"};
     private final String[] emails = {"email@example.com", "email2@example.com", "email3@example.com"};

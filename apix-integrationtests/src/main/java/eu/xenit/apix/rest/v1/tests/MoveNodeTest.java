@@ -27,7 +27,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 /**
  * Created by kenneth on 17.03.16.
  */
-public class MoveNodeTest extends BaseTest {
+public class MoveNodeTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(MoveNodeTest.class);
 
@@ -47,7 +47,8 @@ public class MoveNodeTest extends BaseTest {
     public void testMoveNode() throws IOException {
         final HashMap<String, NodeRef> initializedNodeRefs = init();
 
-        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initializedNodeRefs.get(BaseTest.TESTFILE_NAME));
+        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initializedNodeRefs.get(
+                RestV1BaseTest.TESTFILE_NAME));
         final ChildParentAssociation primaryParentAssocTestNode = (ChildParentAssociation) parentAssociations.get(0);
         final NodeRef testFolder = primaryParentAssocTestNode.getTarget();
 
@@ -71,7 +72,7 @@ public class MoveNodeTest extends BaseTest {
                     }
                 }, false, true);
 
-        final String url = this.makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/parent", "admin", "admin");
+        final String url = this.makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/parent", "admin", "admin");
         logger.info(" URL: " + url);
 
         doPut(url, null, "{\"parent\":\"%s\"}", mainTestFolder.toString());
@@ -86,7 +87,8 @@ public class MoveNodeTest extends BaseTest {
     public void testMoveNodeReturnsAccesDenied() throws IOException {
         final HashMap<String, NodeRef> initializedNodeRefs = init();
 
-        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME));
+        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initializedNodeRefs.get(
+                RestV1BaseTest.NOUSERRIGHTS_FILE_NAME));
         final ChildParentAssociation primaryParentAssocTestNode = parentAssociations.get(0);
         final NodeRef testFolder = primaryParentAssocTestNode.getTarget();
 
@@ -94,7 +96,7 @@ public class MoveNodeTest extends BaseTest {
         final ChildParentAssociation primaryParentAssocTestFolder = parentAssociations.get(0);
         final NodeRef mainTestFolder = primaryParentAssocTestFolder.getTarget();
 
-        final String url = this.makeNodesUrl(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), "/parent", BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS);
+        final String url = this.makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/parent", RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS);
         logger.info(" URL: " + url);
         final CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPut httpPut = new HttpPut(url);

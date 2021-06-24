@@ -25,7 +25,7 @@ import java.util.Map;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-public abstract class NodesBaseTest extends BaseTest {
+public abstract class NodesBaseTest extends RestV1BaseTest {
 
     @Autowired
     NodeService nodeService;

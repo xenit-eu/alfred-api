@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -32,7 +31,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by kenneth on 31.03.16.
  */
-public class CheckoutCheckinTest extends BaseTest {
+public class CheckoutCheckinTest extends RestV1BaseTest {
 
     @Autowired
     NodeService nodeService;
@@ -47,7 +46,7 @@ public class CheckoutCheckinTest extends BaseTest {
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-        originalNoderef = init().get(BaseTest.TESTFILE_NAME);
+        originalNoderef = init().get(RestV1BaseTest.TESTFILE_NAME);
     }
 
     @Test

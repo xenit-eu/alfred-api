@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by kenneth on 16.03.16.
  */
-public class VersionTest extends BaseTest {
+public class VersionTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(VersionTest.class);
 

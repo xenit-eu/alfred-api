@@ -5,16 +5,14 @@ import static org.junit.Assert.assertTrue;
 
 import com.github.dynamicextensionsalfresco.webscripts.annotations.Before;
 import eu.xenit.apix.data.NodeRef;
-import eu.xenit.apix.node.ChildParentAssociation;
 import eu.xenit.apix.node.INodeService;
-import eu.xenit.apix.rest.v1.tests.BaseTest;
+import eu.xenit.apix.rest.v1.tests.RestV1BaseTest;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URL;
-import java.util.List;
 import java.util.Map;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -40,7 +38,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-public class UploadFileTest extends BaseTest {
+public class UploadFileTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(UploadFileTest.class);
     private static final String LOCAL_TESTFILE_NAME = "test.txt";
@@ -63,7 +61,7 @@ public class UploadFileTest extends BaseTest {
         contentService = this.serviceRegistry.getContentService();
 
         initNodeRefArray = init();
-        this.parentNodeRef = initNodeRefArray.get(BaseTest.TESTFOLDER_NAME);
+        this.parentNodeRef = initNodeRefArray.get(RestV1BaseTest.TESTFOLDER_NAME);
     }
 
     @Before
@@ -86,7 +84,7 @@ public class UploadFileTest extends BaseTest {
     @Test
     public void testUploadFileWhereFileAlreadyExists() throws IOException {
         String url = createUrl("admin", "admin");
-        HttpEntity entity = createHttpEntity(parentNodeRef.toString(), BaseTest.TESTFILE_NAME);
+        HttpEntity entity = createHttpEntity(parentNodeRef.toString(), RestV1BaseTest.TESTFILE_NAME);
         try (CloseableHttpResponse response = doPost(url, entity)) {
             assertEquals(400, response.getStatusLine().getStatusCode());
         }
@@ -94,9 +92,9 @@ public class UploadFileTest extends BaseTest {
 
     @Test
     public void testUploadFileResultsInAccessDenied() throws IOException {
-        String url = createUrl(BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS);
+        String url = createUrl(RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS);
         logger.info(">>>>> URL: " + url);
-        HttpEntity entity = createHttpEntity(initNodeRefArray.get(BaseTest.NOUSERRIGHTS_FILE_NAME).toString(), LOCAL_TESTFILE_NAME);
+        HttpEntity entity = createHttpEntity(initNodeRefArray.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME).toString(), LOCAL_TESTFILE_NAME);
         try (CloseableHttpResponse response = doPost(url, entity)) {
             String resultString = EntityUtils.toString(response.getEntity());
             logger.debug(" resultString: " + resultString);

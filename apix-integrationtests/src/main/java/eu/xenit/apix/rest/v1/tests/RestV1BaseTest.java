@@ -52,9 +52,9 @@ import org.springframework.extensions.surf.util.URLEncoder;
  */
 @RunWith(AlfrescoTestRunner.class)
 @UseSpringContextOfBundle(filter = ApixImplBundleFilter.class)
-public abstract class BaseTest {
+public abstract class RestV1BaseTest {
 
-    private final static Logger logger = LoggerFactory.getLogger(BaseTest.class);
+    private final static Logger logger = LoggerFactory.getLogger(RestV1BaseTest.class);
     private final static String VERSION = "v1";
 
     public static final String MAIN_TESTFOLDER_NAME = "mainTestFolder";

@@ -5,7 +5,7 @@ import static junit.framework.TestCase.assertTrue;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.permissions.IPermissionService;
 import eu.xenit.apix.rest.v2.tests.AllNodeInfoTest;
-import eu.xenit.apix.rest.v2.tests.BaseTest;
+import eu.xenit.apix.rest.v2.tests.RestV2BaseTest;
 import java.io.IOException;
 import java.util.HashMap;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-public class SetInheritParentPermissionsTest extends BaseTest {
+public class SetInheritParentPermissionsTest extends RestV2BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(AllNodeInfoTest.class);
     @Autowired
@@ -44,7 +44,7 @@ public class SetInheritParentPermissionsTest extends BaseTest {
     @Test
     public void testSetInheritPermissionsRestTrue() throws IOException, InterruptedException, JSONException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        NodeRef nodeRef0 = initializedNodeRefs.get(BaseTest.TESTFILE_NAME);
+        NodeRef nodeRef0 = initializedNodeRefs.get(RestV2BaseTest.TESTFILE_NAME);
         setInheritUrl(nodeRef0, true);
         assertInheritUrl(nodeRef0, true);
     }
@@ -52,7 +52,7 @@ public class SetInheritParentPermissionsTest extends BaseTest {
     @Test
     public void testSetInheritPermissionsRestFalse() throws IOException, InterruptedException, JSONException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        NodeRef nodeRef0 = initializedNodeRefs.get(BaseTest.TESTFILE_NAME);
+        NodeRef nodeRef0 = initializedNodeRefs.get(RestV2BaseTest.TESTFILE_NAME);
         setInheritUrl(nodeRef0, false);
         assertInheritUrl(nodeRef0, false);
     }
