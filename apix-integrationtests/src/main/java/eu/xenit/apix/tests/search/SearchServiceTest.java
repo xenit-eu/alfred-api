@@ -228,12 +228,11 @@ abstract public class SearchServiceTest extends BaseTest {
     public void TestLimitedByMaxPermissionChecks_transactional() throws InterruptedException {
         create1001TestDocs();
         QueryBuilder builder = new QueryBuilder();
-        //cant do exact searches against solr on custom props.
         SearchSyntaxNode node = builder
                 .property(
                         "apixtest:searchServiceLimitTestProperty",
                         DESCRIPTION_SET_OF_1001,
-                        false)
+                        true)
                 .create();
 
         SearchQuery query = new SearchQuery();
@@ -273,7 +272,8 @@ abstract public class SearchServiceTest extends BaseTest {
                 .property(
                         "apixtest:searchServiceLimitTestProperty",
                         DESCRIPTION_SET_OF_1001,
-                        true)
+                        //cant do exact searches against solr on custom props.
+                        false)
                 .create();
 
         SearchQuery query = new SearchQuery();
