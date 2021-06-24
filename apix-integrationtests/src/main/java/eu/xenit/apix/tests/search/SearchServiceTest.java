@@ -75,12 +75,13 @@ abstract public class SearchServiceTest extends BaseTest {
     @Before
     public void Setup() {
         AuthenticationUtil.setFullyAuthenticatedUser(ADMIN_USER_NAME);
-    }
-
-    @After
-    public void tearDown() {
         cleanUp();
     }
+
+//    @After
+//    public void tearDown() {
+//        cleanUp();
+//    }
 
     @Test
     public void TestGetWithoutFacets() throws IOException, InterruptedException {
@@ -207,7 +208,10 @@ abstract public class SearchServiceTest extends BaseTest {
                     FileInfo mainTestFolder = createMainTestFolder(companyHomeRef);
                     FileInfo testFolder = createTestFolder(mainTestFolder.getNodeRef(), "testFolderSetOf1001");
                     Map<QName, Serializable> props = new HashMap<QName, Serializable>() {{
-                        put(ContentModel.PROP_DESCRIPTION, DESCRIPTION_SET_OF_1001);
+//                        put(ContentModel.PROP_DESCRIPTION, DESCRIPTION_SET_OF_1001);
+                        put(QName.createQName("http://test.apix.xenit.eu/model/content",
+                                "searchServiceLimitTestProperty"),
+                            DESCRIPTION_SET_OF_1001);
                     }};
                     for (int i = 0; i < 1001 ; i++) {
                         FileInfo testNode = createTestNode(testFolder.getNodeRef(), "testNode-1001-" + i);
@@ -225,11 +229,12 @@ abstract public class SearchServiceTest extends BaseTest {
     public void TestLimitedByMaxPermissionChecks_transactional() throws InterruptedException {
         create1001TestDocs();
         QueryBuilder builder = new QueryBuilder();
+        //cant do exact searches against solr on custom props.
         SearchSyntaxNode node = builder
                 .property(
-                        ContentModel.PROP_DESCRIPTION.toPrefixString(namespacePrefixResolver),
+                        "apixtest:searchServiceLimitTestProperty",
                         DESCRIPTION_SET_OF_1001,
-                        true)
+                        false)
                 .create();
 
         SearchQuery query = new SearchQuery();
@@ -247,7 +252,7 @@ abstract public class SearchServiceTest extends BaseTest {
         QueryBuilder builder = new QueryBuilder();
         SearchSyntaxNode node = builder
                 .property(
-                        ContentModel.PROP_DESCRIPTION.toPrefixString(namespacePrefixResolver),
+                        "apixtest:searchServiceLimitTestProperty",
                         DESCRIPTION_SET_OF_1001,
                         true)
                 .create();
@@ -267,7 +272,7 @@ abstract public class SearchServiceTest extends BaseTest {
         QueryBuilder builder = new QueryBuilder();
         SearchSyntaxNode node = builder
                 .property(
-                        ContentModel.PROP_DESCRIPTION.toPrefixString(namespacePrefixResolver),
+                        "apixtest:searchServiceLimitTestProperty",
                         DESCRIPTION_SET_OF_1001,
                         true)
                 .create();

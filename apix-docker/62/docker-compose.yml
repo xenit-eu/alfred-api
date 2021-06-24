@@ -17,7 +17,6 @@ services:
     restart: unless-stopped
     environment:
     - ALFRESCO_HOST=alfresco-core
-    - SHARED_alfresco.cross.locale.property.9999={http://www.alfresco.org/model/content/1.0}description
 
   postgresql:
     image: docker.io/xenit/postgres
