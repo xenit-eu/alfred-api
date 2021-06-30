@@ -17,7 +17,6 @@ import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.SearchService;
-import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +31,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 @RunWith(AlfrescoTestRunner.class)
 @UseSpringContextOfBundle(filter = ApixImplBundleFilter.class)
 public abstract class BaseTest implements InitializingBean {
+
+    //Apix Test model contstants
+    public final static String APIX_TESTCM_NAMESPACE = "http://test.apix.xenit.eu/model/content";
+    public final static String APIX_TESTCM_PREFIX = "apixtest";
+    public final static String APIX_TESTCM_PROP_SEARCHSERVICELIMITTEST_SHORTNAME = "searchServiceLimitTestProperty";
+    public final static String APIX_TESTCM_PROP_SEARCHSERVICELIMITTEST_PREFIXED =
+            APIX_TESTCM_PREFIX + ":" + APIX_TESTCM_PROP_SEARCHSERVICELIMITTEST_SHORTNAME;
 
     private final static Logger logger = LoggerFactory.getLogger(BaseTest.class);
     private final static String mainTestFolderName = "ApixMainTestFolder";

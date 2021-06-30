@@ -207,8 +207,8 @@ abstract public class SearchServiceTest extends BaseTest {
                     FileInfo mainTestFolder = createMainTestFolder(companyHomeRef);
                     FileInfo testFolder = createTestFolder(mainTestFolder.getNodeRef(), "testFolderSetOf1001");
                     Map<QName, Serializable> props = new HashMap<QName, Serializable>() {{
-                        put(QName.createQName("http://test.apix.xenit.eu/model/content",
-                                "searchServiceLimitTestProperty"),
+                        put(QName.createQName(APIX_TESTCM_NAMESPACE,
+                                APIX_TESTCM_PROP_SEARCHSERVICELIMITTEST_SHORTNAME),
                             DESCRIPTION_SET_OF_1001);
                     }};
                     for (int i = 0; i < 1001 ; i++) {
@@ -229,7 +229,7 @@ abstract public class SearchServiceTest extends BaseTest {
         QueryBuilder builder = new QueryBuilder();
         SearchSyntaxNode node = builder
                 .property(
-                        "apixtest:searchServiceLimitTestProperty",
+                        APIX_TESTCM_PROP_SEARCHSERVICELIMITTEST_PREFIXED,
                         DESCRIPTION_SET_OF_1001,
                         true)
                 .create();
@@ -249,7 +249,7 @@ abstract public class SearchServiceTest extends BaseTest {
         QueryBuilder builder = new QueryBuilder();
         SearchSyntaxNode node = builder
                 .property(
-                        "apixtest:searchServiceLimitTestProperty",
+                        APIX_TESTCM_PROP_SEARCHSERVICELIMITTEST_PREFIXED,
                         DESCRIPTION_SET_OF_1001,
                         true)
                 .create();
@@ -269,7 +269,7 @@ abstract public class SearchServiceTest extends BaseTest {
         QueryBuilder builder = new QueryBuilder();
         SearchSyntaxNode node = builder
                 .property(
-                        "apixtest:searchServiceLimitTestProperty",
+                        APIX_TESTCM_PROP_SEARCHSERVICELIMITTEST_PREFIXED,
                         DESCRIPTION_SET_OF_1001,
                         //cant do exact searches against solr on custom props.
                         false)
