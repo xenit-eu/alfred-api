@@ -207,7 +207,6 @@ abstract public class SearchServiceTest extends BaseTest {
                     FileInfo mainTestFolder = createMainTestFolder(companyHomeRef);
                     FileInfo testFolder = createTestFolder(mainTestFolder.getNodeRef(), "testFolderSetOf1001");
                     Map<QName, Serializable> props = new HashMap<QName, Serializable>() {{
-//                        put(ContentModel.PROP_DESCRIPTION, DESCRIPTION_SET_OF_1001);
                         put(QName.createQName("http://test.apix.xenit.eu/model/content",
                                 "searchServiceLimitTestProperty"),
                             DESCRIPTION_SET_OF_1001);
