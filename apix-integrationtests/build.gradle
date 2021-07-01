@@ -5,21 +5,12 @@ plugins {
     id 'eu.xenit.alfresco-remote-testrunner' version '2.0.0-rc.5' apply false
 }
 
-// Give IntelliJ a default source of non-shared classes
-ext {
-    alfresco_version = alfresco_62_version
-    alfresco_repo_version = '7.199.0'
-    alfresco_dm_version = alfresco_62_dm_version
-    alfresco_remote_api_version = '7.107.1'
-    alfresco_min_version = '6.2'
-    subproject_alfresco_version = 62
-}
-
 allprojects {
     // Following needs to apply to shared (./src) project and version-specific (e.g. ./70) projects.
     apply plugin: 'eu.xenit.de'
     apply plugin: 'eu.xenit.alfresco-remote-testrunner'
     apply plugin: 'eu.xenit.alfresco'
+    apply from: "${project.projectDir}/overrides.gradle"
 
     sourceSets {
         main {
@@ -32,15 +23,16 @@ allprojects {
         }
         integrationTest {
             java {
-                srcDirs = ['../src/main/java', './src/main/java']
+                srcDirs = ['./src/main/java']
             }
             resources {
-                srcDirs = ['../src/main/resources', './src/main/resources']
+                srcDirs = ['./src/main/resources']
             }
         }
     }
 
     dependencies {
+
         alfrescoProvided project(":apix-rest-v1")
         alfrescoProvided project(":apix-interface")
         alfrescoProvided project(":apix-impl:apix-impl-${subproject_alfresco_version}")
@@ -53,7 +45,16 @@ allprojects {
 }
 
 subprojects {
-    apply from: "${project.projectDir}/overrides.gradle"
+    sourceSets {
+        integrationTest {
+            java {
+                srcDirs = ['../src/main/java', './src/main/java']
+            }
+            resources {
+                srcDirs = ['../src/main/resources', './src/main/resources']
+            }
+        }
+    }
 
     def projectDocker = project(":apix-docker:docker-${subproject_alfresco_version}")
     evaluationDependsOn(projectDocker.path)
@@ -85,7 +86,7 @@ subprojects {
             def serviceInfo = composeUpTask.servicesInfos.get("alfresco-core")
             def host = 'localhost'
             def port = '8080'
-            if (serviceInfo != null) {
+            if(serviceInfo != null) {
                 port = serviceInfo.ports[8080]
                 host = serviceInfo.getHost()
             }
