@@ -15,12 +15,11 @@ ext {
     subproject_alfresco_version = 62
 }
 
-subprojects {
+allprojects {
+    // Following needs to apply to shared (./src) project and version-specific (e.g. ./70) projects.
     apply plugin: 'eu.xenit.de'
     apply plugin: 'eu.xenit.alfresco-remote-testrunner'
     apply plugin: 'eu.xenit.alfresco'
-
-    apply from: "${project.projectDir}/overrides.gradle"
 
     sourceSets {
         main {
@@ -40,6 +39,21 @@ subprojects {
             }
         }
     }
+
+    dependencies {
+        alfrescoProvided project(":apix-rest-v1")
+        alfrescoProvided project(":apix-interface")
+        alfrescoProvided project(":apix-impl:apix-impl-${subproject_alfresco_version}")
+
+        alfrescoProvided group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_repo_version
+        alfrescoProvided group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_remote_api_version
+        alfrescoProvided group: 'org.alfresco', name: 'alfresco-data-model', version: alfresco_dm_version
+        alfrescoProvided group: 'org.osgi', name: 'org.osgi.core', version: '4.3.1'
+    }
+}
+
+subprojects {
+    apply from: "${project.projectDir}/overrides.gradle"
 
     def projectDocker = project(":apix-docker:docker-${subproject_alfresco_version}")
     evaluationDependsOn(projectDocker.path)
@@ -80,15 +94,5 @@ subprojects {
         }
     }
 
-    dependencies {
-        alfrescoProvided project(":apix-rest-v1")
-        alfrescoProvided project(":apix-interface")
-        alfrescoProvided project(":apix-impl:apix-impl-${subproject_alfresco_version}")
-
-        alfrescoProvided group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_repo_version
-        alfrescoProvided group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_remote_api_version
-        alfrescoProvided group: 'org.alfresco', name: 'alfresco-data-model', version: alfresco_dm_version
-        alfrescoProvided group: 'org.osgi', name: 'org.osgi.core', version: '4.3.1'
-    }
 }
 
