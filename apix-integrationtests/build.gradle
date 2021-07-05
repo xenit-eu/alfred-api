@@ -2,7 +2,7 @@ plugins {
     id 'base'
     id 'eu.xenit.de' version '2.0.5' apply false
     id 'eu.xenit.alfresco' version '1.0.0' apply false
-    id 'eu.xenit.alfresco-remote-testrunner' version '2.0.0-rc.5' apply false
+    id 'eu.xenit.alfresco-remote-testrunner' version '2.0.0-rc.6' apply false
 }
 
 allprojects {
@@ -93,6 +93,18 @@ subprojects {
             alfrescoDynamicExtensions.repository.endpoint.port = port
             alfrescoDynamicExtensions.repository.endpoint.host = host
         }
+    }
+
+    dependencies {
+        // This dependency is for code-highlighting in Intellij only,
+        // compileOnly is for the 'main' sourceSet, and is not inherited by
+        // the integrationTest sourceSet, so it does not actually affect the code that's
+        // being compiled.
+        // This is important, because else we would be adding a second version of all dependencies
+        // with the version as specified in the shared-sources override.gradle. That would then
+        // possibly cause compile- or runtime errors because Gradle automatically selects the
+        // latest version when duplicate dependencies are in the same configuration.
+        compileOnly project(':apix-integrationtests')
     }
 
 }
