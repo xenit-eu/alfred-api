@@ -46,14 +46,6 @@ allprojects {
 
 subprojects {
     sourceSets {
-        main {
-            java {
-                srcDirs = ['../src/main/java', './src/main/java']
-            }
-            resources {
-                srcDirs = ['../src/main/resources', './src/main/resources']
-            }
-        }
         integrationTest {
             java {
                 srcDirs = ['../src/main/java', './src/main/java']
