@@ -32,6 +32,8 @@ allprojects {
     }
 
     dependencies {
+        // Remove once 2.0.0-rc.6 is in maven central
+        integrationTestBundle 'eu.xenit.testing.integration-testing:alfresco-remote-testrunner:2.0.0-rc.5'
 
         alfrescoProvided project(":apix-rest-v1")
         alfrescoProvided project(":apix-interface")
