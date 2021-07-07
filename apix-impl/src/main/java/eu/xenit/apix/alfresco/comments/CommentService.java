@@ -1,5 +1,6 @@
 package eu.xenit.apix.alfresco.comments;
 
+import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.comments.Comment;
 import eu.xenit.apix.comments.Conversation;
@@ -12,6 +13,7 @@ import eu.xenit.apix.node.NodeMetadata;
 import eu.xenit.apix.permissions.IPermissionService;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
@@ -20,8 +22,11 @@ import org.alfresco.query.PagingResults;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
-public abstract class CommentService implements ICommentService {
+@Service("eu.xenit.apix.comments.CommentService")
+@OsgiService
+public class CommentService implements ICommentService {
     private final Logger logger = LoggerFactory.getLogger(CommentService.class);
 
     protected org.alfresco.repo.forum.CommentService commentService;
@@ -131,6 +136,11 @@ public abstract class CommentService implements ICommentService {
         return response;
     }
 
-    protected abstract Comment setPermissions(org.alfresco.service.cmr.repository.NodeRef documentNode,
-            org.alfresco.service.cmr.repository.NodeRef commentNodeRef, Comment targetComment);
+    protected Comment setPermissions(org.alfresco.service.cmr.repository.NodeRef documentNode,
+            org.alfresco.service.cmr.repository.NodeRef commentNodeRef, Comment targetComment) {
+        Map<String, Boolean> commentPermissionMap = commentService.getCommentPermissions(documentNode, commentNodeRef);
+        targetComment.setEditable(commentPermissionMap.get(org.alfresco.repo.forum.CommentService.CAN_EDIT));
+        targetComment.setDeletable(commentPermissionMap.get(org.alfresco.repo.forum.CommentService.CAN_DELETE));
+        return targetComment;
+    }
 }
