@@ -5,6 +5,8 @@ import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.alfresco.dictionary.PropertyService;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.search.FacetSearchResult;
+import eu.xenit.apix.search.Highlights;
+import eu.xenit.apix.search.Highlights.HighlightResult;
 import eu.xenit.apix.search.ISearchService;
 import eu.xenit.apix.search.SearchQuery;
 import eu.xenit.apix.search.SearchQuery.HighlightOptions;
@@ -13,6 +15,7 @@ import eu.xenit.apix.search.SearchQueryResult;
 import eu.xenit.apix.utils.java8.Optional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.FieldHighlightParameters;
@@ -247,6 +250,16 @@ public class SearchService implements ISearchService {
         List<FacetSearchResult> facetResults = facetService
                 .getFacetResults(postQuery.getFacets(), rs, searchParameters);
         results.setFacets(facetResults);
+
+        // Also store term hit highlights in output-model (if present)
+        Map<String, List<HighlightResult>> highlightResults = rs.getHighlighting().entrySet().stream()
+                .collect(Collectors.toMap(
+                        e -> e.getKey().toString(),
+                        e -> e.getValue().stream()
+                                .map(p -> new HighlightResult(p.getFirst(), p.getSecond()))
+                                .collect(Collectors.toList())
+                ));
+        results.setHighlights(new Highlights(highlightResults));
 
         return results;
     }
