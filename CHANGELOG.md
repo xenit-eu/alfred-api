@@ -10,7 +10,7 @@
 ### Fixed
 
 ### Deleted
-* [ALFREDAPI-483](https://xenitsupport.jira.com/browse/ALFREDAPI-483): drop support for alfresco 5.0 & 5.1 
+* [ALFREDAPI-483](https://xenitsupport.jira.com/browse/ALFREDAPI-483): drop support for alfresco `5.0`, `5.1` & `6.0` 
 
 
 ## 2.7.1 (2021-01-13)
