@@ -2,7 +2,6 @@ rootProject.name = 'apix'
 
 include ':apix-interface'
 include ':apix-rest-v1'
-include ':apix-webscripts-runtime'
 include ':de-swagger-reader'
 
 include ':apix-impl'
