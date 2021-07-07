@@ -22,6 +22,7 @@ import org.alfresco.query.PagingResults;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service("eu.xenit.apix.comments.CommentService")
@@ -36,6 +37,7 @@ public class CommentService implements ICommentService {
     protected IPermissionService permissionService;
     protected ApixToAlfrescoConversion apixConverter;
 
+    @Autowired
     public CommentService(org.alfresco.repo.forum.CommentService commentService, IContentService contentService,
             INodeService nodeService, IPermissionService permissionService, ApixToAlfrescoConversion apixConverter) {
         this.commentService = commentService;

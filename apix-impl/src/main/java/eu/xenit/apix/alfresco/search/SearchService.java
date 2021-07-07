@@ -25,6 +25,7 @@ import org.alfresco.service.cmr.search.SearchParameters.SortDefinition;
 import org.alfresco.service.cmr.search.SearchParameters.SortDefinition.SortType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service("eu.xenit.apix.search.SearchService")
@@ -38,6 +39,7 @@ public class SearchService implements ISearchService {
     protected org.alfresco.service.cmr.search.SearchService searchService;
     protected PropertyService propertyService;
 
+    @Autowired
     public SearchService(org.alfresco.service.cmr.search.SearchService searchService, SearchFacetsService facetService,
             ApixToAlfrescoConversion apixToAlfrescoConversion, PropertyService propertyService) {
         this.searchService = searchService;
