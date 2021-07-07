@@ -22,7 +22,7 @@ import org.alfresco.service.cmr.workflow.WorkflowPath;
 import org.alfresco.service.cmr.workflow.WorkflowService;
 import org.alfresco.service.cmr.workflow.WorkflowTask;
 import org.alfresco.service.namespace.QName;
-import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +93,7 @@ public class AlfrescoProcessInstanceWorkflowConvertor extends AbstractApixAlfres
     }
 
     public void update(String id, WorkflowOrTaskChanges changes) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("Method not yet implemented.");
     }
 
     public void generate(int amount, String username) {
@@ -112,18 +112,18 @@ public class AlfrescoProcessInstanceWorkflowConvertor extends AbstractApixAlfres
     }
 
     public void end(String taskID, String transitionID) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("Method not yet implemented.");
     }
 
     public void claim(String taskID) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("Method not yet implemented.");
     }
 
     public void claim(String taskID, String username) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("Method not yet implemented.");
     }
 
     public void release(String taskID) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("Method not yet implemented.");
     }
 }

@@ -102,5 +102,12 @@
                 </property>
             </properties>
         </aspect>
+        <aspect name="apixtest:searchServiceLimitTestAspect">
+            <properties>
+                <property name="apixtest:searchServiceLimitTestProperty">
+                    <type>d:text</type>
+                </property>
+            </properties>
+        </aspect>
     </aspects>
 </model>

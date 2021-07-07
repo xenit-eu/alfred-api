@@ -33,26 +33,14 @@ public class TermHitHighlightingTest extends BaseTest {
 
     @Autowired
     SearchService searchService;
-    @Autowired
-    DataSource dataSource;
-    @Autowired
-    @Qualifier("Search")
-    SwitchableApplicationContextFactory searchSubSystem;
 
     private ObjectMapper mapper = new ObjectMapper();
-    private SolrTestHelper solrTestHelper;
-
-    @Before
-    public void setup() {
-        // Term hit highlighting only works on solr 6, which has /solr as its base url (just like solr 1…)
-        solrTestHelper = new SolrTestHelper("/solr", dataSource, searchSubSystem);
-    }
 
     @Test
     /** Test all major parameters for term hit highlighting */
     public void searchResponseContainsHighlights() throws IOException, InterruptedException {
         // Waiting for Solr's indexing process to catch up before executing test.
-        solrTestHelper.waitForSolrSync();
+        solrHelper.waitForSolrSync();
         SearchServiceTest.waitAWhile(20);
 
         URL expectedHighlightsJson = getClass().getClassLoader().getResource(

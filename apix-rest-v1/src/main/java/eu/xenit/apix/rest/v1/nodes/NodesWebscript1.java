@@ -14,6 +14,7 @@ import eu.xenit.apix.comments.ICommentService;
 import eu.xenit.apix.data.ContentInputStream;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
+import eu.xenit.apix.exceptions.FileExistsException;
 import eu.xenit.apix.filefolder.IFileFolderService;
 import eu.xenit.apix.filefolder.NodePath;
 import eu.xenit.apix.node.ChildParentAssociation;
@@ -938,26 +939,8 @@ public class NodesWebscript1 extends ApixV1Webscript {
         NodeRef resultRef = null;
         try {
             resultRef = transactionHelper
-                    .doInTransaction(() -> {
-                        NodeRef newNode = nodeService
-                                .createNode(new NodeRef(finalParent), finalFile.getFilename(),
-                                        new QName(finalType));
-                        nodeService.setContent(newNode, finalFile.getInputStream(), finalFile.getFilename());
-
-                        if (finalMetadata != null) {
-                            nodeService.setMetadata(newNode, finalMetadata);
-                        }
-
-                        if (finalExtractMetadata) {
-                            try {
-                                nodeService.extractMetadata(newNode);
-                                logger.debug("Metadata extracted");
-                            } catch (Exception ex) {
-                                logger.warn("Exception while extracting metadata", ex);
-                            }
-                        }
-                        return newNode;
-                    }, false, true);
+                    .doInTransaction(() -> createNodeForUpload(finalParent, finalFile, finalType, finalMetadata,
+                            finalExtractMetadata), false, true);
         } catch (org.alfresco.service.cmr.model.FileExistsException fileExistsException) {
             throw new FileExistsException(
                     null,
@@ -967,6 +950,31 @@ public class NodesWebscript1 extends ApixV1Webscript {
         NodeInfo nodeInfo = this
                 .nodeRefToNodeInfo((NodeRef) resultRef, fileFolderService, nodeService, permissionService);
         writeJsonResponse(response, nodeInfo);
+    }
+
+    public NodeRef createNodeForUpload(String finalParent,
+            FormData.FormField finalFile,
+            String finalType,
+            MetadataChanges finalMetadata,
+            Boolean finalExtractMetadata) {
+        NodeRef newNode = nodeService
+                .createNode(new NodeRef(finalParent), finalFile.getFilename(),
+                        new QName(finalType));
+        nodeService.setContent(newNode, finalFile.getInputStream(), finalFile.getFilename());
+
+        if (finalMetadata != null) {
+            nodeService.setMetadata(newNode, finalMetadata);
+        }
+
+        if (finalExtractMetadata) {
+            try {
+                nodeService.extractMetadata(newNode);
+                logger.debug("Metadata extracted");
+            } catch (Exception ex) {
+                logger.warn("Exception while extracting metadata", ex);
+            }
+        }
+        return newNode;
     }
 
     @ExceptionHandler(AccessDeniedException.class)

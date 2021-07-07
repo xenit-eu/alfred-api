@@ -148,6 +148,21 @@ public interface INodeService {
     NodeRef createNode(NodeRef parent, Map<QName, String[]> properties, QName type, ContentData contentData);
 
     /**
+     * Convenience method to create a node giving the type, the list of properties,
+     * and requesting metadata extraction from its content.
+     * Since Alfresco 7, metadata extraction is done asynchronously. The metadata should be
+     * added to the node upon success.
+     *
+     * @param parent      The parent node of the new node.
+     * @param fileName    Name for the target document.
+     * @param contentType String representation of the target alfresco contenttype.
+     * @param metadata    Properties (and optionally, aspects) to set on the new node in MetadataChanges format.
+     * @param content     Inputstream for the content for this new node.
+     * @return The noderef of the new node.
+     */
+    NodeRef createNode(NodeRef parent, String fileName, String contentType, MetadataChanges metadata, InputStream content);
+
+    /**
      * Delete a node.
      *
      * @param nodeRef     The noderef of the node to delete.

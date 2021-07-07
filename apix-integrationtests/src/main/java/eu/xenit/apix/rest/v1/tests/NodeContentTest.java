@@ -33,7 +33,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 /**
  * Created by kenneth on 17.03.16.
  */
-public class NodeContentTest extends BaseTest {
+public class NodeContentTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(NodeContentTest.class);
 
@@ -53,7 +53,7 @@ public class NodeContentTest extends BaseTest {
     public void testSetNodeContent() throws IOException {
         final HashMap<String, NodeRef> initializedNodeRefs = init();
 
-        final String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/content", "admin", "admin");
+        final String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/content", "admin", "admin");
         final CloseableHttpClient httpclient = HttpClients.createDefault();
 
         transactionService.getRetryingTransactionHelper()
@@ -79,7 +79,7 @@ public class NodeContentTest extends BaseTest {
                     @Override
                     public Object execute() throws Throwable {
                         InputStream inputStream = nodeService
-                                .getContent(initializedNodeRefs.get(BaseTest.TESTFILE_NAME)).getInputStream();
+                                .getContent(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME)).getInputStream();
                         assertEquals("test content123", IOUtils.toString(inputStream));
                         inputStream.close();
                         return null;
@@ -92,8 +92,8 @@ public class NodeContentTest extends BaseTest {
     public void testSetNodeContentReturnsAccesDenied() throws IOException {
         final HashMap<String, NodeRef> initializedNodeRefs = init();
 
-        final String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), "/content", BaseTest.USERWITHOUTRIGHTS,
-                BaseTest.USERWITHOUTRIGHTS);
+        final String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/content", RestV1BaseTest.USERWITHOUTRIGHTS,
+                RestV1BaseTest.USERWITHOUTRIGHTS);
         final CloseableHttpClient httpclient = HttpClients.createDefault();
 
         transactionService.getRetryingTransactionHelper()
@@ -116,13 +116,13 @@ public class NodeContentTest extends BaseTest {
     public void testDeleteNodeContent() throws IOException {
         final HashMap<String, NodeRef> initializedNodeRefs = init();
 
-        final String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/content", "admin", "admin");
+        final String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/content", "admin", "admin");
         final CloseableHttpClient httpclient = HttpClients.createDefault();
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
                     @Override
                     public Object execute() throws Throwable {
-                        nodeService.setContent(initializedNodeRefs.get(BaseTest.TESTFILE_NAME),
+                        nodeService.setContent(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME),
                                 new ByteArrayInputStream("test contentabc".getBytes()),
                                 "abc.txt");
                         return null;
@@ -147,7 +147,7 @@ public class NodeContentTest extends BaseTest {
                     @Override
                     public Object execute() throws Throwable {
 
-                        assertNull(nodeService.getContent(initializedNodeRefs.get(BaseTest.TESTFILE_NAME)));
+                        assertNull(nodeService.getContent(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME)));
                         return null;
                     }
                 }, false, true);
@@ -157,8 +157,8 @@ public class NodeContentTest extends BaseTest {
     public void testDeleteNodeContentReturnsAccesDenied() throws IOException {
         final HashMap<String, NodeRef> initializedNodeRefs = init();
 
-        final String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), "/content", BaseTest.USERWITHOUTRIGHTS,
-                BaseTest.USERWITHOUTRIGHTS);
+        final String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/content", RestV1BaseTest.USERWITHOUTRIGHTS,
+                RestV1BaseTest.USERWITHOUTRIGHTS);
         final CloseableHttpClient httpclient = HttpClients.createDefault();
 
         transactionService.getRetryingTransactionHelper()
@@ -174,13 +174,13 @@ public class NodeContentTest extends BaseTest {
     public void testGetNodeContent() throws IOException {
         final HashMap<String, NodeRef> initializedNodeRefs = init();
 
-        final String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/content", "admin", "admin");
+        final String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/content", "admin", "admin");
         final CloseableHttpClient httpclient = HttpClients.createDefault();
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
                     @Override
                     public Object execute() throws Throwable {
-                        nodeService.setContent(initializedNodeRefs.get(BaseTest.TESTFILE_NAME),
+                        nodeService.setContent(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME),
                                 new ByteArrayInputStream("test contentdef".getBytes()),
                                 "abc.txt");
                         return null;
@@ -208,8 +208,8 @@ public class NodeContentTest extends BaseTest {
     public void testGetNodeContentReturnsAccesDenied() throws IOException {
         final HashMap<String, NodeRef> initializedNodeRefs = init();
 
-        final String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), "/content", BaseTest.USERWITHOUTRIGHTS,
-                BaseTest.USERWITHOUTRIGHTS);
+        final String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/content", RestV1BaseTest.USERWITHOUTRIGHTS,
+                RestV1BaseTest.USERWITHOUTRIGHTS);
         final CloseableHttpClient httpclient = HttpClients.createDefault();
 
         transactionService.getRetryingTransactionHelper()

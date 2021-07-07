@@ -1,5 +1,5 @@
 plugins {
-    id 'eu.xenit.de' version '2.0.2' apply false
+    id 'eu.xenit.de' version '2.0.5' apply false
     id 'eu.xenit.amp' version '1.0.0' apply false
     id 'eu.xenit.alfresco' version '1.0.0' apply false
 }

@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by kenneth on 16.03.16.
  */
-public class AllNodeInfoTest extends BaseTest {
+public class AllNodeInfoTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(AllNodeInfoTest.class);
 
@@ -39,7 +39,7 @@ public class AllNodeInfoTest extends BaseTest {
     @Test
     public void testGetAllNodeInfo() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "admin", "admin");
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "admin", "admin");
         logger.info(" URL: " + url);
         for (int i = 0; i < 20; i++) {
             logger.error("For the request of testGetAllNodeInfo");
@@ -55,8 +55,8 @@ public class AllNodeInfoTest extends BaseTest {
     @Test
     public void testGetAllNodeInfoOfMultipleNodes() throws IOException, JSONException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        NodeRef nodeRef0 = initializedNodeRefs.get(BaseTest.TESTFILE_NAME);
-        NodeRef nodeRef1 = initializedNodeRefs.get(BaseTest.TESTFILE2_NAME);
+        NodeRef nodeRef0 = initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME);
+        NodeRef nodeRef1 = initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME);
 
         String jsonString = json(String.format(
                 "{" +
@@ -102,12 +102,12 @@ public class AllNodeInfoTest extends BaseTest {
     public void testGetAllNodeInfoWithoutNodeWithoutPermissions() throws IOException, JSONException {
         Map<String, NodeRef> initializedNodes = init();
         String jsonString = json("{\"noderefs\":["
-                + "\"" + initializedNodes.get(BaseTest.TESTFILE_NAME).toString() + "\"," //regular node
+                + "\"" + initializedNodes.get(RestV1BaseTest.TESTFILE_NAME).toString() + "\"," //regular node
                 + "\"workspace://SpacesStore/12345678-1234-1234-1234-123456789012\"," //non-existing node
-                + "\"" + initializedNodes.get(BaseTest.NOUSERRIGHTS_FILE_NAME).toString() + "\"" //no-permissions node
+                + "\"" + initializedNodes.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME).toString() + "\"" //no-permissions node
                 + "]}");
         final CloseableHttpClient httpclient = HttpClients.createDefault();
-        final String url = makeAlfrescoBaseurl(BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS) + "/apix/v1/nodes/nodeInfo";
+        final String url = makeAlfrescoBaseurl(RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS) + "/apix/v1/nodes/nodeInfo";
         logger.error("url: " + url);
         HttpPost httppost = new HttpPost(url);
         httppost.setEntity(new StringEntity(jsonString));
@@ -124,12 +124,12 @@ public class AllNodeInfoTest extends BaseTest {
     public void testGetAllNodeInfoForNodeWithoutPermissions() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
         String url =
-                makeAlfrescoBaseurl(BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS) + "/apix/v1/nodes/nodeInfo";
+                makeAlfrescoBaseurl(RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS) + "/apix/v1/nodes/nodeInfo";
         logger.info("url: {}", url);
         String jsonString = json(
                 "{" +
                         "\"noderefs\": [\"" +
-                        initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME).toString() +
+                        initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME).toString() +
                         "\"" +
                         "]}");
         final CloseableHttpClient httpclient = HttpClients.createDefault();

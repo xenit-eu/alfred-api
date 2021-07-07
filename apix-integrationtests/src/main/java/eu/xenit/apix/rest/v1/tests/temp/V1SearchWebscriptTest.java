@@ -1,7 +1,7 @@
 package eu.xenit.apix.rest.v1.tests.temp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.xenit.apix.rest.v1.tests.BaseTest;
+import eu.xenit.apix.rest.v1.tests.RestV1BaseTest;
 import eu.xenit.apix.search.SearchQueryResult;
 import java.io.IOException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by stan on 5/3/16.
  */
-public class V1SearchWebscriptTest extends BaseTest {
+public class V1SearchWebscriptTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(V1SearchWebscriptTest.class);
 

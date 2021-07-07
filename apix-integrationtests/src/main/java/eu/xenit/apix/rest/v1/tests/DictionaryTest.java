@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class DictionaryTest extends BaseTest {
+public class DictionaryTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(DictionaryTest.class);
 

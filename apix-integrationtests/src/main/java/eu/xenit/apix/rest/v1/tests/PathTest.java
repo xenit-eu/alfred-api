@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 /**
  * Created by kenneth on 16.03.16.
  */
-public class PathTest extends BaseTest {
+public class PathTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(PathTest.class);
 
@@ -48,7 +48,7 @@ public class PathTest extends BaseTest {
     @Test
     public void testDisplayPathGet() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/path", "admin", "admin");
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/path", "admin", "admin");
 
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
         String result = EntityUtils.toString(httpResponse.getEntity());
@@ -57,7 +57,8 @@ public class PathTest extends BaseTest {
         assertEquals(200, httpResponse.getStatusLine().getStatusCode());
 
         String expectedResult = String.format("\"displayPath\":\"%s\"",
-                this.nodeService.getPath(new org.alfresco.service.cmr.repository.NodeRef(initializedNodeRefs.get(BaseTest.TESTFILE_NAME).getValue()))
+                this.nodeService.getPath(new org.alfresco.service.cmr.repository.NodeRef(initializedNodeRefs.get(
+                        RestV1BaseTest.TESTFILE_NAME).getValue()))
                         .toDisplayPath(this.nodeService, this.permissionService));
         assertTrue(result.contains(expectedResult));
     }
@@ -65,7 +66,7 @@ public class PathTest extends BaseTest {
     @Test
     public void testDisplayPathGetReturnsAccesDenied() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), "/path", BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS);
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/path", RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS);
 
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
         assertEquals(403, httpResponse.getStatusLine().getStatusCode());
@@ -74,7 +75,7 @@ public class PathTest extends BaseTest {
     @Test
     public void testQNamePathGet() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/path", "admin", "admin");
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/path", "admin", "admin");
 
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
         String result = EntityUtils.toString(httpResponse.getEntity());
@@ -82,7 +83,8 @@ public class PathTest extends BaseTest {
 
         assertEquals(200, httpResponse.getStatusLine().getStatusCode());
         String expectedResult = String.format("\"qnamePath\":\"%s\"",
-                this.nodeService.getPath(new org.alfresco.service.cmr.repository.NodeRef(initializedNodeRefs.get(BaseTest.TESTFILE_NAME).getValue()))
+                this.nodeService.getPath(new org.alfresco.service.cmr.repository.NodeRef(initializedNodeRefs.get(
+                        RestV1BaseTest.TESTFILE_NAME).getValue()))
                         .toPrefixString(namespaceService));
         assertTrue(result.contains(expectedResult));
     }
@@ -90,7 +92,7 @@ public class PathTest extends BaseTest {
     @Test
     public void testQNamePathGetReturnsAccesDenied() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), "/path", BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS);
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/path", RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS);
 
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
 

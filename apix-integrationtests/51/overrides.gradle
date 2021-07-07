@@ -2,4 +2,11 @@ ext {
     subproject_alfresco_version = "51"
     alfresco_version = alfresco_51_version
     alfresco_dm_version = alfresco_51_dm_version
+    alfresco_repo_version = alfresco_version
+    alfresco_remote_api_version = alfresco_version
+}
+
+dependencies {
+    integrationTestImplementationRemote group: 'org.apache.httpcomponents', name: 'httpmime', version: http_version
+    integrationTestImplementationRemote (group: 'org.apache.httpcomponents', name: 'fluent-hc', version: http_version)
 }

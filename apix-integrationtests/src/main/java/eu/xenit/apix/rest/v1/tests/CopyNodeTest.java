@@ -41,9 +41,9 @@ public class CopyNodeTest extends NodesBaseTest {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
         final HashMap<String, NodeRef> initializedNodeRefs = init();
         mainTestFolder = c.apix(getMainTestFolder());
-        parentTestFolder = initializedNodeRefs.get(BaseTest.TESTFOLDER_NAME);
-        copyFromFile = initializedNodeRefs.get(BaseTest.TESTFILE_NAME);
-        copyFromFolder = initializedNodeRefs.get(BaseTest.TESTFOLDER_NAME);
+        parentTestFolder = initializedNodeRefs.get(RestV1BaseTest.TESTFOLDER_NAME);
+        copyFromFile = initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME);
+        copyFromFolder = initializedNodeRefs.get(RestV1BaseTest.TESTFOLDER_NAME);
     }
 
     @Test
@@ -146,7 +146,7 @@ public class CopyNodeTest extends NodesBaseTest {
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
                     doPostNodes(createNodeOptions, HttpStatus.SC_FORBIDDEN,
-                            BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS );
+                            RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS );
                     return null;
                 }, false, true);
     }

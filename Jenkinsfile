@@ -43,6 +43,10 @@ node {
             sh "${gradleCommand} :apix-interface:build :apix-interface:javadoc"
         }
 
+        stage("Unit test apix-rest-v1") {
+            sh "${gradleCommand} :apix-rest-v1:test"
+        }
+
         stage("Build 50") {
             BuildVersionX("50")
         }
@@ -60,6 +64,9 @@ node {
         }
         stage("Build 62") {
             BuildVersionX("62")
+        }
+        stage("Build 70") {
+            BuildVersionX("70")
         }
         
         stage("Publishing") {

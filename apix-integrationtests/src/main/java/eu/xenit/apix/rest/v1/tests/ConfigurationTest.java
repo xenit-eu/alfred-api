@@ -38,7 +38,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 /**
  * Created by kenneth on 14.03.16.
  */
-public class ConfigurationTest extends BaseTest {
+public class ConfigurationTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(ConfigurationTest.class);
 

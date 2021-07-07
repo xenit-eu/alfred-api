@@ -33,7 +33,7 @@ public class CreateNodeTest extends NodesBaseTest {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
         final HashMap<String, NodeRef> initializedNodeRefs = init();
         mainTestFolder = c.apix(getMainTestFolder());
-        parentTestFolder = initializedNodeRefs.get(BaseTest.TESTFOLDER_NAME);
+        parentTestFolder = initializedNodeRefs.get(RestV1BaseTest.TESTFOLDER_NAME);
     }
 
     @Test
@@ -110,7 +110,7 @@ public class CreateNodeTest extends NodesBaseTest {
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
                     doPostNodes(createNodeOptions, HttpStatus.SC_FORBIDDEN,
-                            BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS );
+                            RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS );
                     return null;
                 }, false, true);
     }

@@ -20,7 +20,13 @@ dependencies {
 
     testCompile group: 'org.springframework', name: 'spring-core', version: '3.2.10.RELEASE'
     testCompile group: 'org.springframework', name: 'spring-test', version: '3.2.10.RELEASE'
+    testCompile group: 'org.springframework.extensions.surf', name: 'spring-webscripts', version: '5.0.d'
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.25.1'
     testCompile group: 'eu.xenit.de', name: 'annotations', version: de_version
-    testCompile group: 'eu.xenit.testing', name: 'integration-testing', version: '1.1.0'
+    testCompile group: 'eu.xenit.de', name: 'annotations-runtime', version: de_version
+    testCompile group: 'eu.xenit.de', name: 'webscripts', version: de_version
+    testCompile (group: 'org.alfresco', name: 'alfresco-repository', version: '5.0.d') { exclude group: 'maven-plugins' }
+    testCompile (group: 'org.alfresco', name: 'alfresco-remote-api', version: '5.0.d') { exclude group: 'maven-plugins' }
+    testCompile project(':apix-interface')
+    testCompile project(':apix-impl')
 }

@@ -6,6 +6,7 @@ import eu.xenit.apix.permissions.NodePermission;
 import eu.xenit.apix.permissions.NodePermission.Access;
 import eu.xenit.apix.permissions.PermissionValue;
 import eu.xenit.apix.tests.BaseTest;
+import eu.xenit.apix.util.SolrTestHelper;
 import java.util.HashSet;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.model.FileFolderService;
@@ -16,6 +17,7 @@ import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.security.PermissionService;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -89,12 +91,21 @@ public class PermissionServiceTest extends BaseTest {
 
   @Test
   public void testGetPermissions() {
+    try {
+      solrHelper.waitForSolrSync();
+    } catch (InterruptedException e) {
+      Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+    }
     cleanUp();
 
     NodeRef companyHomeNodeRef = getNodeAtPath("/app:company_home");
     FileInfo mainTestFolder = createMainTestFolder(companyHomeNodeRef);
     FileInfo testNode = createTestNode(mainTestFolder.getNodeRef(), "testnode");
-
+    try {
+      solrHelper.waitForSolrSync();
+    } catch (InterruptedException e) {
+      Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+    }
     try {
       Map<String, PermissionValue> permissions = service
           .getPermissions(c.apix(testNode.getNodeRef()));
@@ -112,11 +123,21 @@ public class PermissionServiceTest extends BaseTest {
 
   @Test
   public void testGetPermissionsV2() {
+    try {
+      solrHelper.waitForSolrSync();
+    } catch (InterruptedException e) {
+      Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+    }
     cleanUp();
 
     NodeRef companyHomeNodeRef = getNodeAtPath("/app:company_home");
     FileInfo mainTestFolder = createMainTestFolder(companyHomeNodeRef);
     FileInfo testNode = createTestNode(mainTestFolder.getNodeRef(), "testnode");
+    try {
+      solrHelper.waitForSolrSync();
+    } catch (InterruptedException e) {
+      Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+    }
 
     try {
       Map<String, PermissionValue> permissions = service
@@ -135,12 +156,22 @@ public class PermissionServiceTest extends BaseTest {
 
   @Test
   public void testSetPermissions() {
+    try {
+      solrHelper.waitForSolrSync();
+    } catch (InterruptedException e) {
+      Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+    }
     cleanUp();
 
     NodeRef companyHomeNodeRef = getNodeAtPath("/app:company_home");
     FileInfo mainTestFolder = createMainTestFolder(companyHomeNodeRef);
     FileInfo testNode = createTestNode(mainTestFolder.getNodeRef(), "testnode");
     Long initialAclId = llAlfrescoNodeService.getNodeAclId(testNode.getNodeRef());
+    try {
+      solrHelper.waitForSolrSync();
+    } catch (InterruptedException e) {
+      Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+    }
 
     try {
       Set<Access> accessSet = new HashSet<>();

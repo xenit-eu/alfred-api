@@ -1,6 +1,7 @@
 package eu.xenit.apix.rest.v2.tests;
 
 import eu.xenit.apix.data.NodeRef;
+import eu.xenit.apix.rest.v1.tests.RestV1BaseTest;
 import java.util.HashMap;
 import java.util.Map;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -25,7 +26,7 @@ import java.io.IOException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class AllNodeInfoTest extends eu.xenit.apix.rest.v2.tests.BaseTest {
+public class AllNodeInfoTest extends RestV2BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(AllNodeInfoTest.class);
 
@@ -37,7 +38,7 @@ public class AllNodeInfoTest extends eu.xenit.apix.rest.v2.tests.BaseTest {
     @Test
     public void testGetAllNodeInfo() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "admin", "admin");
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV2BaseTest.TESTFILE_NAME), "admin", "admin");
         logger.info(" URL: " + url);
         for (int i = 0; i < 20; i++) {
             logger.error("For the request of testGetAllNodeInfo");
@@ -53,8 +54,8 @@ public class AllNodeInfoTest extends eu.xenit.apix.rest.v2.tests.BaseTest {
     @Test
     public void testGetAllNodeInfoOfMultipleNodes() throws IOException, JSONException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        NodeRef nodeRef0 = initializedNodeRefs.get(BaseTest.TESTFILE_NAME);
-        NodeRef nodeRef1 = initializedNodeRefs.get(BaseTest.TESTFILE2_NAME);
+        NodeRef nodeRef0 = initializedNodeRefs.get(RestV2BaseTest.TESTFILE_NAME);
+        NodeRef nodeRef1 = initializedNodeRefs.get(RestV2BaseTest.TESTFILE2_NAME);
 
         String jsonString = json(String.format(
                 "{" +
@@ -100,12 +101,12 @@ public class AllNodeInfoTest extends eu.xenit.apix.rest.v2.tests.BaseTest {
     public void testGetAllNodeInfoForNodeWithoutPermissions() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
         String url =
-                makeAlfrescoBaseurl(BaseTest.USERWITHOUTRIGHTS, BaseTest.USERWITHOUTRIGHTS) + "/apix/v2/nodes/nodeInfo";
+                makeAlfrescoBaseurl(RestV2BaseTest.USERWITHOUTRIGHTS, RestV2BaseTest.USERWITHOUTRIGHTS) + "/apix/v2/nodes/nodeInfo";
         logger.info("url: {}", url);
         String jsonString = json(
                 "{" +
                         "\"noderefs\": [\"" +
-                        initializedNodeRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME).toString() +
+                        initializedNodeRefs.get(RestV2BaseTest.NOUSERRIGHTS_FILE_NAME).toString() +
                         "\"" +
                         "]}");
         final CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -128,13 +129,13 @@ public class AllNodeInfoTest extends eu.xenit.apix.rest.v2.tests.BaseTest {
     public void testGetAllNodeInfoWithoutNodeWithoutPermissions() throws IOException, JSONException {
         Map<String, NodeRef> initializedNodes = init();
         String jsonString = json("{\"noderefs\":["
-                + "\"" + initializedNodes.get(eu.xenit.apix.rest.v1.tests.BaseTest.TESTFILE_NAME).toString() + "\"," //regular node
+                + "\"" + initializedNodes.get(RestV1BaseTest.TESTFILE_NAME).toString() + "\"," //regular node
                 + "\"workspace://SpacesStore/12345678-1234-1234-1234-123456789012\"," //non-existing node
-                + "\"" + initializedNodes.get(eu.xenit.apix.rest.v1.tests.BaseTest.NOUSERRIGHTS_FILE_NAME).toString() + "\"" //no-permissions node
+                + "\"" + initializedNodes.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME).toString() + "\"" //no-permissions node
                 + "]}");
         final CloseableHttpClient httpclient = HttpClients.createDefault();
         final String url = makeAlfrescoBaseurl(
-                eu.xenit.apix.rest.v1.tests.BaseTest.USERWITHOUTRIGHTS, eu.xenit.apix.rest.v1.tests.BaseTest.USERWITHOUTRIGHTS) + "/apix/v1/nodes/nodeInfo";
+                RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS) + "/apix/v1/nodes/nodeInfo";
         logger.error("url: " + url);
         HttpPost httppost = new HttpPost(url);
         httppost.setEntity(new StringEntity(jsonString));
