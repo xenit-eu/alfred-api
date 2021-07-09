@@ -19,7 +19,14 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
+import org.alfresco.model.ContentModel;
 import org.alfresco.repo.management.subsystems.SwitchableApplicationContextFactory;
+import org.alfresco.service.cmr.model.FileInfo;
+import org.alfresco.service.cmr.repository.ContentData;
+import org.alfresco.service.cmr.repository.ContentWriter;
+import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.NodeService;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -36,6 +43,26 @@ public class TermHitHighlightingTest extends BaseTest {
 
     private ObjectMapper mapper = new ObjectMapper();
 
+    @Before
+    public void createHighlightTestDocument() throws IOException {
+        NodeService nodeService = super.serviceRegistry.getNodeService();
+        FileInfo mainTestFolder = super.createMainTestFolder(getNodeAtPath("/app:company_home"));
+        FileInfo targetNodeFileInfo = super.createTestNode(mainTestFolder.getNodeRef(), "furies.txt");
+        NodeRef targetNode = targetNodeFileInfo.getNodeRef();
+        ContentWriter writer = super.serviceRegistry.getContentService()
+                .getWriter(targetNode, ContentModel.PROP_CONTENT, true);
+        writer.putContent(getClass().getClassLoader().getResource(
+                "highlightTest/furies.txt").openStream());
+        ContentData contentData = (ContentData) nodeService.getProperty(
+                targetNode, ContentModel.PROP_CONTENT);
+        nodeService.setProperty(targetNode, ContentModel.PROP_CONTENT, contentData);
+    }
+
+    @After
+    public void cleanupAfterHighlightTest() {
+        super.cleanUp();
+    }
+
     @Test
     /** Test all major parameters for term hit highlighting */
     public void searchResponseContainsHighlights() throws IOException, InterruptedException {
@@ -44,7 +71,7 @@ public class TermHitHighlightingTest extends BaseTest {
         SearchServiceTest.waitAWhile(20);
 
         URL expectedHighlightsJson = getClass().getClassLoader().getResource(
-                "highlight-response-jsons/searchRequestWithHighlighting_withAllMajorCustomParams.json");
+                "highlightTest/searchRequestWithHighlighting_withAllMajorCustomParams.json");
         Highlights expectedHighlightResult = mapper.readValue(expectedHighlightsJson, Highlights.class);
 
         /* The options set are equivalent to the following JSON:
@@ -52,7 +79,7 @@ public class TermHitHighlightingTest extends BaseTest {
                 "property": {
                     "exact": false,
                     "name": "cm:content",
-                    "value": "budget"
+                    "value": "furies"
                 }
             },
             "highlight": {
@@ -66,7 +93,7 @@ public class TermHitHighlightingTest extends BaseTest {
         */
         SearchQuery postQuery = new SearchQuery();
         QueryBuilder builder = new QueryBuilder();
-        SearchSyntaxNode rootNode = builder.property("cm:content", "budget").create();
+        SearchSyntaxNode rootNode = builder.property("cm:content", "furies").create();
         postQuery.setQuery(rootNode);
         SearchQuery.HighlightOptions options = new HighlightOptions();
         options.setSnippetCount(2);
