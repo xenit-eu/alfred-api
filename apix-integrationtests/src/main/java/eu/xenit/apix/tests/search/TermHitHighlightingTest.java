@@ -112,6 +112,12 @@ public class TermHitHighlightingTest extends BaseTest {
         postQuery.setHighlight(options);
 
         SearchQueryResult actualResult = searchService.query(postQuery);
-        assertEquals(expectedHighlightResult, actualResult.getHighlights());
+        // Splitting asserts into check on length and check on highlight content due to differing nodeId for expected
+        // and actual.
+        // We only expect this one result due to controlled input.
+        assertEquals(1, actualResult.getHighlights().getNoderefs().size());
+        // Given we expect only 1 entry, we can blindly pluck it from the map in the highlightResult
+        assertEquals(expectedHighlightResult.getNoderefs().entrySet().iterator().next().getValue(),
+                actualResult.getHighlights().getNoderefs().entrySet().iterator().next().getValue());
     }
 }
