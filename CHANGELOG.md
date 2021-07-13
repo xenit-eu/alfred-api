@@ -1,7 +1,7 @@
 
 # Alfred API - Changelog
 
-## 2.7.2 (UNRELEASED)
+## 3.0.0 (UNRELEASED)
 
 ### Changed
 * [ALFREDAPI-481](https://xenitsupport.jira.com/browse/ALFREDAPI-481): Add blurb about Xenit to README
@@ -10,6 +10,7 @@
 ### Fixed
 
 ### Deleted
+* [ALFREDAPI-483](https://xenitsupport.jira.com/browse/ALFREDAPI-483): drop support for alfresco 5.0 & 5.1 
 
 
 ## 2.7.1 (2021-01-13)
