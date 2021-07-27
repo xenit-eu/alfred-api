@@ -65,14 +65,14 @@ The following command starts up all docker containers required for an Alfresco r
 ```bash
 ./gradlew :apix-docker:docker-${VERSION}:composeUp --info
 ```
-Where `VERSION` is e.g. `51`.
+Where `VERSION` is e.g. `70`.
 
 
 #### Run integration tests
 ```bash
 ./gradlew :apix-integrationtests:test-${VERSION}:integrationTest
 ```  
-Again, where `VERSION` is e.g. `51`.
+Again, where `VERSION` is e.g. `70`.
 
 However, this starts (and afterwards stops) docker containers. This includes starting an Alfresco container,
  adding a startup time of several minutes. To circumvent this you also run the test on already running containers with
@@ -90,25 +90,25 @@ portmapping `8000:8000`. This file does not get loaded when running in Jenkins.
 3. Run the integration tests (see section above).
 4. Wait until the container is started and healthy, then attach the debugger.
 
-Again, where `VERSION` is e.g. `51`.
+Again, where `VERSION` is e.g. `70`.
 
 #### Deploy code changes for development
 In a development scenario, it is possible to upload code changes to a running alfresco through dynamic extensions.
 This requires the running alfresco to already have an older or equal version of alfred-api installed, and
 the use of the jar artifact instead of the amp to do the new install. 
 The JAR has the format `apix-impl-{ALFRESCO-VERSION}-{APIX-VERSION}.jar` and can be found under 
-`apix-impl/{ALFRESCO-VERSION}/build/libs/`, where `ALFRESCO-VERSION` is one of *(50|51|52|60|61|62)*.
+`apix-impl/{ALFRESCO-VERSION}/build/libs/`, where `ALFRESCO-VERSION` is one of *(52|61|62|70)*.
 The new installation can be done either through the DE web interface, or with the following gradle task.
 ```bash
 ./gradlew :apix-impl:apix-impl-{ALFRESCO-VERSION}:installBundle -Phost={ALFRESCO-HOST} -Pport={ALFRESCO-PORT}
 ```
-Where `VERSION` is e.g. `51` and here `PORT` is the port mapping of the *alfresco-core* container e.g. `32774`.
+Where `VERSION` is e.g. `70` and here `PORT` is the port mapping of the *alfresco-core* container e.g. `32774`.
 
 *Protip:* If you get tired of changing the port after every `docker-compose up`, you can temporarily put a
 fixed port in the *docker-compose.yml* of the version you are working with. (The rationale behind using 
 variable ephemeral ports is that during parallel builds on Jenkins port clashes must be avoided.)
 
-For example for version 5.1, change in *apix-docker/51/docker-compose.yml* 
+For example for version 7.0, change in *apix-docker/70/docker-compose.yml* 
 the ports line from:
 ```yaml
 services:
@@ -121,10 +121,10 @@ to:
 services:
   alfresco-core:
     ports:
-      - ${DOCKER_IP}:9051:8080
+      - ${DOCKER_IP}:9070:8080
 ```
 and then restart the containers with:
 
 ```bash
-./gradlew :apix-docker:docker-51:composeUp --info
+./gradlew :apix-docker:docker-70:composeUp --info
 ```
