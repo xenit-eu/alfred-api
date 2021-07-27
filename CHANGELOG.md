@@ -5,12 +5,13 @@
 
 ### Changed
 * [ALFREDAPI-481](https://xenitsupport.jira.com/browse/ALFREDAPI-481): Add blurb about Xenit to README
-* [ALFREDAPI-482](https://xenitsupport.jira.com/browse/ALFREDAPI-482): Add support for alfresco 7.0
+* [ALFREDAPI-482](https://xenitsupport.jira.com/browse/ALFREDAPI-482): Add support for Alfresco 7.0
 
 ### Fixed
 
 ### Deleted
-* [ALFREDAPI-483](https://xenitsupport.jira.com/browse/ALFREDAPI-483): drop support for alfresco 5.0 & 5.1 
+* [ALFREDAPI-483](https://xenitsupport.jira.com/browse/ALFREDAPI-483): Drop support for Alfresco 5.0 & 5.1
+* [ALFREDAPI-486](https://xenitsupport.jira.com/browse/ALFREDAPI-483): Drop support for Alfresco 6.0
 
 
 ## 2.7.1 (2021-01-13)
