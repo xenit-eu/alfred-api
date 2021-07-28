@@ -67,12 +67,9 @@ subprojects {
     alfrescoDynamicExtensions {
         repository {
             endpoint {
-                protocol = "http"
-                serviceUrl = "/alfresco/service"
-            }
-            authentication {
-                username = "admin"
-                password = "admin"
+                protocol = project.hasProperty('protocol') ? project.protocol : 'http'
+                host = project.hasProperty('host') ? project.host : 'localhost'
+                port = project.hasProperty('port') ? project.port : 8080
             }
         }
     }
@@ -83,14 +80,16 @@ subprojects {
         dependsOn composeUpTask
         doFirst {
             def serviceInfo = composeUpTask.servicesInfos.get("alfresco-core")
-            def host = 'localhost'
-            def port = '8080'
             if(serviceInfo != null) {
-                port = serviceInfo.ports[8080]
-                host = serviceInfo.getHost()
+                alfrescoDynamicExtensions {
+                    repository {
+                        endpoint {
+                            host = serviceInfo.getHost()
+                            port = serviceInfo.ports[8080]
+                        }
+                    }
+                }
             }
-            alfrescoDynamicExtensions.repository.endpoint.port = port
-            alfrescoDynamicExtensions.repository.endpoint.host = host
         }
     }
 
