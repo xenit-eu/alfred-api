@@ -4,6 +4,10 @@ import com.github.dynamicextensionsalfresco.webscripts.annotations.Before;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.filefolder.IFileFolderService;
 import eu.xenit.apix.tests.BaseTest;
+import eu.xenit.apix.util.SolrTestHelper;
+import java.util.Properties;
+import javax.sql.DataSource;
+import org.alfresco.repo.management.subsystems.SwitchableApplicationContextFactory;
 import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.ServiceRegistry;
@@ -15,6 +19,7 @@ import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.SearchService;
+import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,11 +93,21 @@ public class FileFolderServiceTest extends BaseTest {
 
     @Test
     public void TestGetDisplayPath() {
+        try {
+            solrHelper.waitForSolrSync();
+        } catch (InterruptedException e) {
+            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+        }
         this.cleanUp();
         NodeRef companyHomeNodeRef = this.getNodeAtPath("/app:company_home");
 
         FileInfo mainTestFolder = this.createMainTestFolder(companyHomeNodeRef);
         FileInfo testNode = this.createTestNode(mainTestFolder.getNodeRef(), "testnode");
+        try {
+            solrHelper.waitForSolrSync();
+        } catch (InterruptedException e) {
+            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+        }
         String displayPath = this.service.getPath(c.apix(testNode.getNodeRef())).getDisplayPath();
         logger.debug("DisplayPath: " + displayPath);
         assertNotNull(displayPath);
@@ -101,11 +116,21 @@ public class FileFolderServiceTest extends BaseTest {
 
     @Test
     public void TestGetQNamePath() {
-        this.cleanUp();
+        try {
+            solrHelper.waitForSolrSync();
+        } catch (InterruptedException e) {
+            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+        }
         NodeRef companyHomeNodeRef = this.getNodeAtPath("/app:company_home");
+        this.cleanUp();
 
         FileInfo mainTestFolder = this.createMainTestFolder(companyHomeNodeRef);
         FileInfo testNode = this.createTestNode(mainTestFolder.getNodeRef(), "testnode");
+        try {
+            solrHelper.waitForSolrSync();
+        } catch (InterruptedException e) {
+            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+        }
         String qNamePath = this.service.getPath(c.apix(testNode.getNodeRef())).getQnamePath();
         logger.debug("QNamePath: " + qNamePath);
         assertNotNull(qNamePath);

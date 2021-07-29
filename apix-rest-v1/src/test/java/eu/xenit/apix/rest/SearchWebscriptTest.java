@@ -1,7 +1,6 @@
 package eu.xenit.apix.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.xenit.apix.integrationtesting.runner.ApixIntegration;
 import eu.xenit.apix.search.SearchQuery;
 import eu.xenit.apix.search.json.SearchNodeJsonParser;
 import java.io.ByteArrayInputStream;
@@ -10,12 +9,10 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * Created by jasper on 04/04/17.
  */
-@RunWith(ApixIntegration.class)
 
 public class SearchWebscriptTest {
 

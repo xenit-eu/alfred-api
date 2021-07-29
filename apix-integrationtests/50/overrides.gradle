@@ -1,5 +1,0 @@
-ext {
-    subproject_alfresco_version = "50"
-    alfresco_version = alfresco_50_version
-    alfresco_dm_version = alfresco_50_dm_version
-}

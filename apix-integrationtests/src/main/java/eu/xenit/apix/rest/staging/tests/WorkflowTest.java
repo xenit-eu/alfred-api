@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class WorkflowTest extends BaseTest {
+public class WorkflowTest extends StagingBaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(WorkflowTest.class);
     private final List<WorkflowPath> wfPaths = new ArrayList<>();

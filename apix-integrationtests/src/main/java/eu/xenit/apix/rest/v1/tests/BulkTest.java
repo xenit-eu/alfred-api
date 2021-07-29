@@ -38,7 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Created by kenneth on 18.03.16.
  */
-public class BulkTest extends BaseTest {
+public abstract class BulkTest extends RestV1BaseTest {
 
     public static final String AUTHENTICATION_IN_URL = "alf_ticket=";
     private final static Logger logger = LoggerFactory.getLogger(BulkTest.class);
@@ -52,6 +52,10 @@ public class BulkTest extends BaseTest {
     @Autowired
     ServiceRegistry serviceRegistry;
 
+    private String jsonObjectGetStringFromInt(JSONObject targetObject, String key) {
+        return String.valueOf(targetObject.getInt(key));
+    }
+
     @Before
     public void setup() {
         alfrescoNodeService = serviceRegistry.getNodeService();
@@ -64,7 +68,7 @@ public class BulkTest extends BaseTest {
     public void testGetBulk() throws IOException, JSONException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
         List<ChildParentAssociation> parentAssociations = this.nodeService
-                .getParentAssociations(initializedNodeRefs.get(BaseTest.TESTFILE_NAME));
+                .getParentAssociations(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME));
         final ChildParentAssociation primaryParentAssoc = parentAssociations.get(0);
         assertTrue(primaryParentAssoc.isPrimary());
         NodeRef parentRef = primaryParentAssoc.getTarget();
@@ -75,7 +79,7 @@ public class BulkTest extends BaseTest {
         HttpPost httpPost = new HttpPost(url);
 
         String firstGetUrl = removePrefixAndAuthenticate(
-                makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/metadata", "admin", "admin"));
+                makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/metadata", "admin", "admin"));
         String secondGetUrl = removePrefixAndAuthenticate(makeNodesUrl(parentRef, "/metadata", "admin", "admin"));
         httpPost.setEntity(new StringEntity(json(String
                 .format("[{'url':'%s','method':'%s'},{'url':'%s','method':'%s'}]", firstGetUrl, "get", secondGetUrl,
@@ -89,10 +93,10 @@ public class BulkTest extends BaseTest {
             logger.info(" json object 1: " + jsonArray.get(1));
             JSONObject jsonObject0 = (JSONObject) jsonArray.get(0);
             JSONObject jsonObject1 = (JSONObject) jsonArray.get(1);
-            logger.info(" statusCode object 0: " + jsonObject0.getString("statusCode"));
-            logger.info(" statusCode object 1: " + jsonObject1.getString("statusCode"));
-            assertEquals("200", jsonObject0.getString("statusCode"));
-            assertEquals("200", jsonObject1.getString("statusCode"));
+            logger.info(" statusCode object 0: " + jsonObjectGetStringFromInt(jsonObject0, "statusCode"));
+            logger.info(" statusCode object 1: " + jsonObjectGetStringFromInt(jsonObject1, "statusCode"));
+            assertEquals("200", jsonObjectGetStringFromInt(jsonObject0, "statusCode"));
+            assertEquals("200", jsonObjectGetStringFromInt(jsonObject1, "statusCode"));
         }
     }
 
@@ -100,7 +104,7 @@ public class BulkTest extends BaseTest {
     public void testUrlEncode() throws IOException, JSONException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
         List<ChildParentAssociation> parentAssociations = this.nodeService
-                .getParentAssociations(initializedNodeRefs.get(BaseTest.TESTFILE_NAME));
+                .getParentAssociations(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME));
         final ChildParentAssociation primaryParentAssoc = parentAssociations.get(0);
         assertTrue(primaryParentAssoc.isPrimary());
         NodeRef parentRef = primaryParentAssoc.getTarget();
@@ -127,12 +131,12 @@ public class BulkTest extends BaseTest {
             JSONObject jsonObject0 = (JSONObject) jsonArray.get(0);
             JSONObject jsonObject1 = (JSONObject) jsonArray.get(1);
             JSONObject jsonObject2 = (JSONObject) jsonArray.get(2);
-            logger.info(" statusCode object 0: " + jsonObject0.getString("statusCode"));
-            logger.info(" statusCode object 1: " + jsonObject1.getString("statusCode"));
-            logger.info(" statusCode object 2: " + jsonObject2.getString("statusCode"));
-            assertEquals("200", jsonObject0.getString("statusCode"));
-            assertEquals("200", jsonObject1.getString("statusCode"));
-            assertEquals("200", jsonObject2.getString("statusCode"));
+            logger.info(" statusCode object 0: " + jsonObjectGetStringFromInt(jsonObject0, "statusCode"));
+            logger.info(" statusCode object 1: " + jsonObjectGetStringFromInt(jsonObject1, "statusCode"));
+            logger.info(" statusCode object 2: " + jsonObjectGetStringFromInt(jsonObject2, "statusCode"));
+            assertEquals("200", jsonObjectGetStringFromInt(jsonObject0, "statusCode"));
+            assertEquals("200", jsonObjectGetStringFromInt(jsonObject1, "statusCode"));
+            assertEquals("200", jsonObjectGetStringFromInt(jsonObject2, "statusCode"));
         }
     }
 
@@ -146,7 +150,7 @@ public class BulkTest extends BaseTest {
     public void testPostBulk() throws IOException {
         final HashMap<String, NodeRef> initializedNodeRefs = init();
         List<ChildParentAssociation> parentAssociations = this.nodeService
-                .getParentAssociations(initializedNodeRefs.get(BaseTest.TESTFILE_NAME));
+                .getParentAssociations(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME));
         final ChildParentAssociation primaryParentAssoc = (ChildParentAssociation) parentAssociations.get(0);
         assertTrue(primaryParentAssoc.isPrimary());
         final NodeRef parentRef = primaryParentAssoc.getTarget();
@@ -156,7 +160,7 @@ public class BulkTest extends BaseTest {
         final CloseableHttpClient httpclient = HttpClients.createDefault();
         final HttpPost httpPost = new HttpPost(url);
         String firstPostUrl = removePrefixAndAuthenticate(
-                makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/metadata", "admin", "admin"));
+                makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/metadata", "admin", "admin"));
         String secondPostUrl = removePrefixAndAuthenticate(makeNodesUrl(parentRef, "/metadata", "admin", "admin"));
         String firstJsonBody = String.format("{'aspectsToAdd':['%s']}", ContentModel.ASPECT_VERSIONABLE.toString());
         String secondJsonBody = String.format("{'aspectsToAdd':['%s']}", ContentModel.ASPECT_VERSIONABLE.toString());
@@ -176,7 +180,7 @@ public class BulkTest extends BaseTest {
                             assertEquals(200, response.getStatusLine().getStatusCode());
                             assertTrue(alfrescoNodeService
                                     .hasAspect(new org.alfresco.service.cmr.repository.NodeRef(
-                                                    initializedNodeRefs.get(BaseTest.TESTFILE_NAME).getValue()),
+                                                    initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getValue()),
                                             ContentModel.ASPECT_VERSIONABLE));
                             assertTrue(alfrescoNodeService
                                     .hasAspect(new org.alfresco.service.cmr.repository.NodeRef(parentRef.getValue()),
@@ -187,9 +191,9 @@ public class BulkTest extends BaseTest {
                 }, false, true);
 
         firstPostUrl = removePrefixAndAuthenticate(
-                makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE2_NAME), "/metadata", "admin", "admin"));
+                makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME), "/metadata", "admin", "admin"));
         secondPostUrl = removePrefixAndAuthenticate(
-                makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE2_NAME), "/metadata", "admin", "admin"));
+                makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME), "/metadata", "admin", "admin"));
 
         firstJsonBody = String.format("{'propertiesToSet':{'%s':['newName']}}", ContentModel.PROP_NAME.toString());
         jsonString = json(String.format("[{'url':'%s','method':'%s','body':%s}]",
@@ -206,7 +210,7 @@ public class BulkTest extends BaseTest {
                             assertEquals(200, response.getStatusLine().getStatusCode());
                             assertEquals("newName", alfrescoNodeService
                                     .getProperty(new org.alfresco.service.cmr.repository.NodeRef(
-                                                    initializedNodeRefs.get(BaseTest.TESTFILE2_NAME).getValue()),
+                                                    initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME).getValue()),
                                             ContentModel.PROP_NAME));
                         }
                         return null;
@@ -228,7 +232,7 @@ public class BulkTest extends BaseTest {
                             assertEquals(200, response.getStatusLine().getStatusCode());
                             assertNotEquals("newName", alfrescoNodeService
                                     .getProperty(new org.alfresco.service.cmr.repository.NodeRef(
-                                                    initializedNodeRefs.get(BaseTest.TESTFILE3_NAME).getValue()),
+                                                    initializedNodeRefs.get(RestV1BaseTest.TESTFILE3_NAME).getValue()),
                                             ContentModel.PROP_NAME));
                         }
                         return null;
@@ -241,11 +245,11 @@ public class BulkTest extends BaseTest {
     public void testSubError() throws IOException {
         final HashMap<String, NodeRef> initializedNodeRefs = init();
         final String firstUrlForRename = removePrefixAndAuthenticate(
-                makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/metadata", "admin", "admin"));
+                makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/metadata", "admin", "admin"));
         final String secondUrlForError = removePrefixAndAuthenticate(
                 makeNodesUrl("c03be21a-ebfc-4486-a98a-0d3cae2c40ca", "/metadata", "admin", "admin"));
         final String thirdUrlForRename = removePrefixAndAuthenticate(
-                makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE2_NAME), "/metadata", "admin", "admin"));
+                makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME), "/metadata", "admin", "admin"));
         final String firstPostBody = String
                 .format("{'propertiesToSet':{'%s':['testName1']}}", ContentModel.PROP_NAME.toString());
         final String secndPostBody = String
@@ -277,7 +281,7 @@ public class BulkTest extends BaseTest {
         HashMap<String, NodeRef> initializedNodeRefs = init();
 
         List<ChildParentAssociation> parentAssociations = this.nodeService
-                .getParentAssociations(initializedNodeRefs.get(BaseTest.TESTFILE_NAME));
+                .getParentAssociations(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME));
         ChildParentAssociation primaryParentAssoc = (ChildParentAssociation) parentAssociations.get(0);
         NodeRef folderRef = primaryParentAssoc.getTarget();
 
@@ -293,7 +297,7 @@ public class BulkTest extends BaseTest {
         final CloseableHttpClient httpclient = HttpClients.createDefault();
         final HttpPost httpPost = new HttpPost(url);
         String firstPutUrl = removePrefixAndAuthenticate(
-                makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "/parent", "admin", "admin"));
+                makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/parent", "admin", "admin"));
         String firstJsonBody = String.format("{'parent':'%s'}", mainFolderRef);
         String jsonString = json(
                 String.format("[{'url':'%s', 'method':'%s', 'body':%s}]", firstPutUrl, "put", firstJsonBody));
@@ -319,7 +323,7 @@ public class BulkTest extends BaseTest {
         final HashMap<String, NodeRef> initializedNodeRefs = init();
 
         List<ChildParentAssociation> parentAssociations = this.nodeService
-                .getParentAssociations(initializedNodeRefs.get(BaseTest.TESTFILE2_NAME));
+                .getParentAssociations(initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME));
         ChildParentAssociation primaryParentAssoc = (ChildParentAssociation) parentAssociations.get(0);
         final NodeRef folderRef = primaryParentAssoc.getTarget();
 
@@ -331,7 +335,7 @@ public class BulkTest extends BaseTest {
         final CloseableHttpClient httpclient = HttpClients.createDefault();
         final HttpPost httpPost = new HttpPost(url);
         String firstDeleteUrl = removePrefixAndAuthenticate(
-                makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE2_NAME), "admin", "admin"));
+                makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME), "admin", "admin"));
         String jsonString = json(String.format("[{'url':'%s', 'method':'%s'}]", firstDeleteUrl, "delete"));
         httpPost.setEntity(new StringEntity(jsonString));
 
@@ -348,7 +352,7 @@ public class BulkTest extends BaseTest {
                     }
                 }, false, true);
         String secondDeleteUrl = removePrefixAndAuthenticate(
-                makeNodesUrl(initializedNodeRefs.get(BaseTest.TESTFILE_NAME), "?permanently=true", "admin",
+                makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "?permanently=true", "admin",
                         "admin"));
         jsonString = json(String.format("[{'url':'%s', 'method':'%s', 'body':{}}]", secondDeleteUrl, "delete"));
         final HttpPost httpPost2 = new HttpPost(url);
@@ -363,7 +367,7 @@ public class BulkTest extends BaseTest {
                             assertEquals(200, response.getStatusLine().getStatusCode());
                             assertFalse(alfrescoNodeService
                                     .exists(new org.alfresco.service.cmr.repository.NodeRef(
-                                            initializedNodeRefs.get(BaseTest.TESTFILE_NAME).getValue())));
+                                            initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getValue())));
                         }
                         return null;
                     }

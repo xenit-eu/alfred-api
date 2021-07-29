@@ -1,18 +1,25 @@
 package eu.xenit.apix.alfresco.search;
 
+import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.alfresco.dictionary.PropertyService;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.search.FacetSearchResult;
+import eu.xenit.apix.search.Highlights;
+import eu.xenit.apix.search.Highlights.HighlightResult;
 import eu.xenit.apix.search.ISearchService;
 import eu.xenit.apix.search.SearchQuery;
+import eu.xenit.apix.search.SearchQuery.HighlightOptions;
 import eu.xenit.apix.search.SearchQueryConsistency;
 import eu.xenit.apix.search.SearchQueryResult;
 import eu.xenit.apix.utils.java8.Optional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.alfresco.service.cmr.repository.StoreRef;
+import org.alfresco.service.cmr.search.FieldHighlightParameters;
+import org.alfresco.service.cmr.search.GeneralHighlightParameters;
 import org.alfresco.service.cmr.search.QueryConsistency;
 import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.ResultSetRow;
@@ -21,8 +28,11 @@ import org.alfresco.service.cmr.search.SearchParameters.SortDefinition;
 import org.alfresco.service.cmr.search.SearchParameters.SortDefinition.SortType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-
+@Service("eu.xenit.apix.search.SearchService")
+@OsgiService
 public class SearchService implements ISearchService {
 
     public static final int MAX_ITEMS_DEFAULT = 1000;
@@ -32,6 +42,7 @@ public class SearchService implements ISearchService {
     protected org.alfresco.service.cmr.search.SearchService searchService;
     protected PropertyService propertyService;
 
+    @Autowired
     public SearchService(org.alfresco.service.cmr.search.SearchService searchService, SearchFacetsService facetService,
             ApixToAlfrescoConversion apixToAlfrescoConversion, PropertyService propertyService) {
         this.searchService = searchService;
@@ -148,6 +159,46 @@ public class SearchService implements ISearchService {
         if (postQuery.getLocale() != null) {
             searchParameters.addLocale(postQuery.getLocale());
         }
+        /*
+         * Dont set highlights if there is no searchTerm and the query length surpasses the cap.
+         * The cap on the querylength is set at 600 characters to have a generous margin on the query, but also maintain
+         * a reasonable margin for other query parameters.
+         *
+         * We do this because the alfresco/solr implementation of highlights, which takes the searchTerms or search query
+         * and adds it in the querystring of the request between alfresco and solr.
+         * This breaks when:
+         * There are no searchTerms in the query; Alfresco does not set these, and apix does not yet support these.
+         * AND
+         * The query is too long; if there are no searchTerms given, alfresco will instead use the full search query to
+         * add to the querystring. For long queries this might violate the url parameter length restriction (around 2000
+         *  chars. See appropriate RFC for exact number.) and trigger a 400 response in the solr.
+         *
+         * This might be fixable by learning how the searchTerms are supposed to work (but these are largely undocumented.
+         * Best lead: solr docs on hl.q) and supplying these.
+         * Or we could suggest to alfresco (and solr?) development to pass these params in the request body.
+         * */
+        String searchTerm = searchParameters.getSearchTerm();
+        if ((searchTerm == null || searchTerm.isEmpty()) && searchParameters.getQuery().length() > 600) {
+            return searchParameters;
+        }
+
+        // Extend the parameters with highlights, if they were defined + convert them to Alfresco's internal format
+        if (postQuery.getHighlight() != null) {
+            HighlightOptions options = postQuery.getHighlight();
+            GeneralHighlightParameters highlightParameters = new GeneralHighlightParameters(
+                    options.getSnippetCount(),
+                    options.getFragmentSize(),
+                    options.getMergeContiguous(),
+                    options.getPrefix(),
+                    options.getPostfix(),
+                    options.getMaxAnalyzedCharacters(),
+                    options.getUsePhraseHighlighter(),
+                    options.getFields().stream()
+                            .map(f -> new FieldHighlightParameters(f.field, f.snippetCount, f.fragmentSize,
+                                    f.mergeContinuous, f.prefix, f.suffix)).collect(Collectors.toList()));
+
+            searchParameters.setHighlight(highlightParameters);
+        }
         return searchParameters;
     }
 
@@ -199,6 +250,16 @@ public class SearchService implements ISearchService {
         List<FacetSearchResult> facetResults = facetService
                 .getFacetResults(postQuery.getFacets(), rs, searchParameters);
         results.setFacets(facetResults);
+
+        // Also store term hit highlights in output-model (if present)
+        Map<String, List<HighlightResult>> highlightResults = rs.getHighlighting().entrySet().stream()
+                .collect(Collectors.toMap(
+                        e -> e.getKey().toString(),
+                        e -> e.getValue().stream()
+                                .map(p -> new HighlightResult(p.getFirst(), p.getSecond()))
+                                .collect(Collectors.toList())
+                ));
+        results.setHighlights(new Highlights(highlightResults));
 
         return results;
     }

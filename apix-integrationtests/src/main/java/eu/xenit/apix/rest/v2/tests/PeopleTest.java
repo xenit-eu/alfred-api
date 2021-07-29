@@ -9,7 +9,7 @@ import org.apache.http.util.EntityUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class PeopleTest extends BaseTest {
+public class PeopleTest extends RestV2BaseTest {
 
     @Test
     public void testGetSelf() throws IOException {

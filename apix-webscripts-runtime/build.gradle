@@ -1,9 +1,0 @@
-dependencies {
-    compile group: 'org.springframework', name: 'spring-beans', version: '3.2.10.RELEASE'
-    compile(group: 'org.springframework.extensions.surf', name: 'spring-webscripts', version: '5.0.d')
-    compile(group: 'com.github.dynamicextensionsalfresco', name: 'annotations', version: '1.4.0')
-    compile(group: 'org.springframework', name: 'spring-core', version: '3.2.10.RELEASE')
-
-    testCompile group: 'org.springframework', name: 'spring-test', version: '3.2.10.RELEASE'
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.25.1'
-}

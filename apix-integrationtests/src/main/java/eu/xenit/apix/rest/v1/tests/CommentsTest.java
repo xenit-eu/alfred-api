@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class CommentsTest extends BaseTest {
+public class CommentsTest extends RestV1BaseTest {
     private static final Logger log = LoggerFactory.getLogger(CommentsTest.class);
 
     private static final String commentTitle = "commentTitle";
@@ -80,7 +80,7 @@ public class CommentsTest extends BaseTest {
     @Test
     public void testGetComments() throws IOException, URISyntaxException {
         HashMap<String, NodeRef> initializedRefs = init();
-        String url = makeNodesUrl(initializedRefs.get(BaseTest.TESTFILE_NAME), "/comments", "admin", "admin");
+        String url = makeNodesUrl(initializedRefs.get(RestV1BaseTest.TESTFILE_NAME), "/comments", "admin", "admin");
         URIBuilder builder = new URIBuilder(url);
         builder.addParameter(PAGESIZE, "10");
         builder.addParameter(SKIPCOUNT,"0");
@@ -189,8 +189,8 @@ public class CommentsTest extends BaseTest {
     @Test
     public void testGetCommentsAccessDenied() throws IOException, URISyntaxException {
         HashMap<String, NodeRef> initializedRefs = init();
-        String url = makeNodesUrl(initializedRefs.get(BaseTest.NOUSERRIGHTS_FILE_NAME), "/comments", BaseTest.USERWITHOUTRIGHTS,
-                BaseTest.USERWITHOUTRIGHTS);
+        String url = makeNodesUrl(initializedRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/comments", RestV1BaseTest.USERWITHOUTRIGHTS,
+                RestV1BaseTest.USERWITHOUTRIGHTS);
         URIBuilder builder = new URIBuilder(url);
         builder.addParameter(PAGESIZE, "10");
         builder.addParameter(SKIPCOUNT,"0");
@@ -212,7 +212,7 @@ public class CommentsTest extends BaseTest {
     @Test
     public void testAppendComments() throws IOException {
         HashMap<String, NodeRef> initializedRefs = init();
-        String url = makeNodesUrl(initializedRefs.get(BaseTest.TESTFILE_NAME), "/comments", "admin", "admin");
+        String url = makeNodesUrl(initializedRefs.get(RestV1BaseTest.TESTFILE_NAME), "/comments", "admin", "admin");
 
         HttpPost req = new HttpPost(url);
         String checkoutJsonString = "{ \"content\" : \"new content\" }";

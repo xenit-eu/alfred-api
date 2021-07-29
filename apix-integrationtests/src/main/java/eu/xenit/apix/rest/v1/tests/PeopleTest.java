@@ -30,7 +30,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 /**
  * Created by Jasperhilven on 25-Oct-16.
  */
-public class PeopleTest extends BaseTest {
+public class PeopleTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(VersionHistoryTest.class);
     @Autowired

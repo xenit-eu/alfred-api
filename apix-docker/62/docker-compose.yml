@@ -13,7 +13,7 @@ services:
     - TERM=xterm
 
   solr:
-    image: hub.xenit.eu/alfresco-enterprise/alfresco-solr6:1.4.0
+    image: hub.xenit.eu/alfresco-enterprise/alfresco-solr6:2.0.1
     restart: unless-stopped
     environment:
     - ALFRESCO_HOST=alfresco-core

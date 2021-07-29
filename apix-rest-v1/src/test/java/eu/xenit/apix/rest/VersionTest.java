@@ -1,5 +1,7 @@
 package eu.xenit.apix.rest;
 
+import static org.junit.Assert.assertEquals;
+
 import eu.xenit.apix.version.VersionDescription;
 import org.junit.Test;
 

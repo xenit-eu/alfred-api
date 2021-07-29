@@ -20,9 +20,8 @@ def includeResource(configuration) {
 def getVersionQualifier(String branch_name) {
     if(branch_name.startsWith('release'))
         return ''
-    if(branch_name == 'master')
-        return '-SNAPSHOT'
-    return '-' + branch_name + '-SNAPSHOT'
+    //Osgi in 5x accepts - in qualifier, 6x does not. Suggest removing branch section from snapshot qualifiers all together.
+    return '.SNAPSHOT'
 }
 
 buildscript {
@@ -31,18 +30,15 @@ buildscript {
         maven {
             url "https://maven.alfresco.com/nexus/content/groups/public"
         }
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
     }
 }
 
 ext {
-    versionWithoutQualifier = '2.7.1'
+    versionWithoutQualifier = '2.7.2'
 
-    jackson_version = '2.6.3'
+    jackson_version = '2.8.3'
     swagger_version = "1.5.7"
-    de_version = "2.0.5"
+    de_version = "2.1.0"
 
     http_core_version = "4.3.3"
     http_version = "4.3.4"
@@ -53,6 +49,7 @@ ext {
     alfresco_60_version = "6.0"
     alfresco_61_version = "6.1"
     alfresco_62_version = "6.2"
+    alfresco_70_version = "7.0"
 
     // The introduction of hit highlights in search 52 required general versions bump to 5.2.f
     // Additionally, an explicit dependency on the data-model was required, however
@@ -64,6 +61,7 @@ ext {
     alfresco_60_dm_version = "8.9"
     alfresco_61_dm_version = "8.25.1"
     alfresco_62_dm_version = "8.50.18"
+    alfresco_70_dm_version = "8.424"
 
     care4alfVersion = '2.3.0'
 }

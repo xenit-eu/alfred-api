@@ -6,6 +6,7 @@ services:
     environment:
       - DEBUG=true
       - SHARE_HOST=alfresco-share
+      - LOG4J_logger.eu.xenit.apix.util.SolrTestHelper=DEBUG
   alfresco-share:
     image: hub.xenit.eu/alfresco-enterprise/alfresco-share-enterprise:5.2
     ports:

@@ -42,24 +42,20 @@ node {
             // Execute  before the integration testing so we can catch potential errors early
             sh "${gradleCommand} :apix-interface:build :apix-interface:javadoc"
         }
-
-        stage("Build 50") {
-            BuildVersionX("50")
-        }
-        stage("Build 51") {
-            BuildVersionX("51")
+        stage("Unit test apix-rest-v1") {
+            sh "${gradleCommand} :apix-rest-v1:test"
         }
         stage("Build 52") {
             BuildVersionX("52")
-        }
-        stage("Build 60") {
-            BuildVersionX("60")
         }
         stage("Build 61") {
             BuildVersionX("61")
         }
         stage("Build 62") {
             BuildVersionX("62")
+        }
+        stage("Build 70") {
+            BuildVersionX("70")
         }
         
         stage("Publishing") {

@@ -33,7 +33,6 @@ import org.alfresco.service.cmr.lock.LockStatus;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
-import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.ContentReader;
@@ -416,9 +415,9 @@ public class NodeService implements INodeService {
                 .stream()
                 .map(alfPeerAssoc ->
                         new NodeAssociation(
-                            c.apix(alfPeerAssoc.getSourceRef()),
-                            ref,
-                            c.apix(alfPeerAssoc.getTypeQName())))
+                                c.apix(alfPeerAssoc.getSourceRef()),
+                                ref,
+                                c.apix(alfPeerAssoc.getTypeQName())))
                 .collect(Collectors.toList());
     }
 
@@ -610,6 +609,18 @@ public class NodeService implements INodeService {
 
         return c.apix(result.getChildRef());
 
+    }
+
+    @Override
+    public eu.xenit.apix.data.NodeRef createNode(eu.xenit.apix.data.NodeRef parent, String fileName,
+            String contentType, MetadataChanges metadata, InputStream content) {
+        eu.xenit.apix.data.NodeRef resultNode = createNode(parent, fileName, new eu.xenit.apix.data.QName(contentType));
+        setContent(resultNode, content, fileName);
+        if (metadata != null) {
+            setMetadata(resultNode, metadata);
+        }
+        extractMetadata(resultNode);
+        return resultNode;
     }
 
     @Override
