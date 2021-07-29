@@ -48,9 +48,6 @@ node {
         stage("Build 52") {
             BuildVersionX("52")
         }
-        stage("Build 60") {
-            BuildVersionX("60")
-        }
         stage("Build 61") {
             BuildVersionX("61")
         }
