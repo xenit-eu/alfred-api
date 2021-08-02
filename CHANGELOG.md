@@ -1,5 +1,17 @@
 # Alfred API - Changelog
 
+
+## 3.0.1 (Unreleased)
+
+### Added
+
+### Changed
+
+### Deleted
+
+### Fixed
+
+
 ## 3.0.0 (2021-07-29)
 This release adds support for Alfresco 7.0 and drops support for Alfresco 5.0, 5.1 and 6.0.
 
