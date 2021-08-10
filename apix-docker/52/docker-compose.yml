@@ -10,6 +10,7 @@ services:
     restart: unless-stopped
     environment:
     - SOLR_HOST=solr
+    - Transformers.autoStart=true
 
   solr:
     image: hub.xenit.eu/alfresco-enterprise/alfresco-solr6:1.2.0

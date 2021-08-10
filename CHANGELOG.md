@@ -10,6 +10,7 @@
 ### Deleted
 
 ### Fixed
+* [ALFREDAPI-489](https://xenitsupport.jira.com/browse/ALFREDAPI-489): start transformation subsystem at startup of integration tests.
 
 
 ## 3.0.0 (2021-07-29)

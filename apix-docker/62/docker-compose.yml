@@ -11,6 +11,7 @@ services:
     environment:
     - SOLR_HOST=solr
     - TERM=xterm
+    - Transformers.autoStart=true
 
   solr:
     image: hub.xenit.eu/alfresco-enterprise/alfresco-solr6:2.0.1
