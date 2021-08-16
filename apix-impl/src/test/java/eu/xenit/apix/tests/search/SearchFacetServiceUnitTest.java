@@ -5,7 +5,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
 
 import eu.xenit.apix.alfresco.search.SearchFacetsService;
 import eu.xenit.apix.alfresco.search.SearchFacetsServiceImpl;
@@ -16,10 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import eu.xenit.apix.translation.ITranslationService;
 import org.alfresco.repo.dictionary.constraint.ListOfValuesConstraint;
 import org.alfresco.repo.search.impl.solr.facet.SolrFacetHelper;
-import org.alfresco.repo.search.impl.solr.facet.SolrFacetService;
 import org.alfresco.repo.search.impl.solr.facet.handler.FacetLabelDisplayHandlerRegistry;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.dictionary.ConstraintDefinition;
@@ -33,6 +30,7 @@ import org.alfresco.service.cmr.search.SearchParameters.FieldFacet;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.Pair;
 import org.junit.Test;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class SearchFacetServiceUnitTest {
@@ -48,12 +46,9 @@ public class SearchFacetServiceUnitTest {
         ServiceRegistry serviceRegistryMock = mock(ServiceRegistry.class);
 
         SolrFacetHelper solrFacetHelperMock = mock(SolrFacetHelper.class);
-        when(serviceRegistryMock.getSolrFacetHelper()).thenReturn(solrFacetHelperMock);
 
         FacetLabelDisplayHandlerRegistry facetLabelDisplayHandlerRegistryStub =
                 new FacetLabelDisplayHandlerRegistry();
-        when(serviceRegistryMock.getFacetLabelDisplayHandlerRegistry())
-                .thenReturn(facetLabelDisplayHandlerRegistryStub);
 
         DataTypeDefinition textDataTypeDef = mock(DataTypeDefinition.class);
         when(textDataTypeDef.getName()).thenReturn(DataTypeDefinition.TEXT);
@@ -97,6 +92,8 @@ public class SearchFacetServiceUnitTest {
         when(serviceRegistryMock.getDictionaryService()).thenReturn(dictionaryServiceMock);
 
         searchFacetsService = new SearchFacetsServiceImpl(serviceRegistryMock);
+        ((SearchFacetsServiceImpl) searchFacetsService).setSolrFacetHelper(solrFacetHelperMock);
+        ((SearchFacetsServiceImpl) searchFacetsService).setFacetLabelDisplayHandlerRegistry(facetLabelDisplayHandlerRegistryStub);
 
         facetOptionsMock = mock(FacetOptions.class);
         when(facetOptionsMock.isEnabled()).thenReturn(true);

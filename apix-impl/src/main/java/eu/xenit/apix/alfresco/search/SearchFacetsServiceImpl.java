@@ -86,6 +86,23 @@ public class SearchFacetsServiceImpl implements SearchFacetsService, BeanFactory
         facetLabelDisplayHandlerRegistry = (FacetLabelDisplayHandlerRegistry) beanFactory.getBean(facetLabelDisplayHandlerRegistryBeanName);
     }
 
+    public FacetLabelDisplayHandlerRegistry getFacetLabelDisplayHandlerRegistry() {
+        return facetLabelDisplayHandlerRegistry;
+    }
+
+    public void setFacetLabelDisplayHandlerRegistry(
+            FacetLabelDisplayHandlerRegistry facetLabelDisplayHandlerRegistry) {
+        this.facetLabelDisplayHandlerRegistry = facetLabelDisplayHandlerRegistry;
+    }
+
+    public SolrFacetHelper getSolrFacetHelper() {
+        return solrFacetHelper;
+    }
+
+    public void setSolrFacetHelper(SolrFacetHelper solrFacetHelper) {
+        this.solrFacetHelper = solrFacetHelper;
+    }
+
     public List<SolrFacetProperties> filterFacets(SearchQuery.FacetOptions opts, List<SolrFacetProperties> facets) {
         List<SolrFacetProperties> enabledFacets = new ArrayList<>();
         for (SolrFacetProperties facet : facets) {
