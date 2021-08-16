@@ -40,7 +40,7 @@ public class AllNodeInfoTest extends RestV1BaseTest {
     public void testGetAllNodeInfo() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
         String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "admin", "admin");
-        logger.info(" URL: " + url);
+        logger.debug(" URL: " + url);
         for (int i = 0; i < 20; i++) {
             logger.error("For the request of testGetAllNodeInfo");
             logger.error(url);
@@ -48,7 +48,7 @@ public class AllNodeInfoTest extends RestV1BaseTest {
 
         HttpResponse response = Request.Get(url).execute().returnResponse();
         String result = EntityUtils.toString(response.getEntity());
-        logger.info(" Result: " + result);
+        logger.debug(" Result: " + result);
         assertEquals(200, response.getStatusLine().getStatusCode());
     }
 
@@ -125,7 +125,7 @@ public class AllNodeInfoTest extends RestV1BaseTest {
         HashMap<String, NodeRef> initializedNodeRefs = init();
         String url =
                 makeAlfrescoBaseurl(RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS) + "/apix/v1/nodes/nodeInfo";
-        logger.info("url: {}", url);
+        logger.debug("url: {}", url);
         String jsonString = json(
                 "{" +
                         "\"noderefs\": [\"" +

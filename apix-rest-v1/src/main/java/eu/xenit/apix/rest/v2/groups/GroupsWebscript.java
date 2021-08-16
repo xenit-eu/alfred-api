@@ -90,7 +90,7 @@ public class GroupsWebscript extends ApixV2Webscript {
         // duplicates is going to be cheaper than unnecessarily invoking all of Alfresco's internal safety checking
         List<Person> linkedUsers = personService.GetUsersOfGroup(name, true);
 
-        logger.info("Setting new list of users for {}", name);
+        logger.debug("Setting new list of users for {}", name);
         // error handling, if {name} isn't a group
         if (linkedUsers == null) {
             giveNoGroup404(webScriptResponse, name);
@@ -117,7 +117,7 @@ public class GroupsWebscript extends ApixV2Webscript {
         // duplicates is going to be cheaper than unnecessarily invoking all of Alfresco's internal safety checking
         List<Group> linkedGroups = personService.GetSubgroupsInGroup(name, true);
 
-        logger.info("Setting new list of subgroups for {}", name);
+        logger.debug("Setting new list of subgroups for {}", name);
         // error handling, if {name} isn't a group
         if (linkedGroups == null) {
             giveNoGroup404(webScriptResponse, name);

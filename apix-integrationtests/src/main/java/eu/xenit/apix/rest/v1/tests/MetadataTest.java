@@ -72,10 +72,10 @@ public class MetadataTest extends RestV1BaseTest {
         HashMap<String, NodeRef> initializedNodeRefs = init();
         String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/metadata?alf_ticket=" + authenticationService.getCurrentTicket(),
                 "admin", "admin");
-        logger.info("URL: " + url);
+        logger.debug("URL: " + url);
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
 
-        logger.info(EntityUtils.toString(httpResponse.getEntity()));
+        logger.debug(EntityUtils.toString(httpResponse.getEntity()));
         assertEquals(200, httpResponse.getStatusLine().getStatusCode());
     }
 
@@ -84,10 +84,10 @@ public class MetadataTest extends RestV1BaseTest {
         HashMap<String, NodeRef> initializedNodeRefs = init();
         String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/metadata",
                 RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS);
-        logger.info("URL: " + url);
+        logger.debug("URL: " + url);
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
 
-        logger.info(EntityUtils.toString(httpResponse.getEntity()));
+        logger.debug(EntityUtils.toString(httpResponse.getEntity()));
         assertEquals(403, httpResponse.getStatusLine().getStatusCode());
     }
 
@@ -95,7 +95,7 @@ public class MetadataTest extends RestV1BaseTest {
     public void testMetadataPost() throws IOException, JSONException {
         final HashMap<String, NodeRef> initializedNodeRefs = init();
         String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/metadata", "admin", "admin");
-        logger.info(" URL: " + url);
+        logger.debug(" URL: " + url);
 
         assertFalse(this.nodeService.hasAspect(new org.alfresco.service.cmr.repository.NodeRef(initializedNodeRefs.get(
                 RestV1BaseTest.TESTFILE_NAME).getValue()),
@@ -114,7 +114,7 @@ public class MetadataTest extends RestV1BaseTest {
         final NodeRef testNodeRef;
         try (CloseableHttpResponse response = httpclient.execute(httppost)) {
             String jsonString = EntityUtils.toString(response.getEntity());
-            logger.info(" Result: " + jsonString + " ");
+            logger.debug(" Result: " + jsonString + " ");
             assertEquals(200, response.getStatusLine().getStatusCode());
 
             JSONObject jsonObject = new JSONObject(jsonString);
@@ -140,7 +140,7 @@ public class MetadataTest extends RestV1BaseTest {
     public void testMetadataPostReturnsAccesDenied() throws IOException, JSONException {
         final HashMap<String, NodeRef> initializedNodeRefs = init();
         String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/metadata", RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS);
-        logger.info(" URL: " + url);
+        logger.debug(" URL: " + url);
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httppost = new HttpPost(url);
@@ -155,14 +155,14 @@ public class MetadataTest extends RestV1BaseTest {
 
         try (CloseableHttpResponse response = httpclient.execute(httppost)) {
             String jsonString = EntityUtils.toString(response.getEntity());
-            logger.info(" Result: " + jsonString + " ");
+            logger.debug(" Result: " + jsonString + " ");
             assertEquals(403, response.getStatusLine().getStatusCode());
         }
     }
 
     private String getUrl(NodeRef nodeRef) {
         final String url = makeNodesUrl(nodeRef, "admin", "admin");
-        logger.info(" URL: " + url);
+        logger.debug(" URL: " + url);
         return url;
     }
 
@@ -230,10 +230,10 @@ public class MetadataTest extends RestV1BaseTest {
     public void testMetadataShortGet() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
         String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getGuid(), "/metadata", "admin", "admin");
-        logger.info("URL: " + url);
+        logger.debug("URL: " + url);
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
 
-        logger.info(EntityUtils.toString(httpResponse.getEntity()));
+        logger.debug(EntityUtils.toString(httpResponse.getEntity()));
         assertEquals(200, httpResponse.getStatusLine().getStatusCode());
     }
 
