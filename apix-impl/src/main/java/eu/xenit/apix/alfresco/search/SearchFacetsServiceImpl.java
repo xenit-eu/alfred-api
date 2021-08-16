@@ -38,16 +38,25 @@ import org.alfresco.service.namespace.QName;
 import org.alfresco.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 // Note: To *temporarily* get working syntax highlighting and IDE features in this file: change the root
 // build.gradle to have alfresco_4_version = "5.0.d" rather than "4.2.f". Change it back before committing.
 @Component
-public class SearchFacetsServiceImpl implements SearchFacetsService {
+public class SearchFacetsServiceImpl implements SearchFacetsService, BeanFactoryAware, InitializingBean {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchFacetsServiceImpl.class);
-    private final FacetLabelDisplayHandlerRegistry facetLabelDisplayHandlerRegistry;
+
+    // Beanfactory added to replace alfresco's ServiceRegistry.getFacetLabelDisplayHandlerRegistry
+    // (Due to alfresco planning to remove the class from the public api)
+    private BeanFactory beanFactory;
+
+    private FacetLabelDisplayHandlerRegistry facetLabelDisplayHandlerRegistry;
     private SolrFacetHelper solrFacetHelper;
     private DictionaryService dictionaryService;
     private NodeService nodeService;
@@ -60,10 +69,21 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
     // Intellij can't handle this file being reused in different libs.
     @Autowired
     public SearchFacetsServiceImpl(ServiceRegistry serviceRegistry) {
-        facetLabelDisplayHandlerRegistry = serviceRegistry.getFacetLabelDisplayHandlerRegistry();
-        solrFacetHelper = serviceRegistry.getSolrFacetHelper();
         dictionaryService = serviceRegistry.getDictionaryService();
         nodeService = serviceRegistry.getNodeService();
+    }
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        final String solrFacetHelperBeanName = "facet.solrFacetHelper";
+        solrFacetHelper = (SolrFacetHelper) beanFactory.getBean(solrFacetHelperBeanName);
+        final String facetLabelDisplayHandlerRegistryBeanName = "facet.facetLabelDisplayHandlerRegistry";
+        facetLabelDisplayHandlerRegistry = (FacetLabelDisplayHandlerRegistry) beanFactory.getBean(facetLabelDisplayHandlerRegistryBeanName);
     }
 
     public List<SolrFacetProperties> filterFacets(SearchQuery.FacetOptions opts, List<SolrFacetProperties> facets) {
