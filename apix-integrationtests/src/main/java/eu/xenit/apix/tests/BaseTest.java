@@ -2,6 +2,7 @@ package eu.xenit.apix.tests;
 
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.util.SolrTestHelper;
+import eu.xenit.apix.util.SolrTestHelperImpl;
 import eu.xenit.testing.integrationtesting.runner.AlfrescoTestRunner;
 import eu.xenit.testing.integrationtesting.runner.UseSpringContextOfBundle;
 import java.util.Properties;
@@ -62,7 +63,7 @@ public abstract class BaseTest implements InitializingBean {
     public void afterPropertiesSet() {
         String subsystem = globalProperties.getProperty("index.subsystem.name");
         String solrBaseUrl = subsystem.equals("solr4") ? "/solr4" : "/solr";
-        solrHelper = new SolrTestHelper(solrBaseUrl, dataSource, searchSubSystem);
+        solrHelper = new SolrTestHelperImpl(solrBaseUrl, dataSource, searchSubSystem);
     }
 
     protected NodeRef getNodeAtPath(String path) {
