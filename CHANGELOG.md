@@ -6,6 +6,7 @@
 ### Added
 
 ### Changed
+* [ALFREDAPI-378](https://xenitsupport.jira.com/browse/ALFREDAPI-378): Replace depricated calls to serviceregistry
 
 ### Deleted
 
