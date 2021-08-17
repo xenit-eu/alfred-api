@@ -40,11 +40,6 @@ public class AllNodeInfoTest extends RestV2BaseTest {
         HashMap<String, NodeRef> initializedNodeRefs = init();
         String url = makeNodesUrl(initializedNodeRefs.get(RestV2BaseTest.TESTFILE_NAME), "admin", "admin");
         logger.debug(" URL: " + url);
-        for (int i = 0; i < 20; i++) {
-            logger.error("For the request of testGetAllNodeInfo");
-            logger.error(url);
-        }
-
         HttpResponse response = Request.Get(url).execute().returnResponse();
         String result = EntityUtils.toString(response.getEntity());
         logger.debug(" Result: " + result);
@@ -66,11 +61,11 @@ public class AllNodeInfoTest extends RestV2BaseTest {
                         "\"" +
                         "]}"));
 
-        logger.error("jsonString: " + jsonString);
+        logger.debug("jsonString: " + jsonString);
 
         final CloseableHttpClient httpclient = HttpClients.createDefault();
         final String url = makeAlfrescoBaseurl("admin", "admin") + "/apix/v2/nodes/nodeInfo";
-        logger.error("url: " + url);
+        logger.debug("url: " + url);
         HttpPost httppost = new HttpPost(url);
         httppost.setEntity(new StringEntity(jsonString));
 
@@ -88,7 +83,7 @@ public class AllNodeInfoTest extends RestV2BaseTest {
 
         final CloseableHttpClient httpclient = HttpClients.createDefault();
         final String url = makeAlfrescoBaseurl("admin", "admin") + "/apix/v2/nodes/nodeInfo";
-        logger.error("url: " + url);
+        logger.debug("url: " + url);
         HttpPost httppost = new HttpPost(url);
         httppost.setEntity(new StringEntity(jsonString));
 
@@ -136,7 +131,7 @@ public class AllNodeInfoTest extends RestV2BaseTest {
         final CloseableHttpClient httpclient = HttpClients.createDefault();
         final String url = makeAlfrescoBaseurl(
                 RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS) + "/apix/v1/nodes/nodeInfo";
-        logger.error("url: " + url);
+        logger.debug("url: " + url);
         HttpPost httppost = new HttpPost(url);
         httppost.setEntity(new StringEntity(jsonString));
 
