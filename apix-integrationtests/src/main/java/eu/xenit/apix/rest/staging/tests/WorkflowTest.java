@@ -128,7 +128,7 @@ public class WorkflowTest extends StagingBaseTest {
 
         try (CloseableHttpResponse response = httpclient.execute(httppost)) {
             String jsonString = EntityUtils.toString(response.getEntity());
-            logger.info(" Result: " + jsonString + " ");
+            logger.debug(" Result: " + jsonString + " ");
             assertEquals(200, response.getStatusLine().getStatusCode());
         }
     }
@@ -169,7 +169,7 @@ public class WorkflowTest extends StagingBaseTest {
 
         try (CloseableHttpResponse response = httpclient.execute(httppost)) {
             String jsonString = EntityUtils.toString(response.getEntity());
-            logger.info(" Result: " + jsonString + " ");
+            logger.debug(" Result: " + jsonString + " ");
             assertEquals(200, response.getStatusLine().getStatusCode());
         }
     }

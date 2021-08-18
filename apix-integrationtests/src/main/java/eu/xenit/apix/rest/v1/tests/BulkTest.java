@@ -86,15 +86,15 @@ public abstract class BulkTest extends RestV1BaseTest {
                         "get"))));
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
             String result = EntityUtils.toString(response.getEntity());
-            logger.info(" Result bulk metadata get: " + result);
+            logger.debug(" Result bulk metadata get: " + result);
             assertEquals(200, response.getStatusLine().getStatusCode());
             JSONArray jsonArray = new JSONArray(result);
-            logger.info(" json object 0: " + jsonArray.get(0));
-            logger.info(" json object 1: " + jsonArray.get(1));
+            logger.debug(" json object 0: " + jsonArray.get(0));
+            logger.debug(" json object 1: " + jsonArray.get(1));
             JSONObject jsonObject0 = (JSONObject) jsonArray.get(0);
             JSONObject jsonObject1 = (JSONObject) jsonArray.get(1);
-            logger.info(" statusCode object 0: " + jsonObjectGetStringFromInt(jsonObject0, "statusCode"));
-            logger.info(" statusCode object 1: " + jsonObjectGetStringFromInt(jsonObject1, "statusCode"));
+            logger.debug(" statusCode object 0: " + jsonObjectGetStringFromInt(jsonObject0, "statusCode"));
+            logger.debug(" statusCode object 1: " + jsonObjectGetStringFromInt(jsonObject1, "statusCode"));
             assertEquals("200", jsonObjectGetStringFromInt(jsonObject0, "statusCode"));
             assertEquals("200", jsonObjectGetStringFromInt(jsonObject1, "statusCode"));
         }
@@ -122,18 +122,18 @@ public abstract class BulkTest extends RestV1BaseTest {
                 firstGetUrl, secondGetUrl, thirdGetUrl))));
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
             String result = EntityUtils.toString(response.getEntity());
-            logger.info(" Result bulk metadata get: " + result);
+            logger.debug(" Result bulk metadata get: " + result);
             assertEquals(200, response.getStatusLine().getStatusCode());
             JSONArray jsonArray = new JSONArray(result);
-            logger.info(" json object 0: " + jsonArray.get(0));
-            logger.info(" json object 1: " + jsonArray.get(1));
-            logger.info(" json object 2: " + jsonArray.get(2));
+            logger.debug(" json object 0: " + jsonArray.get(0));
+            logger.debug(" json object 1: " + jsonArray.get(1));
+            logger.debug(" json object 2: " + jsonArray.get(2));
             JSONObject jsonObject0 = (JSONObject) jsonArray.get(0);
             JSONObject jsonObject1 = (JSONObject) jsonArray.get(1);
             JSONObject jsonObject2 = (JSONObject) jsonArray.get(2);
-            logger.info(" statusCode object 0: " + jsonObjectGetStringFromInt(jsonObject0, "statusCode"));
-            logger.info(" statusCode object 1: " + jsonObjectGetStringFromInt(jsonObject1, "statusCode"));
-            logger.info(" statusCode object 2: " + jsonObjectGetStringFromInt(jsonObject2, "statusCode"));
+            logger.debug(" statusCode object 0: " + jsonObjectGetStringFromInt(jsonObject0, "statusCode"));
+            logger.debug(" statusCode object 1: " + jsonObjectGetStringFromInt(jsonObject1, "statusCode"));
+            logger.debug(" statusCode object 2: " + jsonObjectGetStringFromInt(jsonObject2, "statusCode"));
             assertEquals("200", jsonObjectGetStringFromInt(jsonObject0, "statusCode"));
             assertEquals("200", jsonObjectGetStringFromInt(jsonObject1, "statusCode"));
             assertEquals("200", jsonObjectGetStringFromInt(jsonObject2, "statusCode"));
@@ -176,7 +176,7 @@ public abstract class BulkTest extends RestV1BaseTest {
                     public Object execute() throws Throwable {
                         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
                             String result = EntityUtils.toString(response.getEntity());
-                            logger.info(" Result bulk metadata post: " + result);
+                            logger.debug(" Result bulk metadata post: " + result);
                             assertEquals(200, response.getStatusLine().getStatusCode());
                             assertTrue(alfrescoNodeService
                                     .hasAspect(new org.alfresco.service.cmr.repository.NodeRef(
@@ -206,7 +206,7 @@ public abstract class BulkTest extends RestV1BaseTest {
                     public Object execute() throws Throwable {
                         try (CloseableHttpResponse response = httpclient.execute(httpPost2)) {
                             String result = EntityUtils.toString(response.getEntity());
-                            logger.info(" Result bulk metadata post: " + result);
+                            logger.debug(" Result bulk metadata post: " + result);
                             assertEquals(200, response.getStatusLine().getStatusCode());
                             assertEquals("newName", alfrescoNodeService
                                     .getProperty(new org.alfresco.service.cmr.repository.NodeRef(
@@ -228,7 +228,7 @@ public abstract class BulkTest extends RestV1BaseTest {
                     public Object execute() throws Throwable {
                         try (CloseableHttpResponse response = httpclient.execute(httpPost3)) {
                             String result = EntityUtils.toString(response.getEntity());
-                            logger.info(" Result bulk metadata post: " + result);
+                            logger.debug(" Result bulk metadata post: " + result);
                             assertEquals(200, response.getStatusLine().getStatusCode());
                             assertNotEquals("newName", alfrescoNodeService
                                     .getProperty(new org.alfresco.service.cmr.repository.NodeRef(
@@ -363,7 +363,7 @@ public abstract class BulkTest extends RestV1BaseTest {
                     public Object execute() throws Throwable {
                         try (CloseableHttpResponse response = httpclient.execute(httpPost2)) {
                             String result = EntityUtils.toString(response.getEntity());
-                            logger.info(" Result bulk delete post: " + result);
+                            logger.debug(" Result bulk delete post: " + result);
                             assertEquals(200, response.getStatusLine().getStatusCode());
                             assertFalse(alfrescoNodeService
                                     .exists(new org.alfresco.service.cmr.repository.NodeRef(

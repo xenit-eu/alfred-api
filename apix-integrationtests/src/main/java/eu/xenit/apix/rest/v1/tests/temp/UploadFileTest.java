@@ -72,7 +72,7 @@ public class UploadFileTest extends RestV1BaseTest {
     @Test
     public void testUploadFile() throws IOException {
         String url = createUrl(null, null);
-        logger.info(" URL: " + url);
+        logger.debug(" URL: " + url);
         HttpEntity entity = createHttpEntity(parentNodeRef.toString(), LOCAL_TESTFILE_NAME);
         try (CloseableHttpResponse response = doPost(url, entity)) {
             String resultString = EntityUtils.toString(response.getEntity());
@@ -93,7 +93,7 @@ public class UploadFileTest extends RestV1BaseTest {
     @Test
     public void testUploadFileResultsInAccessDenied() throws IOException {
         String url = createUrl(RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS);
-        logger.info(">>>>> URL: " + url);
+        logger.debug(">>>>> URL: " + url);
         HttpEntity entity = createHttpEntity(initNodeRefArray.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME).toString(), LOCAL_TESTFILE_NAME);
         try (CloseableHttpResponse response = doPost(url, entity)) {
             String resultString = EntityUtils.toString(response.getEntity());

@@ -73,7 +73,7 @@ public class MoveNodeTest extends RestV1BaseTest {
                 }, false, true);
 
         final String url = this.makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/parent", "admin", "admin");
-        logger.info(" URL: " + url);
+        logger.debug(" URL: " + url);
 
         doPut(url, null, "{\"parent\":\"%s\"}", mainTestFolder.toString());
 
@@ -97,7 +97,7 @@ public class MoveNodeTest extends RestV1BaseTest {
         final NodeRef mainTestFolder = primaryParentAssocTestFolder.getTarget();
 
         final String url = this.makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/parent", RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS);
-        logger.info(" URL: " + url);
+        logger.debug(" URL: " + url);
         final CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPut httpPut = new HttpPut(url);
         httpPut.setEntity(new StringEntity(String.format("{\"parent\":\"%s\"}", mainTestFolder.toString())));

@@ -192,7 +192,7 @@ abstract public class SearchServiceTest extends BaseTest {
                         query.setQuery(node);
                         SearchQueryResult result = searchService.query(query);
 
-                        logger.info("Total: " + result.getTotalResultCount());
+                        logger.debug("Total: " + result.getTotalResultCount());
                         Assert.assertEquals(2, result.getTotalResultCount());
                         return null;
                     }
