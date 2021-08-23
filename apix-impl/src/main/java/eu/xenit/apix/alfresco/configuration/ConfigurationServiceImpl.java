@@ -17,7 +17,6 @@ import eu.xenit.apix.filefolder.IFileFolderService;
 import eu.xenit.apix.node.ChildParentAssociation;
 import eu.xenit.apix.node.INodeService;
 import eu.xenit.apix.node.NodeMetadata;
-import eu.xenit.apix.rest.v1.configuration.ConfigurationWebscript1;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.rest.framework.core.exceptions.InvalidArgumentException;
 import org.slf4j.Logger;
@@ -44,7 +43,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     private static final String QNAME_FOLDER = TYPE_FOLDER.toString();
     private static final QName QNAME_NAME = new QName(PROP_NAME.toString());
-    Logger logger = LoggerFactory.getLogger(ConfigurationWebscript1.class);
+    Logger logger = LoggerFactory.getLogger(ConfigurationServiceImpl.class);
 
     @Autowired
     IFileFolderService fileFolderService;
