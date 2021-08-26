@@ -92,7 +92,7 @@ public class SearchServiceFacetsTest extends SearchServiceTest {
 
     @Test
     public void TestGetWithFacetsIncludesCustomFilterFacets() throws InterruptedException {
-        solrHelper.waitForTxnSync();
+        solrHelper.waitForTransactionSync();
         // Add a new facet filter
         String newFacetFilterId = "test_filter";
         // Note that facets with 0 hits are not returned.
@@ -143,7 +143,7 @@ public class SearchServiceFacetsTest extends SearchServiceTest {
 
     @Test
     public void TestGetBucketedFacets() throws InterruptedException {
-        solrHelper.waitForTxnSync();
+        solrHelper.waitForTransactionSync();
         // Query that should return default facets
         // There are 6 default facets: mimetype, modifier, creator, created, modified and size
         // These last 3 are bucketed facets, so we check that they're included

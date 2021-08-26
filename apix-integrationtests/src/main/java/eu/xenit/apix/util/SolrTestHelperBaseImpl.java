@@ -16,6 +16,11 @@ import org.slf4j.LoggerFactory;
 public abstract class SolrTestHelperBaseImpl implements SolrTestHelper {
     private Logger logger = LoggerFactory.getLogger(SolrTestHelperBaseImpl.class);
 
+    protected final String SOLR_SUMMARY_CORE_ALFRESCO = "alfresco";
+    protected final String SOLR_SUMMARY_FTS = "FTS";
+    protected final String SOLR_SUMMARY_FTS_DIRTY = "Node count whose content needs to be updated";
+    protected final String SOLR_SUMMARY_FTS_CLEAN = "Node count whose content is in sync";
+
     private DataSource dataSource;
     protected SolrAdminClient solrAdminClient;
 
@@ -32,20 +37,20 @@ public abstract class SolrTestHelperBaseImpl implements SolrTestHelper {
      * @return true if the latest Alfresco transaction has been indexed by Solr
      */
     @Override
-    public boolean areTxnsSynced() {
-        int alfTx = getAlfTxId();
-        int solrTx = solrAdminClient.getLastTxId();
-        logger.debug("alf tx: {}, solr tx: {}", alfTx, solrTx);
-        return alfTx <= solrTx;
+    public boolean areTransactionsSynced() {
+        int alfTransaction = getAlfTransactionId();
+        int solrTransaction = solrAdminClient.getLastTransactionId();
+        logger.debug("alf transaction: {}, solr transaction: {}", alfTransaction, solrTransaction);
+        return alfTransaction <= solrTransaction;
     }
 
     /**
      * Wait until Solr has indexed the latest Alfresco transaction.
      */
     @Override
-    public void waitForTxnSync() throws InterruptedException {
+    public void waitForTransactionSync() throws InterruptedException {
         for (int i = 0; i < maxTries; i++) {
-            if (areTxnsSynced()) {
+            if (areTransactionsSynced()) {
                 return;
             }
             // These prints are here to send data over the wire while waiting.
@@ -60,13 +65,24 @@ public abstract class SolrTestHelperBaseImpl implements SolrTestHelper {
     }
 
     @Override
-    public abstract int getFtsStatusCleanDocs();
+    public int getFtsStatusCleanDocs() {
+        return (Integer) getSummaryFtsSection().get(SOLR_SUMMARY_FTS_CLEAN);
+    }
 
     @Override
-    public abstract boolean isContentIndexed();
+    public boolean isContentIndexed() {
+        JSONObject ftsBlock = getSummaryFtsSection();
+        logger.debug("solrSummaryFTSBlock: {}", ftsBlock.toString(4));
+        return 0 == (Integer) ftsBlock.get(SOLR_SUMMARY_FTS_DIRTY);
+    }
 
     @Override
-    public abstract boolean isContentIndexed(int previousCleanCount);
+    public boolean isContentIndexed(int previousCleanCount) {
+        JSONObject ftsBlock = getSummaryFtsSection();
+        logger.debug("solrSummaryFTSBlock: {}", ftsBlock.toString(4));
+        return 0 == (Integer) ftsBlock.get(SOLR_SUMMARY_FTS_DIRTY)
+                && previousCleanCount < ((Integer) ftsBlock.get(SOLR_SUMMARY_FTS_CLEAN));
+    }
 
     @Override
     public void waitForContentSync() throws InterruptedException {
@@ -99,7 +115,7 @@ public abstract class SolrTestHelperBaseImpl implements SolrTestHelper {
         }
     }
 
-    private int getAlfTxId() {
+    private int getAlfTransactionId() {
         try (Connection connection = dataSource.getConnection()) {
             final Statement stmt = connection.createStatement();
             final ResultSet rs = stmt.executeQuery("select max( transaction_id ) from alf_node");
@@ -112,5 +128,9 @@ public abstract class SolrTestHelperBaseImpl implements SolrTestHelper {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    protected JSONObject getSummaryFtsSection() {
+        return solrAdminClient.getSolrSummaryJson().getJSONObject(SOLR_SUMMARY_CORE_ALFRESCO).getJSONObject(SOLR_SUMMARY_FTS);
     }
 }

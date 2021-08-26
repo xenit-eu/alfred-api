@@ -71,7 +71,7 @@ public class ContentServiceTest extends BaseTest {
     public void Setup() {
         this.cleanUp();
         try {
-            solrHelper.waitForTxnSync();
+            solrHelper.waitForTransactionSync();
         } catch (InterruptedException e) {
             Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
         }

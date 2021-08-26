@@ -63,7 +63,7 @@ public class TermHitHighlightingTest extends BaseTest {
             nodeService.setContent(target, inputStream, txtFile.getName());
             return null;
         }, false, true);
-        solrHelper.waitForTxnSync();
+        solrHelper.waitForTransactionSync();
         // Call bean representing the Transformers subsystem and start it. Subsystem is required for highlights.
         transformersSubsystem.start();
     }
@@ -85,7 +85,7 @@ public class TermHitHighlightingTest extends BaseTest {
                 + "with the !PREFIX!furies!SUFFIX!. A mirror’s temperature is always at zero.\n\n")));
 
         // Waiting for Solr's indexing process to catch up before executing test.
-        solrHelper.waitForTxnSync();
+        solrHelper.waitForTransactionSync();
         SearchServiceTest.waitAWhile(20);
         solrHelper.waitForContentSync(initialCleanDocs);
 

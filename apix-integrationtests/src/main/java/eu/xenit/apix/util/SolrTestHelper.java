@@ -2,9 +2,9 @@ package eu.xenit.apix.util;
 
 public interface SolrTestHelper {
 
-    boolean areTxnsSynced();
+    boolean areTransactionsSynced();
 
-    void waitForTxnSync() throws InterruptedException;
+    void waitForTransactionSync() throws InterruptedException;
 
     int getFtsStatusCleanDocs();
 

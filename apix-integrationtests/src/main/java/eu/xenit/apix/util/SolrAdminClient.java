@@ -56,7 +56,7 @@ public class SolrAdminClient {
         return object.getJSONObject("Summary");
     }
 
-    public int getLastTxId() {
+    public int getLastTransactionId() {
         try {
             return getSolrSummaryJson().getJSONObject("alfresco").getInt("Id for last TX in index");
         } catch (JSONException e) {

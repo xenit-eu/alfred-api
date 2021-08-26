@@ -12,35 +12,7 @@ import org.slf4j.LoggerFactory;
 public class SolrTestHelperImpl extends SolrTestHelperBaseImpl {
     private Logger logger = LoggerFactory.getLogger(SolrTestHelperImpl.class);
 
-    private final String SOLR_SUMMARY_CORE_ALFRESCO = "alfresco";
-    private final String SOLR_SUMMARY_FTS = "FTS";
-    private final String SOLR_SUMMARY_FTS_DIRTY = "Node count whose content needs to be updated";
-    private final String SOLR_SUMMARY_FTS_CLEAN = "Node count whose content is in sync";
-
     public SolrTestHelperImpl(String baseUrl, DataSource dataSource, SwitchableApplicationContextFactory searchSubSystem) {
         super(baseUrl, dataSource, searchSubSystem);
-    }
-
-    @Override
-    public int getFtsStatusCleanDocs() {
-        JSONObject solrSummary = solrAdminClient.getSolrSummaryJson();
-        return (Integer) solrSummary.getJSONObject(SOLR_SUMMARY_CORE_ALFRESCO).getJSONObject(SOLR_SUMMARY_FTS).get(SOLR_SUMMARY_FTS_CLEAN);
-    }
-
-    @Override
-    public boolean isContentIndexed() {
-        JSONObject solrSummary = solrAdminClient.getSolrSummaryJson();
-        JSONObject ftsBlock = solrSummary.getJSONObject(SOLR_SUMMARY_CORE_ALFRESCO).getJSONObject(SOLR_SUMMARY_FTS);
-        logger.debug("solrSummaryFTSBlock: {}", ftsBlock.toString(4));
-        return 0 == (Integer) ftsBlock.get(SOLR_SUMMARY_FTS_DIRTY);
-    }
-
-    @Override
-    public boolean isContentIndexed(int previousCleanCount) {
-        JSONObject solrSummary = solrAdminClient.getSolrSummaryJson();
-        JSONObject ftsBlock = solrSummary.getJSONObject(SOLR_SUMMARY_CORE_ALFRESCO).getJSONObject(SOLR_SUMMARY_FTS);
-        logger.debug("solrSummaryFTSBlock: {}", ftsBlock.toString(4));
-        return 0 == (Integer) ftsBlock.get(SOLR_SUMMARY_FTS_DIRTY)
-                && previousCleanCount < ((Integer) ftsBlock.get(SOLR_SUMMARY_FTS_CLEAN));
     }
 }

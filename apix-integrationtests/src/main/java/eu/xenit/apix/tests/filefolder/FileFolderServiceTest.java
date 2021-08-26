@@ -88,7 +88,7 @@ public class FileFolderServiceTest extends BaseTest {
     @Test
     public void TestGetDisplayPath() {
         try {
-            solrHelper.waitForTxnSync();
+            solrHelper.waitForTransactionSync();
         } catch (InterruptedException e) {
             Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
         }
@@ -98,7 +98,7 @@ public class FileFolderServiceTest extends BaseTest {
         FileInfo mainTestFolder = this.createMainTestFolder(companyHomeNodeRef);
         FileInfo testNode = this.createTestNode(mainTestFolder.getNodeRef(), "testnode");
         try {
-            solrHelper.waitForTxnSync();
+            solrHelper.waitForTransactionSync();
         } catch (InterruptedException e) {
             Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
         }
@@ -111,7 +111,7 @@ public class FileFolderServiceTest extends BaseTest {
     @Test
     public void TestGetQNamePath() {
         try {
-            solrHelper.waitForTxnSync();
+            solrHelper.waitForTransactionSync();
         } catch (InterruptedException e) {
             Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
         }
@@ -121,7 +121,7 @@ public class FileFolderServiceTest extends BaseTest {
         FileInfo mainTestFolder = this.createMainTestFolder(companyHomeNodeRef);
         FileInfo testNode = this.createTestNode(mainTestFolder.getNodeRef(), "testnode");
         try {
-            solrHelper.waitForTxnSync();
+            solrHelper.waitForTransactionSync();
         } catch (InterruptedException e) {
             Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
         }

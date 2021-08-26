@@ -91,7 +91,7 @@ public class PermissionServiceTest extends BaseTest {
   @Test
   public void testGetPermissions() {
     try {
-      solrHelper.waitForTxnSync();
+      solrHelper.waitForTransactionSync();
     } catch (InterruptedException e) {
       Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
     }
@@ -101,7 +101,7 @@ public class PermissionServiceTest extends BaseTest {
     FileInfo mainTestFolder = createMainTestFolder(companyHomeNodeRef);
     FileInfo testNode = createTestNode(mainTestFolder.getNodeRef(), "testnode");
     try {
-      solrHelper.waitForTxnSync();
+      solrHelper.waitForTransactionSync();
     } catch (InterruptedException e) {
       Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
     }
@@ -123,7 +123,7 @@ public class PermissionServiceTest extends BaseTest {
   @Test
   public void testGetPermissionsV2() {
     try {
-      solrHelper.waitForTxnSync();
+      solrHelper.waitForTransactionSync();
     } catch (InterruptedException e) {
       Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
     }
@@ -133,7 +133,7 @@ public class PermissionServiceTest extends BaseTest {
     FileInfo mainTestFolder = createMainTestFolder(companyHomeNodeRef);
     FileInfo testNode = createTestNode(mainTestFolder.getNodeRef(), "testnode");
     try {
-      solrHelper.waitForTxnSync();
+      solrHelper.waitForTransactionSync();
     } catch (InterruptedException e) {
       Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
     }
@@ -156,7 +156,7 @@ public class PermissionServiceTest extends BaseTest {
   @Test
   public void testSetPermissions() {
     try {
-      solrHelper.waitForTxnSync();
+      solrHelper.waitForTransactionSync();
     } catch (InterruptedException e) {
       Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
     }
@@ -167,7 +167,7 @@ public class PermissionServiceTest extends BaseTest {
     FileInfo testNode = createTestNode(mainTestFolder.getNodeRef(), "testnode");
     Long initialAclId = llAlfrescoNodeService.getNodeAclId(testNode.getNodeRef());
     try {
-      solrHelper.waitForTxnSync();
+      solrHelper.waitForTransactionSync();
     } catch (InterruptedException e) {
       Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
     }

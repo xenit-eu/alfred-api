@@ -82,7 +82,7 @@ abstract public class SearchServiceTest extends BaseTest {
 
     @Test
     public void TestGetWithoutFacets() throws IOException, InterruptedException {
-        solrHelper.waitForTxnSync();
+        solrHelper.waitForTransactionSync();
         QueryBuilder builder = new QueryBuilder();
         SearchSyntaxNode node = builder.term("type", "cm:folder").create();
 
@@ -97,7 +97,7 @@ abstract public class SearchServiceTest extends BaseTest {
 
     @Test
     public void TestGetWithFacets() throws IOException, InterruptedException {
-        solrHelper.waitForTxnSync();
+        solrHelper.waitForTransactionSync();
         QueryBuilder builder = new QueryBuilder();
         SearchSyntaxNode node = builder.term("type", "cm:content").create();
 
@@ -120,7 +120,7 @@ abstract public class SearchServiceTest extends BaseTest {
 
     @Test
     public void TestLimit() throws IOException, InterruptedException {
-        solrHelper.waitForTxnSync();
+        solrHelper.waitForTransactionSync();
         QueryBuilder builder = new QueryBuilder();
         SearchSyntaxNode node = builder.term("type", "cm:folder").create();
 
@@ -134,7 +134,7 @@ abstract public class SearchServiceTest extends BaseTest {
 
     @Test
     public void TestSkip() throws IOException, InterruptedException {
-        solrHelper.waitForTxnSync();
+        solrHelper.waitForTransactionSync();
         QueryBuilder builder = new QueryBuilder();
         eu.xenit.apix.search.nodes.SearchSyntaxNode node = builder.term("type", "cm:folder").create();
 
@@ -171,7 +171,7 @@ abstract public class SearchServiceTest extends BaseTest {
                     }
                 }, false, true);
 
-        solrHelper.waitForTxnSync();
+        solrHelper.waitForTransactionSync();
         // solrTestHelper has a bug. TODO ticket ALFREDAPI-425
         Thread.sleep(15000);
 
@@ -216,7 +216,7 @@ abstract public class SearchServiceTest extends BaseTest {
                     return null;
                 }, false, true);
 
-        solrHelper.waitForTxnSync();
+        solrHelper.waitForTransactionSync();
         // solrTestHelper has a bug. TODO ticket ALFREDAPI-425
         Thread.sleep(15000);
     }
@@ -284,7 +284,7 @@ abstract public class SearchServiceTest extends BaseTest {
 
     @Test
     public void testPropertyRange() throws IOException, InterruptedException {
-        solrHelper.waitForTxnSync();
+        solrHelper.waitForTransactionSync();
         QueryBuilder builder = new QueryBuilder();
         SearchSyntaxNode node = builder
                 .property("cm:created", "2010-01-01T00:00:00", "2015-01-01T00:00:00").create();
@@ -313,7 +313,7 @@ abstract public class SearchServiceTest extends BaseTest {
      */
     @Test
     public void TestQueryConsistency_Transactional() throws InterruptedException {
-        solrHelper.waitForTxnSync();
+        solrHelper.waitForTransactionSync();
         final String theTitle =
                 "The title to search for in SearchService.TestQueryConsistency_Transactional" + System.nanoTime();
 
@@ -368,7 +368,7 @@ abstract public class SearchServiceTest extends BaseTest {
 
     @Test
     public void TestExactMatchProperty() throws IOException, InterruptedException {
-        solrHelper.waitForTxnSync();
+        solrHelper.waitForTransactionSync();
         QueryBuilder builder = new QueryBuilder();
         SearchSyntaxNode node = builder.property("cm:name", "Company Home", true).create(); // Exact match
 
