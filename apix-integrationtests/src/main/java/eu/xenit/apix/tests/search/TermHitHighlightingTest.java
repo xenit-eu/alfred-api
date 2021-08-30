@@ -64,6 +64,7 @@ public class TermHitHighlightingTest extends BaseTest {
             return null;
         }, false, true);
         solrHelper.waitForTransactionSync();
+        solrHelper.waitForContentSync();
         // Call bean representing the Transformers subsystem and start it. Subsystem is required for highlights.
         transformersSubsystem.start();
     }
@@ -86,7 +87,6 @@ public class TermHitHighlightingTest extends BaseTest {
 
         // Waiting for Solr's indexing process to catch up before executing test.
         solrHelper.waitForTransactionSync();
-        SearchServiceTest.waitAWhile(20);
         solrHelper.waitForContentSync(initialCleanDocs);
 
         /* The options set are equivalent to the following JSON:
