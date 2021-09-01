@@ -30,8 +30,7 @@ public class CategoryWebScript1 extends ApixV1Webscript {
 
     Logger logger = LoggerFactory.getLogger(CategoryWebScript1.class);
     @Autowired
-    ICategoryService categoryService;
-
+    private ICategoryService categoryService;
 
     @Uri(value = "/aspect/{qname}", method = HttpMethod.GET)
     @ApiOperation(value = "Return the categories available for an aspect", notes = "")

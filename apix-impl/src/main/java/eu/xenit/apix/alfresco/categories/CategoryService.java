@@ -21,18 +21,12 @@ import org.alfresco.service.namespace.QName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Created by Michiel Huygen on 30/11/2015. https://wiki.alfresco.com/wiki/Classification_And_Categories Example:
- * https://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD/root/projects/repository/config/alfresco/bootstrap/categories.xml
- */
-
 @OsgiService
 @Component("eu.xenit.apix.categories.ICategoryService")
 public class CategoryService implements ICategoryService {
 
     @Autowired
     private ApixToAlfrescoConversion c;
-
     @Autowired
     private NodeService nodeService;
     @Autowired
@@ -40,18 +34,14 @@ public class CategoryService implements ICategoryService {
     @Autowired
     private NamespaceService namespaceService;
 
-
     public CategoryService() {
     }
-
 
     public CategoryService(ServiceRegistry registry, ApixToAlfrescoConversion apixToAlfrescoConversion) {
         nodeService = registry.getNodeService();
         categoryService = registry.getCategoryService();
         namespaceService = registry.getNamespaceService();
-
-        this.c = apixToAlfrescoConversion;
-
+        c = apixToAlfrescoConversion;
     }
 
     /**
@@ -70,70 +60,63 @@ public class CategoryService implements ICategoryService {
         } else {
             nodeService.setProperty(targetNode, ContentModel.PROP_CATEGORIES, categories);
         }
-
     }
 
-
     /**
-     * Retuns all categories for given classifiable aspect. This consists of a list of category roots WARNING: can be
-     * slow for many categories
+     * Returns all categories for given classifiable aspect. This consists of a list of category roots.
      *
-     * @param classifiableAspectNameA Should be aspect of type cm:classifiable //TODO: getCategoryTrees
+     * WARNING: Can be slow for many categories.
+     *
+     * @param classifiableAspectNameA Should be aspect of type cm:classifiable
      */
     public List<Category> getCategoryTree(eu.xenit.apix.data.QName classifiableAspectNameA) {
         QName classifiableAspectName = c.alfresco(classifiableAspectNameA);
-        java.util.Collection<org.alfresco.service.cmr.repository.ChildAssociationRef> refs = categoryService
-                .getCategories(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, classifiableAspectName,
-                        org.alfresco.service.cmr.search.CategoryService.Depth.ANY);
+        Collection<org.alfresco.service.cmr.repository.ChildAssociationRef> refs = categoryService.getCategories(
+                StoreRef.STORE_REF_WORKSPACE_SPACESSTORE,
+                classifiableAspectName,
+                org.alfresco.service.cmr.search.CategoryService.Depth.ANY);
 
-        Collection<ChildAssociationRef> categories = categoryService
-                .getClassifications(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
+        Collection<ChildAssociationRef> categories = categoryService.getClassifications(
+                StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
         Optional<ChildAssociationRef> classifierRootNodeMaybe = Optional.empty();
         for (ChildAssociationRef child : categories) {
-            if (!child.getQName().equals(classifiableAspectName)) {
-                continue;
+            if (child.getQName().equals(classifiableAspectName)) {
+                classifierRootNodeMaybe = Optional.of(child);
+                break;
             }
-
-            classifierRootNodeMaybe = Optional.of(child);
-            break;
         }
-
-//        Optional<ChildAssociationRef> classifierRootNodeMaybe = categoryService.getClassifications(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE)
-//                .stream().filter(c -> c.getQName().equals(classifiableAspectName)).findFirst();
-
         if (!classifierRootNodeMaybe.isPresent()) {
             throw new RuntimeException("Aspect name does not match a classifiable");
         }
         NodeRef classifierRootNode = classifierRootNodeMaybe.get().getChildRef();
 
         HashMap<NodeRef, Category> map = new HashMap<>();
-        List<Category> ret = new ArrayList<Category>();
+        List<Category> result = new ArrayList<Category>();
 
         for (org.alfresco.service.cmr.repository.ChildAssociationRef r : refs) {
             NodeRef parentRef = r.getParentRef();
             NodeRef nodeRef = r.getChildRef();
-            Category cat = map.get(nodeRef);
-            if (cat == null) {
-                cat = new Category();
-                map.put(r.getChildRef(), cat);
+            Category category = map.get(nodeRef);
+            if (category == null) {
+                category = new Category();
+                map.put(r.getChildRef(), category);
             }
-            cat.setNoderef(nodeRef.toString());
-            cat.setName((String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME));
-            cat.setQnamePath(nodeService.getPath(nodeRef).toPrefixString(namespaceService));
+            category.setNoderef(nodeRef.toString());
+            category.setName((String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME));
+            category.setQnamePath(nodeService.getPath(nodeRef).toPrefixString(namespaceService));
 
             if (r.getParentRef().equals(classifierRootNode)) {
                 // Is root node
-                ret.add(cat);
+                result.add(category);
             } else {
                 if (!map.containsKey(parentRef)) {
                     map.put(parentRef, new Category()); //Warn: not setting ref to this cat
                 }
                 Category parent = map.get(parentRef);
-                parent.getSubcategories().add(cat);
+                parent.getSubcategories().add(category);
             }
         }
 
-        return ret;
-
+        return result;
     }
 }
