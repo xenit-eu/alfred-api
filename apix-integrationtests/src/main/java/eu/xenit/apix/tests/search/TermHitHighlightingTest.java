@@ -87,6 +87,12 @@ public class TermHitHighlightingTest extends BaseTest {
 
         // Waiting for Solr's indexing process to catch up before executing test.
         solrHelper.waitForTransactionSync();
+        // Solr txn(metadata) and content indexing are separate.
+        // There is no good way to track the total # of nodes for which content needs to be indexed.
+        // The best we can do is check if there are nodes detected that still need to be indexed.
+        // therefore we wait a period for solr to detect the nodes,
+        // then use the check to wait until the indexing process is finished.
+        SearchServiceTest.waitAWhile(20);
         solrHelper.waitForContentSync(initialCleanDocs);
 
         /* The options set are equivalent to the following JSON:
