@@ -65,7 +65,7 @@ public abstract class SolrTestHelperBaseImpl implements SolrTestHelper {
     }
 
     @Override
-    public int getFtsStatusCleanDocs() {
+    public int getNumberOfFtsStatusCleanDocs() {
         return (Integer) getSummaryFtsSection().get(SOLR_SUMMARY_FTS_CLEAN);
     }
 

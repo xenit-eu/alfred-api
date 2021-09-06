@@ -6,7 +6,7 @@ public interface SolrTestHelper {
 
     void waitForTransactionSync() throws InterruptedException;
 
-    int getFtsStatusCleanDocs();
+    int getNumberOfFtsStatusCleanDocs();
 
     boolean isContentIndexed();
 

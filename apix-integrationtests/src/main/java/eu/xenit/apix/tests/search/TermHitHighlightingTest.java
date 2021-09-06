@@ -70,7 +70,7 @@ public class TermHitHighlightingTest extends BaseTest {
     @Test
     /** Test all major parameters for term hit highlighting */
     public void searchResponseContainsHighlights() throws IOException, InterruptedException {
-        int initialCleanDocs = solrHelper.getFtsStatusCleanDocs();
+        int initialCleanDocs = solrHelper.getNumberOfFtsStatusCleanDocs();
         List<HighlightResult> expected = Arrays.asList(new HighlightResult("cm:content", Arrays.asList(""
                 + "The !PREFIX!furies!SUFFIX! are at home\nin the mirror; it is their address.\n"
                 + "Even the clearest water,\nif deep enough can drown.\n\n"

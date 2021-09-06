@@ -21,7 +21,7 @@ public class SolrTestHelperImpl extends SolrTestHelperBaseImpl {
     }
 
     @Override
-    public int getFtsStatusCleanDocs() {
+    public int getNumberOfFtsStatusCleanDocs() {
         return (Integer) super.getSummaryFtsSection().get(SOLR_SUMMARY_FTS_CLEAN);
     }
 
