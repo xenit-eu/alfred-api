@@ -11,12 +11,14 @@ import eu.xenit.apix.alfresco.search.SearchFacetsServiceImpl;
 import eu.xenit.apix.search.FacetSearchResult;
 import eu.xenit.apix.search.FacetSearchResult.FacetValue;
 import eu.xenit.apix.search.SearchQuery.FacetOptions;
+import eu.xenit.apix.translation.ITranslationService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.alfresco.repo.dictionary.constraint.ListOfValuesConstraint;
 import org.alfresco.repo.search.impl.solr.facet.SolrFacetHelper;
+import org.alfresco.repo.search.impl.solr.facet.SolrFacetService;
 import org.alfresco.repo.search.impl.solr.facet.handler.FacetLabelDisplayHandlerRegistry;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.dictionary.ConstraintDefinition;
@@ -30,7 +32,6 @@ import org.alfresco.service.cmr.search.SearchParameters.FieldFacet;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.Pair;
 import org.junit.Test;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class SearchFacetServiceUnitTest {
@@ -90,10 +91,10 @@ public class SearchFacetServiceUnitTest {
         when(dictionaryServiceMock.getProperty(documentStatusQName)).thenReturn(documentStatusPropDefMock);
 
         when(serviceRegistryMock.getDictionaryService()).thenReturn(dictionaryServiceMock);
-
-        searchFacetsService = new SearchFacetsServiceImpl(serviceRegistryMock);
-        ((SearchFacetsServiceImpl) searchFacetsService).setSolrFacetHelper(solrFacetHelperMock);
-        ((SearchFacetsServiceImpl) searchFacetsService).setFacetLabelDisplayHandlerRegistry(facetLabelDisplayHandlerRegistryStub);
+        when(serviceRegistryMock.getSolrFacetHelper()).thenReturn(solrFacetHelperMock);
+        when(serviceRegistryMock.getFacetLabelDisplayHandlerRegistry()).thenReturn(facetLabelDisplayHandlerRegistryStub);
+        searchFacetsService = new SearchFacetsServiceImpl(serviceRegistryMock, mock(SolrFacetService.class), mock(
+                ITranslationService.class));
 
         facetOptionsMock = mock(FacetOptions.class);
         when(facetOptionsMock.isEnabled()).thenReturn(true);
