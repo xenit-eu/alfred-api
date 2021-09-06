@@ -6,7 +6,6 @@ import eu.xenit.apix.permissions.NodePermission;
 import eu.xenit.apix.permissions.NodePermission.Access;
 import eu.xenit.apix.permissions.PermissionValue;
 import eu.xenit.apix.tests.BaseTest;
-import eu.xenit.apix.util.SolrTestHelper;
 import java.util.HashSet;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.model.FileFolderService;
@@ -92,7 +91,7 @@ public class PermissionServiceTest extends BaseTest {
   @Test
   public void testGetPermissions() {
     try {
-      solrHelper.waitForSolrSync();
+      solrHelper.waitForTransactionSync();
     } catch (InterruptedException e) {
       Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
     }
@@ -102,7 +101,7 @@ public class PermissionServiceTest extends BaseTest {
     FileInfo mainTestFolder = createMainTestFolder(companyHomeNodeRef);
     FileInfo testNode = createTestNode(mainTestFolder.getNodeRef(), "testnode");
     try {
-      solrHelper.waitForSolrSync();
+      solrHelper.waitForTransactionSync();
     } catch (InterruptedException e) {
       Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
     }
@@ -124,7 +123,7 @@ public class PermissionServiceTest extends BaseTest {
   @Test
   public void testGetPermissionsV2() {
     try {
-      solrHelper.waitForSolrSync();
+      solrHelper.waitForTransactionSync();
     } catch (InterruptedException e) {
       Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
     }
@@ -134,7 +133,7 @@ public class PermissionServiceTest extends BaseTest {
     FileInfo mainTestFolder = createMainTestFolder(companyHomeNodeRef);
     FileInfo testNode = createTestNode(mainTestFolder.getNodeRef(), "testnode");
     try {
-      solrHelper.waitForSolrSync();
+      solrHelper.waitForTransactionSync();
     } catch (InterruptedException e) {
       Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
     }
@@ -157,7 +156,7 @@ public class PermissionServiceTest extends BaseTest {
   @Test
   public void testSetPermissions() {
     try {
-      solrHelper.waitForSolrSync();
+      solrHelper.waitForTransactionSync();
     } catch (InterruptedException e) {
       Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
     }
@@ -168,7 +167,7 @@ public class PermissionServiceTest extends BaseTest {
     FileInfo testNode = createTestNode(mainTestFolder.getNodeRef(), "testnode");
     Long initialAclId = llAlfrescoNodeService.getNodeAclId(testNode.getNodeRef());
     try {
-      solrHelper.waitForSolrSync();
+      solrHelper.waitForTransactionSync();
     } catch (InterruptedException e) {
       Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
     }

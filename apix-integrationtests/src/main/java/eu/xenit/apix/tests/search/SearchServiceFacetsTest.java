@@ -8,10 +8,8 @@ import eu.xenit.apix.search.SearchQuery;
 import eu.xenit.apix.search.SearchQuery.FacetOptions;
 import eu.xenit.apix.search.SearchQueryResult;
 import eu.xenit.apix.search.nodes.SearchSyntaxNode;
-import eu.xenit.apix.util.SolrTestHelper;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.search.impl.solr.facet.SolrFacetProperties;
@@ -94,7 +92,7 @@ public class SearchServiceFacetsTest extends SearchServiceTest {
 
     @Test
     public void TestGetWithFacetsIncludesCustomFilterFacets() throws InterruptedException {
-        solrHelper.waitForSolrSync();
+        solrHelper.waitForTransactionSync();
         // Add a new facet filter
         String newFacetFilterId = "test_filter";
         // Note that facets with 0 hits are not returned.
@@ -145,7 +143,7 @@ public class SearchServiceFacetsTest extends SearchServiceTest {
 
     @Test
     public void TestGetBucketedFacets() throws InterruptedException {
-        solrHelper.waitForSolrSync();
+        solrHelper.waitForTransactionSync();
         // Query that should return default facets
         // There are 6 default facets: mimetype, modifier, creator, created, modified and size
         // These last 3 are bucketed facets, so we check that they're included

@@ -4,10 +4,6 @@ import com.github.dynamicextensionsalfresco.webscripts.annotations.Before;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.filefolder.IFileFolderService;
 import eu.xenit.apix.tests.BaseTest;
-import eu.xenit.apix.util.SolrTestHelper;
-import java.util.Properties;
-import javax.sql.DataSource;
-import org.alfresco.repo.management.subsystems.SwitchableApplicationContextFactory;
 import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.ServiceRegistry;
@@ -25,8 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
-import javax.validation.constraints.AssertTrue;
 
 import static org.junit.Assert.*;
 
@@ -94,7 +88,7 @@ public class FileFolderServiceTest extends BaseTest {
     @Test
     public void TestGetDisplayPath() {
         try {
-            solrHelper.waitForSolrSync();
+            solrHelper.waitForTransactionSync();
         } catch (InterruptedException e) {
             Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
         }
@@ -104,7 +98,7 @@ public class FileFolderServiceTest extends BaseTest {
         FileInfo mainTestFolder = this.createMainTestFolder(companyHomeNodeRef);
         FileInfo testNode = this.createTestNode(mainTestFolder.getNodeRef(), "testnode");
         try {
-            solrHelper.waitForSolrSync();
+            solrHelper.waitForTransactionSync();
         } catch (InterruptedException e) {
             Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
         }
@@ -117,7 +111,7 @@ public class FileFolderServiceTest extends BaseTest {
     @Test
     public void TestGetQNamePath() {
         try {
-            solrHelper.waitForSolrSync();
+            solrHelper.waitForTransactionSync();
         } catch (InterruptedException e) {
             Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
         }
@@ -127,7 +121,7 @@ public class FileFolderServiceTest extends BaseTest {
         FileInfo mainTestFolder = this.createMainTestFolder(companyHomeNodeRef);
         FileInfo testNode = this.createTestNode(mainTestFolder.getNodeRef(), "testnode");
         try {
-            solrHelper.waitForSolrSync();
+            solrHelper.waitForTransactionSync();
         } catch (InterruptedException e) {
             Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
         }

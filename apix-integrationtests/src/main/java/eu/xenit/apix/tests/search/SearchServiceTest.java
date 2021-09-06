@@ -11,7 +11,7 @@ import eu.xenit.apix.search.SearchQueryConsistency;
 import eu.xenit.apix.search.SearchQueryResult;
 import eu.xenit.apix.search.nodes.SearchSyntaxNode;
 import eu.xenit.apix.tests.BaseTest;
-import eu.xenit.apix.util.SolrTestHelper;
+import eu.xenit.apix.util.SolrTestHelperImpl;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.management.subsystems.SwitchableApplicationContextFactory;
 import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
@@ -40,7 +39,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.extensions.surf.util.I18NUtil;
 
 abstract public class SearchServiceTest extends BaseTest {
@@ -66,7 +64,7 @@ abstract public class SearchServiceTest extends BaseTest {
     @Autowired
     NamespacePrefixResolver namespacePrefixResolver;
 
-    protected SolrTestHelper solrTestHelper;
+    protected SolrTestHelperImpl solrTestHelper;
 
     final protected static String APIXTEST_NS = "http://test.apix.xenit.eu/model/content";
     final protected static QName APIXTEST_LANGUAGE = QName.createQName(APIXTEST_NS, "language");
@@ -84,7 +82,7 @@ abstract public class SearchServiceTest extends BaseTest {
 
     @Test
     public void TestGetWithoutFacets() throws IOException, InterruptedException {
-        solrHelper.waitForSolrSync();
+        solrHelper.waitForTransactionSync();
         QueryBuilder builder = new QueryBuilder();
         SearchSyntaxNode node = builder.term("type", "cm:folder").create();
 
@@ -99,7 +97,7 @@ abstract public class SearchServiceTest extends BaseTest {
 
     @Test
     public void TestGetWithFacets() throws IOException, InterruptedException {
-        solrHelper.waitForSolrSync();
+        solrHelper.waitForTransactionSync();
         QueryBuilder builder = new QueryBuilder();
         SearchSyntaxNode node = builder.term("type", "cm:content").create();
 
@@ -122,7 +120,7 @@ abstract public class SearchServiceTest extends BaseTest {
 
     @Test
     public void TestLimit() throws IOException, InterruptedException {
-        solrHelper.waitForSolrSync();
+        solrHelper.waitForTransactionSync();
         QueryBuilder builder = new QueryBuilder();
         SearchSyntaxNode node = builder.term("type", "cm:folder").create();
 
@@ -136,7 +134,7 @@ abstract public class SearchServiceTest extends BaseTest {
 
     @Test
     public void TestSkip() throws IOException, InterruptedException {
-        solrHelper.waitForSolrSync();
+        solrHelper.waitForTransactionSync();
         QueryBuilder builder = new QueryBuilder();
         eu.xenit.apix.search.nodes.SearchSyntaxNode node = builder.term("type", "cm:folder").create();
 
@@ -173,7 +171,7 @@ abstract public class SearchServiceTest extends BaseTest {
                     }
                 }, false, true);
 
-        solrHelper.waitForSolrSync();
+        solrHelper.waitForTransactionSync();
         // solrTestHelper has a bug. TODO ticket ALFREDAPI-425
         Thread.sleep(15000);
 
@@ -218,7 +216,7 @@ abstract public class SearchServiceTest extends BaseTest {
                     return null;
                 }, false, true);
 
-        solrHelper.waitForSolrSync();
+        solrHelper.waitForTransactionSync();
         // solrTestHelper has a bug. TODO ticket ALFREDAPI-425
         Thread.sleep(15000);
     }
@@ -286,7 +284,7 @@ abstract public class SearchServiceTest extends BaseTest {
 
     @Test
     public void testPropertyRange() throws IOException, InterruptedException {
-        solrHelper.waitForSolrSync();
+        solrHelper.waitForTransactionSync();
         QueryBuilder builder = new QueryBuilder();
         SearchSyntaxNode node = builder
                 .property("cm:created", "2010-01-01T00:00:00", "2015-01-01T00:00:00").create();
@@ -315,7 +313,7 @@ abstract public class SearchServiceTest extends BaseTest {
      */
     @Test
     public void TestQueryConsistency_Transactional() throws InterruptedException {
-        solrHelper.waitForSolrSync();
+        solrHelper.waitForTransactionSync();
         final String theTitle =
                 "The title to search for in SearchService.TestQueryConsistency_Transactional" + System.nanoTime();
 
@@ -370,7 +368,7 @@ abstract public class SearchServiceTest extends BaseTest {
 
     @Test
     public void TestExactMatchProperty() throws IOException, InterruptedException {
-        solrHelper.waitForSolrSync();
+        solrHelper.waitForTransactionSync();
         QueryBuilder builder = new QueryBuilder();
         SearchSyntaxNode node = builder.property("cm:name", "Company Home", true).create(); // Exact match
 

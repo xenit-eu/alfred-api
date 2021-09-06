@@ -10,6 +10,7 @@
 ### Deleted
 
 ### Fixed
+* [ALFREDAPI-489](https://xenitsupport.jira.com/browse/ALFREDAPI-489): implemented check on content indexing in solrtesthelper
 
 
 ## 3.0.0 (2021-07-29)
