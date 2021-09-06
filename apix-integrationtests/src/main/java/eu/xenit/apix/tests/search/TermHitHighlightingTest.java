@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.management.subsystems.ChildApplicationContextFactory;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.junit.After;
@@ -28,15 +27,11 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 public class TermHitHighlightingTest extends BaseTest {
 
     private static final Logger log = LoggerFactory.getLogger(TermHitHighlightingTest.class);
 
-    @Autowired
-    @Qualifier("Transformers")
-    ChildApplicationContextFactory transformersSubsystem;
     @Autowired
     INodeService nodeService;
     @Autowired
@@ -65,8 +60,6 @@ public class TermHitHighlightingTest extends BaseTest {
         }, false, true);
         solrHelper.waitForTransactionSync();
         solrHelper.waitForContentSync();
-        // Call bean representing the Transformers subsystem and start it. Subsystem is required for highlights.
-        transformersSubsystem.start();
     }
 
     @After
