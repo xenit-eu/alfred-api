@@ -47,19 +47,20 @@ import org.springframework.stereotype.Component;
 public class SearchFacetsServiceImpl implements SearchFacetsService {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchFacetsServiceImpl.class);
-    private final FacetLabelDisplayHandlerRegistry facetLabelDisplayHandlerRegistry;
+    private FacetLabelDisplayHandlerRegistry facetLabelDisplayHandlerRegistry;
     private SolrFacetHelper solrFacetHelper;
     private DictionaryService dictionaryService;
     private NodeService nodeService;
-    @Autowired
     private SolrFacetService facetService;
-    @Autowired
     private ITranslationService translationService;
 
     // This file might give inspection error due to being 5.x specific.
     // Intellij can't handle this file being reused in different libs.
     @Autowired
-    public SearchFacetsServiceImpl(ServiceRegistry serviceRegistry) {
+    public SearchFacetsServiceImpl(ServiceRegistry serviceRegistry, SolrFacetService solrFacetsService,
+            ITranslationService translationService) {
+        facetService = solrFacetsService;
+        this.translationService = translationService;
         facetLabelDisplayHandlerRegistry = serviceRegistry.getFacetLabelDisplayHandlerRegistry();
         solrFacetHelper = serviceRegistry.getSolrFacetHelper();
         dictionaryService = serviceRegistry.getDictionaryService();
