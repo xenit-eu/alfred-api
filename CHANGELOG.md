@@ -6,6 +6,7 @@
 ### Added
 
 ### Changed
+* [XENOPS-891](https://xenitsupport.jira.com/browse/XENOPS-891): update docker images and wars to latest hotfix for 52, 62 & 70
 * [ALFREDAPI-378](https://xenitsupport.jira.com/browse/ALFREDAPI-378): Replace deprecated calls to serviceregistry
 
 ### Deleted
