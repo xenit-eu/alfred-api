@@ -11,7 +11,8 @@
 ### Deleted
 
 ### Fixed
-* [ALFREDAPI-489](https://xenitsupport.jira.com/browse/ALFREDAPI-489): implemented check on content indexing in solrtesthelper
+* [ALFREDAPI-489](https://xenitsupport.jira.com/browse/ALFREDAPI-489): Implemented check on content indexing in solrtesthelper
+* [ALFREDAPI-490](https://xenitsupport.jira.com/browse/ALFREDAPI-490): Improve performance of retrieving categories
 
 
 ## 3.0.0 (2021-07-29)
