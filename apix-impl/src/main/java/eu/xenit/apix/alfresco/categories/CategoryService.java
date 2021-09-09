@@ -1,10 +1,10 @@
 package eu.xenit.apix.alfresco.categories;
 
 import com.github.dynamicextensionsalfresco.osgi.OsgiService;
+import com.google.common.collect.Iterables;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.categories.Category;
 import eu.xenit.apix.categories.ICategoryService;
-import eu.xenit.apix.utils.java8.Optional;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,35 +71,22 @@ public class CategoryService implements ICategoryService {
      */
     public List<Category> getCategoryTree(eu.xenit.apix.data.QName classifiableAspectNameA) {
         QName classifiableAspectName = c.alfresco(classifiableAspectNameA);
-        Collection<org.alfresco.service.cmr.repository.ChildAssociationRef> refs = categoryService.getCategories(
+        NodeRef classifierRootNode = getClassificationRootNode(classifiableAspectName);
+
+        HashMap<NodeRef, Category> categoryLookup = new HashMap<>();
+        List<Category> result = new ArrayList<>();
+
+        // Walk through categories and build up category tree
+        for (org.alfresco.service.cmr.repository.ChildAssociationRef r : categoryService.getCategories(
                 StoreRef.STORE_REF_WORKSPACE_SPACESSTORE,
                 classifiableAspectName,
-                org.alfresco.service.cmr.search.CategoryService.Depth.ANY);
-
-        Collection<ChildAssociationRef> categories = categoryService.getClassifications(
-                StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
-        Optional<ChildAssociationRef> classifierRootNodeMaybe = Optional.empty();
-        for (ChildAssociationRef child : categories) {
-            if (child.getQName().equals(classifiableAspectName)) {
-                classifierRootNodeMaybe = Optional.of(child);
-                break;
-            }
-        }
-        if (!classifierRootNodeMaybe.isPresent()) {
-            throw new RuntimeException("Aspect name does not match a classifiable");
-        }
-        NodeRef classifierRootNode = classifierRootNodeMaybe.get().getChildRef();
-
-        HashMap<NodeRef, Category> map = new HashMap<>();
-        List<Category> result = new ArrayList<Category>();
-
-        for (org.alfresco.service.cmr.repository.ChildAssociationRef r : refs) {
+                org.alfresco.service.cmr.search.CategoryService.Depth.ANY)) {
             NodeRef parentRef = r.getParentRef();
             NodeRef nodeRef = r.getChildRef();
-            Category category = map.get(nodeRef);
+            Category category = categoryLookup.get(nodeRef);
             if (category == null) {
                 category = new Category();
-                map.put(r.getChildRef(), category);
+                categoryLookup.put(r.getChildRef(), category);
             }
             category.setNoderef(nodeRef.toString());
             category.setName((String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME));
@@ -109,14 +96,29 @@ public class CategoryService implements ICategoryService {
                 // Is root node
                 result.add(category);
             } else {
-                if (!map.containsKey(parentRef)) {
-                    map.put(parentRef, new Category()); //Warn: not setting ref to this cat
+                if (!categoryLookup.containsKey(parentRef)) {
+                    categoryLookup.put(parentRef,
+                            new Category()); // Only empty category, which is filled in a later iteration
                 }
-                Category parent = map.get(parentRef);
+                Category parent = categoryLookup.get(parentRef);
                 parent.getSubcategories().add(category);
             }
         }
-
         return result;
     }
+
+    private NodeRef getClassificationRootNode(QName classifiableAspectName) {
+        // We use this unintuitive way of getting the category root, since categoryService.getClassifications() can
+        // take minutes at customers having a large SOLR.
+        Collection<ChildAssociationRef> categories = categoryService.getRootCategories(
+                StoreRef.STORE_REF_WORKSPACE_SPACESSTORE,
+                classifiableAspectName);
+        if (categories.isEmpty()) {
+            throw new RuntimeException("Aspect name does not match a classifiable");
+        }
+        // What we actually get back is the first level categories UNDER the category root
+        // Thus, we return one of their parents.
+        return Iterables.get(categories, 0).getParentRef();
+    }
+
 }
