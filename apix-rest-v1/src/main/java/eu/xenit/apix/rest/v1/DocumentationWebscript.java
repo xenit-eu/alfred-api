@@ -1,8 +1,11 @@
 package eu.xenit.apix.rest.v1;
 
 import com.fasterxml.jackson.databind.type.SimpleType;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.*;
+import com.github.dynamicextensionsalfresco.webscripts.annotations.Authentication;
+import com.github.dynamicextensionsalfresco.webscripts.annotations.AuthenticationType;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.HttpMethod;
+import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
+import com.github.dynamicextensionsalfresco.webscripts.annotations.WebScript;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.rest.v1.bulk.BulkWebscript1;
@@ -29,10 +32,24 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.converter.ModelConverter;
 import io.swagger.converter.ModelConverterContext;
 import io.swagger.converter.ModelConverters;
-import io.swagger.models.*;
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.Operation;
+import io.swagger.models.Path;
+import io.swagger.models.Response;
+import io.swagger.models.Scheme;
+import io.swagger.models.Swagger;
 import io.swagger.models.properties.FileProperty;
 import io.swagger.models.properties.Property;
 import io.swagger.util.Json;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,21 +58,19 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.*;
-
-@WebScript(baseUri = RestV1Config.BaseUrl + "/docs", families = {RestV1Config.Family}, defaultFormat = "json",
-        description = "Access API Documentation", value = "Documentation")
+@WebScript(
+        baseUri = RestV1Config.BaseUrl + "/docs",
+        families = {RestV1Config.Family},
+        defaultFormat = "json",
+        description = "Access API Documentation",
+        value = "Documentation")
 @Component("eu.xenit.apix.rest.v1.DocumentationWebscript")
 @Authentication(AuthenticationType.USER)
 public class DocumentationWebscript extends ApixV1Webscript {//implements BeanFactoryAware{
 
     Logger logger = LoggerFactory.getLogger(DocumentationWebscript.class);
 
-    IVersionService versionService;
+    private IVersionService versionService;
     private IWebUtils webUtils;
 
     @Autowired
@@ -64,13 +79,13 @@ public class DocumentationWebscript extends ApixV1Webscript {//implements BeanFa
         this.webUtils = webUtils;
     }
 
-
     @Uri(value = "/swagger.json", method = HttpMethod.GET)
-    @ApiOperation("The Swagger Spec for Api-X")
+    @ApiOperation("The Swagger Spec for Alfred API")
     @ApiResponses(@ApiResponse(code = 200, message = "Success"))
     public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
         webScriptResponse.setContentType("json");
-        Json.mapper().writeValue(webScriptResponse.getOutputStream(), generateSwagger());
+        Swagger s = generateSwagger();
+        Json.mapper().writeValue(webScriptResponse.getOutputStream(), s);
     }
 
     @Uri(value = "/ui", method = HttpMethod.GET)
@@ -82,24 +97,7 @@ public class DocumentationWebscript extends ApixV1Webscript {//implements BeanFa
         webScriptResponse.setHeader("Location", swaggerUi + "?url=" + URLEncoder.encode(swaggerJsonUrl));
     }
 
-    @Uri(value = "/uiTest", method = HttpMethod.GET)
-    public void redirectToSwaggerUiTest(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse)
-            throws IOException {
-        String swaggerUi = webScriptRequest.getServiceContextPath() + "swagger/ui/";
-        String servicePath = webScriptRequest.getServicePath();
-        String swaggerJsonUrl = servicePath.substring(0, servicePath.lastIndexOf('/') + 1) + "swagger.json";
-        webScriptResponse.setHeader("Location", swaggerUi + "?url=" + URLEncoder.encode(swaggerJsonUrl));
-
-    }
-
-    @PostConstruct
-    public void init() {
-
-    }
-
     public Swagger generateSwagger() {
-        //beanFactory.
-
         Reader r = new Reader();
         // Correctly sets QName, Noderef, etc because swagger reader doesnt understand
         ModelConverters.getInstance().addConverter(new ModelConverter() {
@@ -169,24 +167,20 @@ public class DocumentationWebscript extends ApixV1Webscript {//implements BeanFa
         r.getSwagger().setSchemes(getSchemes());
         r.getSwagger().setBasePath("/alfresco/s" + RestV1Config.ApixUrl);
         Map<String, Path> paths = r.getSwagger().getPaths();
-        HashMap<String, Path> newPaths = new HashMap<String, Path>();
-
+        HashMap<String, Path> newPaths = new HashMap<>();
         for (Map.Entry<String, Path> entry : paths.entrySet()) {
             if (!entry.getKey().startsWith(RestV1Config.BaseUrl) && !entry.getKey().startsWith(RestV2Config.BaseUrl)) {
                 throw new RuntimeException(
-                        "Extract an operation from a webscript which does not start with the BaseUrl: " + entry
-                                .getKey());
+                        "Extract an operation from a webscript which does not start with the BaseUrl: "
+                                + entry.getKey());
             }
-
             newPaths.put(entry.getKey().substring(RestV1Config.ApixUrl.length()), entry.getValue());
         }
         r.getSwagger().setPaths(newPaths);
         return r.getSwagger();
     }
 
-
     private void addSwaggerUIOperation(Reader r) {
-
         Operation op = new Operation();
         Response response = new Response().description("Swagger UI interface");
         response.schema(new FileProperty());
@@ -199,30 +193,14 @@ public class DocumentationWebscript extends ApixV1Webscript {//implements BeanFa
     }
 
     public List<Scheme> getSchemes() {
-        ArrayList<Scheme> ret = new ArrayList<Scheme>();
-
-        //This doesnt seemt to work with the current setup at xenit,
+        ArrayList<Scheme> ret = new ArrayList<>();
+        // This doesn't seem to work with the current setup at xenit,
         // using https://xxx.dev.xenit.eu gives me http protocol instead of https
 
         // So, always use https
-        //Seems to work on 12/12/17, adding both. TODO: use from location instead of option
+        // Seems to work on 12/12/17, adding both. TODO: use from location instead of option
         ret.add(Scheme.HTTPS);
         ret.add(Scheme.HTTP);
         return ret;
-//
-//        if (webUtils.getProtocol().equals("http"))
-//            ret.add(Scheme.HTTP);
-//        else if (webUtils.getProtocol().equals("https"))
-//            ret.add(Scheme.HTTPS);
-//        else throw new RuntimeException("Unknown protocol " + webUtils.getProtocol());
-//
-//        return ret;
     }
-
-
-  /*  @Override
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-        Assert.isInstanceOf(ConfigurableListableBeanFactory.class, beanFactory, "BeanFactory is not of type ConfigurableListableBeanFactory.");
-        this.beanFactory =(ConfigurableListableBeanFactory) beanFactory ;
-    }*/
 }
