@@ -2,7 +2,7 @@ plugins {
     id 'application'
 }
 
-group = 'eu.xenit.apix.docs'
+group = 'eu.xenit.apix.swaggerdoc'
 description = 'Xenit Alfred API Swagger YAML extractor'
 
 ext {
@@ -11,12 +11,12 @@ ext {
 }
 
 dependencies {
-    implementation(project(":apix-impl"))
+    implementation(project(':apix-impl'))
     implementation group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_version
     implementation group: 'eu.xenit.de', name: 'annotations-runtime', version: de_version
     implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
 }
 
 application {
-    mainClassName = 'eu.xenit.apix.docs.Main'
+    mainClassName = "${group}.Main"
 }

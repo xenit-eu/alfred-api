@@ -1,4 +1,4 @@
-package eu.xenit.apix.docs;
+package eu.xenit.apix.swaggerdoc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import eu.xenit.apix.alfresco.version.VersionService;
