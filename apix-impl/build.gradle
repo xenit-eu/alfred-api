@@ -19,8 +19,16 @@ subprojects {
     apply from: "${rootProject.projectDir}/publish.gradle"
     apply plugin: 'eu.xenit.amp'
 
+    configurations {
+        ampArtifact
+        dynamicExtensionsBundles
+    }
+
     dependencies {
         compile(project(":apix-impl"))
+        dynamicExtensionsBundles(group: 'eu.xenit.swagger.ui', name: 'swagger-ui_5x', version: '1.1.0') {
+            transitive = false
+        } // Works for 6x too
     }
 
     publishing {
@@ -30,10 +38,6 @@ subprojects {
                 artifact tasks.amp
             }
         }
-    }
-
-    configurations {
-        ampArtifact
     }
 
     artifacts {
@@ -58,15 +62,11 @@ subprojects {
         }
     }
 
-
     // Extend amp plugin task:
     // We want to add 'alfresco-global.properties' etc to the module-specific folder in the AMP
     // (e.g. 'config/module/alfresco/module/apix-impl-51/') without hard-coding project name for each Alfresco version.
     amp {
-        deBundles = files(
-                jar,
-                "${rootDir}/lib/swagger-ui_5x-1.1.0.jar", // Works for 6x too
-        )
+        deBundles = configurations.dynamicExtensionsBundles + files(jar)
         into("config/alfresco/module/${project.name}") {
             from("${project.parent.projectDir}/config/alfresco-global.properties")
             from("${project.parent.projectDir}/config/log4j.properties")
