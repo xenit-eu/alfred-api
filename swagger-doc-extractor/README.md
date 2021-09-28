@@ -1,6 +1,6 @@
 # Swagger Documentation Extractor
-Tiny Java application that extracts the Swagger specification YAML for
-Alfred API basis on its source code.
+Tiny Java application that extracts the Swagger specification for
+Alfred API based on its source code.
 
 It is only used by https://bitbucket.org/xenit/alfred-docs to build the
 Swagger documentation served at https://docs.xenit.eu/alfred-api when a
