@@ -1,5 +1,18 @@
 # Alfred API - Changelog
 
+
+## 3.0.1 (2021-09-29)
+
+### Changed
+* [XENOPS-891](https://xenitsupport.jira.com/browse/XENOPS-891): Update docker images and wars to latest hotfix for 52, 62 & 70
+* [ALFREDAPI-378](https://xenitsupport.jira.com/browse/ALFREDAPI-378): Replace deprecated calls to serviceregistry
+
+### Fixed
+* [ALFREDAPI-469](https://xenitsupport.jira.com/browse/ALFREDAPI-469): Add swagger-doc-extractor subproject for http://docs.xenit.eu/alfred-api
+* [ALFREDAPI-489](https://xenitsupport.jira.com/browse/ALFREDAPI-489): Implemented check on content indexing in solrtesthelper
+* [ALFREDAPI-490](https://xenitsupport.jira.com/browse/ALFREDAPI-490): Improve performance of retrieving categories
+
+
 ## 3.0.0 (2021-07-29)
 This release adds support for Alfresco 7.0 and drops support for Alfresco 5.0, 5.1 and 6.0.
 

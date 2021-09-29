@@ -93,8 +93,7 @@ public class CategoryServiceTest extends BaseTest {
 //    }
     @Test
     public void TestGetCategoryTree() {
-
-        java.util.List<Category> roots = categoryService.getCategoryTree(generalClassifiableQName);
+        List<Category> roots = categoryService.getCategoryTree(generalClassifiableQName);
 
         Assert.assertTrue("Has languages in roots", matchAnyCategory(roots, "Languages"));
 //        assertTrue("Has languages in roots", roots.stream().anyMatch(t -> t.getName().equals("Languages")));

@@ -40,15 +40,10 @@ public class AllNodeInfoTest extends RestV1BaseTest {
     public void testGetAllNodeInfo() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
         String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "admin", "admin");
-        logger.info(" URL: " + url);
-        for (int i = 0; i < 20; i++) {
-            logger.error("For the request of testGetAllNodeInfo");
-            logger.error(url);
-        }
-
+        logger.debug(" URL: " + url);
         HttpResponse response = Request.Get(url).execute().returnResponse();
         String result = EntityUtils.toString(response.getEntity());
-        logger.info(" Result: " + result);
+        logger.debug(" Result: " + result);
         assertEquals(200, response.getStatusLine().getStatusCode());
     }
 
@@ -67,11 +62,11 @@ public class AllNodeInfoTest extends RestV1BaseTest {
                         "\"" +
                         "]}"));
 
-        logger.error("jsonString: " + jsonString);
+        logger.debug("jsonString: " + jsonString);
 
         final CloseableHttpClient httpclient = HttpClients.createDefault();
         final String url = makeAlfrescoBaseurl("admin", "admin") + "/apix/v1/nodes/nodeInfo";
-        logger.error("url: " + url);
+        logger.debug("url: " + url);
         HttpPost httppost = new HttpPost(url);
         httppost.setEntity(new StringEntity(jsonString));
 
@@ -89,7 +84,7 @@ public class AllNodeInfoTest extends RestV1BaseTest {
 
         final CloseableHttpClient httpclient = HttpClients.createDefault();
         final String url = makeAlfrescoBaseurl("admin", "admin") + "/apix/v1/nodes/nodeInfo";
-        logger.error("url: " + url);
+        logger.debug("url: " + url);
         HttpPost httppost = new HttpPost(url);
         httppost.setEntity(new StringEntity(jsonString));
 
@@ -108,7 +103,7 @@ public class AllNodeInfoTest extends RestV1BaseTest {
                 + "]}");
         final CloseableHttpClient httpclient = HttpClients.createDefault();
         final String url = makeAlfrescoBaseurl(RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS) + "/apix/v1/nodes/nodeInfo";
-        logger.error("url: " + url);
+        logger.debug("url: " + url);
         HttpPost httppost = new HttpPost(url);
         httppost.setEntity(new StringEntity(jsonString));
 
@@ -125,7 +120,7 @@ public class AllNodeInfoTest extends RestV1BaseTest {
         HashMap<String, NodeRef> initializedNodeRefs = init();
         String url =
                 makeAlfrescoBaseurl(RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS) + "/apix/v1/nodes/nodeInfo";
-        logger.info("url: {}", url);
+        logger.debug("url: {}", url);
         String jsonString = json(
                 "{" +
                         "\"noderefs\": [\"" +
