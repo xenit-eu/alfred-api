@@ -10,8 +10,10 @@ import eu.xenit.apix.rest.v1.DocumentationWebscript;
 import eu.xenit.apix.version.IVersionService;
 import eu.xenit.apix.version.VersionDescription;
 import eu.xenit.apix.web.IWebUtils;
+import io.swagger.models.Path;
 import io.swagger.models.Swagger;
 import io.swagger.models.properties.MapProperty;
+import io.swagger.models.properties.Property;
 import io.swagger.util.Json;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,36 +21,31 @@ import org.springframework.extensions.surf.util.URLEncoder;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 
-/**
- * Created by Michiel Huygen on 12/05/2016.
- */
+
 public class DocumentationWebscriptTest {
 
     @Test
     public void TestGenerate() throws JsonProcessingException {
-        io.swagger.models.Swagger swag = generateSwagger();
-
-        System.out.println(Json.mapper().writeValueAsString(swag));
-
-
+        String swagText = Json.mapper().writeValueAsString(generateSwagger());
+        System.out.println(swagText);
+        Assert.assertTrue(0 < swagText.length());
     }
 
     @Test
     public void TestPermissionsMap() {
         Swagger swag = generateSwagger();
-        io.swagger.models.Path path = swag.getPath("/v1/nodes/{space}/{store}/{guid}/permissions");
-        io.swagger.models.properties.Property schema = path.getGet().getResponses().get("200").getSchema();
+        Path path = swag.getPath("/v1/nodes/{space}/{store}/{guid}/permissions");
+        Property schema = path.getGet().getResponses().get("200").getSchema();
         Assert.assertTrue("Nodes permissions get should return a map", schema instanceof MapProperty);
         System.out.println(schema);
-
     }
 
     private Swagger generateSwagger() {
         IVersionService version = mock(IVersionService.class);
-        IWebUtils webutils = mock(IWebUtils.class);
+        IWebUtils webUtils = mock(IWebUtils.class);
         when(version.getVersionDescription()).thenReturn(new VersionDescription("1.0.unittest", "description"));
-        when(webutils.getHost()).thenReturn("http");
-        DocumentationWebscript web = new DocumentationWebscript(version, webutils);
+        when(webUtils.getHost()).thenReturn("http");
+        DocumentationWebscript web = new DocumentationWebscript(version, webUtils);
         return web.generateSwagger();
     }
 

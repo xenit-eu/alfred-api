@@ -12,8 +12,10 @@
 ### Deleted
 
 ### Fixed
+* [ALFREDAPI-469](https://xenitsupport.jira.com/browse/ALFREDAPI-469): Add swagger-doc-extractor subproject for http://docs.xenit.eu/alfred-api
 * [ALFREDAPI-489](https://xenitsupport.jira.com/browse/ALFREDAPI-489): Implemented check on content indexing in solrtesthelper
 * [ALFREDAPI-490](https://xenitsupport.jira.com/browse/ALFREDAPI-490): Improve performance of retrieving categories
+
 
 
 ## 3.0.0 (2021-07-29)
