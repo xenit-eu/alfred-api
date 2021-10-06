@@ -1,11 +1,13 @@
 package eu.xenit.apix.rest.v1.bulk;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Represents a single request in a bulk requests call Created by kenneth on 18.03.16.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BulkRequest {
 
     @ApiModelProperty(required = true, allowableValues = "get,put,post,delete")

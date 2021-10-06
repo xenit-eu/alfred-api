@@ -1,5 +1,6 @@
 package eu.xenit.apix.rest.v1.bulk;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import java.util.Map;
 /**
  * Created by kenneth on 06.06.16.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BulkSubResult {
 
     @ApiModelProperty(value = "The HTTP status code of the sub call", example = "200")

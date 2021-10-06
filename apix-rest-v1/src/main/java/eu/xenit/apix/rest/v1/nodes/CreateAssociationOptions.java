@@ -1,5 +1,6 @@
 package eu.xenit.apix.rest.v1.nodes;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,6 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * Created by Michiel Huygen on 23/05/2016.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CreateAssociationOptions {
 
     @ApiModelProperty(required = true)

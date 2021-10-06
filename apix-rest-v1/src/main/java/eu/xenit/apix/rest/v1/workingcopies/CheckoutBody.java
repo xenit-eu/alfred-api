@@ -1,6 +1,7 @@
 package eu.xenit.apix.rest.v1.workingcopies;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.xenit.apix.data.NodeRef;
 import io.swagger.annotations.ApiModelProperty;
@@ -8,6 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * Created by Michiel Huygen on 12/05/2016.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 class CheckoutBody {
 
     @ApiModelProperty(required = true)

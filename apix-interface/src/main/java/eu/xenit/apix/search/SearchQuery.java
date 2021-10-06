@@ -1,6 +1,7 @@
 package eu.xenit.apix.search;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonValue;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.data.StoreRef;
@@ -22,6 +23,7 @@ import java.util.Objects;
  * consistency: Options related to consistency. Is defaulted by eventual consistency.
  * highlight: Options related to term hit highlighting, similar to the Alfresco 5.2.4 API
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchQuery {
 
     @ApiModelProperty(required = true)

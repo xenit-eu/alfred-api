@@ -1,5 +1,6 @@
 package eu.xenit.apix.translation;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import eu.xenit.apix.data.QName;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -9,6 +10,7 @@ import java.util.Map;
  * Datastructure that represents the translations of a single property its values for a single language. values: The map
  * from property key to translation.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PropertyTranslationValue extends TranslationValue {
 
     @ApiModelProperty(dataType = "Map[string,string]")
