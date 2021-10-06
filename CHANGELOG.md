@@ -6,6 +6,7 @@
 ### Added
 
 ### Changed
+* [ALFREDAPI-494](https://xenitsupport.jira.com/browse/ALFREDAPI-494): Unused properties of json request body are now ignored
 
 ### Deleted
 
