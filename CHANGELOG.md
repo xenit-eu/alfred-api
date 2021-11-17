@@ -4,6 +4,7 @@
 ## 3.0.2 (Unreleased)
 
 ### Added
+* [ALFREDAPI-492](https://xenitsupport.jira.com/browse/ALFREDAPI-492): /v1/nodes POST enpoint now accepts aspects to add/remove
 
 ### Changed
 
