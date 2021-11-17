@@ -1,6 +1,7 @@
 package eu.xenit.apix.data;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
@@ -9,6 +10,11 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public class QName {
 
     private String value;
+
+    @JsonCreator
+    public QName() {
+
+    }
 
     @JsonCreator
     public QName(String s) {

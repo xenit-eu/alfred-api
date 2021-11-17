@@ -21,7 +21,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -522,7 +524,7 @@ public class NodeServiceTest extends BaseTest {
 
         try {
             eu.xenit.apix.data.NodeRef createdNodeRef = this.service
-                    .createNode(c.apix(testFolder.getNodeRef()), propertiesToSet, type, null);
+                    .createNode(c.apix(testFolder.getNodeRef()), propertiesToSet, null, null, type, null);
             assertNotNull(createdNodeRef);
             assertEquals(
                     this.alfrescoNodeService.getPrimaryParent(c.alfresco(createdNodeRef)).getParentRef().toString(),
@@ -560,7 +562,7 @@ public class NodeServiceTest extends BaseTest {
 
                             FileInfo mainTestFolder = self.createMainTestFolder(companyHomeRef);
                             FileInfo testFolder = self.createTestFolder(mainTestFolder.getNodeRef(), "testfolder2");
-                            self.service.createNode(c.apix(testFolder.getNodeRef()), propertiesToSet, type, null);
+                            self.service.createNode(c.apix(testFolder.getNodeRef()), propertiesToSet, null, null, type, null);
                             return null;
                         }
                     }, false, true);
@@ -598,7 +600,7 @@ public class NodeServiceTest extends BaseTest {
             Map<eu.xenit.apix.data.QName, String[]> propertiesToSet = new HashMap<>();
             propertiesToSet.put(c.apix(ContentModel.PROP_NAME), new String[]{"nodeWithContent"});
             eu.xenit.apix.data.NodeRef createdNodeRef = this.service
-                    .createNode(c.apix(testFolder.getNodeRef()), propertiesToSet, c.apix(ContentModel.TYPE_CONTENT),
+                    .createNode(c.apix(testFolder.getNodeRef()), propertiesToSet, null, null, c.apix(ContentModel.TYPE_CONTENT),
                             content);
 
             // re-read content of the node.
@@ -611,6 +613,53 @@ public class NodeServiceTest extends BaseTest {
             assertEquals(contentStr, resultingStr);
 
         } finally {
+            this.cleanUp();
+        }
+    }
+
+    @Test
+    public void testCreateNodeWithMetadata() throws UnsupportedEncodingException {
+        this.cleanUp();
+        NodeRef companyHomeRef = repository.getCompanyHome();
+        final NodeServiceTest self = this;
+
+        try {
+            FileInfo mainTestFolder = this.createMainTestFolder(companyHomeRef);
+            FileInfo testFolder = this.createTestFolder(mainTestFolder.getNodeRef(), "testfolder");
+
+            String mimeType = "text/plain";
+            String contentStr = "TEST CONTENT";
+            InputStream is = new ByteArrayInputStream(contentStr.getBytes("UTF-8"));
+
+            //properties to set
+            Map<eu.xenit.apix.data.QName, String[]> propertiesToSet = new HashMap<>();
+            propertiesToSet.put(c.apix(ContentModel.PROP_NAME), new String[]{"nodeWithContent"});
+            eu.xenit.apix.data.QName documentStatusQname =
+                    new eu.xenit.apix.data.QName("{http://test.apix.xenit.eu/model/content}documentStatus");
+            propertiesToSet.put(documentStatusQname, new String[]{"Draft"});
+
+            //aspects to add
+            eu.xenit.apix.data.QName[] aspectsToAdd = new eu.xenit.apix.data.QName[1];
+            aspectsToAdd[0] = c.apix(ContentModel.ASPECT_TEMPORARY);
+
+            //type to set
+            eu.xenit.apix.data.QName type = new eu.xenit.apix.data.QName(
+                    "{http://test.apix.xenit.eu/model/content}withMandatoryPropDocument");
+
+            eu.xenit.apix.data.NodeRef createdNodeRef = self.service.createNode(
+                    c.apix(testFolder.getNodeRef()), propertiesToSet, aspectsToAdd, null, type, null);
+
+            assertNotNull(createdNodeRef);
+            assertEquals(
+                    alfrescoNodeService.getPrimaryParent(c.alfresco(createdNodeRef)).getParentRef().toString(),
+                    testFolder.getNodeRef().toString());
+            assertEquals(c.apix(alfrescoNodeService.getType(c.alfresco(createdNodeRef))), type);
+            Map<QName, Serializable> testProperties = alfrescoNodeService.getProperties(c.alfresco(createdNodeRef));
+            assertNotNull("the cm:name property could not be found", testProperties.get(ContentModel.PROP_NAME));
+            assertNotNull("", testProperties.get(c.alfresco(documentStatusQname)));
+            assertTrue(alfrescoNodeService.hasAspect(c.alfresco(createdNodeRef), ContentModel.ASPECT_TEMPORARY));
+        }
+        finally {
             this.cleanUp();
         }
     }

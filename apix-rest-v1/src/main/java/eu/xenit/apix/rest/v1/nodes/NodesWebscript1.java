@@ -26,7 +26,6 @@ import eu.xenit.apix.node.NodeMetadata;
 import eu.xenit.apix.permissions.IPermissionService;
 import eu.xenit.apix.permissions.NodePermission;
 import eu.xenit.apix.permissions.PermissionValue;
-import eu.xenit.apix.exceptions.FileExistsException;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
 import eu.xenit.apix.rest.v1.RestV1Config;
 import eu.xenit.apix.rest.v1.nodes.ChangeAclsOptions.Access;
@@ -629,7 +628,10 @@ public class NodesWebscript1 extends ApixV1Webscript {
                                         "Please provide parameter \"type\" when creating a new node");
                                 return null;
                             }
-                            metadataChanges = new MetadataChanges(type, null, null,
+
+                            metadataChanges = new MetadataChanges(type,
+                                    createNodeOptions.aspectsToAdd,
+                                    createNodeOptions.aspectsToRemove,
                                     createNodeOptions.properties);
                             nodeService.setMetadata(nodeRef, metadataChanges);
 

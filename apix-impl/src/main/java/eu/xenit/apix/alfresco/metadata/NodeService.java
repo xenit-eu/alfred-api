@@ -582,7 +582,8 @@ public class NodeService implements INodeService {
 
     @Override
     public eu.xenit.apix.data.NodeRef createNode(eu.xenit.apix.data.NodeRef parent,
-            Map<eu.xenit.apix.data.QName, String[]> properties, eu.xenit.apix.data.QName type,
+            Map<eu.xenit.apix.data.QName, String[]> properties, eu.xenit.apix.data.QName[] aspectsToAdd,
+            eu.xenit.apix.data.QName[] aspectsToRemove, eu.xenit.apix.data.QName type,
             eu.xenit.apix.data.ContentData contentData) {
         String[] names = properties.get(c.apix(ContentModel.PROP_NAME));
         if (names == null || names.length == 0) {
@@ -599,6 +600,11 @@ public class NodeService implements INodeService {
                     QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, QName.createValidLocalName(name)),
                     c.alfresco(type),
                     toAlfrescoPropertyMap(properties));
+            
+            MetadataChanges aspects = new MetadataChanges();
+            aspects.setAspectsToAdd(aspectsToAdd);
+            aspects.setAspectsToRemove(aspectsToRemove);
+            setMetadata(c.apix(result.getChildRef()), aspects);
 
             if (contentData != null) {
                 this.nodeService.setProperty(result.getChildRef(), ContentModel.PROP_CONTENT, c.alfresco(contentData));
