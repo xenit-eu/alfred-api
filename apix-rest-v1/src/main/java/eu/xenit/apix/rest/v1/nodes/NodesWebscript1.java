@@ -587,7 +587,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         notes = "Example of POST body:\n"
                 + "\n"
                 + "```\n"
-                + "POST /apix/v1/nodes/nodeInfo\n"
+                + "POST /apix/v1/nodes\n"
                 + "{\n"
                 + "\"parent\" : \"workspace://SpacesStore/d5dac928-e581-4507-9be7-9a2416adc318\", \n"
                 + "\"name\" : \"mydocument.txt\", \n"
