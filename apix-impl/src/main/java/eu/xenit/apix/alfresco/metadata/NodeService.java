@@ -582,6 +582,13 @@ public class NodeService implements INodeService {
 
     @Override
     public eu.xenit.apix.data.NodeRef createNode(eu.xenit.apix.data.NodeRef parent,
+            Map<eu.xenit.apix.data.QName, String[]> properties, eu.xenit.apix.data.QName type,
+            eu.xenit.apix.data.ContentData contentData) {
+        return createNode(parent, properties, null, null, type, contentData);
+    }
+
+    @Override
+    public eu.xenit.apix.data.NodeRef createNode(eu.xenit.apix.data.NodeRef parent,
             Map<eu.xenit.apix.data.QName, String[]> properties, eu.xenit.apix.data.QName[] aspectsToAdd,
             eu.xenit.apix.data.QName[] aspectsToRemove, eu.xenit.apix.data.QName type,
             eu.xenit.apix.data.ContentData contentData) {
