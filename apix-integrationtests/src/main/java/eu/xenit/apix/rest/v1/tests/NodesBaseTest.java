@@ -1,5 +1,11 @@
 package eu.xenit.apix.rest.v1.tests;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,6 +15,9 @@ import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.rest.v1.nodes.CreateNodeOptions;
 import eu.xenit.apix.rest.v1.nodes.NodeInfo;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.alfresco.model.ContentModel;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -19,11 +28,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 
 public abstract class NodesBaseTest extends RestV1BaseTest {
 
@@ -81,21 +85,29 @@ public abstract class NodesBaseTest extends RestV1BaseTest {
         }
     }
 
-    protected CreateNodeOptions getCreateNodeOptions(eu.xenit.apix.data.NodeRef parentRef, String name, eu.xenit.apix.data.QName type, HashMap<QName, String[]> properties, eu.xenit.apix.data.NodeRef copyFrom) {
+    protected CreateNodeOptions getCreateNodeOptions(eu.xenit.apix.data.NodeRef parentRef, String name,
+            eu.xenit.apix.data.QName type, HashMap<QName, String[]> properties, QName[] aspectsToAdd,
+            QName[] aspectsToRemove, eu.xenit.apix.data.NodeRef copyFrom) {
         String parentRefString = (parentRef != null) ? parentRef.toString() : null;
         String copyFromString = (copyFrom != null) ? copyFrom.toString() : null;
         String typeString = (type != null) ? type.toString() : null;
 
         try {
-            return new CreateNodeOptions(parentRefString, name, typeString, properties, copyFromString);
+            return new CreateNodeOptions(parentRefString, name, typeString, properties, aspectsToAdd, aspectsToRemove, copyFromString);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
+    protected CreateNodeOptions getCreateNodeOptions(eu.xenit.apix.data.NodeRef parentRef,
+            String name, eu.xenit.apix.data.QName type, HashMap<QName, String[]> properties,
+            eu.xenit.apix.data.NodeRef copyFrom) {
+        return getCreateNodeOptions(parentRef, name, type, properties, null, null, copyFrom);
+    }
+
     public void checkCreatedNode(NodeRef newRef, CreateNodeOptions createNodeOptions) {
-        assertEquals(true, nodeService.exists(newRef));
+        assertTrue(nodeService.exists(newRef));
         assertEquals(createNodeOptions.parent, nodeService.getParentAssociations(newRef).get(0).getTarget().toString());
 
         if (createNodeOptions.type != null) {
@@ -103,12 +115,32 @@ public abstract class NodesBaseTest extends RestV1BaseTest {
         }
 
         if (createNodeOptions.copyFrom != null) {
-            assertEquals(true, nodeService.exists(new NodeRef(createNodeOptions.copyFrom)));
+            assertTrue(nodeService.exists(new NodeRef(createNodeOptions.copyFrom)));
         }
 
         if (createNodeOptions.properties != null) {
             for (Map.Entry<QName, String[]> property : createNodeOptions.properties.entrySet()) {
                 assertArrayEquals(property.getValue(), nodeService.getMetadata(newRef).properties.get(property.getKey()).toArray());
+            }
+        }
+
+        if (createNodeOptions.aspectsToAdd != null) {
+            for (QName aspect : createNodeOptions.aspectsToAdd) {
+                assertNotNull(nodeService.getMetadata(newRef).aspects
+                        .stream()
+                        .filter(testAspect -> testAspect.equals(aspect))
+                        .findFirst()
+                        .orElse(null));
+            }
+        }
+
+        if (createNodeOptions.aspectsToRemove != null) {
+            for (QName aspect : createNodeOptions.aspectsToRemove) {
+                assertNull(nodeService.getMetadata(newRef).aspects
+                        .stream()
+                        .filter(testAspect -> testAspect.equals(aspect))
+                        .findFirst()
+                        .orElse(null));
             }
         }
     }

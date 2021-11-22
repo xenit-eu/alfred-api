@@ -4,8 +4,8 @@ import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.node.INodeService;
-import java.util.HashMap;
 import eu.xenit.apix.rest.v1.nodes.CreateNodeOptions;
+import java.util.HashMap;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.transaction.TransactionService;
@@ -50,6 +50,26 @@ public class CopyNodeTest extends NodesBaseTest {
     public void testCopyFileNode() {
         CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, null,
                 null, null , copyFromFile);
+        NodeRef newRef = transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    return doPostNodes(createNodeOptions, HttpStatus.SC_OK, null,null);
+                }, false, true);
+        checkCreatedNode(newRef, createNodeOptions);
+    }
+
+    @Test
+    public void testCopyFileNodeWithAspectsToRemove() {
+        transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    serviceRegistry.getNodeService().addAspect(c.alfresco(copyFromFile), ContentModel.ASPECT_TEMPORARY, new HashMap<>());
+                    return null;
+                }, false, true);
+
+        QName[] aspectsToRemove = new QName[1];
+        aspectsToRemove[0] = c.apix(ContentModel.ASPECT_TEMPORARY);
+        CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, null,
+                null, null, null, aspectsToRemove, copyFromFile);
+
         NodeRef newRef = transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
                     return doPostNodes(createNodeOptions, HttpStatus.SC_OK, null,null);
