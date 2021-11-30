@@ -1,7 +1,19 @@
 # Alfred API - Changelog
 
 
-## 3.0.2 (2021-11-25)
+## 3.0.3 (unreleased)
+
+### Added
+
+### Deleted
+
+### Changed
+
+### Fixed
+
+
+
+## 3.0.2 (2021-11-30)
 
 ### Added
 * [ALFREDAPI-492](https://xenitsupport.jira.com/browse/ALFREDAPI-492): /v1/nodes POST enpoint now accepts aspects to add/remove
