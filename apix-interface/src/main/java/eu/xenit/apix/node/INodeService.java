@@ -148,6 +148,21 @@ public interface INodeService {
     NodeRef createNode(NodeRef parent, Map<QName, String[]> properties, QName type, ContentData contentData);
 
     /**
+     * Creation of a node giving the list of properties as well as the type. To be used when using a custom type has
+     * required properties.
+     *
+     * @param parent      The parent node of the new node.
+     * @param properties  list of properties to add to node.
+     * @param aspectsToAdd  list of aspects to add to node.
+     * @param aspectsToRemove  list of aspects to remove from node.
+     * @param type        The type of the node.
+     * @param contentData can contain returned result of function createContent (or null).
+     * @return The noderef of the new node.
+     */
+    NodeRef createNode(NodeRef parent, Map<QName, String[]> properties, QName[] aspectsToAdd, QName[] aspectsToRemove,
+            QName type, ContentData contentData);
+
+    /**
      * Convenience method to create a node giving the type, the list of properties,
      * and requesting metadata extraction from its content.
      * Since Alfresco 7, metadata extraction is done asynchronously. The metadata should be

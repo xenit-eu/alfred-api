@@ -26,7 +26,6 @@ import eu.xenit.apix.node.NodeMetadata;
 import eu.xenit.apix.permissions.IPermissionService;
 import eu.xenit.apix.permissions.NodePermission;
 import eu.xenit.apix.permissions.PermissionValue;
-import eu.xenit.apix.exceptions.FileExistsException;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
 import eu.xenit.apix.rest.v1.RestV1Config;
 import eu.xenit.apix.rest.v1.nodes.ChangeAclsOptions.Access;
@@ -584,7 +583,37 @@ public class NodesWebscript1 extends ApixV1Webscript {
         }
     }
 
-    @ApiOperation("Creates or copies a node")
+    @ApiOperation(value = "Creates or copies a node",
+        notes = "Example of POST body:\n"
+                + "\n"
+                + "```\n"
+                + "POST /apix/v1/nodes\n"
+                + "{\n"
+                + "\"parent\" : \"workspace://SpacesStore/d5dac928-e581-4507-9be7-9a2416adc318\", \n"
+                + "\"name\" : \"mydocument.txt\", \n"
+                + "\"type\" : \"{http://www.alfresco.org/model/content/1.0}content\", \n"
+                + "\"properties\" : {\n"
+                + "      \"{namespace}property1\": [\n"
+                + "        \"string\"\n"
+                + "      ],\n"
+                + "      \"{namespace}property2\": [\n"
+                + "        \"string\"\n"
+                + "      ],\n"
+                + "      \"{namespace}property3\": [\n"
+                + "        \"string\"\n"
+                + "      ]\n"
+                + "}, \n"
+                + "\"aspectsToAdd\" : [\n"
+                + "      \"{namespace}aspect1\"\n"
+                + "], \n"
+                + "\"aspectsToRemove\" : [\n"
+                + "      \"{namespace}aspect1\"\n"
+                + "], \n"
+                + "\"copyFrom\" : \"workspace://SpacesStore/f0d15919-3841-4170-807f-b81d2ebdeb80\", \n"
+                + "}\n"
+                + "```"
+                + "\n"
+                + "\"aspectsToRemove\" is only relevant when copying a node.\n")
     @Uri(value = "/nodes", method = HttpMethod.POST)
     @ApiResponses({@ApiResponse(code = 200, message = "Success", response = NodeInfo.class),
             @ApiResponse(code = 403, message = "Not Authorized")})
@@ -629,7 +658,10 @@ public class NodesWebscript1 extends ApixV1Webscript {
                                         "Please provide parameter \"type\" when creating a new node");
                                 return null;
                             }
-                            metadataChanges = new MetadataChanges(type, null, null,
+
+                            metadataChanges = new MetadataChanges(type,
+                                    createNodeOptions.aspectsToAdd,
+                                    createNodeOptions.aspectsToRemove,
                                     createNodeOptions.properties);
                             nodeService.setMetadata(nodeRef, metadataChanges);
 

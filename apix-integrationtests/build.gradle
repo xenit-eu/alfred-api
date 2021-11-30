@@ -105,5 +105,10 @@ subprojects {
         compileOnly project(':apix-integrationtests')
     }
 
+    integrationTest {
+        // After the tests, the docker setup should be stopped
+        finalizedBy composeDownTask
+    }
+
 }
 

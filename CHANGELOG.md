@@ -1,6 +1,14 @@
 # Alfred API - Changelog
 
 
+## 3.0.2 (2021-11-25)
+
+### Added
+* [ALFREDAPI-492](https://xenitsupport.jira.com/browse/ALFREDAPI-492): /v1/nodes POST enpoint now accepts aspects to add/remove
+* [ALFREDAPI-497](https://xenitsupport.jira.com/browse/ALFREDAPI-497): Re-enable `composeDown` after `integrationTest` in build
+
+
+
 ## 3.0.1 (2021-09-29)
 
 ### Changed
