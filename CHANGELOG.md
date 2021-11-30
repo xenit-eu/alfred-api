@@ -5,6 +5,7 @@
 
 ### Added
 * [ALFREDAPI-492](https://xenitsupport.jira.com/browse/ALFREDAPI-492): /v1/nodes POST enpoint now accepts aspects to add/remove
+* [ALFREDAPI-497](https://xenitsupport.jira.com/browse/ALFREDAPI-497): Re-enable `composeDown` after `integrationTest` in build
 
 
 
