@@ -40,7 +40,7 @@ jobs:
   publish:
     needs: build-and-test-artifacts
     runs-on: ubuntu-latest
-    if: ${{ startsWith(github.ref, 'refs/heads/master' || startsWith(github.ref, 'refs/heads/release' }}
+    if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}
     steps:
       - env:
           # TODO check if creds and keys can be the same used for org (eg DE)
