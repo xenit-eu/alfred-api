@@ -66,6 +66,22 @@ ext {
     care4alfVersion = '2.3.0'
 }
 
+// It is not possible to set properties with a dot via GitHub Actions env variables, therefore we introduce support
+// for a non-dotted-equivalent
+def copyPropertyValueIfExists(sourcePropertyName, targetPropertyName) {
+    if (project.hasProperty(sourcePropertyName)) {
+        project.ext[targetPropertyName] = project.property(sourcePropertyName)
+    }
+}
+
+allprojects {
+    copyPropertyValueIfExists('alfresco_nexus_username', 'org.alfresco.maven.nexus.username')
+    copyPropertyValueIfExists('alfresco_nexus_password', 'org.alfresco.maven.nexus.password')
+    copyPropertyValueIfExists('xenit_docker_registry_url', 'eu.xenit.docker.registry.url')
+    copyPropertyValueIfExists('xenit_docker_registry_username', 'eu.xenit.docker.registry.username')
+    copyPropertyValueIfExists('xenit_docker_registry_password', 'eu.xenit.docker.registry.password')
+}
+
 subprojects {
     apply plugin: 'java'
     apply plugin: 'maven'

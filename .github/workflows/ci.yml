@@ -1,0 +1,52 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - master
+      - 'release*'
+  pull_request:
+
+env:
+  ORG_GRADLE_PROJECT_alfresco_nexus_username: ${{ secrets.ALFRESCO_NEXUS_USERNAME }}
+  ORG_GRADLE_PROJECT_alfresco_nexus_password: ${{ secrets.ALFRESCO_NEXUS_PASSWORD }}
+  ORG_GRADLE_PROJECT_xenit_docker_registry_url: ${{ secrets.XENIT_DOCKER_REGISTRY_URL }}
+  ORG_GRADLE_PROJECT_xenit_docker_registry_username: ${{ secrets.XENIT_DOCKER_REGISTRY_USERNAME }}
+  ORG_GRADLE_PROJECT_xenit_docker_registry_password: ${{ secrets.XENIT_DOCKER_REGISTRY_PASSWORD }}
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+  build-and-test-interface-and-restapi:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - run: ./gradlew --info --stacktrace :apix-interface:build :apix-interface:javadoc
+      - run: ./gradlew --info --stacktrace :apix-rest-v1:test
+  build-and-test-artifacts:
+    needs: build-and-test-interface-and-restapi
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: [52, 61, 62, 70]
+    steps:
+      - run: ./gradlew --info --stacktrace :apix-impl:apix-impl-${{ matrix.version }}:test
+      - run: ./gradlew --info --stacktrace :apix-impl:apix-impl-${{ matrix.version }}:integrationTest
+  publish:
+    needs: build-and-test-artifacts
+    runs-on: ubuntu-latest
+    if: ${{ startsWith(github.ref, 'refs/heads/master' || startsWith(github.ref, 'refs/heads/release' }}
+    steps:
+      - env:
+          # TODO check if creds and keys can be the same used for org (eg DE)
+          # if not, update these vars and their corresponding secretes.
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVEN_CENTRAL_GPG_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVEN_CENTRAL_GPG_PASSWORD }}
+          ORG_GRADLE_PROJECT_sonatype_username: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatype_password: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+        run: ./gradlew --info --stacktrace publish
