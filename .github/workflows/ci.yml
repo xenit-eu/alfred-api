@@ -6,6 +6,8 @@ on:
       - master
       - 'release*'
   pull_request:
+    paths-ignore:
+      - '**.md'
 
 env:
   ORG_GRADLE_PROJECT_alfresco_nexus_username: ${{ secrets.ALFRESCO_NEXUS_USERNAME }}
