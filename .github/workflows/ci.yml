@@ -18,7 +18,6 @@ env:
 
 jobs:
   build-and-test-interface-and-restapi:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
