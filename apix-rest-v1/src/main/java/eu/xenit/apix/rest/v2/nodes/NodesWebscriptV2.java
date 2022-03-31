@@ -61,7 +61,7 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
     @Autowired
     ServiceRegistry serviceRegistry;
 
-    @ApiOperation("Returns combined information of a node")
+    @ApiOperation("Returns combined information of a node.\nNote: versionstore does not support sourceAssocs. For version nodes, an empty list added to the result")
     @Uri(value = "/nodes/{space}/{store}/{guid}", method = HttpMethod.GET)
     @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NodeInfo.class))
     public void getAllInfo(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
@@ -105,7 +105,7 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
                     "Set 'retrieveChildAssocs' to false to omit the child associations from the result.\n" +
                     "Set 'retrieveParentAssocs' to false to omit the parent associations from the result.\n" +
                     "Set 'retrieveTargetAssocs' to false to omit the peer target associations from the result.\n" +
-                    "Set 'retrieveSourceAssocs' to false to omit the peer source associations from the result.\n")
+                    "Set 'retrieveSourceAssocs' to false to omit the peer source associations from the result. Note: versionstore does not support sourceAssocs. For version nodes, an empty list added to the result\n")
     @Uri(value = "/nodes/nodeInfo", method = HttpMethod.POST)
     @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NodeInfo[].class))
     public void getAllInfos(WebScriptRequest request, WebScriptResponse response) throws IOException, JSONException {
