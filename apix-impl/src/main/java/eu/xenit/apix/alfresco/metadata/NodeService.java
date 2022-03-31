@@ -411,14 +411,19 @@ public class NodeService implements INodeService {
 
     @Override
     public List<NodeAssociation> getSourceAssociations(eu.xenit.apix.data.NodeRef ref) {
-        return nodeService.getSourceAssocs(c.alfresco(ref), RegexQNamePattern.MATCH_ALL)
-                .stream()
-                .map(alfPeerAssoc ->
-                        new NodeAssociation(
-                                c.apix(alfPeerAssoc.getSourceRef()),
-                                ref,
-                                c.apix(alfPeerAssoc.getTypeQName())))
-                .collect(Collectors.toList());
+        // Versionstore does not support sourceAssocs. For version nodes, do not do call, add empty list to result
+        List<NodeAssociation> sourceAssocs = null;
+        if ("versionStore".equals(ref.getStoreRefProtocol())) {
+            sourceAssocs = nodeService.getSourceAssocs(c.alfresco(ref), RegexQNamePattern.MATCH_ALL)
+                    .stream()
+                    .map(alfPeerAssoc ->
+                            new NodeAssociation(
+                                    c.apix(alfPeerAssoc.getSourceRef()),
+                                    ref,
+                                    c.apix(alfPeerAssoc.getTypeQName())))
+                    .collect(Collectors.toList());
+        }
+        return sourceAssocs == null ? new ArrayList<>() : sourceAssocs;
     }
 
     @Override
