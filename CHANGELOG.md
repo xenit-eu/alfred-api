@@ -9,6 +9,8 @@
 
 ### Changed
 
+* [ALFREDAPI-498](https://xenitsupport.jira.com/browse/ALFREDAPI-497): improve handling of version node association retrieval
+
 ### Fixed
 
 
