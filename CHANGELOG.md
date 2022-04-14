@@ -4,6 +4,7 @@
 ## 3.0.3 (unreleased)
 
 ### Added
+* [ALFREDAPI-501](https://xenitsupport.jira.com/browse/ALFREDAPI-501): Added builds for Alfresco 7.1 + 7.2 compatibility
 
 ### Deleted
 
