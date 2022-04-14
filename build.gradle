@@ -50,6 +50,7 @@ ext {
     alfresco_61_version = "6.1"
     alfresco_62_version = "6.2"
     alfresco_70_version = "7.0"
+    alfresco_71_version = "7.1"
 
     // The introduction of hit highlights in search 52 required general versions bump to 5.2.f
     // Additionally, an explicit dependency on the data-model was required, however
@@ -62,6 +63,7 @@ ext {
     alfresco_61_dm_version = "8.25.1"
     alfresco_62_dm_version = "8.50.18"
     alfresco_70_dm_version = "8.424"
+    alfresco_71_dm_version = "12.23"
 
     care4alfVersion = '2.3.0'
 }

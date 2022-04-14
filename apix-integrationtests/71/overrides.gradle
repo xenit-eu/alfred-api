@@ -1,0 +1,14 @@
+ext {
+    subproject_alfresco_version = "71"
+    alfresco_version = alfresco_71_version
+    alfresco_dm_version = alfresco_71_dm_version
+    alfresco_repo_version = '12.23'
+    alfresco_remote_api_version = '12.23'
+}
+
+dependencies {
+    integrationTestImplementationRemote(group: 'org.apache.httpcomponents', name: 'fluent-hc', version: http_version) {
+        exclude group: 'commons-logging'
+        exclude group: 'org.apache.httpcomponents', module: 'httpcore'
+    }
+}
