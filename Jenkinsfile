@@ -57,8 +57,11 @@ node {
 //         stage("Build 70") {
 //             BuildVersionX("70")
 //         }
-        stage("Build 71") {
-            BuildVersionX("71")
+//         stage("Build 71") {
+//             BuildVersionX("71")
+//         }
+        stage("Build 72") {
+            BuildVersionX("72")
         }
         
         stage("Publishing") {
