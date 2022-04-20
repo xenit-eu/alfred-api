@@ -5,5 +5,5 @@ ext {
     alfresco_repo_version = '7.199.0'
     alfresco_dm_version = alfresco_62_dm_version
     alfresco_min_version = "6.2"
-    alfresco_max_version = "6.999"
+    alfresco_max_version = "6.2.99"
 }

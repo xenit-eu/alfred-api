@@ -1,0 +1,8 @@
+dependencies {
+    baseAlfrescoWar platform("org.alfresco:acs-packaging:7.2.0")
+    baseAlfrescoWar 'org.alfresco:content-services@war'
+}
+
+dockerAlfresco {
+    baseImage = 'hub.xenit.eu/alfresco-enterprise/alfresco-repository-enterprise:7.2'
+}
