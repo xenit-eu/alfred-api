@@ -1,10 +1,10 @@
 # Alfred API - Changelog
 
 
-## 3.0.3 (unreleased)
+## 3.1.0 (unreleased)
 
 ### Added
-* [ALFREDAPI-501](https://xenitsupport.jira.com/browse/ALFREDAPI-501): Added builds for Alfresco 7.1 + 7.2 compatibility
+* [ALFREDAPI-501](https://xenitsupport.jira.com/browse/ALFREDAPI-501): Added support for Alfresco 7.1 and 7.2
 
 ### Deleted
 
