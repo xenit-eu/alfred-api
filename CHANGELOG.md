@@ -1,7 +1,18 @@
 # Alfred API - Changelog
 
 
-## 3.0.2 (2021-11-25)
+## 3.1.0 (2022-04-21)
+
+### Added
+* [ALFREDAPI-501](https://xenitsupport.jira.com/browse/ALFREDAPI-501): Added support for Alfresco 7.1 and 7.2
+
+### Changed
+
+* [ALFREDAPI-498](https://xenitsupport.jira.com/browse/ALFREDAPI-497): improve handling of version node association retrieval
+
+
+
+## 3.0.2 (2021-11-30)
 
 ### Added
 * [ALFREDAPI-492](https://xenitsupport.jira.com/browse/ALFREDAPI-492): /v1/nodes POST enpoint now accepts aspects to add/remove

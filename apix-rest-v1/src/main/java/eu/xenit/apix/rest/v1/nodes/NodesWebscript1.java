@@ -185,7 +185,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
     }
 
-    @ApiOperation("Retrieve node associations")
+    @ApiOperation("Retrieve node associations.\nVersionstore does not support sourceAssocs. For version nodes, an empty list is returned for this component of the result.")
     @Uri(value = "/nodes/{space}/{store}/{guid}/associations", method = HttpMethod.GET)
     @ApiResponses({@ApiResponse(code = 200, message = "Success", response = NodeAssociations.class),
             @ApiResponse(code = 403, message = "Not Authorized")})
@@ -392,7 +392,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
     }
 
-    @ApiOperation("Returns combined information of a node")
+    @ApiOperation("Returns combined information of a node.\nNote: versionstore does not support sourceAssocs. For version nodes, an empty list added to the result")
     @Uri(value = "/nodes/{space}/{store}/{guid}", method = HttpMethod.GET)
     @ApiResponses({
             @ApiResponse(code = 200, message = "Success", response = NodeInfo.class),
@@ -454,7 +454,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
                     "Set 'retrieveChildAssocs' to false to omit the child associations from the result.\n" +
                     "Set 'retrieveParentAssocs' to false to omit the parent associations from the result.\n" +
                     "Set 'retrieveTargetAssocs' to false to omit the peer target associations from the result.\n" +
-                    "Set 'retrieveSourceAssocs' to false to omit the peer source associations from the result.\n")
+                    "Set 'retrieveSourceAssocs' to false to omit the peer source associations from the result. Note: versionstore does not support sourceAssocs. For version nodes, an empty list added to the result\n")
     @Uri(value = "/nodes/nodeInfo", method = HttpMethod.POST)
     @ApiResponses({
             @ApiResponse(code = 200, message = "Success", response = NodeInfo[].class),
