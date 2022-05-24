@@ -64,19 +64,28 @@ public class SiteService implements ISiteService {
         return apixSites;
     }
 
-    private Map<String, NodeRef> getSiteComponents(org.alfresco.service.cmr.site.SiteService siteService,
-            String siteShortname) {
+    private Map<String, NodeRef> getSiteComponents(org.alfresco.service.cmr.site.SiteService siteService, String siteShortname) {
         Map<String, NodeRef> componentsMap = new HashMap<>();
-        NodeRef documentLibrary = c.apix(siteService.getContainer(siteShortname, DOCUMENT_LIBRARY_COMPONENT));
-        NodeRef links = c.apix(siteService.getContainer(siteShortname, LINKS_COMPONENT));
-        NodeRef dataLists = c.apix(siteService.getContainer(siteShortname, DATA_LISTS_COMPONENT));
-        NodeRef wiki = c.apix(siteService.getContainer(siteShortname, WIKI_COMPONENT));
-        NodeRef discussions = c.apix(siteService.getContainer(siteShortname, DISCUSSIONS_COMPONENT));
-        componentsMap.put(DOCUMENT_LIBRARY_COMPONENT, documentLibrary);
-        componentsMap.put(LINKS_COMPONENT, links);
-        componentsMap.put(DATA_LISTS_COMPONENT, dataLists);
-        componentsMap.put(WIKI_COMPONENT, wiki);
-        componentsMap.put(DISCUSSIONS_COMPONENT, discussions);
+        addSiteComponentToMap(siteService, componentsMap, siteShortname, DOCUMENT_LIBRARY_COMPONENT);
+        addSiteComponentToMap(siteService, componentsMap, siteShortname, LINKS_COMPONENT);
+        addSiteComponentToMap(siteService, componentsMap, siteShortname, DATA_LISTS_COMPONENT);
+        addSiteComponentToMap(siteService, componentsMap, siteShortname, WIKI_COMPONENT);
+        addSiteComponentToMap(siteService, componentsMap, siteShortname, DISCUSSIONS_COMPONENT);
+
         return componentsMap;
+    }
+
+    private void addSiteComponentToMap(org.alfresco.service.cmr.site.SiteService siteService, Map<String, NodeRef> componentsMap,
+                                       String siteShortname, String siteComponentName) {
+        try {
+            NodeRef componentRef = c.apix(siteService.getContainer(siteShortname, siteComponentName));
+            if (componentRef == null) {
+                return;
+            }
+            componentsMap.put(siteComponentName, componentRef);
+        }
+        catch (AccessDeniedException ex) {
+            logger.debug("Access denied to site component {} for site {}. It is not added to the map.", siteComponentName, siteShortname);
+        }
     }
 }

@@ -10,6 +10,9 @@ import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.sites.ISite;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.StoreRef;
@@ -43,10 +46,17 @@ public class GetUserSitesUnitTest {
     private final static String WIKI_COMPONENT = "wiki";
     private final static String DISCUSSIONS_COMPONENT = "discussions";
 
-    @Before
-    public void init() {
+    private void init() {
         serviceRegistry = mock(ServiceRegistry.class);
         SiteService siteServiceMock = initSiteServiceMock();
+        when(serviceRegistry.getSiteService()).thenReturn(siteServiceMock);
+
+        apixAlfrescoConverter = new ApixToAlfrescoConversion(serviceRegistry);
+    }
+
+    public void initWithInaccessibleComponent() {
+        serviceRegistry = mock(ServiceRegistry.class);
+        SiteService siteServiceMock = initSiteServiceWithInaccessibleComponent();
         when(serviceRegistry.getSiteService()).thenReturn(siteServiceMock);
 
         apixAlfrescoConverter = new ApixToAlfrescoConversion(serviceRegistry);
@@ -57,6 +67,18 @@ public class GetUserSitesUnitTest {
 
         //Initializing sites
         List<SiteInfo> sites = initSites(siteServiceMock);
+
+        //Init mock of listSites method
+        when(siteServiceMock.listSites(Mockito.anyString())).thenReturn(sites);
+
+        return siteServiceMock;
+    }
+
+    private SiteService initSiteServiceWithInaccessibleComponent() {
+        SiteService siteServiceMock = mock(SiteService.class);
+
+        //Initializing sites
+        List<SiteInfo> sites = initSiteWithInaccessibleComponent(siteServiceMock);
 
         //Init mock of listSites method
         when(siteServiceMock.listSites(Mockito.anyString())).thenReturn(sites);
@@ -78,6 +100,16 @@ public class GetUserSitesUnitTest {
                 new NodeRef(TEST_SITE_3_REF));
         initSiteComponents(siteService, testSite3);
         sites.add(testSite3);
+
+        return sites;
+    }
+
+    private List<SiteInfo> initSiteWithInaccessibleComponent(SiteService siteService) {
+        List<SiteInfo> sites = new ArrayList<>();
+        testSite1 = createSite(TEST_SITE_1_SHORT_NAME, TEST_SITE_1_SHORT_NAME, TEST_SITE_1_SHORT_NAME,
+                new NodeRef(TEST_SITE_1_REF));
+        initSiteComponentsWithInaccessibleComponent(siteService, testSite1);
+        sites.add(testSite1);
 
         return sites;
     }
@@ -115,8 +147,23 @@ public class GetUserSitesUnitTest {
                 .thenReturn(discussionsComponentRef);
     }
 
+    private void initSiteComponentsWithInaccessibleComponent(SiteService siteService, SiteInfo site) {
+        String shortName = site.getShortName();
+        NodeRef documentLibraryComponentRef = new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE,
+                shortName + "docLib");
+        NodeRef linksComponentRef = new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, shortName + "links");
+
+        when(siteService.getContainer(site.getShortName(), DOCUMENT_LIBRARY_COMPONENT))
+                .thenReturn(documentLibraryComponentRef);
+        when(siteService.getContainer(site.getShortName(), LINKS_COMPONENT))
+                .thenReturn(linksComponentRef);
+        when(siteService.getContainer(site.getShortName(), DATA_LISTS_COMPONENT))
+                .thenThrow(new AccessDeniedException("You're not welcome here!"));
+    }
+
     @Test
     public void testGetUserSites() {
+        init();
         SiteService alfrescoSiteService = serviceRegistry.getSiteService();
         eu.xenit.apix.alfresco.sites.SiteService apixSiteService =
                 new eu.xenit.apix.alfresco.sites.SiteService(serviceRegistry, apixAlfrescoConverter);
@@ -134,6 +181,24 @@ public class GetUserSitesUnitTest {
         verifyGetContainer(alfrescoSiteService, testSite1);
         verifyGetContainer(alfrescoSiteService, testSite2);
         verifyGetContainer(alfrescoSiteService, testSite3);
+    }
+
+    @Test
+    public void testGetUserSitesWithInaccessibleComponent() {
+        initWithInaccessibleComponent();
+        eu.xenit.apix.alfresco.sites.SiteService apixSiteService =
+                new eu.xenit.apix.alfresco.sites.SiteService(serviceRegistry, apixAlfrescoConverter);
+
+        String user = "testUser";
+        List<ISite> testUserSites = apixSiteService.getUserSites(user);
+        Assert.assertNotEquals(null, testSite1);
+        Assert.assertEquals(1, testUserSites.size());
+        Assert.assertEquals(testSite1.getShortName(), testUserSites.get(0).getShortName());
+        Map<String, eu.xenit.apix.data.NodeRef> components = testUserSites.get(0).getComponents();
+        Assert.assertEquals(2, components.size());
+        Assert.assertTrue(components.containsKey(DOCUMENT_LIBRARY_COMPONENT));
+        Assert.assertTrue(components.containsKey(LINKS_COMPONENT));
+        Assert.assertFalse(components.containsKey(DATA_LISTS_COMPONENT));
     }
 
     private void verifyGetContainer(SiteService alfrescoSiteService, SiteInfo testSite) {
