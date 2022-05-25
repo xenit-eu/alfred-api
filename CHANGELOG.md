@@ -1,6 +1,17 @@
 # Alfred API - Changelog
 
 
+## 3.1.1 (yyyy-mm-dd)
+
+### Added
+
+### Changed
+
+### Fixed
+* [ALFREDAPI-503](https://xenitsupport.jira.com/browse/ALFREDAPI-503): Fixed issue where site information could not be retrieved if the user does not have permissions to one of the components
+
+### Removed
+
 ## 3.1.0 (2022-04-21)
 
 ### Added
