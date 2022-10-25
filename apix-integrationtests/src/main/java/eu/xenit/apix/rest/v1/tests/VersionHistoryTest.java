@@ -66,25 +66,22 @@ public class VersionHistoryTest extends RestV1BaseTest {
         final HashMap<String, NodeRef> initializedNodeRefs = init();
         final String[] url = new String[1];
         transactionService.getRetryingTransactionHelper()
-                .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
-                    @Override
-                    public Object execute() throws Throwable {
-                        NodeRef testNode = initializedNodeRefs.get(RestV1BaseTest.TESTFILE3_NAME);
-                        url[0] = createApixUrl("/versionhistory/%s/%s/%s/versions", testNode.getStoreRefProtocol(),
-                                testNode.getStoreRefId(), testNode.getGuid());
-                        HashMap versionProperties = new HashMap<>();
-                        versionProperties.put(VersionBaseModel.PROP_VERSION_TYPE,
-                                org.alfresco.service.cmr.version.VersionType.MAJOR);
-                        versionProperties.put(VersionBaseModel.PROP_DESCRIPTION, "Test123");
-                        org.alfresco.service.cmr.version.Version version = alfrizcoVersionHistoryService
-                                .createVersion(c.alfresco(testNode), versionProperties);
-                        logger.debug(" versioning 1 label: " + version.getVersionLabel());
-                        versionProperties.put(VersionBaseModel.PROP_DESCRIPTION, "Test456");
-                        org.alfresco.service.cmr.version.Version version2 = alfrizcoVersionHistoryService
-                                .createVersion(c.alfresco(testNode), versionProperties);
-                        logger.debug(" versioning 2 label: " + version2.getVersionLabel());
-                        return null;
-                    }
+                .doInTransaction(() -> {
+                    NodeRef testNode = initializedNodeRefs.get(RestV1BaseTest.TESTFILE3_NAME);
+                    url[0] = createApixUrl("/versionhistory/%s/%s/%s/versions", testNode.getStoreRefProtocol(),
+                            testNode.getStoreRefId(), testNode.getGuid());
+                    HashMap versionProperties = new HashMap<>();
+                    versionProperties.put(VersionBaseModel.PROP_VERSION_TYPE,
+                            org.alfresco.service.cmr.version.VersionType.MAJOR);
+                    versionProperties.put(VersionBaseModel.PROP_DESCRIPTION, "Test123");
+                    org.alfresco.service.cmr.version.Version version = alfrizcoVersionHistoryService
+                            .createVersion(c.alfresco(testNode), versionProperties);
+                    logger.debug(" versioning 1 label: " + version.getVersionLabel());
+                    versionProperties.put(VersionBaseModel.PROP_DESCRIPTION, "Test456");
+                    org.alfresco.service.cmr.version.Version version2 = alfrizcoVersionHistoryService
+                            .createVersion(c.alfresco(testNode), versionProperties);
+                    logger.debug(" versioning 2 label: " + version2.getVersionLabel());
+                    return null;
                 }, false, true);
 
         HttpResponse httpResponse = Request.Get(url[0]).execute().returnResponse();
@@ -115,13 +112,11 @@ public class VersionHistoryTest extends RestV1BaseTest {
                 initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getStoreRefId(),
                 initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getGuid());
         transactionService.getRetryingTransactionHelper()
-                .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
-                    public Object execute() throws Throwable {
-                        assertFalse(versionService
-                                .isVersioned(new org.alfresco.service.cmr.repository.NodeRef(
-                                        initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getValue())));
-                        return null;
-                    }
+                .doInTransaction(() -> {
+                    assertFalse(versionService
+                            .isVersioned(new org.alfresco.service.cmr.repository.NodeRef(
+                                    initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getValue())));
+                    return null;
                 }, true, true);
 
         int statusCode = Request.Put(versionHistoryUrl)
@@ -132,39 +127,35 @@ public class VersionHistoryTest extends RestV1BaseTest {
         assertEquals(200, statusCode);
 
         transactionService.getRetryingTransactionHelper()
-                .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
-                    public Object execute() throws Throwable {
-                        assertTrue(alfrizcoVersionHistoryService
-                                .isVersioned(new org.alfresco.service.cmr.repository.NodeRef(
-                                        initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getValue())));
-                        assertEquals(defaultAutoVersion, nodeService
-                                .getProperty(new org.alfresco.service.cmr.repository.NodeRef(
-                                                initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getValue()),
-                                        ContentModel.PROP_AUTO_VERSION));
-                        assertEquals(defaultAutoVersionProps, nodeService
-                                .getProperty(new org.alfresco.service.cmr.repository.NodeRef(
-                                                initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getValue()),
-                                        ContentModel.PROP_AUTO_VERSION_PROPS));
-                        assertEquals(defaultInitialVersion, nodeService
-                                .getProperty(new org.alfresco.service.cmr.repository.NodeRef(
-                                                initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getValue()),
-                                        ContentModel.PROP_INITIAL_VERSION));
-                        assertEquals("1.0", nodeService
-                                .getProperty(new org.alfresco.service.cmr.repository.NodeRef(
-                                                initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getValue()),
-                                        ContentModel.PROP_VERSION_LABEL));
-                        return null;
-                    }
+                .doInTransaction(() -> {
+                    assertTrue(alfrizcoVersionHistoryService
+                            .isVersioned(new org.alfresco.service.cmr.repository.NodeRef(
+                                    initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getValue())));
+                    assertEquals(defaultAutoVersion, nodeService
+                            .getProperty(new org.alfresco.service.cmr.repository.NodeRef(
+                                            initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getValue()),
+                                    ContentModel.PROP_AUTO_VERSION));
+                    assertEquals(defaultAutoVersionProps, nodeService
+                            .getProperty(new org.alfresco.service.cmr.repository.NodeRef(
+                                            initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getValue()),
+                                    ContentModel.PROP_AUTO_VERSION_PROPS));
+                    assertEquals(defaultInitialVersion, nodeService
+                            .getProperty(new org.alfresco.service.cmr.repository.NodeRef(
+                                            initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getValue()),
+                                    ContentModel.PROP_INITIAL_VERSION));
+                    assertEquals("1.0", nodeService
+                            .getProperty(new org.alfresco.service.cmr.repository.NodeRef(
+                                            initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getValue()),
+                                    ContentModel.PROP_VERSION_LABEL));
+                    return null;
                 }, true, true);
 
         transactionService.getRetryingTransactionHelper()
-                .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
-                    public Object execute() throws Throwable {
-                        assertFalse(alfrizcoVersionHistoryService
-                                .isVersioned(new org.alfresco.service.cmr.repository.NodeRef(
-                                        initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME).getValue())));
-                        return null;
-                    }
+                .doInTransaction(() -> {
+                    assertFalse(alfrizcoVersionHistoryService
+                            .isVersioned(new org.alfresco.service.cmr.repository.NodeRef(
+                                    initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME).getValue())));
+                    return null;
                 }, true, true);
 
         String versionHistoryUrl2 = createApixUrl("/versionhistory/%s/%s/%s",
@@ -187,29 +178,27 @@ public class VersionHistoryTest extends RestV1BaseTest {
         assertEquals(200, statusCode2);
 
         transactionService.getRetryingTransactionHelper()
-                .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
-                    public Object execute() throws Throwable {
-                        assertTrue(alfrizcoVersionHistoryService
-                                .isVersioned(new org.alfresco.service.cmr.repository.NodeRef(
-                                        initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME).getValue())));
-                        assertEquals(false, nodeService
-                                .getProperty(new org.alfresco.service.cmr.repository.NodeRef(
-                                                initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME).getValue()),
-                                        ContentModel.PROP_AUTO_VERSION));
-                        assertEquals(true, nodeService
-                                .getProperty(new org.alfresco.service.cmr.repository.NodeRef(
-                                                initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME).getValue()),
-                                        ContentModel.PROP_AUTO_VERSION_PROPS));
-                        assertEquals(false, nodeService
-                                .getProperty(new org.alfresco.service.cmr.repository.NodeRef(
-                                                initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME).getValue()),
-                                        ContentModel.PROP_INITIAL_VERSION));
-                        assertEquals("1.0", nodeService
-                                .getProperty(new org.alfresco.service.cmr.repository.NodeRef(
-                                                initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME).getValue()),
-                                        ContentModel.PROP_VERSION_LABEL));
-                        return null;
-                    }
+                .doInTransaction(() -> {
+                    assertTrue(alfrizcoVersionHistoryService
+                            .isVersioned(new org.alfresco.service.cmr.repository.NodeRef(
+                                    initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME).getValue())));
+                    assertEquals(false, nodeService
+                            .getProperty(new org.alfresco.service.cmr.repository.NodeRef(
+                                            initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME).getValue()),
+                                    ContentModel.PROP_AUTO_VERSION));
+                    assertEquals(true, nodeService
+                            .getProperty(new org.alfresco.service.cmr.repository.NodeRef(
+                                            initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME).getValue()),
+                                    ContentModel.PROP_AUTO_VERSION_PROPS));
+                    assertEquals(false, nodeService
+                            .getProperty(new org.alfresco.service.cmr.repository.NodeRef(
+                                            initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME).getValue()),
+                                    ContentModel.PROP_INITIAL_VERSION));
+                    assertEquals("1.0", nodeService
+                            .getProperty(new org.alfresco.service.cmr.repository.NodeRef(
+                                            initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME).getValue()),
+                                    ContentModel.PROP_VERSION_LABEL));
+                    return null;
                 }, true, true);
     }
 

@@ -1,7 +1,6 @@
 package eu.xenit.apix.alfresco.dictionary;
 
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.dictionary.IDictionaryService;
 import eu.xenit.apix.dictionary.aspects.AspectDefinition;
@@ -35,7 +34,6 @@ import org.springframework.stereotype.Component;
  * Created by Michiel Huygen on 24/11/2015.
  */
 
-@OsgiService
 @Component("eu.xenit.apix.dictionary.IDictionaryService")
 public class DictionaryService implements IDictionaryService {
 

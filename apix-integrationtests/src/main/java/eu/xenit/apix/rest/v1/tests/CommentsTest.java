@@ -1,6 +1,7 @@
 package eu.xenit.apix.rest.v1.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +24,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -139,7 +141,7 @@ public class CommentsTest extends RestV1BaseTest {
         HttpPut req = new HttpPut(url);
         final CloseableHttpClient checkoutHttpclient = HttpClients.createDefault();
         String checkoutJsonString = "{ \"content\" : \"new content\" }";
-        req.setEntity(new StringEntity(checkoutJsonString));
+        req.setEntity(new StringEntity(checkoutJsonString, ContentType.APPLICATION_JSON));
 
         String result = "";
         try (CloseableHttpResponse response = checkoutHttpclient.execute(req)) {
@@ -160,7 +162,7 @@ public class CommentsTest extends RestV1BaseTest {
         HttpPut req = new HttpPut(url);
         final CloseableHttpClient checkoutHttpclient = HttpClients.createDefault();
         String checkoutJsonString = "{ \"content\" : \"new content\" }";
-        req.setEntity(new StringEntity(checkoutJsonString));
+        req.setEntity(new StringEntity(checkoutJsonString, ContentType.APPLICATION_JSON));
 
         String result = "";
         try (CloseableHttpResponse response = checkoutHttpclient.execute(req)) {
@@ -170,20 +172,25 @@ public class CommentsTest extends RestV1BaseTest {
     }
 
     @Test
-    public void testDeleteComment() throws IOException {
+    public void testDeleteComment() throws IOException, InterruptedException {
         HashMap<String, NodeRef> initializedRefs = init();
         String url = makeCommentsUrl(initializedRefs.get(COMMENTNODE1), "admin", "admin");
 
         HttpDelete req = new HttpDelete(url);
         final CloseableHttpClient checkoutHttpclient = HttpClients.createDefault();
 
-        String result = "";
         try (CloseableHttpResponse response = checkoutHttpclient.execute(req)) {
-            result = EntityUtils.toString(response.getEntity());
+            EntityUtils.toString(response.getEntity());
             assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
         }
 
-        assertEquals(false, nodeService.exists(initializedRefs.get(COMMENTNODE1)));
+        // Alfresco Cache is lagging behind...
+        Thread.sleep(2000);
+
+        boolean exists = this.transactionHelper.doInTransaction(
+                () -> nodeService.exists(initializedRefs.get(COMMENTNODE1)), true, true
+        );
+        assertFalse(exists);
     }
 
     @Test
@@ -216,7 +223,7 @@ public class CommentsTest extends RestV1BaseTest {
 
         HttpPost req = new HttpPost(url);
         String checkoutJsonString = "{ \"content\" : \"new content\" }";
-        req.setEntity(new StringEntity(checkoutJsonString));
+        req.setEntity(new StringEntity(checkoutJsonString, ContentType.APPLICATION_JSON));
         final CloseableHttpClient checkoutHttpclient = HttpClients.createDefault();
         String result = "";
         try (CloseableHttpResponse response = checkoutHttpclient.execute(req)) {

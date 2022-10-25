@@ -1,25 +1,24 @@
 package eu.xenit.apix.rest;
 
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Authentication;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.AuthenticationType;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.HttpMethod;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.WebScript;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by Michiel Huygen on 29/03/2016.
  */
-@WebScript(baseUri = "/base", families = "My Family", value = "TestDEWebscript")
-@Authentication(AuthenticationType.GUEST)
+@RestController
+//@WebScript(baseUri = "/base", families = "My Family", value = "TestDEWebscript")
+//@Authentication(AuthenticationType.GUEST)
 public class TestDEWebscript1 {
 
-    @Uri("/method")
+    @GetMapping("/method")
     public void testGet() {
 
     }
 
-    @Authentication(AuthenticationType.ADMIN)
-    @Uri(value = "/method/{param}", method = HttpMethod.POST)
+//    @Authentication(AuthenticationType.ADMIN)
+    @PostMapping(value = "/method/{param}")
     public void testPost() {
 
     }

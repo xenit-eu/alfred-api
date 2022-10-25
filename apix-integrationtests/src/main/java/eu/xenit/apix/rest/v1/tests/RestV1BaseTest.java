@@ -36,6 +36,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -202,53 +203,56 @@ public abstract class RestV1BaseTest {
     }
 
     protected HashMap<String, eu.xenit.apix.data.NodeRef> init() {
+        return init(null);
+    }
+
+    protected HashMap<String, eu.xenit.apix.data.NodeRef> init(final String testName) {
         final HashMap<String, eu.xenit.apix.data.NodeRef> initializedNodeRefs = new HashMap<>();
         TransactionService transactionService = serviceRegistry.getTransactionService();
 
         this.removeMainTestFolder();
 
-        RetryingTransactionHelper.RetryingTransactionCallback<Object> txnWork = new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
-            public Object execute() throws Exception {
-                NodeRef companyHomeRef = repository.getCompanyHome();
-                FileInfo mainTestFolder = createTestNode(companyHomeRef, MAIN_TESTFOLDER_NAME,
-                        ContentModel.TYPE_FOLDER);
-                FileInfo testFolder = createTestNode(mainTestFolder.getNodeRef(), TESTFOLDER_NAME,
-                        ContentModel.TYPE_FOLDER);
-                initializedNodeRefs.put(TESTFOLDER_NAME, new eu.xenit.apix.data.NodeRef(testFolder.getNodeRef().toString()));
-                FileInfo testNode = createTestNode(testFolder.getNodeRef(), TESTFILE_NAME, ContentModel.TYPE_CONTENT);
-                NodeRef testNodeRef = testNode.getNodeRef();
-                eu.xenit.apix.data.NodeRef apixTestNodeRef = new eu.xenit.apix.data.NodeRef(testNodeRef.toString());
-                initializedNodeRefs.put(TESTFILE_NAME, apixTestNodeRef);
+        RetryingTransactionHelper.RetryingTransactionCallback<Object> txnWork = () -> {
+            String mainTestFolderName = MAIN_TESTFOLDER_NAME + (testName != null ? "_" + testName : "");
+            NodeRef companyHomeRef = repository.getCompanyHome();
+            FileInfo mainTestFolder = createTestNode(companyHomeRef, mainTestFolderName,
+                    ContentModel.TYPE_FOLDER);
+            FileInfo testFolder = createTestNode(mainTestFolder.getNodeRef(), TESTFOLDER_NAME,
+                    ContentModel.TYPE_FOLDER);
+            initializedNodeRefs.put(TESTFOLDER_NAME, new eu.xenit.apix.data.NodeRef(testFolder.getNodeRef().toString()));
+            FileInfo testNode = createTestNode(testFolder.getNodeRef(), TESTFILE_NAME, ContentModel.TYPE_CONTENT);
+            NodeRef testNodeRef = testNode.getNodeRef();
+            eu.xenit.apix.data.NodeRef apixTestNodeRef = new eu.xenit.apix.data.NodeRef(testNodeRef.toString());
+            initializedNodeRefs.put(TESTFILE_NAME, apixTestNodeRef);
 
-                FileInfo testFolder2 = createTestNode(mainTestFolder.getNodeRef(), TESTFOLDER2_NAME,
-                        ContentModel.TYPE_FOLDER);
-                FileInfo testNode2 = createTestNode(testFolder2.getNodeRef(), TESTFILE2_NAME,
-                        ContentModel.TYPE_CONTENT);
-                NodeRef testNodeRef2 = testNode2.getNodeRef();
-                eu.xenit.apix.data.NodeRef apixTestNodeRef2 = new eu.xenit.apix.data.NodeRef(testNodeRef2.toString());
-                initializedNodeRefs.put(TESTFILE2_NAME, apixTestNodeRef2);
+            FileInfo testFolder2 = createTestNode(mainTestFolder.getNodeRef(), TESTFOLDER2_NAME,
+                    ContentModel.TYPE_FOLDER);
+            FileInfo testNode2 = createTestNode(testFolder2.getNodeRef(), TESTFILE2_NAME,
+                    ContentModel.TYPE_CONTENT);
+            NodeRef testNodeRef2 = testNode2.getNodeRef();
+            eu.xenit.apix.data.NodeRef apixTestNodeRef2 = new eu.xenit.apix.data.NodeRef(testNodeRef2.toString());
+            initializedNodeRefs.put(TESTFILE2_NAME, apixTestNodeRef2);
 
-                FileInfo testNode3 = createTestNode(testFolder2.getNodeRef(), TESTFILE3_NAME,
-                        ContentModel.TYPE_CONTENT);
-                NodeRef testNodeRef3 = testNode3.getNodeRef();
-                eu.xenit.apix.data.NodeRef apixTestNodeRef3 = new eu.xenit.apix.data.NodeRef(testNodeRef3.toString());
-                initializedNodeRefs.put(TESTFILE3_NAME, apixTestNodeRef3);
+            FileInfo testNode3 = createTestNode(testFolder2.getNodeRef(), TESTFILE3_NAME,
+                    ContentModel.TYPE_CONTENT);
+            NodeRef testNodeRef3 = testNode3.getNodeRef();
+            eu.xenit.apix.data.NodeRef apixTestNodeRef3 = new eu.xenit.apix.data.NodeRef(testNodeRef3.toString());
+            initializedNodeRefs.put(TESTFILE3_NAME, apixTestNodeRef3);
 
-                FileInfo noUserRightsFolder = createTestNode(mainTestFolder.getNodeRef(), NOUSERRIGHTS_FOLDER_NAME,
-                        ContentModel.TYPE_FOLDER);
-                setPermissionInheritance(noUserRightsFolder.getNodeRef(), false);
-                FileInfo noUserRightsNode = createTestNode(noUserRightsFolder.getNodeRef(), NOUSERRIGHTS_FILE_NAME,
-                        ContentModel.TYPE_CONTENT);
-                NodeRef noUserRightsNodeRef = noUserRightsNode.getNodeRef();
-                setPermissionInheritance(noUserRightsNodeRef, false);
-                eu.xenit.apix.data.NodeRef apixNoUserRightsNodeRef = new eu.xenit.apix.data.NodeRef(
-                        noUserRightsNodeRef.toString());
-                initializedNodeRefs.put(NOUSERRIGHTS_FILE_NAME, apixNoUserRightsNodeRef);
+            FileInfo noUserRightsFolder = createTestNode(mainTestFolder.getNodeRef(), NOUSERRIGHTS_FOLDER_NAME,
+                    ContentModel.TYPE_FOLDER);
+            setPermissionInheritance(noUserRightsFolder.getNodeRef(), false);
+            FileInfo noUserRightsNode = createTestNode(noUserRightsFolder.getNodeRef(), NOUSERRIGHTS_FILE_NAME,
+                    ContentModel.TYPE_CONTENT);
+            NodeRef noUserRightsNodeRef = noUserRightsNode.getNodeRef();
+            setPermissionInheritance(noUserRightsNodeRef, false);
+            eu.xenit.apix.data.NodeRef apixNoUserRightsNodeRef = new eu.xenit.apix.data.NodeRef(
+                    noUserRightsNodeRef.toString());
+            initializedNodeRefs.put(NOUSERRIGHTS_FILE_NAME, apixNoUserRightsNodeRef);
 
-                createUser(USERWITHOUTRIGHTS, USERWITHOUTRIGHTS, USERWITHOUTRIGHTS,
-                        USERWITHOUTRIGHTS_EMAIL);
-                return null;
-            }
+            createUser(USERWITHOUTRIGHTS, USERWITHOUTRIGHTS, USERWITHOUTRIGHTS,
+                    USERWITHOUTRIGHTS_EMAIL);
+            return null;
         };
 
         transactionService.getRetryingTransactionHelper().doInTransaction(txnWork, false, true);
@@ -400,7 +404,7 @@ public abstract class RestV1BaseTest {
         final CloseableHttpClient checkoutHttpclient = HttpClients.createDefault();
         if (jsonBody != null) {
             String checkoutJsonString = json(String.format(jsonBody, args));
-            req.setEntity(new StringEntity(checkoutJsonString));
+            req.setEntity(new StringEntity(checkoutJsonString, ContentType.APPLICATION_JSON));
         }
 
         try (CloseableHttpResponse response = checkoutHttpclient.execute(req)) {

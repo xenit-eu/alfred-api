@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 class InheritFromParent {
 
     @ApiModelProperty(required = true)
-    public boolean inheritFromParent;
+    private boolean inheritFromParent;
 
     @JsonCreator
     public InheritFromParent(@JsonProperty("inheritFromParent") boolean inheritFromParent) {

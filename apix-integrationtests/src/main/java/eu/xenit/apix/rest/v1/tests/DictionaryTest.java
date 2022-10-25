@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import org.alfresco.repo.dictionary.DictionaryDAO;
@@ -25,6 +26,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.util.UriComponentsBuilder;
 
 public class DictionaryTest extends RestV1BaseTest {
 
@@ -59,9 +61,12 @@ public class DictionaryTest extends RestV1BaseTest {
         String baseUrl = makeAlfrescoBaseurlAdmin() + "/apix/v1/dictionary/" + dictionaryType + "/";
 
         // Short qname lookup
-        HttpResponse httpResponse = Request.Get(baseUrl + shortName).execute().returnResponse();
+        String uri = baseUrl + URLEncoder.encode(shortName,
+                    String.valueOf(Charset.defaultCharset())
+            );
+        HttpResponse httpResponse = Request.Get(uri).execute().returnResponse();
         logger.debug(EntityUtils.toString(httpResponse.getEntity()));
-        assertEquals(200, httpResponse.getStatusLine().getStatusCode());
+        assertEquals(uri, 200, httpResponse.getStatusLine().getStatusCode());
         JSONObject jsonObject = new JSONObject(EntityUtils.toString(httpResponse.getEntity()));
         assertEquals(longName, jsonObject.getString("name"));
         if (mandatoryAspect != null) {
@@ -69,10 +74,12 @@ public class DictionaryTest extends RestV1BaseTest {
         }
 
         // full qname lookup
-        httpResponse = Request.Get(baseUrl + URLEncoder.encode(longName, "utf-8").replaceAll("%2F", "/")).execute()
-                .returnResponse();
+        String sanitizedLongQName = URLEncoder.encode(longName,
+                        String.valueOf(Charset.defaultCharset()))
+                        .replaceAll("%2F", "/");
+        httpResponse = Request.Get(baseUrl + sanitizedLongQName).execute().returnResponse();
         logger.debug(EntityUtils.toString(httpResponse.getEntity()));
-        assertEquals(200, httpResponse.getStatusLine().getStatusCode());
+        assertEquals(sanitizedLongQName, 200, httpResponse.getStatusLine().getStatusCode());
         jsonObject = new JSONObject(EntityUtils.toString(httpResponse.getEntity()));
         assertEquals(longName, jsonObject.getString("name"));
 
@@ -88,7 +95,6 @@ public class DictionaryTest extends RestV1BaseTest {
         executeDictionaryTypeTest("types", "cm:cmobject", "{http://www.alfresco.org/model/content/1.0}cmobject",
                 "{http://www.alfresco.org/model/content/1.0}auditable");
     }
-
 
     @Test
     public void testTypesGet() throws IOException, JSONException {

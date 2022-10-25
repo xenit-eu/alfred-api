@@ -23,6 +23,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -69,7 +70,7 @@ public abstract class NodesBaseTest extends RestV1BaseTest {
             //deserialization failed
             HttpEntityEnclosingRequestBase req = new HttpPost(url);
             final CloseableHttpClient checkoutHttpclient = HttpClients.createDefault();
-            req.setEntity(new StringEntity(requestBody));
+            req.setEntity(new StringEntity(requestBody, ContentType.APPLICATION_JSON));
             try (CloseableHttpResponse response = checkoutHttpclient.execute(req)) {
                 String result = EntityUtils.toString(response.getEntity());
                 assertEquals(expectedResponseCode, response.getStatusLine().getStatusCode());
@@ -87,22 +88,17 @@ public abstract class NodesBaseTest extends RestV1BaseTest {
 
     protected CreateNodeOptions getCreateNodeOptions(eu.xenit.apix.data.NodeRef parentRef, String name,
             eu.xenit.apix.data.QName type, HashMap<QName, String[]> properties, QName[] aspectsToAdd,
-            QName[] aspectsToRemove, eu.xenit.apix.data.NodeRef copyFrom) {
+            QName[] aspectsToRemove, eu.xenit.apix.data.NodeRef copyFrom) throws IOException {
         String parentRefString = (parentRef != null) ? parentRef.toString() : null;
         String copyFromString = (copyFrom != null) ? copyFrom.toString() : null;
         String typeString = (type != null) ? type.toString() : null;
 
-        try {
-            return new CreateNodeOptions(parentRefString, name, typeString, properties, aspectsToAdd, aspectsToRemove, copyFromString);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return new CreateNodeOptions(parentRefString, name, typeString, properties, aspectsToAdd, aspectsToRemove, copyFromString);
     }
 
     protected CreateNodeOptions getCreateNodeOptions(eu.xenit.apix.data.NodeRef parentRef,
             String name, eu.xenit.apix.data.QName type, HashMap<QName, String[]> properties,
-            eu.xenit.apix.data.NodeRef copyFrom) {
+            eu.xenit.apix.data.NodeRef copyFrom) throws IOException {
         return getCreateNodeOptions(parentRef, name, type, properties, null, null, copyFrom);
     }
 

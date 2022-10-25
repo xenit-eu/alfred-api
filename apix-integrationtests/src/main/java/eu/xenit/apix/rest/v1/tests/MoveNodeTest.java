@@ -13,6 +13,7 @@ import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.transaction.TransactionService;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -100,7 +101,8 @@ public class MoveNodeTest extends RestV1BaseTest {
         logger.debug(" URL: " + url);
         final CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPut httpPut = new HttpPut(url);
-        httpPut.setEntity(new StringEntity(String.format("{\"parent\":\"%s\"}", mainTestFolder.toString())));
+        httpPut.setEntity(new StringEntity(String.format("{\"parent\":\"%s\"}", mainTestFolder.toString()),
+                ContentType.APPLICATION_JSON));
 
         try(CloseableHttpResponse httpResponse = httpClient.execute(httpPut)) {
             assertEquals(403, httpResponse.getStatusLine().getStatusCode());

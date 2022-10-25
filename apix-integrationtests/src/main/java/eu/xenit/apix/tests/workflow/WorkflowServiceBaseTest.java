@@ -23,9 +23,11 @@ import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.Serializable;
 import java.util.*;
+
 
 public abstract class WorkflowServiceBaseTest extends BaseTest {
 
@@ -49,6 +51,7 @@ public abstract class WorkflowServiceBaseTest extends BaseTest {
     @Autowired
     protected ServiceRegistry serviceRegistry;
     @Autowired
+    @Qualifier("eu.xenit.apix.workflow.IWorkflowService")
     protected IWorkflowService apixWorkflowService;
     protected RetryingTransactionHelper transactionHelper;
     protected MutableAuthenticationService authenticationService;

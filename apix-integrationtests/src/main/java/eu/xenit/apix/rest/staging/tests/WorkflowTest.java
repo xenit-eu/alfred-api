@@ -25,6 +25,7 @@ import org.alfresco.service.cmr.workflow.WorkflowTaskDefinition;
 import org.alfresco.service.namespace.QName;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -124,7 +125,7 @@ public class WorkflowTest extends StagingBaseTest {
         httppost.setEntity(new StringEntity(json(String.format("{\n" +
                 "\t\"id\" : \"%s\",\n" +
                 "\t\"userName\" : \"admin\"\n" +
-                "}", wfTask.getId()))));
+                "}", wfTask.getId())), ContentType.APPLICATION_JSON));
 
         try (CloseableHttpResponse response = httpclient.execute(httppost)) {
             String jsonString = EntityUtils.toString(response.getEntity());
@@ -165,7 +166,7 @@ public class WorkflowTest extends StagingBaseTest {
 
         httppost.setEntity(new StringEntity(json(String.format("{\n" +
                 "\t\"id\" : \"%s\"\n" +
-                "}", wfTask.getId()))));
+                "}", wfTask.getId())), ContentType.APPLICATION_JSON));
 
         try (CloseableHttpResponse response = httpclient.execute(httppost)) {
             String jsonString = EntityUtils.toString(response.getEntity());

@@ -1,10 +1,5 @@
 package io.swagger.sample.reader;
 
-import com.github.dynamicextensionsalfresco.webscripts.annotations.RequestParam;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.UriVariable;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.WebScript;
-import io.swagger.annotations.*;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 
@@ -22,19 +17,20 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
         schemes = {SwaggerDefinition.Scheme.HTTP, SwaggerDefinition.Scheme.HTTPS},
         tags = {@Tag(name = "core", description = "Core Operations")}
 )
-@WebScript(description = "Webscript description", baseUri = "/de")
+//@WebScript(description = "Webscript description", baseUri = "/de")
+@RestController
 public class DEWebscript {
 
-    @Uri("/home")
+    @GetMapping("/home")
     @ApiOperation(value = "/home summary", tags = "core", notes = "/home description")
     public SampleModel simpleGet(@RequestParam String requestParam,
             @RequestParam(required = false) String requiredParam,
-            @UriVariable String pathParam,
+            @RequestParam String pathParam,
             SampleModel bodyParam) {
         return new SampleModel();
     }
 
-    @Uri("/ignoreParams")
+    @GetMapping("/ignoreParams")
     public void ignoreParams(WebScriptRequest request, WebScriptResponse responose) {
 
     }

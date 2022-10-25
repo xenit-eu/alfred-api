@@ -1,60 +1,52 @@
 package eu.xenit.apix.rest.v1.properties;
 
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Authentication;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.AuthenticationType;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.HttpMethod;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.RequestParam;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.UriVariable;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.WebScript;
+import eu.xenit.apix.data.QName;
 import eu.xenit.apix.dictionary.properties.IPropertyService;
 import eu.xenit.apix.properties.PropertyDefinition;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
-import eu.xenit.apix.rest.v1.RestV1Config;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.extensions.webscripts.WebScriptResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by Jasperhilven on 13-Jan-17.
  *
  * @deprecated Use DictionaryWebScript1 instead
  */
-@WebScript(baseUri = RestV1Config.BaseUrl, families = RestV1Config.Family, defaultFormat = "json",
-        description = "Retrieves Property information", value = "Properties")
-@Authentication(AuthenticationType.USER)
-@Component("eu.xenit.apix.rest.v1.property.PropertiesWebScript1")
+//@WebScript(baseUri = RestV1Config.BaseUrl, families = RestV1Config.Family, defaultFormat = "json",
+//        description = "Retrieves Property information", value = "Properties")
+//@Authentication(AuthenticationType.USER)
+@RestController("eu.xenit.apix.rest.v1.property.PropertiesWebScript1")
 public class PropertiesWebScript1 extends ApixV1Webscript {
 
-    Logger logger = LoggerFactory.getLogger(PropertiesWebScript1.class);
+    private final IPropertyService propertyService;
 
-    @Autowired
-    IPropertyService propertyService;
+    public PropertiesWebScript1(IPropertyService propertyService) {
+        this.propertyService = propertyService;
+    }
 
-
-    @Uri(value = "/properties/{qname}", method = HttpMethod.GET)
+    @GetMapping(value = "/v1/properties/{qname}")
     @ApiOperation(value = "Return the definition of a property", notes = "")
     @ApiResponses(@ApiResponse(code = 200, message = "Success", response = PropertyDefinition.class))
     //Use qname with slash to avoid
     //https://stackoverflow.com/questions/13482020/encoded-slash-2f-with-spring-requestmapping-path-param-gives-http-400
-    public void getPropertyDefinition(@UriVariable final String qname,
-            @RequestParam(required = false) String qnameWithSlash, WebScriptResponse webScriptResponse)
-            throws IOException {
-        String qnameUsed = qnameWithSlash != null ? qnameWithSlash : qname;
-        String decoded = java.net.URLDecoder.decode(qnameUsed, "UTF-8");
-        logger.debug("Asked versionhistory for node with guid: " + decoded);
-        eu.xenit.apix.data.QName apixQName = new eu.xenit.apix.data.QName(qnameUsed);
+    public ResponseEntity<?> getPropertyDefinition(@PathVariable final QName qname,
+                                      @RequestParam(required = false) QName qnameWithSlash) {
+//        String qnameUsed = qnameWithSlash != null ? qnameWithSlash : qname;
+//        String decoded = java.net.URLDecoder.decode(qnameUsed, "UTF-8");
+//        logger.debug("Asked versionhistory for node with guid: {}", decoded);
+//        eu.xenit.apix.data.QName apixQName = new eu.xenit.apix.data.QName(qnameUsed);
+        // TODO @Zlatin FIXME Alfresco MVC some crappy URL shenanigans ? Unit-tested?
+        QName apixQName = qnameWithSlash != null ? qnameWithSlash : qname;
         PropertyDefinition propDef = propertyService.GetPropertyDefinition(apixQName);
         if (propDef == null) {
-            webScriptResponse.setStatus(HttpStatus.NOT_FOUND.value());
+            return ResponseEntity.notFound().build();
         }
-        writeJsonResponse(webScriptResponse, propDef);
+        return writeJsonResponse(propDef);
     }
 }

@@ -1,11 +1,11 @@
 
-// This is a duplicate of the ./70/overrides.gradle to make code navigation work in shared code
+// This is a duplicate of the ./72/overrides.gradle to make code navigation work in shared code
 ext {
-    subproject_alfresco_version = '70'
-    alfresco_version = alfresco_70_version
-    alfresco_dm_version = alfresco_70_dm_version
-    alfresco_repo_version = '8.424'
-    alfresco_remote_api_version = '8.424'
+    subproject_alfresco_version = "72"
+    alfresco_version = alfresco_72_version
+    alfresco_dm_version = alfresco_72_dm_version
+    alfresco_repo_version = '14.142'
+    alfresco_remote_api_version = '14.142'
 }
 
 dependencies {

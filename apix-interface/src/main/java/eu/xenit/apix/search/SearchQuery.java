@@ -6,6 +6,7 @@ import eu.xenit.apix.data.QName;
 import eu.xenit.apix.data.StoreRef;
 import eu.xenit.apix.search.nodes.SearchSyntaxNode;
 import io.swagger.annotations.ApiModelProperty;
+//import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +25,7 @@ import java.util.Objects;
  */
 public class SearchQuery {
 
+//    @Schema(required = true)
     @ApiModelProperty(required = true)
     private SearchSyntaxNode query;
     private PagingOptions paging = new PagingOptions();
@@ -127,8 +129,12 @@ public class SearchQuery {
     public static class FacetOptions {
 
         private boolean enabled;
+
+//        @Schema(description = "Limits the number of values returned per facet")
         @ApiModelProperty("Limits the number of values returned per facet")
         private Integer limit = -1;
+
+//        @Schema(description = "Return only facet values with count >= mincount")
         @ApiModelProperty("Return only facet values with count >= mincount")
         private Integer mincount;
         public List<String> custom;

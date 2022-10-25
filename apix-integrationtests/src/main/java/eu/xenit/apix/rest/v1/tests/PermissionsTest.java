@@ -10,6 +10,7 @@ import java.util.HashMap;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
@@ -179,7 +180,8 @@ public class PermissionsTest extends RestV1BaseTest {
                         + "         \"permission\": \"Collaborator\"\n"
                         + "      }\n"
                         + "]}"
-        )).execute().returnResponse();
+                ,
+                ContentType.APPLICATION_JSON)).execute().returnResponse();
         logger.debug(EntityUtils.toString(httpResponse.getEntity()));
         String result = EntityUtils.toString(httpResponse.getEntity());
         assertEquals(403, httpResponse.getStatusLine().getStatusCode());
@@ -192,7 +194,8 @@ public class PermissionsTest extends RestV1BaseTest {
                 Request.Post(
                         makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/acl/inheritFromParent",
                                 RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS))
-                        .body(new StringEntity("{\"inheritFromParent\":true}"))
+                        .body(new StringEntity("{\"inheritFromParent\":true}",
+                                ContentType.APPLICATION_JSON))
                         .execute()
                         .returnResponse()
                         .getStatusLine()
