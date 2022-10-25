@@ -1,18 +1,6 @@
 package eu.xenit.apix.rest.staging.workflow;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Authentication;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.AuthenticationType;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.HttpMethod;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.RequestParam;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.UriVariable;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.WebScript;
-import eu.xenit.apix.rest.staging.ApixStagingWebscript;
-import eu.xenit.apix.rest.staging.RestStagingConfig;
-import eu.xenit.apix.rest.v1.ExceptionObject;
 import eu.xenit.apix.search.SearchQueryResult;
 import eu.xenit.apix.workflow.IWorkflowService;
 import eu.xenit.apix.workflow.model.Task;
@@ -29,32 +17,29 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.extensions.webscripts.WebScriptRequest;
-import org.springframework.extensions.webscripts.WebScriptResponse;
-import org.springframework.stereotype.Component;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-@WebScript(baseUri = RestStagingConfig.BaseUrl, families = RestStagingConfig.Family, defaultFormat = "json",
-        description = "Perform workflow and task operations", value = "Workflows")
-@Authentication(AuthenticationType.USER)
-@Qualifier("eu.xenit.apix.rest.staging.workflow.WorkflowWebscript")
-@Component("eu.xenit.apix.rest.staging.workflow.WorkflowWebscript")
-public class WorkflowWebscript extends ApixStagingWebscript {
-
-    public static final ISO8601DateFormat DATE_FORMAT = new ISO8601DateFormat();
+@RestController
+public class WorkflowWebscript {
+    private static final Logger logger = LoggerFactory.getLogger(WorkflowWebscript.class);
 
     ///<editor-fold desc="Documentation Samples for provided JSON parameters">
     private static final String WorkflowSearchQueryDocumentationSample = "{\n" +
@@ -96,42 +81,38 @@ public class WorkflowWebscript extends ApixStagingWebscript {
             "}";
     ///</editor-fold>
 
-    @Qualifier("eu.xenit.apix.workflow.IWorkflowService")
-    @Autowired
-    IWorkflowService workflowService;
+    private final IWorkflowService workflowService;
 
-    Logger logger = LoggerFactory.getLogger(WorkflowWebscript.class);
+    public WorkflowWebscript(@Qualifier("eu.xenit.apix.workflow.IWorkflowService") IWorkflowService workflowService) {
+        this.workflowService = workflowService;
+    }
 
-    @Uri(value = "/workflows/definitions", method = HttpMethod.GET, defaultFormat = "json")
+    @GetMapping(
+            value = "/staging/workflows/definitions",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     @ApiOperation(value = "Retrieve the definitions for all defined workflows")
     @ApiResponses(@ApiResponse(code = 200, message = "Success", response = WorkflowDefinitionList.class))
-    public void getWorkflowDefinitions(@RequestParam(delimiter = ",", required = false)
-            @ApiParam(value = "Comma separated definition names to exclude.") String[] exclude,
-            WebScriptResponse response) throws IOException {
+    public ResponseEntity<WorkflowDefinitionList> getWorkflowDefinitions(@RequestParam(required = false)
+            @ApiParam(value = "Comma separated definition names to exclude.") String[] exclude) {
         List<WorkflowDefinition> definitions = workflowService.getAllDefinitions();
 
         if (exclude != null && exclude.length > 0) {
             HashSet<String> excludeSet = new HashSet<>(Arrays.asList(exclude));
-            ListIterator<WorkflowDefinition> iter = definitions.listIterator();
-            while (iter.hasNext()) {
-                if (excludeSet.contains(iter.next().name)) {
-                    iter.remove();
-                }
-            }
+            definitions.removeIf(workflowDefinition -> excludeSet.contains(workflowDefinition.name));
         }
 
-        writeJsonResponse(response, new WorkflowDefinitionList(definitions));
+        return responseFrom(new WorkflowDefinitionList(definitions));
     }
 
-    @Uri(value = "/workflows/definition/{name}", method = HttpMethod.GET)
+    @GetMapping(value = "/workflows/definition/{name}")
     @ApiOperation(value = "Retrieve the definition for the specified workflow name")
     @ApiResponses(@ApiResponse(code = 200, message = "Success", response = WorkflowDefinition.class))
-    public void getWorkflowDefinition(@UriVariable final String name, WebScriptResponse response) throws IOException {
-        WorkflowDefinition definition = workflowService.getWorkflowDefinition(name);
-        writeJsonResponse(response, definition);
+    public ResponseEntity<WorkflowDefinition> getWorkflowDefinition(@PathVariable final String name) {
+        return responseFrom(workflowService.getWorkflowDefinition(name));
     }
 
-    @Uri(value = "/workflows/search", method = HttpMethod.POST)
+    @PostMapping(value = "/workflows/search")
     @ApiOperation(value = "Returns a collection of workflow instances",
             notes = "The result collection of workflow instances is sorted and filtered as requested in the provided" +
                     " WorkflowSearchQuery\nWorkflowSearchQuery Sample:\n" + WorkflowSearchQueryDocumentationSample)
@@ -140,20 +121,14 @@ public class WorkflowWebscript extends ApixStagingWebscript {
             dataType = "eu.xenit.apix.workflow.WorkflowSearchQuery",
             paramType = "body",
             name = "body")})
-    public void workflowsActiviti(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse)
-            throws IOException {
-        ObjectMapper m = new WorkflowJsonParser().getObjectMapper();
-        m.setDateFormat(DATE_FORMAT);
-        InputStream stream = webScriptRequest.getContent().getInputStream();
-        WorkflowSearchQuery q = m.readValue(stream, WorkflowSearchQuery.class);
-        TaskOrWorkflowSearchResult result = workflowService.searchWorkflows(q);
-        logger.debug("Found results for workflows");
-        logger.debug("Nb of results: " + result.results.size());
+    public ResponseEntity<TaskOrWorkflowSearchResult> workflowsActiviti(@RequestBody final WorkflowSearchQuery query) {
+        TaskOrWorkflowSearchResult result = workflowService.searchWorkflows(query);
+        logger.debug("Found results for workflows, # of results: {}", result.results.size());
         result.getFacets().CheckValidity();
-        writeJsonResponse(webScriptResponse, result);
+        return responseFrom(result);
     }
 
-    @Uri(value = "/tasks/search", method = HttpMethod.POST)
+    @PostMapping(value = "/tasks/search")
     @ApiOperation(value = "Returns a collection of workflow tasks",
             notes = "The result collection of workflow tasks is sorted and filtered as requested in the provided" +
                     " TaskSearchQuery\nTaskSearchQuery Sample:\n" + TaskSearchQueryDocumentationSample)
@@ -162,41 +137,33 @@ public class WorkflowWebscript extends ApixStagingWebscript {
             dataType = "eu.xenit.apix.workflow.TaskSearchQuery",
             paramType = "body",
             name = "body")})
-    public void tasksActiviti(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse)
-            throws IOException {
-        ObjectMapper m = new WorkflowJsonParser().getObjectMapper();
-        InputStream stream = webScriptRequest.getContent().getInputStream();
-        TaskSearchQuery q = m.readValue(stream, TaskSearchQuery.class);
-        TaskOrWorkflowSearchResult result = workflowService.searchTasks(q);
-        writeJsonResponse(webScriptResponse, result);
+    public ResponseEntity<TaskOrWorkflowSearchResult> tasksActiviti(@RequestBody final TaskSearchQuery query) {
+        return responseFrom(workflowService.searchTasks(query));
     }
 
-    @Uri(value = "/workflows/{id}", method = HttpMethod.GET)
+    @GetMapping(value = "/workflows/{id}")
     @ApiOperation(value = "Retrieves a workflow with the provided id")
     @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Task.class))
-    public void workflow(@UriVariable final String id, WebScriptResponse response) throws IOException {
-        writeJsonResponse(response, workflowService.getWorkflowInfo(id));
+    public ResponseEntity<Workflow> workflow(@PathVariable final String id) {
+        return responseFrom(workflowService.getWorkflowInfo(id));
     }
 
-    @Uri(value = "/workflows/{id}/start", method = HttpMethod.POST)
-    public void startWorkflow(@UriVariable final String id, @RequestBody Map<String, Serializable> variables,
-            WebScriptResponse response) throws IOException {
-        for (Map.Entry<String, Serializable> e : variables.entrySet()) {
-            logger.debug("{}: {}", e.getKey(), e.getValue());
-        }
-
-        Workflow workflow = workflowService.startWorkflow(id, variables);
-        writeJsonResponse(response, workflow);
+    @PostMapping(value = "/workflows/{id}/start")
+    public ResponseEntity<Workflow> startWorkflow(@PathVariable final String id,
+                                                  @RequestBody final Map<String, Serializable> variables) {
+        logger.debug("variables: {}", variables);
+        return responseFrom(workflowService.startWorkflow(id, variables));
     }
 
-    @Uri(value = "/tasks/{id}", method = HttpMethod.GET)
+    @GetMapping(value = "/tasks/{id}")
     @ApiOperation(value = "Retrieves a workflow task with the provided id")
     @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Task.class))
-    public void task(@UriVariable final String id, WebScriptResponse response) throws IOException {
-        writeJsonResponse(response, workflowService.getTaskInfo(id));
+    public ResponseEntity<Void> task(@PathVariable final String id) {
+        responseFrom(workflowService.getTaskInfo(id));
+        return ResponseEntity.ok().build();
     }
 
-    @Uri(value = "/workflows/{id}", method = HttpMethod.PUT)
+    @PutMapping(value = "/workflows/{id}")
     @ApiOperation(value = "[Deprecated] Updates a workflow with the provided id, with the provided information from" +
             " the provided WorkflowChanges\nWorkflowChanges Sample:\n"
             + WorkflowChangesOrTaskChangesDocumentationSample)
@@ -205,26 +172,20 @@ public class WorkflowWebscript extends ApixStagingWebscript {
             dataType = "eu.xenit.apix.workflow.model.WorkflowChanges",
             paramType = "body",
             name = "body")})
-    public void updateWorkflow(
-            @UriVariable String id,
-            WorkflowOrTaskChanges changes,
-            WebScriptRequest webScriptRequest,
-            WebScriptResponse webScriptResponse) throws IOException {
-        Workflow ret = workflowService.updateWorkflow(id, changes);
-        writeJsonResponse(webScriptResponse, ret);
+    public ResponseEntity<Workflow> updateWorkflow(@PathVariable final String id,
+                                                    @RequestBody final WorkflowOrTaskChanges changes) {
+        return responseFrom(workflowService.updateWorkflow(id, changes));
     }
 
-    @Uri(value = "/workflows/{id}", method = HttpMethod.DELETE)
+    @DeleteMapping(value = "/workflows/{id}")
     @ApiOperation(value = "Cancels a workflow with the provided id")
     @ApiResponses(@ApiResponse(code = 200, message = "Success"))
-    public void cancelWorkflow(
-            @UriVariable String id,
-            WebScriptRequest webScriptRequest,
-            WebScriptResponse webScriptResponse) throws IOException {
+    public ResponseEntity<Void> cancelWorkflow(@PathVariable final String id) {
         workflowService.cancelWorkflow(id);
+        return ResponseEntity.ok().build();
     }
 
-    @Uri(value = "/tasks/{id}", method = HttpMethod.PUT)
+    @PutMapping(value = "/tasks/{id}")
     @ApiOperation(value = "Updates a workflow task with the provided id, with the provided information from" +
             " the provided TaskChanges\nTaskChanges Sample:\n" + WorkflowChangesOrTaskChangesDocumentationSample)
     @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Task.class))
@@ -232,22 +193,18 @@ public class WorkflowWebscript extends ApixStagingWebscript {
             dataType = "eu.xenit.apix.workflow.model.TaskChanges",
             paramType = "body",
             name = "body")})
-    public void updateTask(
-            @UriVariable String id,
-            WorkflowOrTaskChanges changes,
-            WebScriptRequest webScriptRequest,
-            WebScriptResponse webScriptResponse
-    ) throws IOException {
+    public ResponseEntity<Task> updateTask(@PathVariable  final String id,
+                                            @RequestBody final WorkflowOrTaskChanges changes) {
         try {
-            Task ret = workflowService.updateTask(id, changes);
-            writeJsonResponse(webScriptResponse, ret);
+            return responseFrom(workflowService.updateTask(id, changes));
         } catch (Error ex) {
-            webScriptResponse.setStatus(HttpStatus.SC_CONFLICT);
-            writeJsonResponse(webScriptResponse, new ExceptionObject(ex));
+            return ResponseEntity.status(HttpStatus.SC_CONFLICT).build();
+            // TODO @Zlatin Alfresco MVC
+//            responseFrom(webScriptResponse, ex);
         }
     }
 
-    @Uri(value = "/tasks/claim", method = HttpMethod.POST)
+    @PostMapping(value = "/staging/tasks/claim")
     @ApiOperation(value = "Claims the task with the provided id for a user",
             notes = "The user parameter is optional. If not provided, Alfred API will default to the current user")
     @ApiResponses(@ApiResponse(code = 200, message = "Success", response = SearchQueryResult.class))
@@ -255,65 +212,51 @@ public class WorkflowWebscript extends ApixStagingWebscript {
             dataType = "String",
             paramType = "body",
             name = "body")})
-    public void claimTask(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
-        ObjectMapper m = new WorkflowJsonParser().getObjectMapper();
-        JsonNode input = m.readTree(webScriptRequest.getContent().getContent());
-        logger.debug("Input: " + input);
-        JsonNode id = input.get("id");
-        JsonNode userName = input.get("userName");
+    public ResponseEntity<Task> claimTask(@RequestBody final Map<String, String> body) {
+        logger.debug("Input: {}", body);
+        String id = body.get("id");
+        String userName = body.get("userName");
 
         Task wfTask;
         if (userName != null) {
-            logger.debug("Setting owner of task with id " + id.asText() + " to " + userName);
-            wfTask = workflowService.claimWorkflowTask(id.asText(), userName.asText());
+            logger.debug("Setting owner of task with id {} to {}", id, userName);
+            wfTask = workflowService.claimWorkflowTask(id, userName);
         } else {
             logger.debug("Setting owner of task with id ");
-            wfTask = workflowService.claimWorkflowTask(id.asText());
+            wfTask = workflowService.claimWorkflowTask(id);
         }
-        writeJsonResponse(webScriptResponse, wfTask);
+        return responseFrom(wfTask);
     }
 
-    @Uri(value = "/tasks/release", method = HttpMethod.POST)
+    @PostMapping(value = "/staging/tasks/release")
     @ApiOperation(value = "Releases the task with the provided id")
     @ApiResponses(@ApiResponse(code = 200, message = "Success", response = SearchQueryResult.class))
     @ApiImplicitParams({@ApiImplicitParam(
             dataType = "String",
             paramType = "body",
             name = "body")})
-    public void releaseTask(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse)
-            throws IOException {
-        ObjectMapper m = new WorkflowJsonParser().getObjectMapper();
-        JsonNode input = m.readTree(webScriptRequest.getContent().getContent());
-        logger.debug("Input: " + input);
-        JsonNode id = input.get("id");
-
-        logger.debug("Setting owner of task with id " + id.asText());
-        Task wfTask = workflowService.releaseWorkflowTask(id.asText());
-        writeJsonResponse(webScriptResponse, wfTask);
+    public ResponseEntity<Task> releaseTask(@RequestBody final Map<String, String> body) {
+        logger.debug("Setting owner of task {}", body);
+        String id = body.get("id");
+        Task wfTask = workflowService.releaseWorkflowTask(id);
+        return responseFrom(wfTask);
     }
 
-    @Uri(value = "/tasks/{id}/end/{transition}", method = HttpMethod.POST)
+    @PostMapping(value = "/staging/tasks/{id}/end/{transition}")
     @ApiOperation(value = "Ends the workflow task with the provided id with the provided transition as next")
     @ApiResponses(@ApiResponse(code = 200, message = "Success"))
-    public void transitionTask(@UriVariable String id, @UriVariable String transition) {
+    public void transitionTask(@PathVariable String id, @PathVariable String transition) {
         workflowService.endTask(id, transition);
     }
 
-    @Uri(value = "/workflows/generate/{amount}/{username}", method = HttpMethod.GET)
+    @GetMapping(value = "/staging/workflows/generate/{amount}/{username}")
     @ApiOperation(value = "[DEV] Generate an amount of workflows for username")
     @ApiResponses(@ApiResponse(code = 200, message = "Success"))
-    public void generateWorkflow(@UriVariable final int amount, @UriVariable final String username) {
+    public void generateWorkflow(@PathVariable final int amount, @PathVariable final String username) {
         workflowService.GenerateWorkflows(amount, username);
     }
 
-    //Include correct date format
-    protected void writeJsonResponse(WebScriptResponse response, Object object) throws IOException {
-        response.setContentType("application/json");
-        response.setContentEncoding("utf-8");
-        response.setHeader("Cache-Control", "no-cache");
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setDateFormat(new ISO8601DateFormat());
-        //mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        mapper.writeValue(response.getWriter(), object);
+    protected <T> ResponseEntity<T> responseFrom(T object) {
+        return ResponseEntity.ok(object);
     }
 }

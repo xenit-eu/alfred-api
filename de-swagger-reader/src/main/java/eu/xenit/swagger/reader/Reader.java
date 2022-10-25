@@ -15,8 +15,6 @@ package eu.xenit.swagger.reader;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.WebScript;
 import eu.xenit.swagger.reader.ext.SwaggerExtension;
 import eu.xenit.swagger.reader.ext.SwaggerExtensions;
 import eu.xenit.swagger.reader.utils.ReaderUtils;

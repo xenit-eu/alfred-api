@@ -21,6 +21,7 @@ import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.transaction.TransactionService;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.util.EntityUtils;
@@ -34,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.MediaType;
 
 /**
  * Created by kenneth on 14.03.16.
@@ -83,35 +85,33 @@ public class ConfigurationTest extends RestV1BaseTest {
 
         TransactionService transactionService = serviceRegistry.getTransactionService();
 
-        RetryingTransactionHelper.RetryingTransactionCallback<Object> txnWork = new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
-            public Object execute() throws Exception {
-                eu.xenit.apix.data.NodeRef dataDictionary = apixFileFolderService.getDataDictionary();
-                eu.xenit.apix.data.NodeRef testFolder = apixFileFolderService
-                        .createFolder(dataDictionary, "ConfigurationTests");
+        RetryingTransactionHelper.RetryingTransactionCallback<Object> txnWork = () -> {
+            NodeRef dataDictionary = apixFileFolderService.getDataDictionary();
+            NodeRef testFolder = apixFileFolderService
+                    .createFolder(dataDictionary, "ConfigurationTests");
 
-                jsonNodeRef = nodeService
-                        .createNode(testFolder, "xyz.json", new QName(ContentModel.TYPE_CONTENT.toString()));
-                ByteArrayInputStream jsonContent = new ByteArrayInputStream("{\"contents\": \"abc\"}".getBytes());
-                contentService.setContent(jsonNodeRef, jsonContent, "abc.json");
+            jsonNodeRef = nodeService
+                    .createNode(testFolder, "xyz.json", new QName(ContentModel.TYPE_CONTENT.toString()));
+            ByteArrayInputStream jsonContent = new ByteArrayInputStream("{\"contents\": \"abc\"}".getBytes());
+            contentService.setContent(jsonNodeRef, jsonContent, "abc.json");
 
-                yamlNodeRef = nodeService
-                        .createNode(testFolder, "xyz.yaml", new QName(ContentModel.TYPE_CONTENT.toString()));
-                ByteArrayInputStream yamlContent = new ByteArrayInputStream("contents: abc".getBytes());
-                contentService.setContent(yamlNodeRef, yamlContent, "abc.yaml");
+            yamlNodeRef = nodeService
+                    .createNode(testFolder, "xyz.yaml", new QName(ContentModel.TYPE_CONTENT.toString()));
+            ByteArrayInputStream yamlContent = new ByteArrayInputStream("contents: abc".getBytes());
+            contentService.setContent(yamlNodeRef, yamlContent, "abc.yaml");
 
-                otherNodeRef = nodeService
-                        .createNode(testFolder, "xyz.json.disabled", new QName(ContentModel.TYPE_CONTENT.toString()));
-                ByteArrayInputStream otherContent = new ByteArrayInputStream("{\"contents\": \"other\"}".getBytes());
-                contentService.setContent(otherNodeRef, otherContent, "abc.json");
+            otherNodeRef = nodeService
+                    .createNode(testFolder, "xyz.json.disabled", new QName(ContentModel.TYPE_CONTENT.toString()));
+            ByteArrayInputStream otherContent = new ByteArrayInputStream("{\"contents\": \"other\"}".getBytes());
+            contentService.setContent(otherNodeRef, otherContent, "abc.json");
 
-                NodeRef subFolder = apixFileFolderService.createFolder(testFolder, "subFolder");
+            NodeRef subFolder = apixFileFolderService.createFolder(testFolder, "subFolder");
 
-                yamlsubNodeRef = nodeService
-                        .createNode(subFolder, "sub.yaml", new QName(ContentModel.TYPE_CONTENT.toString()));
-                ByteArrayInputStream yamlSubContent = new ByteArrayInputStream("contents: sub".getBytes());
-                contentService.setContent(yamlsubNodeRef, yamlSubContent, "abc.yaml");
-                return null;
-            }
+            yamlsubNodeRef = nodeService
+                    .createNode(subFolder, "sub.yaml", new QName(ContentModel.TYPE_CONTENT.toString()));
+            ByteArrayInputStream yamlSubContent = new ByteArrayInputStream("contents: sub".getBytes());
+            contentService.setContent(yamlsubNodeRef, yamlSubContent, "abc.yaml");
+            return null;
         };
 
         transactionService.getRetryingTransactionHelper().doInTransaction(txnWork, false, true);
@@ -127,7 +127,11 @@ public class ConfigurationTest extends RestV1BaseTest {
     public void testConfigurationGet() throws IOException, JSONException {
         String requestUrl = makeBasePath();
 
-        HttpResponse response = Request.Get(requestUrl).execute().returnResponse();
+        HttpResponse response = Request
+                .Get(requestUrl)
+                .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .execute()
+                .returnResponse();
 
         assertEquals(200, response.getStatusLine().getStatusCode());
 
@@ -147,7 +151,7 @@ public class ConfigurationTest extends RestV1BaseTest {
                 assertEquals("{\"contents\": \"abc\"}", jsonFile.optString("content"));
             }
 
-            assertEquals(2, jsonFile.length());
+            assertEquals(jsonFile.toString(), 2, jsonFile.length());
         }
 
     }
@@ -156,7 +160,11 @@ public class ConfigurationTest extends RestV1BaseTest {
     public void testConfigurationGetFields() throws IOException, JSONException {
         String requestUrl = makeBasePath() + "&fields=nodeRef,path,metadata,parsedContent";
 
-        HttpResponse response = Request.Get(requestUrl).execute().returnResponse();
+        HttpResponse response = Request
+                .Get(requestUrl)
+                .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .execute()
+                .returnResponse();
 
         assertEquals(200, response.getStatusLine().getStatusCode());
 
@@ -168,7 +176,7 @@ public class ConfigurationTest extends RestV1BaseTest {
 
         for (int i = 0; i < jsonFiles.length(); i++) {
             JSONObject jsonFile = jsonFiles.getJSONObject(i);
-            assertEquals(4, jsonFile.length());
+            assertEquals(jsonFile.toString(), 4, jsonFile.length());
             String nodeRef = jsonFile.optString("nodeRef");
             assertNotNull(nodeRef);
 
@@ -203,7 +211,11 @@ public class ConfigurationTest extends RestV1BaseTest {
     public void testConfigurationFilterFields() throws IOException, JSONException {
         String requestUrl = makeBasePath() + "&filter.name=" + URLEncoder.encode("\\.yaml$", "UTF-8");
 
-        HttpResponse response = Request.Get(requestUrl).execute().returnResponse();
+        HttpResponse response = Request
+                .Get(requestUrl)
+                .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .execute()
+                .returnResponse();
 
         assertEquals(200, response.getStatusLine().getStatusCode());
 
@@ -224,7 +236,11 @@ public class ConfigurationTest extends RestV1BaseTest {
     public void testConfigurationSubdirectory() throws IOException, JSONException {
         String requestUrl = makeBasePath() + "/subFolder";
 
-        HttpResponse response = Request.Get(requestUrl).execute().returnResponse();
+        HttpResponse response = Request
+                .Get(requestUrl)
+                .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .execute()
+                .returnResponse();
 
         assertEquals(200, response.getStatusLine().getStatusCode());
 
@@ -243,19 +259,17 @@ public class ConfigurationTest extends RestV1BaseTest {
 
     @After
     public void cleanUp() {
-        RetryingTransactionHelper.RetryingTransactionCallback<Object> txnWork = new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
-            public Object execute() throws Exception {
-                try {
-                    eu.xenit.apix.data.NodeRef dataDictionary = apixFileFolderService.getDataDictionary();
-                    eu.xenit.apix.data.NodeRef testFolder = apixFileFolderService
-                            .getChildNodeRef(dataDictionary, "ConfigurationTests");
-                    removeTestNode(new org.alfresco.service.cmr.repository.NodeRef(testFolder.toString()));
-                } catch (RuntimeException ex) {
-                    logger.debug("Did not need to remove mainTestFolder because it did not exist");
-                    //ex.printStackTrace();
-                }
-                return null;
+        RetryingTransactionHelper.RetryingTransactionCallback<Object> txnWork = () -> {
+            try {
+                NodeRef dataDictionary = apixFileFolderService.getDataDictionary();
+                NodeRef testFolder = apixFileFolderService
+                        .getChildNodeRef(dataDictionary, "ConfigurationTests");
+                removeTestNode(new org.alfresco.service.cmr.repository.NodeRef(testFolder.toString()));
+            } catch (RuntimeException ex) {
+                logger.debug("Did not need to remove mainTestFolder because it did not exist");
+                //ex.printStackTrace();
             }
+            return null;
         };
         TransactionService transactionService = serviceRegistry.getTransactionService();
         transactionService.getRetryingTransactionHelper().doInTransaction(txnWork, false, true);

@@ -28,12 +28,8 @@ public class TypeResolver implements TypeResolverBuilder<TypeResolver> {
     @Override
     public TypeDeserializer buildTypeDeserializer(DeserializationConfig config, JavaType baseType,
             Collection<NamedType> subtypes) {
-        //if (!baseType.getRawClass().equals(SearchSyntaxNode.class)) throw new UnsupportedOperationException();
         TypeNameIdResolver idRes = TypeNameIdResolver.construct(config, baseType, subtypes, false, true);
-
-        SearchNodeTypeDeserializer s = new SearchNodeTypeDeserializer(baseType, idRes, null, false, null);
-
-        return s;
+        return new SearchNodeTypeDeserializer(baseType, idRes, null, false, null);
     }
 
     @Override

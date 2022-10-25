@@ -4,7 +4,7 @@ services:
   alfresco-core:
     image: ${DOCKER_IMAGE}
     ports:
-      - "${DOCKER_IP}::8080"
+      - "${DOCKER_IP}:8080:8080"
     volumes:
       - alfresco:/opt/alfresco/alf_data
     restart: unless-stopped
@@ -13,6 +13,14 @@ services:
       - TERM=xterm
       - GLOBAL_messaging.broker.url=failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true
       - GLOBAL_localTransform.core-aio.url=http://transform-core-aio:8090/
+      ## Needed for Solr indexing
+      - GLOBAL_local.transform.service.enabled=true
+#      # Disable transformations and renditions
+#      - GLOBAL_contentPropertyRestrictions.enabled=false
+#      - GLOBAL_ooo.enabled=false
+#      - GLOBAL_jodconverter.enabled=false
+#      - GLOBAL_transform.service.enabled=false
+#      - GLOBAL_legacy.transform.service.enabled=false
 
   solr:
     image: hub.xenit.eu/alfresco-enterprise/alfresco-solr6:2.0.1
@@ -32,15 +40,15 @@ services:
       - POSTGRES_DB=alfresco
     restart: unless-stopped
 
-  activemq:
-    image: alfresco/alfresco-activemq:5.16.1
-    mem_limit: 1g
-
-  transform-core-aio:
-    image: alfresco/alfresco-transform-core-aio:2.5.0
-    environment:
-      JAVA_OPTS: " -Xms256m -Xmx512m"
-      ACTIVEMQ_URL: "nio://activemq:61616"
+#  activemq:
+#    image: alfresco/alfresco-activemq:5.16.1
+#    mem_limit: 1g
+#
+#  transform-core-aio:
+#    image: alfresco/alfresco-transform-core-aio:2.5.0
+#    environment:
+#      JAVA_OPTS: " -Xms256m -Xmx512m"
+#      ACTIVEMQ_URL: "nio://activemq:61616"
 
 volumes:
   alfresco:

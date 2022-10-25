@@ -20,8 +20,6 @@ import org.alfresco.service.namespace.QName;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -31,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class SearchServiceFacetsTest extends SearchServiceTest {
 
-    private final static Logger logger = LoggerFactory.getLogger(SearchServiceFacetsTest.class);
     private static final String ADMIN_USER_NAME = "admin";
 
     @Autowired
@@ -162,7 +159,7 @@ public class SearchServiceFacetsTest extends SearchServiceTest {
         query.setFacets(options);
 
         SearchQueryResult result = searchService.query(query);
-        // Search in results (Because of alf 4.2 source language level is 1.7. No lambdas to make this pretty 🙁)
+        // Search in results (Because of alf 4.2 source language level is 1.7. No lambdas to make this pretty)
         for (FacetSearchResult facetResult : result.getFacets()) {
             String facetName = facetResult.getName();
             if (bucketedFacetNames.contains(facetName)) {

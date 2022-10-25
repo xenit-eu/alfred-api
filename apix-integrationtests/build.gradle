@@ -5,36 +5,45 @@ plugins {
     id 'eu.xenit.alfresco-remote-testrunner' version '2.0.1' apply false
 }
 
+def integrationTestsProjectDir = project.projectDir
 allprojects {
     // Following needs to apply to shared (./src) project and version-specific (e.g. ./70) projects.
+    apply plugin: 'idea'
     apply plugin: 'eu.xenit.de'
     apply plugin: 'eu.xenit.alfresco-remote-testrunner'
     apply plugin: 'eu.xenit.alfresco'
     apply from: "${project.projectDir}/overrides.gradle"
 
     sourceSets {
-        main {
-            java {
-                srcDirs = []
-            }
-            resources {
-                srcDirs = []
-            }
-        }
-        integrationTest {
-            java {
-                srcDirs = ['./src/main/java']
-            }
-            resources {
-                srcDirs = ['./src/main/resources']
-            }
+        main.java.srcDirs = []
+        main.resources.srcDirs = []
+        integrationTest.java.srcDirs = [
+            "$integrationTestsProjectDir/src/main/java",
+            "$integrationTestsProjectDir/$subproject_alfresco_version/src/main/java"
+        ]
+        integrationTest.resources.srcDirs = [
+            "$integrationTestsProjectDir/src/main/resources",
+            "$integrationTestsProjectDir/$subproject_alfresco_version/src/main/resources"
+        ]
+    }
+
+    configurations {
+        implementation {
+            extendsFrom integrationTestImplementationRemote
         }
     }
 
     dependencies {
         alfrescoProvided project(":apix-rest-v1")
         alfrescoProvided project(":apix-interface")
-        alfrescoProvided project(":apix-impl:apix-impl-${subproject_alfresco_version}")
+        alfrescoProvided project(":apix-impl") // Needed because of the below transitive exclusion
+        // Add services used to the integration test fatjar, since we can't access the ones deployed in Alfresco
+        integrationTestImplementationRemote (project(":apix-impl:apix-impl-${subproject_alfresco_version}")) {
+            // Already includes apix-interface, we need to exclude it to avoid Linkage errors from
+            // having 2 of the same classes on the classpath
+            // (1 in Alfresco from apix-impl AMP + 1 in DE from the integration tests fat jar)
+            transitive = false
+        }
 
         alfrescoProvided group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_repo_version
         alfrescoProvided group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_remote_api_version
@@ -44,19 +53,11 @@ allprojects {
 }
 
 subprojects {
-    sourceSets {
-        integrationTest {
-            java {
-                srcDirs = ['../src/main/java', './src/main/java']
-            }
-            resources {
-                srcDirs = ['../src/main/resources', './src/main/resources']
-            }
-        }
-    }
-
+    def projectApixImpl = project(":apix-impl:apix-impl-${subproject_alfresco_version}")
     def projectDocker = project(":apix-docker:docker-${subproject_alfresco_version}")
+    evaluationDependsOn(projectApixImpl.path)
     evaluationDependsOn(projectDocker.path)
+    def assembleTask = projectApixImpl.tasks.getByName("assemble")
     def composeUpTask = projectDocker.tasks.getByName("composeUp")
     def composeDownTask = projectDocker.tasks.getByName("composeDown")
 
@@ -75,8 +76,10 @@ subprojects {
     }
 
     installBundle.enabled = false
+    jar.enabled = false
 
     installIntegrationTestingBundle {
+        dependsOn assembleTask
         dependsOn composeUpTask
         doFirst {
             def serviceInfo = composeUpTask.servicesInfos.get("alfresco-core")
@@ -93,22 +96,9 @@ subprojects {
         }
     }
 
-    dependencies {
-        // This dependency is for code-highlighting in Intellij only,
-        // compileOnly is for the 'main' sourceSet, and is not inherited by
-        // the integrationTest sourceSet, so it does not actually affect the code that's
-        // being compiled.
-        // This is important, because else we would be adding a second version of all dependencies
-        // with the version as specified in the shared-sources override.gradle. That would then
-        // possibly cause compile- or runtime errors because Gradle automatically selects the
-        // latest version when duplicate dependencies are in the same configuration.
-        compileOnly project(':apix-integrationtests')
-    }
-
     integrationTest {
         // After the tests, the docker setup should be stopped
         finalizedBy composeDownTask
     }
-
 }
 

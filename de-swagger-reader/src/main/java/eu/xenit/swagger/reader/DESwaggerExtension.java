@@ -2,8 +2,6 @@ package eu.xenit.swagger.reader;
 
 import com.fasterxml.jackson.databind.type.ArrayType;
 import com.fasterxml.jackson.databind.type.SimpleType;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.RequestParam;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.UriVariable;
 import eu.xenit.swagger.reader.ext.AbstractSwaggerExtension;
 import eu.xenit.swagger.reader.ext.SwaggerExtension;
 import io.swagger.models.parameters.Parameter;
@@ -44,7 +42,6 @@ public class DESwaggerExtension extends AbstractSwaggerExtension {
         }
 
         for (Annotation ann : annotations) {
-
             if (ann.annotationType().equals(RequestParam.class)) {
                 RequestParam c = (RequestParam) ann;
 
@@ -55,14 +52,6 @@ public class DESwaggerExtension extends AbstractSwaggerExtension {
 
                 return Collections.singletonList((Parameter) parameter);
 
-            }
-            if (ann.annotationType().equals(UriVariable.class)) {
-                UriVariable c = (UriVariable) ann;
-                PathParameter parameter = new PathParameter();
-                parameter.setRequired(c.required());
-                parameter.setName(c.value());
-                parameter.setType("string");
-                return Collections.singletonList((Parameter) parameter);
             }
         }
 

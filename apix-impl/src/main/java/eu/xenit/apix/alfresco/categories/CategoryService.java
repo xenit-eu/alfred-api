@@ -1,6 +1,5 @@
 package eu.xenit.apix.alfresco.categories;
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import com.google.common.collect.Iterables;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.categories.Category;
@@ -19,10 +18,9 @@ import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@OsgiService
-@Component("eu.xenit.apix.categories.ICategoryService")
+@Service("eu.xenit.apix.categories.ICategoryService")
 public class CategoryService implements ICategoryService {
 
     @Autowired

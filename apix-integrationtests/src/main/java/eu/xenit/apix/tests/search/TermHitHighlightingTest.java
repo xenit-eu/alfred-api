@@ -30,16 +30,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class TermHitHighlightingTest extends BaseTest {
 
-    private static final Logger log = LoggerFactory.getLogger(TermHitHighlightingTest.class);
-
     @Autowired
     INodeService nodeService;
     @Autowired
     SearchService searchService;
     @Autowired
     RetryingTransactionHelper retryingTransactionHelper;
-
-    private ObjectMapper mapper = new ObjectMapper();
     private static final String FURIES_TXT = ""
             + "The furies are at home\nin the mirror; it is their address.\nEven the clearest water,\nif deep enough can drown.\n"
             + "\nNever think to surprise them.\nYour face approaching ever\nso friendly is the white flag\nthey ignore. There is no truce\n"
@@ -69,7 +65,7 @@ public class TermHitHighlightingTest extends BaseTest {
 
     @Test
     /** Test all major parameters for term hit highlighting */
-    public void searchResponseContainsHighlights() throws IOException, InterruptedException {
+    public void searchResponseContainsHighlights() throws InterruptedException {
         int initialCleanDocs = solrHelper.getNumberOfFtsStatusCleanDocs();
         List<HighlightResult> expected = Arrays.asList(new HighlightResult("cm:content", Arrays.asList(""
                 + "The !PREFIX!furies!SUFFIX! are at home\nin the mirror; it is their address.\n"

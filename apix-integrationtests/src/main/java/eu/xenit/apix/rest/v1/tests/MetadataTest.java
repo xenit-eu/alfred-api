@@ -15,6 +15,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -109,7 +110,8 @@ public class MetadataTest extends RestV1BaseTest {
 
         //Adding the cm:versionable aspect as a test
         httppost.setEntity(new StringEntity(json(String
-                .format("{'aspectsToAdd':['%s'], %s}", ContentModel.ASPECT_VERSIONABLE.toString(), propertiesToSet))));
+                .format("{'aspectsToAdd':['%s'], %s}", ContentModel.ASPECT_VERSIONABLE.toString(), propertiesToSet)),
+                ContentType.APPLICATION_JSON));
 
         final NodeRef testNodeRef;
         try (CloseableHttpResponse response = httpclient.execute(httppost)) {
@@ -123,16 +125,13 @@ public class MetadataTest extends RestV1BaseTest {
         }
 
         transactionService.getRetryingTransactionHelper()
-                .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
-                    @Override
-                    public Object execute() throws Throwable {
-                        org.alfresco.service.cmr.repository.NodeRef alfTestRef = new org.alfresco.service.cmr.repository.NodeRef(
-                                testNodeRef.toString());
-                        assertEquals("newTitle", nodeService.getProperty(alfTestRef, ContentModel.PROP_TITLE));
-                        assertEquals(RestV1BaseTest.TESTFILE_NAME, nodeService.getProperty(alfTestRef, ContentModel.PROP_NAME));
-                        assertTrue(nodeService.hasAspect(alfTestRef, ContentModel.ASPECT_VERSIONABLE));
-                        return null;
-                    }
+                .doInTransaction(() -> {
+                    org.alfresco.service.cmr.repository.NodeRef alfTestRef = new org.alfresco.service.cmr.repository.NodeRef(
+                            testNodeRef.toString());
+                    assertEquals("newTitle", nodeService.getProperty(alfTestRef, ContentModel.PROP_TITLE));
+                    assertEquals(RestV1BaseTest.TESTFILE_NAME, nodeService.getProperty(alfTestRef, ContentModel.PROP_NAME));
+                    assertTrue(nodeService.hasAspect(alfTestRef, ContentModel.ASPECT_VERSIONABLE));
+                    return null;
                 }, false, true);
     }
 
@@ -151,7 +150,8 @@ public class MetadataTest extends RestV1BaseTest {
 
         //Adding the cm:versionable aspect as a test
         httppost.setEntity(new StringEntity(json(String
-                .format("{'aspectsToAdd':['%s'], %s}", ContentModel.ASPECT_VERSIONABLE.toString(), propertiesToSet))));
+                .format("{'aspectsToAdd':['%s'], %s}", ContentModel.ASPECT_VERSIONABLE.toString(), propertiesToSet)),
+                ContentType.APPLICATION_JSON));
 
         try (CloseableHttpResponse response = httpclient.execute(httppost)) {
             String jsonString = EntityUtils.toString(response.getEntity());
@@ -178,39 +178,38 @@ public class MetadataTest extends RestV1BaseTest {
     }
 
     @Test
-    public void testDeletePermanently() throws IOException {
+    public void testDeletePermanently() throws IOException, InterruptedException {
         final HashMap<String, NodeRef> initializedNodeRefs = CreateAdminNode();
         final String url = getUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME)) + "?permanently=true";
+        Request.Delete(url).execute().returnResponse();
+        // Alfresco Cache is lagging behind...
+        Thread.sleep(2000);
         transactionService.getRetryingTransactionHelper()
-                .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
-                    @Override
-                    public Object execute() throws Throwable {
-                        Request.Delete(url).execute().returnResponse();
-                        org.alfresco.service.cmr.repository.NodeRef archivedRef = nodeArchiveService.getArchivedNode(
-                                new org.alfresco.service.cmr.repository.NodeRef(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getValue()));
-                        assertFalse(checkExists(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME)));
-                        logger.debug(" deleted node: " + archivedRef.toString());
-                        assertNotNull(archivedRef);
-                        return null;
-                    }
+                .doInTransaction(() -> {
+                    assertFalse(checkExists(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME)));
+                    org.alfresco.service.cmr.repository.NodeRef archivedRef = nodeArchiveService.getArchivedNode(
+                            new org.alfresco.service.cmr.repository.NodeRef(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getValue()));
+                    logger.debug(" deleted node: {}", archivedRef);
+                    assertNotNull(archivedRef);
+                    return null;
                 }, true, true);
     }
 
     @Test
-    public void testDeleteToArchive() throws IOException {
+    public void testDeleteToArchive() throws IOException, InterruptedException {
         final HashMap<String, NodeRef> initializedNodeRefs = CreateAdminNode();
         final String url = getUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME));
+        Request.Delete(url).execute().returnResponse();
+        // Alfresco Cache is lagging behind...
+        Thread.sleep(2000);
         transactionService.getRetryingTransactionHelper()
-                .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
-                    @Override
-                    public Object execute() throws Throwable {
-                        Request.Delete(url).execute().returnResponse();
-                        assertFalse(checkExists(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME)));
-                        org.alfresco.service.cmr.repository.NodeRef archivedRef = nodeArchiveService.getArchivedNode(
-                                new org.alfresco.service.cmr.repository.NodeRef(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getValue()));
-                        assertNotNull(archivedRef);
-                        return null;
-                    }
+                .doInTransaction(() -> {
+                    assertFalse(checkExists(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME)));
+                    org.alfresco.service.cmr.repository.NodeRef archivedRef = nodeArchiveService.getArchivedNode(
+                            new org.alfresco.service.cmr.repository.NodeRef(
+                                    initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getValue()));
+                    assertNotNull(archivedRef);
+                    return null;
                 }, true, true);
     }
 

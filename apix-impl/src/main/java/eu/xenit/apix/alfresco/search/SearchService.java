@@ -1,6 +1,5 @@
 package eu.xenit.apix.alfresco.search;
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.alfresco.dictionary.PropertyService;
 import eu.xenit.apix.data.QName;
@@ -32,7 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service("eu.xenit.apix.search.SearchService")
-@OsgiService
 public class SearchService implements ISearchService {
 
     public static final int MAX_ITEMS_DEFAULT = 1000;

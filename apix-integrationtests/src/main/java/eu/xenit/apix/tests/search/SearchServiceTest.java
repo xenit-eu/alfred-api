@@ -11,7 +11,6 @@ import eu.xenit.apix.search.SearchQueryConsistency;
 import eu.xenit.apix.search.SearchQueryResult;
 import eu.xenit.apix.search.nodes.SearchSyntaxNode;
 import eu.xenit.apix.tests.BaseTest;
-import eu.xenit.apix.util.SolrTestHelperImpl;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -63,8 +62,6 @@ abstract public class SearchServiceTest extends BaseTest {
 
     @Autowired
     NamespacePrefixResolver namespacePrefixResolver;
-
-    protected SolrTestHelperImpl solrTestHelper;
 
     final protected static String APIXTEST_NS = "http://test.apix.xenit.eu/model/content";
     final protected static QName APIXTEST_LANGUAGE = QName.createQName(APIXTEST_NS, "language");

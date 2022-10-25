@@ -12,6 +12,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -68,7 +69,7 @@ public class AllNodeInfoTest extends RestV1BaseTest {
         final String url = makeAlfrescoBaseurl("admin", "admin") + "/apix/v1/nodes/nodeInfo";
         logger.debug("url: " + url);
         HttpPost httppost = new HttpPost(url);
-        httppost.setEntity(new StringEntity(jsonString));
+        httppost.setEntity(new StringEntity(jsonString, ContentType.APPLICATION_JSON));
 
         try (CloseableHttpResponse response = httpclient.execute(httppost)) {
             assertEquals(200, response.getStatusLine().getStatusCode());
@@ -86,7 +87,7 @@ public class AllNodeInfoTest extends RestV1BaseTest {
         final String url = makeAlfrescoBaseurl("admin", "admin") + "/apix/v1/nodes/nodeInfo";
         logger.debug("url: " + url);
         HttpPost httppost = new HttpPost(url);
-        httppost.setEntity(new StringEntity(jsonString));
+        httppost.setEntity(new StringEntity(jsonString, ContentType.APPLICATION_JSON));
 
         try (CloseableHttpResponse response = httpclient.execute(httppost)) {
             assertEquals(400, response.getStatusLine().getStatusCode());
@@ -105,7 +106,7 @@ public class AllNodeInfoTest extends RestV1BaseTest {
         final String url = makeAlfrescoBaseurl(RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS) + "/apix/v1/nodes/nodeInfo";
         logger.debug("url: " + url);
         HttpPost httppost = new HttpPost(url);
-        httppost.setEntity(new StringEntity(jsonString));
+        httppost.setEntity(new StringEntity(jsonString, ContentType.APPLICATION_JSON));
 
         try (CloseableHttpResponse response = httpclient.execute(httppost)) {
             assertEquals(200, response.getStatusLine().getStatusCode());
@@ -129,7 +130,7 @@ public class AllNodeInfoTest extends RestV1BaseTest {
                         "]}");
         final CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httppost = new HttpPost(url);
-        httppost.setEntity(new StringEntity(jsonString));
+        httppost.setEntity(new StringEntity(jsonString, ContentType.APPLICATION_JSON));
 
         try (CloseableHttpResponse response = httpclient.execute(httppost)) {
             assertEquals(200, response.getStatusLine().getStatusCode());

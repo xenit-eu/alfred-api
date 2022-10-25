@@ -5,6 +5,8 @@ import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.node.INodeService;
 import eu.xenit.apix.rest.v1.nodes.CreateNodeOptions;
+
+import java.io.IOException;
 import java.util.HashMap;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -47,7 +49,7 @@ public class CopyNodeTest extends NodesBaseTest {
     }
 
     @Test
-    public void testCopyFileNode() {
+    public void testCopyFileNode() throws IOException {
         CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, null,
                 null, null , copyFromFile);
         NodeRef newRef = transactionService.getRetryingTransactionHelper()
@@ -58,7 +60,7 @@ public class CopyNodeTest extends NodesBaseTest {
     }
 
     @Test
-    public void testCopyFileNodeWithAspectsToRemove() {
+    public void testCopyFileNodeWithAspectsToRemove() throws IOException {
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
                     serviceRegistry.getNodeService().addAspect(c.alfresco(copyFromFile), ContentModel.ASPECT_TEMPORARY, new HashMap<>());
@@ -78,7 +80,7 @@ public class CopyNodeTest extends NodesBaseTest {
     }
 
     @Test
-    public void testCopyFolderNode() {
+    public void testCopyFolderNode() throws IOException {
         CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, null,
                 null, null , copyFromFolder);
         NodeRef newRef = transactionService.getRetryingTransactionHelper()
@@ -89,7 +91,7 @@ public class CopyNodeTest extends NodesBaseTest {
     }
 
     @Test
-    public void testCopyFileWithName() {
+    public void testCopyFileWithName() throws IOException {
         final String newName = "Copy";
         CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, newName,
                 null, null, copyFromFile);
@@ -101,7 +103,7 @@ public class CopyNodeTest extends NodesBaseTest {
     }
 
     @Test
-    public void testCopyFolderWithName() {
+    public void testCopyFolderWithName() throws IOException {
         final String newName = "CopiedFolder";
         CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, newName, null,
                 null, copyFromFolder);
@@ -113,7 +115,7 @@ public class CopyNodeTest extends NodesBaseTest {
     }
 
     @Test
-    public void testCopyFileDuplicateName() {
+    public void testCopyFileDuplicateName() throws IOException {
         final String duplicateName = "duplicateName";
         CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, duplicateName, null,
                 null, copyFromFile);
@@ -134,7 +136,7 @@ public class CopyNodeTest extends NodesBaseTest {
     }
 
     @Test
-    public void testCopyFolderDuplicateName() {
+    public void testCopyFolderDuplicateName() throws IOException {
         final NodeRef childRef = nodeService.getChildAssociations(mainTestFolder).get(0).getTarget();
         final String newName = nodeService.getMetadata(childRef).properties.get(c.apix(ContentModel.PROP_NAME)).get(0);
         CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, newName,
@@ -147,7 +149,7 @@ public class CopyNodeTest extends NodesBaseTest {
     }
 
     @Test
-    public void testCopyNodeWithProperties() {
+    public void testCopyNodeWithProperties() throws IOException {
         final String newName = "NewName";
         HashMap<QName, String[]> properties = getBasicProperties();
         CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, newName,
@@ -160,7 +162,7 @@ public class CopyNodeTest extends NodesBaseTest {
     }
 
     @Test
-    public void testCopyNodeReturnsAccesDenied() {
+    public void testCopyNodeReturnsAccesDenied() throws IOException {
         CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, null,
                 null, null, copyFromFile);
         transactionService.getRetryingTransactionHelper()
@@ -172,7 +174,7 @@ public class CopyNodeTest extends NodesBaseTest {
     }
 
     @Test
-    public void testCopyFolderInception() {
+    public void testCopyFolderInception() throws IOException {
         CreateNodeOptions createNodeOptions = getCreateNodeOptions(copyFromFolder, null,
                 null, null, copyFromFolder);
         transactionService.getRetryingTransactionHelper()
@@ -183,7 +185,7 @@ public class CopyNodeTest extends NodesBaseTest {
     }
 
     @Test
-    public void testCopyFolderTypeChange() {
+    public void testCopyFolderTypeChange() throws IOException {
         CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, null,
                 c.apix(ContentModel.TYPE_CONTENT), null, copyFromFolder);
         transactionService.getRetryingTransactionHelper()
@@ -194,7 +196,7 @@ public class CopyNodeTest extends NodesBaseTest {
     }
 
     @Test
-    public void testCopyFolderSubTyping() {
+    public void testCopyFolderSubTyping() throws IOException {
         CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, null,
                 c.apix(ContentModel.TYPE_DICTIONARY_MODEL), null, copyFromFile);
         transactionService.getRetryingTransactionHelper()
@@ -205,7 +207,7 @@ public class CopyNodeTest extends NodesBaseTest {
     }
 
     @Test
-    public void testMultipleCopies() {
+    public void testMultipleCopies() throws IOException {
         CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, null,
                 null, null, copyFromFolder);
         for (int i = 0 ; i < 5 ; i++) {

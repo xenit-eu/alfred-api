@@ -21,6 +21,7 @@ import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.transaction.TransactionService;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -168,7 +169,7 @@ public abstract class BulkTest extends RestV1BaseTest {
                 String.format("[{'url':'%s','method':'%s','body':%s},{'url':'%s','method':'%s','body':%s}]",
                         firstPostUrl, "post", firstJsonBody,
                         secondPostUrl, "post", secondJsonBody));
-        httpPost.setEntity(new StringEntity(jsonString));
+        httpPost.setEntity(new StringEntity(jsonString, ContentType.APPLICATION_JSON));
 
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
@@ -199,7 +200,7 @@ public abstract class BulkTest extends RestV1BaseTest {
         jsonString = json(String.format("[{'url':'%s','method':'%s','body':%s}]",
                 firstPostUrl, "post", firstJsonBody));
         final HttpPost httpPost2 = new HttpPost(url);
-        httpPost2.setEntity(new StringEntity(jsonString));
+        httpPost2.setEntity(new StringEntity(jsonString, ContentType.APPLICATION_JSON));
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
                     @Override
@@ -221,7 +222,7 @@ public abstract class BulkTest extends RestV1BaseTest {
         jsonString = json(String.format("[{'url':'%s','method':'%s','body':%s}]",
                 secondPostUrl, "post", secondJsonBody));
         final HttpPost httpPost3 = new HttpPost(url);
-        httpPost3.setEntity(new StringEntity(jsonString));
+        httpPost3.setEntity(new StringEntity(jsonString, ContentType.APPLICATION_JSON));
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
                     @Override
@@ -301,7 +302,7 @@ public abstract class BulkTest extends RestV1BaseTest {
         String firstJsonBody = String.format("{'parent':'%s'}", mainFolderRef);
         String jsonString = json(
                 String.format("[{'url':'%s', 'method':'%s', 'body':%s}]", firstPutUrl, "put", firstJsonBody));
-        httpPost.setEntity(new StringEntity(jsonString));
+        httpPost.setEntity(new StringEntity(jsonString, ContentType.APPLICATION_JSON));
 
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
@@ -337,7 +338,7 @@ public abstract class BulkTest extends RestV1BaseTest {
         String firstDeleteUrl = removePrefixAndAuthenticate(
                 makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME), "admin", "admin"));
         String jsonString = json(String.format("[{'url':'%s', 'method':'%s'}]", firstDeleteUrl, "delete"));
-        httpPost.setEntity(new StringEntity(jsonString));
+        httpPost.setEntity(new StringEntity(jsonString, ContentType.APPLICATION_JSON));
 
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
@@ -356,7 +357,7 @@ public abstract class BulkTest extends RestV1BaseTest {
                         "admin"));
         jsonString = json(String.format("[{'url':'%s', 'method':'%s', 'body':{}}]", secondDeleteUrl, "delete"));
         final HttpPost httpPost2 = new HttpPost(url);
-        httpPost2.setEntity(new StringEntity(jsonString));
+        httpPost2.setEntity(new StringEntity(jsonString, ContentType.APPLICATION_JSON));
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
                     @Override

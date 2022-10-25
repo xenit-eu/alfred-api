@@ -6,6 +6,7 @@ import eu.xenit.apix.search.SearchQueryResult;
 import java.io.IOException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -35,7 +36,7 @@ public class V1SearchWebscriptTest extends RestV1BaseTest {
                         "  'facets': { 'enabled': true } \n" +
                         "}");
 
-        checkoutHttppost.setEntity(new StringEntity(checkoutJsonString));
+        checkoutHttppost.setEntity(new StringEntity(checkoutJsonString, ContentType.APPLICATION_JSON));
 
         CloseableHttpResponse response = checkoutHttpclient.execute(checkoutHttppost);
         if (500 == response.getStatusLine().getStatusCode()) {

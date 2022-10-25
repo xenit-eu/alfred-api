@@ -1,42 +1,39 @@
 package eu.xenit.apix.rest.v1.temp;
 
-import com.github.dynamicextensionsalfresco.webscripts.annotations.HttpMethod;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.UriVariable;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.WebScript;
 import eu.xenit.apix.WIP.IWIPService;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
-import eu.xenit.apix.rest.v1.RestV1Config;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import java.io.IOException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.extensions.webscripts.WebScriptRequest;
-import org.springframework.extensions.webscripts.WebScriptResponse;
-import org.springframework.stereotype.Component;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Created by Michiel Huygen on 27/05/2016.
- */
-@WebScript(baseUri = RestV1Config.BaseUrl, families = RestV1Config.Family, defaultFormat = "json",
-        description = "Work In Progress - UNSTABLE", value = "WIP")
-@Component("eu.xenit.apix.rest.v1.temp.WIPWebscript")
+//@WebScript(baseUri = RestV1Config.BaseUrl, families = RestV1Config.Family, defaultFormat = "json",
+//        description = "Work In Progress - UNSTABLE", value = "WIP")
+@RestController("eu.xenit.apix.rest.v1.temp.WIPWebscript")
 public class WIPWebscript extends ApixV1Webscript {
 
-    @Autowired
-    IWIPService WipService;
+    private final IWIPService wipService;
+
+    public WIPWebscript(IWIPService wipService) {
+        this.wipService = wipService;
+    }
 
     @ApiOperation(value = "Downloads preview file for given node")
-    @Uri(value = "/nodes/{space}/{store}/{guid}/content/previews/pdf", method = HttpMethod.GET)
+    @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/content/previews/pdf")
     @ApiResponses(@ApiResponse(code = 200, message = "Success"))
     @ApiImplicitParams({@ApiImplicitParam(name = "file", paramType = "form", dataType = "file", required = true)})
-    public void getPreviewPdf(@UriVariable String space, @UriVariable String store, @UriVariable String guid,
-            final WebScriptRequest multiPart, WebScriptResponse response) throws IOException {
+    public ResponseEntity<?> getPreviewPdf(@PathVariable String space,
+                              @PathVariable String store,
+                              @PathVariable String guid) {
         final NodeRef nodeRef = new NodeRef(space, store, guid);
         //TODO: from /searchapp/download
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
     }
 }
