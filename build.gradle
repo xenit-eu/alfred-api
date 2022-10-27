@@ -60,6 +60,7 @@ ext {
     care4alfVersion = '2.3.0'
 
     mvc = "8.0.0"
+//    mvc = "7.5.1-RELEASE"
     alfrescoVersion = "7.2.0"
 }
 
