@@ -2,8 +2,6 @@ rootProject.name = 'apix'
 
 include ':apix-interface'
 include ':apix-rest-v1'
-include ':swagger-doc-extractor'
-include ':de-swagger-reader'
 
 include ':apix-impl'
 include ':apix-impl:apix-impl-62'
