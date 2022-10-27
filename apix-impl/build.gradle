@@ -89,9 +89,6 @@ allprojects {
 
     dependencies {
         compile(project(":apix-interface"))
-        compile(project(":apix-rest-v1")) {
-            exclude group: 'org.alfresco'
-        }
         alfrescoProvided group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_version
         alfrescoProvided group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_version
 
