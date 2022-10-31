@@ -1,5 +1,17 @@
 # Alfred API - Changelog
 
+## 4.0.0 (yyyy-mm-dd)
+
+### Added
+
+### Changed
+* [ALFREDAPI-504](https://xenitsupport.jira.com/browse/ALFREDAPI-504): Refactored Alfred API from Dynamic Extensions to Alfresco MVC to reduce maintenance efforts and improve the integration with Spring
+
+
+### Fixed
+
+### Removed
+
 
 ## 4.0.1 (unreleased)
 
