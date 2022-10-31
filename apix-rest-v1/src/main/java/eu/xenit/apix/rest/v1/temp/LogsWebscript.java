@@ -1,5 +1,7 @@
 package eu.xenit.apix.rest.v1.temp;
 
+import com.gradecak.alfresco.mvc.annotation.AlfrescoAuthentication;
+import com.gradecak.alfresco.mvc.annotation.AuthenticationType;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
 import io.swagger.annotations.Api;
 import java.io.File;
@@ -23,8 +25,7 @@ public class LogsWebscript extends ApixV1Webscript {
     }
 
     @GetMapping(value = "/v1/tmp/log", produces = { MediaType.TEXT_PLAIN_VALUE })
-//    @Authentication(AuthenticationType.ADMIN)
-    // TODO @Zlatin FIXME Alfresco MVC user permissions --> Admin!
+    @AlfrescoAuthentication(AuthenticationType.ADMIN)
     public ResponseEntity<String> showLog(@RequestParam(defaultValue = "200") int lines) throws IOException {
         StringBuilder log = new StringBuilder();
         File logFile = new File(logPath);

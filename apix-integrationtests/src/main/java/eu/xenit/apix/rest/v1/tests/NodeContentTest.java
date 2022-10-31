@@ -7,7 +7,11 @@ import eu.xenit.apix.data.ContentInputStream;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.node.INodeService;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;

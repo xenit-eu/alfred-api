@@ -21,7 +21,7 @@ public class ClassificationGetWebscript {
     }
 
     @GetMapping(
-            value = "/v0/classification/{aspectQName}",
+            value = "/classification/{aspectQName}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<Category>> execute(@PathVariable final QName aspectQName) {

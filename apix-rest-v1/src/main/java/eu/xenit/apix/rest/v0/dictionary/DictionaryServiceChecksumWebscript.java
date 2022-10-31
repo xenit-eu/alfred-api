@@ -19,7 +19,7 @@ public class DictionaryServiceChecksumWebscript {
     }
 
     @GetMapping(
-            value = "/v0/dictionary/checksum",
+            value = "/dictionary/checksum",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Map<String, Long>> execute() {

@@ -88,7 +88,7 @@ public abstract class NodesBaseTest extends RestV1BaseTest {
 
     protected CreateNodeOptions getCreateNodeOptions(eu.xenit.apix.data.NodeRef parentRef, String name,
             eu.xenit.apix.data.QName type, HashMap<QName, String[]> properties, QName[] aspectsToAdd,
-            QName[] aspectsToRemove, eu.xenit.apix.data.NodeRef copyFrom) throws IOException {
+            QName[] aspectsToRemove, eu.xenit.apix.data.NodeRef copyFrom) {
         String parentRefString = (parentRef != null) ? parentRef.toString() : null;
         String copyFromString = (copyFrom != null) ? copyFrom.toString() : null;
         String typeString = (type != null) ? type.toString() : null;
@@ -98,7 +98,7 @@ public abstract class NodesBaseTest extends RestV1BaseTest {
 
     protected CreateNodeOptions getCreateNodeOptions(eu.xenit.apix.data.NodeRef parentRef,
             String name, eu.xenit.apix.data.QName type, HashMap<QName, String[]> properties,
-            eu.xenit.apix.data.NodeRef copyFrom) throws IOException {
+            eu.xenit.apix.data.NodeRef copyFrom) {
         return getCreateNodeOptions(parentRef, name, type, properties, null, null, copyFrom);
     }
 

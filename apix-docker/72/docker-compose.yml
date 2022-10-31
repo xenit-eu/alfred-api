@@ -15,12 +15,12 @@ services:
       - GLOBAL_localTransform.core-aio.url=http://transform-core-aio:8090/
       ## Needed for Solr indexing
       - GLOBAL_local.transform.service.enabled=true
-#      # Disable transformations and renditions
-#      - GLOBAL_contentPropertyRestrictions.enabled=false
-#      - GLOBAL_ooo.enabled=false
-#      - GLOBAL_jodconverter.enabled=false
-#      - GLOBAL_transform.service.enabled=false
-#      - GLOBAL_legacy.transform.service.enabled=false
+      # Disable transformations and renditions
+      - GLOBAL_contentPropertyRestrictions.enabled=false
+      - GLOBAL_ooo.enabled=false
+      - GLOBAL_jodconverter.enabled=false
+      - GLOBAL_transform.service.enabled=false
+      - GLOBAL_legacy.transform.service.enabled=false
 
   solr:
     image: hub.xenit.eu/alfresco-enterprise/alfresco-solr6:2.0.1

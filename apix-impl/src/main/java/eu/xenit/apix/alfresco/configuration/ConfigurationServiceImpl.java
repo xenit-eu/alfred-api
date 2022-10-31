@@ -38,7 +38,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     private static final String QNAME_FOLDER = TYPE_FOLDER.toString();
     private static final QName QNAME_NAME = new QName(PROP_NAME.toString());
-    Logger logger = LoggerFactory.getLogger(ConfigurationServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConfigurationServiceImpl.class);
 
     @Autowired
     IFileFolderService fileFolderService;

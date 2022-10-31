@@ -4,7 +4,6 @@ import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
 
-import java.io.IOException;
 import java.util.HashMap;
 import eu.xenit.apix.rest.v1.nodes.CreateNodeOptions;
 import org.alfresco.model.ContentModel;
@@ -39,7 +38,7 @@ public class CreateNodeTest extends NodesBaseTest {
     }
 
     @Test
-    public void testCreateFile() throws IOException {
+    public void testCreateFile() {
         String name = "newFile";
         CreateNodeOptions createNodeOptions = getCreateNodeOptions(parentTestFolder, name,
                 c.apix(ContentModel.TYPE_CONTENT), null, null);
@@ -51,7 +50,7 @@ public class CreateNodeTest extends NodesBaseTest {
     }
 
     @Test
-    public void testCreateFolder() throws IOException {
+    public void testCreateFolder() {
         String name = "newFolder";
         CreateNodeOptions createNodeOptions = getCreateNodeOptions(parentTestFolder, name,
                 c.apix(ContentModel.TYPE_FOLDER), null, null);
@@ -63,7 +62,7 @@ public class CreateNodeTest extends NodesBaseTest {
     }
 
     @Ignore
-    public void testCreateFileWithNoType() throws IOException {
+    public void testCreateFileWithNoType() {
         String name = "noType";
         CreateNodeOptions createNodeOptions = getCreateNodeOptions(parentTestFolder, name,
                 null, null, null);
@@ -76,7 +75,7 @@ public class CreateNodeTest extends NodesBaseTest {
     }
 
     @Test
-    public void testCreateFileWithProperties() throws IOException {
+    public void testCreateFileWithProperties() {
         String name = "newFile1";
         HashMap<QName, String[]> properties = getBasicProperties();
         CreateNodeOptions createNodeOptions = getCreateNodeOptions(parentTestFolder, name,
@@ -89,7 +88,7 @@ public class CreateNodeTest extends NodesBaseTest {
     }
 
     @Test
-    public void testCreateFileDuplicateName() throws IOException {
+    public void testCreateFileDuplicateName() {
         String name = "duplicate";
         CreateNodeOptions createNodeOptions = getCreateNodeOptions(parentTestFolder, name,
                 c.apix(ContentModel.TYPE_CONTENT), null, null);
@@ -105,7 +104,7 @@ public class CreateNodeTest extends NodesBaseTest {
     }
 
     @Test
-    public void testCreateNodeReturnsAccessDenied() throws IOException {
+    public void testCreateNodeReturnsAccessDenied() {
         String name = "Forbidden";
         CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, name,
                 c.apix(ContentModel.TYPE_CONTENT), null, null);

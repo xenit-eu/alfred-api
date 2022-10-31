@@ -24,7 +24,7 @@ public class MetadataBulkWebscript {
     }
 
     @PostMapping(
-            value = "/v0/eu/xenit/metadata/bulk",
+            value = "/eu/xenit/metadata/bulk",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<NodeMetadataV0>> execute(@RequestBody final List<NodeRef> nodeRefs) {
