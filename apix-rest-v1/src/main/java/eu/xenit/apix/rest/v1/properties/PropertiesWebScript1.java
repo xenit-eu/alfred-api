@@ -16,10 +16,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @deprecated Use DictionaryWebScript1 instead
+ * @deprecated since Oct 2015, use DictionaryWebScript1 instead
  */
 @AlfrescoAuthentication(AuthenticationType.USER)
 @RestController("eu.xenit.apix.rest.v1.property.PropertiesWebScript1")
+@Deprecated(since = "Deprecated since Oct 2015, use DictionaryWebScript1 instead")
 public class PropertiesWebScript1 extends ApixV1Webscript {
 
     private final IPropertyService propertyService;

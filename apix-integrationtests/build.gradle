@@ -7,29 +7,28 @@ plugins {
 
 def integrationTestsProjectDir = project.projectDir
 allprojects {
+    // Subproject of supported Alfresco version 61/62/70/71/72
+    def subproject_alfresco_version = project.projectDir.name == "apix-integrationtests"
+            ? "61" // minimum supported version
+            : project.projectDir.name
+
     // Following needs to apply to shared (./src) project and version-specific (e.g. ./70) projects.
     apply plugin: 'idea'
     apply plugin: 'eu.xenit.de'
     apply plugin: 'eu.xenit.alfresco-remote-testrunner'
     apply plugin: 'eu.xenit.alfresco'
-    apply from: "${project.projectDir}/overrides.gradle"
+    apply from: "$integrationTestsProjectDir/$subproject_alfresco_version/overrides.gradle"
 
     sourceSets {
         main.java.srcDirs = []
         main.resources.srcDirs = []
-        integrationTest.java.srcDirs = [
-            "$integrationTestsProjectDir/src/main/java",
-            "$integrationTestsProjectDir/$subproject_alfresco_version/src/main/java"
-        ]
-        integrationTest.resources.srcDirs = [
-            "$integrationTestsProjectDir/src/main/resources",
-            "$integrationTestsProjectDir/$subproject_alfresco_version/src/main/resources"
-        ]
+        integrationTest.java.srcDirs = ["$integrationTestsProjectDir/src/main/java"]
+        integrationTest.resources.srcDirs = ["$integrationTestsProjectDir/src/main/resources"]
     }
 
     configurations {
         implementation {
-            extendsFrom integrationTestImplementationRemote
+            extendsFrom integrationTestImplementation
         }
         integrationTestImplementationLocal {
             // Removes weird dependency lodged inside the remote testing tools
@@ -38,15 +37,11 @@ allprojects {
         }
     }
 
-    // Subproject of supported Alfresco version 61/62/70/71/72
-    def implVersion = project.projectDir.name == "apix-integrationtests"
-            ? "61" // minimum supported version
-            : project.projectDir.name
     dependencies {
         alfrescoProvided project(":apix-rest-v1")
         alfrescoProvided project(":apix-interface")
         // Add services used to the integration test fatjar, since we can't access the ones deployed in Alfresco
-        integrationTestImplementationRemote (project(":apix-impl:apix-impl-$implVersion")) {
+        integrationTestImplementationRemote (project(":apix-impl:apix-impl-$subproject_alfresco_version")) {
             // Already includes apix-interface, we need to exclude it to avoid Linkage errors from
             // having 2 of the same classes on the classpath
             // (1 in Alfresco from apix-impl AMP + 1 in DE from the integration tests fat jar)

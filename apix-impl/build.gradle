@@ -99,7 +99,6 @@ allprojects {
         testImplementation 'org.alfresco:alfresco-remote-api'
         testImplementation 'org.alfresco:alfresco-data-model'
         testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.25.1'
-        testImplementation group: 'eu.xenit.testing', name: 'integration-testing', version: '1.1.0'
     }
 
     task generateVersionFile(type: Task) {
