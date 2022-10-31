@@ -8,17 +8,6 @@ services:
     volumes:
     - alfresco:/opt/alfresco/alf_data
     restart: unless-stopped
-    environment:
-    - SOLR_HOST=solr
-    - TERM=xterm
-    ## Needed for Solr indexing
-    - GLOBAL_local.transform.service.enabled=true
-    # Disable transformations and renditions
-    - GLOBAL_contentPropertyRestrictions.enabled=false
-    - GLOBAL_ooo.enabled=false
-    - GLOBAL_jodconverter.enabled=false
-    - GLOBAL_transform.service.enabled=false
-    - GLOBAL_legacy.transform.service.enabled=false
 
   solr:
     image: hub.xenit.eu/alfresco-enterprise/alfresco-solr6:2.0.1
@@ -36,9 +25,9 @@ services:
     - POSTGRES_DB=alfresco
     restart: unless-stopped
 
-#  jodconverter:
-#    image: hub.xenit.eu/public/jodconverter-ws
-#    restart: unless-stopped
+  jodconverter:
+    image: hub.xenit.eu/public/jodconverter-ws
+    restart: unless-stopped
 
 volumes:
   alfresco:
