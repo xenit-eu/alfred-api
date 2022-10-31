@@ -1,4 +1,15 @@
-def bundleClassPath(configuration) {
+plugins {
+    // Centralize plugin version management
+    id 'be.vbgn.ci-detect' version '0.5.0' apply false
+    id 'eu.xenit.de' version '2.1.3' apply false
+    id 'eu.xenit.amp' version '1.1.0' apply false
+    id 'eu.xenit.alfresco' version '1.1.0' apply false
+    id 'eu.xenit.docker-alfresco' version '5.3.1' apply false
+    id 'eu.xenit.docker-compose' version '5.3.1' apply false
+    id 'eu.xenit.alfresco-remote-testrunner' version '2.0.0' apply false
+}
+
+def static bundleClassPath(configuration) {
     def list = ['.']
     configuration.each {
         list += 'lib/' + it.name
@@ -6,7 +17,7 @@ def bundleClassPath(configuration) {
     return list.join(',')
 }
 
-def includeResource(configuration) {
+def static includeResource(configuration) {
     def list = []
     configuration.each {
         //We have to replace the backslashes with forward slashes because on windows the path will just be unseparated.
@@ -17,33 +28,24 @@ def includeResource(configuration) {
     return list.join(',')
 }
 
-def getVersionQualifier(String branch_name) {
+def static getVersionQualifier(String branch_name) {
     if(branch_name.startsWith('release'))
         return ''
-    //Osgi in 5x accepts - in qualifier, 6x does not. Suggest removing branch section from snapshot qualifiers all together.
+    // Osgi in 5x accepts - in qualifier, 6x does not.
+    // Suggest removing branch section from snapshot qualifiers all together.
     return '.SNAPSHOT'
 }
 
-buildscript {
-    repositories {
-        mavenCentral()
-        maven {
-            url "https://maven.alfresco.com/nexus/content/groups/public"
-        }
-    }
-}
-
 ext {
-    versionWithoutQualifier = '3.1.0'
+    versionWithoutQualifier = '4.0.0'
 
     jackson_version = '2.8.3'
-    swagger_version = "1.5.7"
+    swagger_version = "1.5.7" // 2.2.4
     de_version = "2.1.3"
 
     http_core_version = "4.3.3"
     http_version = "4.3.4"
 
-    alfresco_52_version = "5.2.f"
     alfresco_61_version = "6.1"
     alfresco_62_version = "6.2"
     alfresco_70_version = "7.0"
@@ -54,7 +56,6 @@ ext {
     // Additionally, an explicit dependency on the data-model was required, however
     // alfresco-data-model might have a different version number than the main war it's included in
     // ref: https://bitbucket.org/xenit/alfresco-bom/src/master/repo/eu/xenit/alfresco/ for the bom of vanilla alfresco
-    alfresco_52_dm_version = "6.16"
     alfresco_61_dm_version = "8.25.1"
     alfresco_62_dm_version = "8.50.18"
     alfresco_70_dm_version = "8.424"
@@ -62,18 +63,22 @@ ext {
     alfresco_72_dm_version = "14.142"
 
     care4alfVersion = '2.3.0'
+
+    alfrescoVersion = "7.2.0"
 }
 
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'maven'
 
     group = 'eu.xenit.apix'
     version = versionWithoutQualifier + getVersionQualifier(System.env.BRANCH_NAME ?: 'local')
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = 11
+    targetCompatibility = 11
 
     repositories {
+        flatDir {
+            dirs "$rootProject.projectDir/temp-dependencies"
+        }
         mavenCentral()
         maven { url "https://artifacts.alfresco.com/nexus/content/groups/public" }
         maven { url "https://repo.springsource.org/release" }

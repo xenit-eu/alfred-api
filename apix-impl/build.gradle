@@ -1,23 +1,10 @@
-plugins {
-    id 'eu.xenit.de' version '2.1.3' apply false
-    id 'eu.xenit.amp' version '1.1.0' apply false
-    id 'eu.xenit.alfresco' version '1.1.0' apply false
-}
-
-// Give IntelliJ a default source of non-shared classes
-ext {
-    alfresco_version = alfresco_62_version
-    alfresco_repo_version = '7.199.0'
-    alfresco_dm_version = alfresco_62_dm_version
-    alfresco_min_version = '6.2'
-}
-
 sourceSets.main.java.srcDirs += 'src/main/java'
-
 subprojects {
-    apply from: "${project.projectDir}/overrides.gradle"
+    def shortAlfrescoVersion = project.name.split("-")[2]
+    apply from: "${rootProject.projectDir}/alfresco/$shortAlfrescoVersion/overrides.gradle"
     apply from: "${rootProject.projectDir}/publish.gradle"
     apply plugin: 'eu.xenit.amp'
+    apply plugin: 'java-library'
 
     configurations {
         ampArtifact
@@ -25,7 +12,7 @@ subprojects {
     }
 
     dependencies {
-        implementation(project(":apix-impl"))
+        api(project(":apix-impl"))
         dynamicExtensionsBundles(group: 'eu.xenit.swagger.ui', name: 'swagger-ui_5x', version: '1.1.0') {
             transitive = false
         } // Works for 6x too
@@ -47,24 +34,35 @@ subprojects {
     sourceSets {
         main {
             java {
-                srcDirs = ['src/main/java', '../src/main/java']
+                srcDirs = ["$project.parent.projectDir/src/main/java"]
             }
             amp {
                 dynamicExtension()
-                module("src/main/config/module.properties")
+                module {
+                    it.put("module.id", project.name)
+                    it.put("module.title", project.name)
+                    it.put("module.description",
+                            "Xenit API-X implementation Alfresco ${alfresco_version.substring(0, 3)}")
+                    it.put("module.version", project.version)
+                    it.put("module.repo.version.min", project.alfresco_min_version)
+                    if(project.hasProperty("alfresco_max_version")) {
+                        it.put("module.repo.version.max", project.alfresco_max_version)
+                    }
+                }
+
             }
         }
         test {
             java {
-                srcDirs = ['../src/test/java']
+                srcDirs = ["$project.parent.projectDir/src/test/java"]
             }
-            testResultsDirName = "${buildDir}/test-results/test"
+            testResultsDirName = "${project.parent.buildDir}/test-results/test"
         }
     }
 
     // Extend amp plugin task:
     // We want to add 'alfresco-global.properties' etc to the module-specific folder in the AMP
-    // (e.g. 'config/module/alfresco/module/apix-impl-51/') without hard-coding project name for each Alfresco version.
+    // (e.g. 'config/module/alfresco/module/apix-impl-72/') without hard-coding project name for each Alfresco version.
     amp {
         deBundles = configurations.dynamicExtensionsBundles + files(jar)
         into("config/alfresco/module/${project.name}") {
@@ -84,27 +82,31 @@ subprojects {
 }
 
 allprojects {
+    // Subproject of supported Alfresco version 61/62/70/71/72
+    def subproject_alfresco_version = project.projectDir.name == "apix-impl"
+            ? "70" : project.projectDir.name
+    apply from: "$rootProject.projectDir/alfresco/$subproject_alfresco_version/overrides.gradle"
     // allprojects also applies to shared code (under apix-impl/src) that needs to work in IntelliJ
     apply plugin: 'eu.xenit.de'
     apply plugin: 'eu.xenit.alfresco'
+    apply plugin: 'java-library'
 
     dependencies {
-        implementation(project(":apix-interface"))
+        api(project(":apix-interface"))
         implementation 'commons-lang:commons-lang:1.0'
-        alfrescoProvided group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_version
-        alfrescoProvided group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_version
+
+        alfrescoProvided platform("org.alfresco:acs-community-packaging:$alfresco_version")
+        alfrescoProvided("org.alfresco:alfresco-repository")
+        alfrescoProvided('org.alfresco:alfresco-remote-api')
 
         implementation group: 'org.yaml', name: 'snakeyaml', version: '1.15'
         implementation group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
 
-//        testCompile group: 'eu.xenit.de', name: 'annotations', version: de_version
-        testImplementation group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_repo_version
-        testImplementation group: 'org.alfresco', name: 'alfresco-data-model', version: alfresco_dm_version
-        testImplementation group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_version
-
+         testImplementation platform("org.alfresco:acs-community-packaging:$alfresco_version")
+        testImplementation 'org.alfresco:alfresco-repository'
+        testImplementation 'org.alfresco:alfresco-remote-api'
+        testImplementation 'org.alfresco:alfresco-data-model'
         testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.25.1'
-        testImplementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
-        testImplementation group: 'eu.xenit.testing', name: 'integration-testing', version: '1.1.0'
     }
 
     task generateVersionFile(type: Task) {

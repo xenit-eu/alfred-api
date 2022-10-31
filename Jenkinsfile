@@ -29,7 +29,7 @@ def sendEmailNotifications() {
 def BuildVersionX(version) {
     def gradleCommand = "./gradlew --info --stacktrace "
     sh "${gradleCommand} :apix-impl:apix-impl-${version}:test"
-    sh "${gradleCommand} :apix-integrationtests:test-${version}:integrationTest"
+    sh "${gradleCommand} :apix-integrationtests:alfresco:${version}:integrationTest"
 }
 
 node {
