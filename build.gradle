@@ -1,36 +1,9 @@
-//def bundleClassPath(configuration) {
-//    def list = ['.']
-//    configuration.each {
-//        list += 'lib/' + it.name
-//    }
-//    return list.join(',')
-//}
-//
-//def includeResource(configuration) {
-//    def list = []
-//    configuration.each {
-//        //We have to replace the backslashes with forward slashes because on windows the path will just be unseparated.
-//        //For example when you have path "C\:Users\Someone\.gradle\caches" it will become "C\:UsersSomeone.gradlecaches"
-//        def normalizedPath = it.path.replace("\\", "/")
-//        list += 'lib/' + it.name + "=" + normalizedPath
-//    }
-//    return list.join(',')
-//}
-//
-//def getVersionQualifier(String branch_name) {
-//    if(branch_name.startsWith('release'))
-//        return ''
-//    //Osgi in 5x accepts - in qualifier, 6x does not. Suggest removing branch section from snapshot qualifiers all together.
-//    return '.SNAPSHOT'
-//}
-
-buildscript {
-    repositories {
-        mavenCentral()
-        maven {
-            url "https://maven.alfresco.com/nexus/content/groups/public"
-        }
-    }
+def static getVersionQualifier(String branch_name) {
+    if(branch_name.startsWith('release'))
+        return ''
+    // Osgi in 5x accepts - in qualifier, 6x does not.
+    // Suggest removing branch section from snapshot qualifiers all together.
+    return '.SNAPSHOT'
 }
 
 ext {
@@ -38,11 +11,11 @@ ext {
 
     jackson_version = '2.8.3'
     swagger_version = "1.5.7" // 2.2.4
-    de_version = "3.0.0"
 
     http_core_version = "4.3.3"
     http_version = "4.3.4"
 
+    alfresco_61_version = "6.1"
     alfresco_62_version = "6.2"
     alfresco_70_version = "7.0"
     alfresco_71_version = "7.1"
@@ -51,6 +24,7 @@ ext {
 
     // alfresco-data-model might have a different version number than the main war it's included in
     // ref: https://bitbucket.org/xenit/alfresco-bom/src/master/repo/eu/xenit/alfresco/ for the bom of vanilla alfresco
+    alfresco_61_dm_version = "8.25.1"
     alfresco_62_dm_version = "8.50.18"
     alfresco_70_dm_version = "8.424"
     alfresco_71_dm_version = "12.23"
@@ -60,7 +34,6 @@ ext {
     care4alfVersion = '2.3.0'
 
     mvc = "8.0.0"
-//    mvc = "7.5.1-RELEASE"
     alfrescoVersion = "7.2.0"
 }
 
@@ -68,7 +41,7 @@ subprojects {
     apply plugin: 'java'
 
     group = 'eu.xenit.apix'
-    version = "4.0" // versionWithoutQualifier + getVersionQualifier(System.env.BRANCH_NAME ?: 'local')
+    version = versionWithoutQualifier + getVersionQualifier(System.env.BRANCH_NAME ?: 'local')
     sourceCompatibility = 11
     targetCompatibility = 11
 

@@ -36,12 +36,6 @@ dependencies {
     compileOnly project(':apix-interface')
     compileOnly('org.alfresco:alfresco-remote-api')
 
-    // The REST API use one call from DE annotations-runtime for the bulk endpoint 
-    // although annotations-runtime is internal
-//    compileOnly(group: 'eu.xenit.de', name: 'annotations-runtime', version: de_version) { transitive = false }
-//    compileOnly(group: 'eu.xenit.de', name: 'annotations', version: de_version) { transitive = false }
-//    compileOnly(group: 'eu.xenit.de', name: 'webscripts', version: de_version) { transitive = false }
-
     compileOnly "com.gradecak.alfresco-mvc:alfresco-mvc-rest:$mvc"
     compileOnly "javax.servlet:javax.servlet-api:4.0.1"
 
@@ -53,16 +47,13 @@ dependencies {
 //    implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda"
     implementation group: 'io.swagger', name: 'swagger-annotations', version: swagger_version
 
-    testImplementation 'org.springframework:spring-core:3.2.10.RELEASE'
-    testImplementation 'org.springframework:spring-test:3.2.10.RELEASE'
-//    testImplementation group: 'org.springframework.extensions.surf', name: 'spring-webscripts', version: alfrescoVersion
-    testImplementation "org.alfresco.surf:spring-webscripts"
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.25.1'
-//    testImplementation group: 'eu.xenit.de', name: 'annotations', version: de_version
-//    testImplementation group: 'eu.xenit.de', name: 'annotations-runtime', version: de_version
-//    testImplementation group: 'eu.xenit.de', name: 'webscripts', version: de_version
-    testImplementation (group: 'org.alfresco', name: 'alfresco-repository', version: '7.2.0')
-    testImplementation (group: 'org.alfresco', name: 'alfresco-remote-api', version: '7.2.0')
     testImplementation project(':apix-interface')
     testImplementation project(':apix-impl')
+    testImplementation platform("org.alfresco:acs-community-packaging:$alfrescoVersion")
+    testImplementation 'org.springframework:spring-core'
+    testImplementation 'org.springframework:spring-test'
+    testImplementation "org.alfresco.surf:spring-webscripts"
+    testImplementation 'org.alfresco:alfresco-repository'
+    testImplementation 'org.alfresco:alfresco-remote-api'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.25.1'
 }

@@ -4,12 +4,12 @@ apply from: "${rootProject.projectDir}/publish.gradle"
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
-    classifier = 'sources'
+    archiveClassifier = 'sources'
 }
 
 task javadocJar(type: Jar) {
     from javadoc
-    classifier = 'javadoc'
+    archiveClassifier = 'javadoc'
     // Temporary workaround for https://bugs.openjdk.java.net/browse/JDK-8244171
     javadoc.options.addBooleanOption("-no-module-directories", true)
 }

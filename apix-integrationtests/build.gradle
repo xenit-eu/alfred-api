@@ -32,6 +32,8 @@ allprojects {
             extendsFrom integrationTestImplementationRemote
         }
         integrationTestImplementationLocal {
+            // Removes weird dependency lodged inside the remote testing tools
+            // https://github.com/xenit-eu/alfresco-remote-testrunner/blob/564df30f25dab78f6a7aad02f3ba01fcf9a38b13/alfresco-remote-testrunner-gradle-plugin/src/main/java/eu/xenit/testing/integrationtesting/gradle/internal/IntegrationTestConfigurations.java#L84
             exclude(group: 'commons-lang', module: 'commons-lang')
         }
     }
@@ -78,8 +80,8 @@ subprojects {
         }
     }
 
-    installBundle.enabled = false
-    jar.enabled = false
+    jar.enabled = false // empty jar
+    installBundle.enabled = false  // no need to install an empty jar
 
     installIntegrationTestingBundle {
         dependsOn assembleTask
