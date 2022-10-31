@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-//@WebScript(baseUri = RestV1Config.BaseUrl, families = RestV1Config.Family, defaultFormat = "json",
-//        description = "Perform search queries", value = "Search")
 //@Authentication(AuthenticationType.USER)
 @RestController("eu.xenit.apix.rest.v1.search.SearchWebScriptV1")
 public class SearchWebScript1 extends ApixV1Webscript {

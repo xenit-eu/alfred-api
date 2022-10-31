@@ -12,11 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Created by Stan on 30-Mar-16.
- */
-//@WebScript(baseUri = RestV1Config.BaseUrl, families = RestV1Config.Family, defaultFormat = "json",
-//        description = "Retrieve translations", value = "Translations")
 @RestController("eu.xenit.apix.rest.v1.translation.TranslationsWebscript1")
 public class TranslationsWebscript1 extends ApixV1Webscript {
 

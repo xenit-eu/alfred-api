@@ -23,8 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
-//@WebScript(baseUri = RestV1Config.BaseUrl + "/dictionary", families = RestV1Config.Family, defaultFormat = "json",
-//        description = "Retrieves Dictionary information", value = "Dictionary")
 //@Authentication(AuthenticationType.USER)
 @RestController("eu.xenit.apix.rest.v1.property.DictionaryWebScript1")
 public class DictionaryWebScript1 extends ApixV1Webscript {

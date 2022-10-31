@@ -21,12 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Created by jasper on 14/03/17.
- */
 
-//@WebScript(baseUri = RestV2Config.BaseUrl, families = RestV2Config.Family, defaultFormat = "json",
-//        description = "Retrieves group information and links users/groups to parent groups", value = "Groups")
 //@Authentication(AuthenticationType.USER)
 @RestController("eu.xenit.apix.rest.v2.groups.GroupsWebscript")
 public class GroupsWebscript extends ApixV2Webscript {

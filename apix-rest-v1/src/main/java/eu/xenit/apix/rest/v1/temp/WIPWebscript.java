@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-//@WebScript(baseUri = RestV1Config.BaseUrl, families = RestV1Config.Family, defaultFormat = "json",
-//        description = "Work In Progress - UNSTABLE", value = "WIP")
 @RestController("eu.xenit.apix.rest.v1.temp.WIPWebscript")
 public class WIPWebscript extends ApixV1Webscript {
 

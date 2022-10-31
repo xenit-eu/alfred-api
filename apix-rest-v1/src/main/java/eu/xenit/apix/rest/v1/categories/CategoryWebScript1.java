@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-//@WebScript(baseUri = RestV1Config.BaseUrl + "/category", families = RestV1Config.Family, defaultFormat = "json",
-//        description = "Retrieves Category information", value = "Category")
 //@Authentication(AuthenticationType.USER)
 @RestController("eu.xenit.apix.rest.v1.categories.CategoryWebScript1")
 public class CategoryWebScript1 extends ApixV1Webscript {
