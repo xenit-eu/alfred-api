@@ -65,7 +65,6 @@ public class IntermediateResponse extends WebScriptResponseImpl {
         // not supported
     }
 
-    @Override
     public void reset(String preserveHeadersPattern) {
         // not supported
     }

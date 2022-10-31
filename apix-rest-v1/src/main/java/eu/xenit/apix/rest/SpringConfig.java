@@ -5,7 +5,7 @@ import com.gradecak.alfresco.mvc.rest.annotation.EnableAlfrescoMvcRest;
 
 @EnableAlfrescoMvcRest(
         @AlfrescoDispatcherWebscript(
-                name = "alfred-rest.api",
+                name = "alfred.api",
                 servletContext = AlfredApiRestServletContext.class
         )
 )

@@ -1,13 +1,3 @@
-plugins {
-    id 'eu.xenit.docker-alfresco' version '5.3.1' apply false
-    id 'eu.xenit.docker-compose' version '5.3.1' apply false
-    id 'be.vbgn.ci-detect' version '0.5.0' apply false
-}
-
-ext {
-    de_version = "2.1.3"
-}
-
 subprojects {
     apply plugin: 'eu.xenit.docker-alfresco'
     apply plugin: 'eu.xenit.docker-compose'
@@ -23,7 +13,7 @@ subprojects {
 
     dependencies {
         alfrescoAmp project(path: ":apix-impl:apix-impl-${subproject_alfresco_version}", configuration: 'ampArtifact')
-        alfrescoAmp project(path: ':apix-integrationtests-model-amp', configuration: 'ampArchives')
+        alfrescoAmp project(path: ':apix-integrationtests:model-amp', configuration: 'ampArchives')
         alfrescoAmp project(path: ':apix-rest-v1', configuration: 'ampArtifact')
         alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-rest:$mvc"
         alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-aop:$mvc"
@@ -40,6 +30,25 @@ subprojects {
             if (project.file(extraComposeFile).exists()) {
                 useComposeFiles.add(extraComposeFile)
             }
+        }
+
+        // Solr Tracking improvements
+//        environment.put 'GLOBAL_alfresco.cron', '0/2 * * * * ? *'
+//        environment.put 'GLOBAL_alfresco.lag', '500'
+//        environment.put 'GLOBAL_solr.http.socket.timeout','10000'
+        // Logging improvements
+        environment.put 'TERM', 'xterm'
+        if(subproject_alfresco_version.startsWith("7")) {
+            environment.put'GLOBAL_messaging.broker.url','failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true'
+            environment.put'GLOBAL_localTransform.core-aio.url','http://transform-core-aio:8090/'
+            // Needed for Solr indexing
+            environment.put 'GLOBAL_local.transform.service.enabled','true'
+            // Disable transformations and renditions
+            environment.put 'GLOBAL_contentPropertyRestrictions.enabled','false'
+            environment.put 'GLOBAL_ooo.enabled','false'
+            environment.put 'GLOBAL_jodconverter.enabled','false'
+            environment.put 'GLOBAL_transform.service.enabled','false'
+            environment.put 'GLOBAL_legacy.transform.service.enabled','false'
         }
     }
 

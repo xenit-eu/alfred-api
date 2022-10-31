@@ -1,0 +1,7 @@
+ext {
+    alfresco_version = "7.2.1"
+    alfresco_min_version = alfresco_version.substring(0, 3) + ".0"
+}
+if(project.hasProperty("alfresco_max_version")) {
+    project.properties.remove("alfresco_max_version")
+}

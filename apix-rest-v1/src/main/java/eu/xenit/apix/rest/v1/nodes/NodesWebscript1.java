@@ -622,7 +622,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
                     }, false, true);
 
             if (resultObject == null) {
-                return ResponseEntity.internalServerError().build();
+                return ResponseEntity.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).build();
             }
             NodeRef resultRef = new NodeRef(resultObject.toString());
 

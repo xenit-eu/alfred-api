@@ -15,8 +15,10 @@ artifacts {
     ampArtifact amp
 }
 
+apply from: "$rootProject.projectDir/alfresco/70/overrides.gradle"
+
 dependencies {
-    implementation platform("org.alfresco:acs-community-packaging:$alfrescoVersion")
+    implementation platform("org.alfresco:acs-community-packaging:$alfresco_version")
 //    implementation "org.springframework.boot:spring-boot-starter-parent:2.6.6"
 //    implementation "org.springframework.boot:spring-boot-starter-actuator:2.6.6"
 ////    implementation "org.springframework.boot:spring-boot-starter-integration:2.6.6"
@@ -50,7 +52,7 @@ dependencies {
 
     testImplementation project(':apix-interface')
     testImplementation project(':apix-impl')
-    testImplementation platform("org.alfresco:acs-community-packaging:$alfrescoVersion")
+    testImplementation platform("org.alfresco:acs-community-packaging:$alfresco_version")
     testImplementation 'org.springframework:spring-core'
     testImplementation 'org.springframework:spring-test'
     testImplementation "org.alfresco.surf:spring-webscripts"
