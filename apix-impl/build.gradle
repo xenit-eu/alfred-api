@@ -90,6 +90,7 @@ allprojects {
 
     dependencies {
         implementation(project(":apix-interface"))
+        implementation 'commons-lang:commons-lang:1.0'
         alfrescoProvided group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_version
         alfrescoProvided group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_version
 
