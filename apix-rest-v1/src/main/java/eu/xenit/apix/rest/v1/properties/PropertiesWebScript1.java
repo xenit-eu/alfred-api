@@ -1,5 +1,7 @@
 package eu.xenit.apix.rest.v1.properties;
 
+import com.gradecak.alfresco.mvc.annotation.AlfrescoAuthentication;
+import com.gradecak.alfresco.mvc.annotation.AuthenticationType;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.dictionary.properties.IPropertyService;
 import eu.xenit.apix.properties.PropertyDefinition;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @deprecated Use DictionaryWebScript1 instead
  */
-//@Authentication(AuthenticationType.USER)
+@AlfrescoAuthentication(AuthenticationType.USER)
 @RestController("eu.xenit.apix.rest.v1.property.PropertiesWebScript1")
 public class PropertiesWebScript1 extends ApixV1Webscript {
 

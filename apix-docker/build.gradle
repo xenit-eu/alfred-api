@@ -26,6 +26,7 @@ subprojects {
         alfrescoAmp project(path: ':apix-integrationtests-model-amp', configuration: 'ampArchives')
         alfrescoAmp project(path: ':apix-rest-v1', configuration: 'ampArtifact')
         alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-rest:$mvc"
+        alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-aop:$mvc"
         alfrescoSM files(jar)
         alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${subproject_alfresco_version}:${de_version}@amp"
     }

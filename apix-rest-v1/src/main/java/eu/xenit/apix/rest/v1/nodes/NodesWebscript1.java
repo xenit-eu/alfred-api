@@ -1,7 +1,6 @@
 package eu.xenit.apix.rest.v1.nodes;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
 import eu.xenit.apix.comments.Comment;
 import eu.xenit.apix.comments.Conversation;
 import eu.xenit.apix.comments.ICommentService;
@@ -46,14 +45,12 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.extensions.webscripts.WebScriptRequest;
-import org.springframework.extensions.webscripts.servlet.FormData;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
-//@Transaction(readOnly = false)
+@AlfrescoTransaction
 @RestController("eu.xenit.apix.rest.v1.NodesWebscript")
 public class NodesWebscript1 extends ApixV1Webscript {
 

@@ -3,6 +3,8 @@ package eu.xenit.apix.rest.v1.configuration;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gradecak.alfresco.mvc.annotation.AlfrescoAuthentication;
+import com.gradecak.alfresco.mvc.annotation.AuthenticationType;
 import eu.xenit.apix.configuration.ConfigurationFileFlags;
 import eu.xenit.apix.configuration.ConfigurationService;
 import eu.xenit.apix.configuration.Configurations;
@@ -26,7 +28,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-//@Authentication(AuthenticationType.USER)
+@AlfrescoAuthentication(AuthenticationType.USER)
 @RestController("eu.xenit.apix.rest.v1.configuration.ConfigurationWebscript1")
 public class ConfigurationWebscript1 extends ApixV1Webscript {
 

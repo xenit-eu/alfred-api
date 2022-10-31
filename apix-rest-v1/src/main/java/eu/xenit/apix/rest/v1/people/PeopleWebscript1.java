@@ -1,5 +1,7 @@
 package eu.xenit.apix.rest.v1.people;
 
+import com.gradecak.alfresco.mvc.annotation.AlfrescoAuthentication;
+import com.gradecak.alfresco.mvc.annotation.AuthenticationType;
 import eu.xenit.apix.people.IPeopleService;
 import eu.xenit.apix.people.Person;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
@@ -15,7 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-//@Authentication(AuthenticationType.USER)
+@AlfrescoAuthentication(AuthenticationType.USER)
 @RestController("eu.xenit.apix.rest.v1.people.PeopleWebscript")
 public class PeopleWebscript1 extends ApixV1Webscript {
 

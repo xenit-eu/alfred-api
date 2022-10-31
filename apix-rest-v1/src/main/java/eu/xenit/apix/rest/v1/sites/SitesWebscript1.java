@@ -1,5 +1,6 @@
 package eu.xenit.apix.rest.v1.sites;
 
+import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.filefolder.IFileFolderService;
 import eu.xenit.apix.node.INodeService;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-//@Transaction(readOnly = false)
+@AlfrescoTransaction
 @RestController("eu.xenit.apix.rest.v1.SitesWebscript")
 public class SitesWebscript1 extends ApixV1Webscript {
 

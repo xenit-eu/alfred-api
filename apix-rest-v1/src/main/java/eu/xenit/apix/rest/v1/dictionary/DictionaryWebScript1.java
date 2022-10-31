@@ -1,5 +1,7 @@
 package eu.xenit.apix.rest.v1.dictionary;
 
+import com.gradecak.alfresco.mvc.annotation.AlfrescoAuthentication;
+import com.gradecak.alfresco.mvc.annotation.AuthenticationType;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.dictionary.IDictionaryService;
 import eu.xenit.apix.dictionary.aspects.AspectDefinition;
@@ -23,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
-//@Authentication(AuthenticationType.USER)
+@AlfrescoAuthentication(AuthenticationType.USER)
 @RestController("eu.xenit.apix.rest.v1.property.DictionaryWebScript1")
 public class DictionaryWebScript1 extends ApixV1Webscript {
 
