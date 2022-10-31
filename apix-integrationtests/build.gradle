@@ -31,6 +31,9 @@ allprojects {
         implementation {
             extendsFrom integrationTestImplementationRemote
         }
+        integrationTestImplementationLocal {
+            exclude(group: 'commons-lang', module: 'commons-lang')
+        }
     }
 
     dependencies {
