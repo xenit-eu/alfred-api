@@ -29,6 +29,9 @@ allprojects {
                 srcDirs = ['./src/main/resources']
             }
         }
+        integrationTestImplementationLocal {
+            exclude(group: 'commons-lang', module: 'commons-lang')
+        }
     }
 
     dependencies {
