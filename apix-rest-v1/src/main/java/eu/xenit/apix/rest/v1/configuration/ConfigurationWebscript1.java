@@ -26,8 +26,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-//@WebScript(baseUri = RestV1Config.BaseUrl, families = RestV1Config.Family, defaultFormat = "json",
-//        description = "Retrieves configuration data files from the datadictionary", value = "Configuration")
 //@Authentication(AuthenticationType.USER)
 @RestController("eu.xenit.apix.rest.v1.configuration.ConfigurationWebscript1")
 public class ConfigurationWebscript1 extends ApixV1Webscript {

@@ -27,11 +27,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Created by kenneth on 18.03.16. Largely rewritten by roel on 13.03.18
- */
-//@WebScript(baseUri = RestV1Config.BaseUrl, families = RestV1Config.Family, defaultFormat = "json",
-//        description = "Perform multiple operations in a single call", value = "Bulk")
 @RestController("eu.xenit.apix.rest.v1.BulkWebscript")
 public class BulkWebscript1 extends ApixV1Webscript {
     private static final Logger logger = LoggerFactory.getLogger(BulkWebscript1.class);

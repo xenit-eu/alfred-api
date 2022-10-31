@@ -15,11 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Created by Michiel Huygen on 09/03/2016.
- */
-//@WebScript(baseUri = RestV1Config.BaseUrl, families = RestV1Config.Family, defaultFormat = "json",
-//        description = "Access operations on working copies", value = "Workingcopies")
 @RestController("eu.xenit.apix.rest.v1.WorkingcopiesWebscript1")
 public class WorkingcopiesWebscript1 extends ApixV1Webscript {
 

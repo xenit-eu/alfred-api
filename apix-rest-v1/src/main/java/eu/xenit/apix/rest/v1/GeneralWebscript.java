@@ -9,8 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-//@WebScript(baseUri = RestV1Config.BaseUrl, families = {RestV1Config.Family}, defaultFormat = "json",
-//        description = "General API operations", value = "General")
 //@Authentication(AuthenticationType.USER)
 @RestController("eu.xenit.apix.rest.v1.GeneralWebscript")
 public class GeneralWebscript extends ApixV1Webscript {

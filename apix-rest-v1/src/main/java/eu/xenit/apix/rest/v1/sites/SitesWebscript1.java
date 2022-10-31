@@ -22,8 +22,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-//@WebScript(baseUri = RestV1Config.BaseUrl, families = RestV1Config.Family, defaultFormat = "json",
-//        description = "Access operations on sites", value = "Sites")
 //@Transaction(readOnly = false)
 @RestController("eu.xenit.apix.rest.v1.SitesWebscript")
 public class SitesWebscript1 extends ApixV1Webscript {

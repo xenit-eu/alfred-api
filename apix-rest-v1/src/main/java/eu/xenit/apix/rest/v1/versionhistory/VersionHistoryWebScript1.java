@@ -24,11 +24,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Created by stan on 5/2/16.
- */
-//@WebScript(baseUri = RestV1Config.BaseUrl, families = RestV1Config.Family, defaultFormat = "json",
-//        description = "Retrieves version history information", value = "VersionHistory")
 //@Authentication(AuthenticationType.USER)
 @RestController("eu.xenit.apix.rest.v1.versionhistory.VersionHistoryWebScript1")
 public class VersionHistoryWebScript1 extends ApixV1Webscript {

@@ -1,6 +1,5 @@
 package eu.xenit.apix.rest.staging.workflow;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import eu.xenit.apix.search.SearchQueryResult;
 import eu.xenit.apix.workflow.IWorkflowService;
 import eu.xenit.apix.workflow.model.Task;

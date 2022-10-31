@@ -53,8 +53,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
-//@WebScript(baseUri = RestV1Config.BaseUrl, families = RestV1Config.Family, defaultFormat = "json",
-//        description = "Access operations on nodes", value = "Nodes")
 //@Transaction(readOnly = false)
 @RestController("eu.xenit.apix.rest.v1.NodesWebscript")
 public class NodesWebscript1 extends ApixV1Webscript {

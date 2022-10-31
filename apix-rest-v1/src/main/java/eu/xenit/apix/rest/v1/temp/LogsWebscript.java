@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
-//@WebScript(baseUri = RestV1Config.BaseUrl, families = RestV1Config.Family, defaultFormat = "json",
-//        description = "Display logs")
 @Api(hidden = true)
 @RestController("eu.xenit.apix.rest.v1.temp.LogsWebscript")
 public class LogsWebscript extends ApixV1Webscript {
