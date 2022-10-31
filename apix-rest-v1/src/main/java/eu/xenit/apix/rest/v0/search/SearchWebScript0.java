@@ -20,7 +20,7 @@ public class SearchWebScript0 {
     }
 
     @PostMapping(
-            value = "/v0/eu/xenit/search",
+            value = "/eu/xenit/search",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<SearchQueryResult> execute(@RequestBody final SearchQueryV0 query){

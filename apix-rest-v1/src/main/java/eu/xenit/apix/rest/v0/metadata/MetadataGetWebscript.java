@@ -20,7 +20,7 @@ public class MetadataGetWebscript {
     }
 
     @GetMapping(
-            value = "/v0/eu/xenit/metadata",
+            value = "/eu/xenit/metadata",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<NodeMetadataV0> execute(@RequestParam final NodeRef nodeRef) {

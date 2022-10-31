@@ -14,9 +14,7 @@ import eu.xenit.apix.rest.v1.nodes.NodesWebscript1;
 
 import java.io.IOException;
 import java.io.InputStream;
-import org.springframework.extensions.webscripts.servlet.FormData;
 import org.junit.Test;
-import org.springframework.extensions.webscripts.servlet.FormData.FormField;
 import org.springframework.web.multipart.MultipartFile;
 
 public class NodesWebscript1Test {

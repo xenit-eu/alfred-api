@@ -1,16 +1,3 @@
-
-// This is a duplicate of the ./72/overrides.gradle to make code navigation work in shared code
-ext {
-    subproject_alfresco_version = "72"
-    alfresco_version = alfresco_72_version
-    alfresco_dm_version = alfresco_72_dm_version
-    alfresco_repo_version = '14.142'
-    alfresco_remote_api_version = '14.142'
-}
-
-dependencies {
-    integrationTestImplementationRemote(group: 'org.apache.httpcomponents', name: 'fluent-hc', version: http_version) {
-        exclude group: 'commons-logging'
-        exclude group: 'org.apache.httpcomponents', module: 'httpcore'
-    }
-}
+// This is a duplicate of the ./61/overrides.gradle to make code navigation work in shared code
+// minimum supported Alfresco version 6.1
+apply from: "$project.projectDir/61/overrides.gradle"

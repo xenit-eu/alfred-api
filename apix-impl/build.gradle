@@ -18,17 +18,18 @@ subprojects {
     apply from: "${project.projectDir}/overrides.gradle"
     apply from: "${rootProject.projectDir}/publish.gradle"
     apply plugin: 'eu.xenit.amp'
+    apply plugin: 'java-library'
 
     configurations {
         ampArtifact
-//        dynamicExtensionsBundles
+    }
+
+    artifacts {
+        ampArtifact amp
     }
 
     dependencies {
-        implementation(project(":apix-impl"))
-//        dynamicExtensionsBundles(group: 'eu.xenit.swagger.ui', name: 'swagger-ui_5x', version: '1.1.0') {
-//            transitive = false
-//        } // Works for 6x too
+        api(project(":apix-impl"))
     }
 
     publishing {
@@ -40,17 +41,12 @@ subprojects {
         }
     }
 
-    artifacts {
-        ampArtifact amp
-    }
-
     sourceSets {
         main {
             java {
                 srcDirs = ['src/main/java', '../src/main/java']
             }
             amp {
-//                dynamicExtension()
                 module("src/main/config/module.properties")
             }
         }
@@ -64,9 +60,8 @@ subprojects {
 
     // Extend amp plugin task:
     // We want to add 'alfresco-global.properties' etc to the module-specific folder in the AMP
-    // (e.g. 'config/module/alfresco/module/apix-impl-51/') without hard-coding project name for each Alfresco version.
+    // (e.g. 'config/module/alfresco/module/apix-impl-72/') without hard-coding project name for each Alfresco version.
     amp {
-//        deBundles = configurations.dynamicExtensionsBundles + files(jar)
         into("config/alfresco/module/${project.name}") {
             from("${project.parent.projectDir}/config/alfresco-global.properties")
             from("${project.parent.projectDir}/config/log4j.properties")
@@ -85,25 +80,25 @@ subprojects {
 
 allprojects {
     // allprojects also applies to shared code (under apix-impl/src) that needs to work in IntelliJ
-//    apply plugin: 'eu.xenit.de'
     apply plugin: 'eu.xenit.alfresco'
+    apply plugin: 'java-library'
 
     dependencies {
-        implementation(project(":apix-interface"))
+        api(project(":apix-interface"))
         implementation 'commons-lang:commons-lang:1.0'
-        alfrescoProvided group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_version
-        alfrescoProvided group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_version
+
+        alfrescoProvided platform("org.alfresco:acs-community-packaging:$alfrescoVersion")
+        alfrescoProvided("org.alfresco:alfresco-repository")
+        alfrescoProvided('org.alfresco:alfresco-remote-api')
 
         implementation group: 'org.yaml', name: 'snakeyaml', version: '1.15'
         implementation group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
 
-//        testCompile group: 'eu.xenit.de', name: 'annotations', version: de_version
-        testImplementation group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_repo_version
-        testImplementation group: 'org.alfresco', name: 'alfresco-data-model', version: alfresco_dm_version
-        testImplementation group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_version
-
+        testImplementation platform("org.alfresco:acs-community-packaging:$alfrescoVersion")
+        testImplementation 'org.alfresco:alfresco-repository'
+        testImplementation 'org.alfresco:alfresco-remote-api'
+        testImplementation 'org.alfresco:alfresco-data-model'
         testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.25.1'
-        testImplementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
         testImplementation group: 'eu.xenit.testing', name: 'integration-testing', version: '1.1.0'
     }
 
@@ -132,40 +127,4 @@ public class Version {
         // Show test results when running from the CLI
         testLogging { events "PASSED", "FAILED", "SKIPPED" }
     }
-
-//    jar {
-//        // This BundleSymbolicName is also used in
-//        // apix-impl/src/integration-test/java/eu/xenit/apix/tests/ApixImplBundleFilter.java
-//        // to find which integration tests need to run, so when changing it, change it there too.
-//        bnd(
-//                'Export-Package': 'eu.xenit.apix.*; -split-package:=merge-first',
-//                'Include-Resource': includeResource(configurations.compile),
-//                'Bundle-ClassPath': bundleClassPath(configurations.compile),
-//                'Bundle-SymbolicName': "${project.group}.${project.name}",
-//                'Bundle-Description': 'Alfred API: Java API and REST API',
-//                'Import-Package': 'org.springframework.beans.factory,'
-//                        + 'org.springframework.cglib.core,'
-//                        + 'org.springframework.cglib.proxy,'
-//                        // Unintuitively, the notation 'version="1.0"' means any version >= 1.0
-//                        + 'org.json;version="1.0",'
-//                        // Alfresco >=7.3 uses a SLF4J version >2.0, so we need to override the default upper boundary of 2.0.
-//                        + 'org.slf4j.*;version="1.7",'
-//                        + '!com.google.appengine.api,'
-//                        + '!com.google.apphosting.api,'
-//                        + '!org.joda.convert,'
-//                        + '*'
-//        )
-//    }
-
-//    alfrescoDynamicExtensions {
-//        versions.dynamicExtensions = de_version
-//        // Configure endpoint for installBundle task
-//        repository {
-//            endpoint {
-//                protocol = project.hasProperty('protocol') ? project.protocol : 'http'
-//                host = project.hasProperty('host') ? project.host : 'localhost'
-//                port = project.hasProperty('port') ? project.port : 8080
-//            }
-//        }
-//    }
 }

@@ -77,20 +77,6 @@ public class ConfigurationWebscript1 extends ApixV1Webscript {
                 .body(
                         String.format("%s(%s)", callback,
                                 mapper.writeValueAsString(configurations)));
-//        webScriptResponse.setContentEncoding("utf-8");
-//        webScriptResponse.setHeader("Cache-Control", "no-cache");
-//
-//        if (webScriptRequest.getFormat().equalsIgnoreCase("js")) {
-//            webScriptResponse.setContentType("application/js");
-//            try(Writer writer = webScriptResponse.getWriter()) {
-//                writer.write(callback);
-//                writer.write("(");
-//                mapper.writeValue(writer, configurations);
-//                writer.write(");");
-//                writer.flush();
-//            }
-//            return;
-//        }
     }
 
 
