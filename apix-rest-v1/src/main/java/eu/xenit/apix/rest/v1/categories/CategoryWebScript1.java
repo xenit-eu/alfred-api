@@ -1,5 +1,7 @@
 package eu.xenit.apix.rest.v1.categories;
 
+import com.gradecak.alfresco.mvc.annotation.AlfrescoAuthentication;
+import com.gradecak.alfresco.mvc.annotation.AuthenticationType;
 import eu.xenit.apix.categories.Category;
 import eu.xenit.apix.categories.ICategoryService;
 import eu.xenit.apix.data.QName;
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-//@Authentication(AuthenticationType.USER)
+@AlfrescoAuthentication(AuthenticationType.USER)
 @RestController("eu.xenit.apix.rest.v1.categories.CategoryWebScript1")
 public class CategoryWebScript1 extends ApixV1Webscript {
 

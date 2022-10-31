@@ -1,5 +1,7 @@
 package eu.xenit.apix.rest.v2.groups;
 
+import com.gradecak.alfresco.mvc.annotation.AlfrescoAuthentication;
+import com.gradecak.alfresco.mvc.annotation.AuthenticationType;
 import eu.xenit.apix.groups.Group;
 import eu.xenit.apix.people.IPeopleService;
 import eu.xenit.apix.people.Person;
@@ -22,11 +24,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
-//@Authentication(AuthenticationType.USER)
+@AlfrescoAuthentication(AuthenticationType.USER)
 @RestController("eu.xenit.apix.rest.v2.groups.GroupsWebscript")
 public class GroupsWebscript extends ApixV2Webscript {
 
-    Logger logger = LoggerFactory.getLogger(GroupsWebscript.class);
+    private static final Logger logger = LoggerFactory.getLogger(GroupsWebscript.class);
     private final IPeopleService personService;
 
     public GroupsWebscript(IPeopleService personService) {

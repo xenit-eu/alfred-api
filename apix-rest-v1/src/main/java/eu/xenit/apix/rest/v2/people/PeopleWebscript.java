@@ -1,5 +1,7 @@
 package eu.xenit.apix.rest.v2.people;
 
+import com.gradecak.alfresco.mvc.annotation.AlfrescoAuthentication;
+import com.gradecak.alfresco.mvc.annotation.AuthenticationType;
 import eu.xenit.apix.people.IPeopleService;
 import eu.xenit.apix.people.Person;
 import eu.xenit.apix.rest.v2.ApixV2Webscript;
@@ -17,9 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-//@WebScript(baseUri = RestV2Config.BaseUrl, families = RestV2Config.Family, defaultFormat = "json",
-//        description = "Retrieves person information", value = "People")
-//@Authentication(AuthenticationType.USER)
+@AlfrescoAuthentication(AuthenticationType.USER)
 @RestController("eu.xenit.apix.rest.v2.people.PeopleWebscript")
 public class PeopleWebscript extends ApixV2Webscript {
 

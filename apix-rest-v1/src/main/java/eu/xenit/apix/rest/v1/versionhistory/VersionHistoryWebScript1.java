@@ -1,5 +1,7 @@
 package eu.xenit.apix.rest.v1.versionhistory;
 
+import com.gradecak.alfresco.mvc.annotation.AlfrescoAuthentication;
+import com.gradecak.alfresco.mvc.annotation.AuthenticationType;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
 import eu.xenit.apix.versionhistory.IVersionHistoryService;
@@ -24,7 +26,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-//@Authentication(AuthenticationType.USER)
+@AlfrescoAuthentication(AuthenticationType.USER)
 @RestController("eu.xenit.apix.rest.v1.versionhistory.VersionHistoryWebScript1")
 public class VersionHistoryWebScript1 extends ApixV1Webscript {
 

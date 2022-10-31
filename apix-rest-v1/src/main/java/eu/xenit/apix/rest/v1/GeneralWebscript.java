@@ -1,5 +1,7 @@
 package eu.xenit.apix.rest.v1;
 
+import com.gradecak.alfresco.mvc.annotation.AlfrescoAuthentication;
+import com.gradecak.alfresco.mvc.annotation.AuthenticationType;
 import eu.xenit.apix.version.IVersionService;
 import eu.xenit.apix.version.VersionDescription;
 import io.swagger.annotations.ApiOperation;
@@ -9,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-//@Authentication(AuthenticationType.USER)
+@AlfrescoAuthentication(AuthenticationType.USER)
 @RestController("eu.xenit.apix.rest.v1.GeneralWebscript")
 public class GeneralWebscript extends ApixV1Webscript {
 

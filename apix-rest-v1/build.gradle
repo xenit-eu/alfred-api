@@ -32,12 +32,13 @@ dependencies {
 ////    implementation "io.springfox:springfox-spring-integration-webmvc:3.0.0"
 
     // Alfresco dependency should be removed in the future
-    compileOnly("org.alfresco:alfresco-repository")
-    compileOnly project(':apix-interface')
-    compileOnly('org.alfresco:alfresco-remote-api')
+    alfrescoProvided("org.alfresco:alfresco-repository")
+    alfrescoProvided project(':apix-interface')
+    alfrescoProvided('org.alfresco:alfresco-remote-api')
 
-    compileOnly "com.gradecak.alfresco-mvc:alfresco-mvc-rest:$mvc"
-    compileOnly "javax.servlet:javax.servlet-api:4.0.1"
+    alfrescoProvided "com.gradecak.alfresco-mvc:alfresco-mvc-rest:$mvc"
+    alfrescoProvided "com.gradecak.alfresco-mvc:alfresco-mvc-aop:$mvc"
+    alfrescoProvided "javax.servlet:javax.servlet-api:4.0.1"
 
 //    compile(project(':de-swagger-reader'))
 

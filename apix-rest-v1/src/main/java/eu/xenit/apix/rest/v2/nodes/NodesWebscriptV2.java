@@ -1,5 +1,6 @@
 package eu.xenit.apix.rest.v2.nodes;
 
+import com.gradecak.alfresco.mvc.annotation.AlfrescoAuthentication;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.filefolder.IFileFolderService;
@@ -31,11 +32,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-//@WebScript(baseUri = RestV2Config.BaseUrl, families = RestV2Config.Family, defaultFormat = "json",
-//        description = "Access operations on nodes", value = "Nodes")
-//@Transaction(
-//        readOnly = false
-//)
+@AlfrescoAuthentication
 @RestController("eu.xenit.apix.rest.v2.NodesWebscript")
 public class NodesWebscriptV2 extends ApixV2Webscript {
 
