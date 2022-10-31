@@ -1,3 +1,0 @@
-// This is a duplicate of the ./61/overrides.gradle to make code navigation work in shared code
-// minimum supported Alfresco version 6.1
-apply from: "$project.projectDir/61/overrides.gradle"
