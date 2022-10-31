@@ -45,6 +45,9 @@ node {
         stage("Unit test apix-rest-v1") {
             sh "${gradleCommand} :apix-rest-v1:test"
         }
+        stage("Build 61") {
+            BuildVersionX("61")
+        }
         stage("Build 62") {
             BuildVersionX("62")
         }
@@ -60,7 +63,7 @@ node {
         stage("Build 73") {
             BuildVersionX("73")
         }
-        
+
         stage("Publishing") {
             def gitBranch = env.BRANCH_NAME
             if(gitBranch.startsWith("release") || gitBranch == "master") {
