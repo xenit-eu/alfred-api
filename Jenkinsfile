@@ -45,9 +45,6 @@ node {
         stage("Unit test apix-rest-v1") {
             sh "${gradleCommand} :apix-rest-v1:test"
         }
-        stage("Build 52") {
-            BuildVersionX("52")
-        }
         stage("Build 61") {
             BuildVersionX("61")
         }
