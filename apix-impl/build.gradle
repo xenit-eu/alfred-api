@@ -45,7 +45,8 @@ subprojects {
                             "Xenit API-X implementation Alfresco ${alfresco_version.substring(0, 3)}")
                     it.put("module.version", project.version)
                     it.put("module.repo.version.min", project.alfresco_min_version)
-                    if(project.hasProperty("alfresco_max_version")) {
+                    if(project.hasProperty("alfresco_max_version")
+                        && project.alfresco_max_version != null) {
                         it.put("module.repo.version.max", project.alfresco_max_version)
                     }
                 }
