@@ -20,8 +20,6 @@ services:
     restart: unless-stopped
     environment:
       - ALFRESCO_HOST=alfresco-core
-      - GLOBAL_ALL_alfresco.cron=0/2 * * * * ? *
-      - GLOBAL_ALL_alfresco.lag=500
 
   postgresql:
     image: docker.io/xenit/postgres
