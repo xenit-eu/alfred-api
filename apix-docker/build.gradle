@@ -31,25 +31,5 @@ subprojects {
                 useComposeFiles.add(extraComposeFile)
             }
         }
-
-        // Solr Tracking improvements
-//        environment.put 'GLOBAL_alfresco.cron', '0/2 * * * * ? *'
-//        environment.put 'GLOBAL_alfresco.lag', '500'
-//        environment.put 'GLOBAL_solr.http.socket.timeout','10000'
-        // Logging improvements
-        environment.put 'TERM', 'xterm'
-        if(subproject_alfresco_version.startsWith("7")) {
-            environment.put'GLOBAL_messaging.broker.url','failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true'
-            environment.put'GLOBAL_localTransform.core-aio.url','http://transform-core-aio:8090/'
-            // Needed for Solr indexing
-            environment.put 'GLOBAL_local.transform.service.enabled','true'
-            // Disable transformations and renditions
-            environment.put 'GLOBAL_contentPropertyRestrictions.enabled','false'
-            environment.put 'GLOBAL_ooo.enabled','false'
-            environment.put 'GLOBAL_jodconverter.enabled','false'
-            environment.put 'GLOBAL_transform.service.enabled','false'
-            environment.put 'GLOBAL_legacy.transform.service.enabled','false'
-        }
     }
-
 }
