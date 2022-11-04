@@ -8,12 +8,16 @@ services:
     volumes:
     - alfresco:/opt/alfresco/alf_data
     restart: unless-stopped
+    environment:
+      - TERM=xterm
 
   solr:
     image: private.docker.xenit.eu/alfresco-enterprise/alfresco-solr6:2.0.3
     restart: unless-stopped
     environment:
     - ALFRESCO_HOST=alfresco-core
+    - GLOBAL_ALL_alfresco.cron=0/2 * * * * ? *
+    - GLOBAL_ALL_alfresco.lag=500
 
   postgresql:
     image: docker.io/xenit/postgres

@@ -8,6 +8,10 @@ services:
     volumes:
       - alfresco:/opt/alfresco/alf_data
     restart: unless-stopped
+    environment:
+      - TERM=xterm
+      - GLOBAL_messaging.broker.url=failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true
+      - GLOBAL_localTransform.core-aio.url=http://transform-core-aio:8090/
 
   solr:
     image: private.docker.xenit.eu/alfresco-enterprise/alfresco-solr6:2.0.3
@@ -16,6 +20,8 @@ services:
     restart: unless-stopped
     environment:
       - ALFRESCO_HOST=alfresco-core
+      - GLOBAL_ALL_alfresco.cron=0/2 * * * * ? *
+      - GLOBAL_ALL_alfresco.lag=500
 
   postgresql:
     image: docker.io/xenit/postgres
