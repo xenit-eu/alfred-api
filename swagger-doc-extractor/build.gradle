@@ -12,6 +12,7 @@ ext {
 
 dependencies {
     implementation(project(':apix-impl'))
+    implementation(project(':apix-rest-v1'))
     implementation group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_version
     implementation group: 'eu.xenit.de', name: 'annotations-runtime', version: de_version
     implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'

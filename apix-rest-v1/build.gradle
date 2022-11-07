@@ -8,7 +8,7 @@ apply plugin: 'eu.xenit.de'
 apply plugin: 'eu.xenit.alfresco'
 
 dependencies {
-    implementation platform("org.alfresco:acs-community-packaging:$alfrescoVersion")
+    implementation platform("org.alfresco:acs-community-packaging:$alfresco_version")
 
     // Alfresco dependency should be removed in the future
     alfrescoProvided("org.alfresco:alfresco-repository")
