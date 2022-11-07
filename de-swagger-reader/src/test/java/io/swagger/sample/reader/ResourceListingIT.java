@@ -7,6 +7,7 @@ import io.swagger.models.Tag;
 import io.swagger.util.Json;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 
+@Ignore("Never worked, no service available on port 8002")
 public class ResourceListingIT {
 
     @Test

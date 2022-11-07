@@ -16,6 +16,9 @@ dependencies {
     implementation group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_version
     implementation group: 'eu.xenit.de', name: 'annotations-runtime', version: de_version
     implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
+    implementation(group: 'io.swagger', name: 'swagger-core', version: swagger_version) {
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+    }
 }
 
 application {

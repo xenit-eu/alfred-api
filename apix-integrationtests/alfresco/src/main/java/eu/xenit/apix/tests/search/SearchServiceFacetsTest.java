@@ -113,7 +113,7 @@ public class SearchServiceFacetsTest extends SearchServiceTest {
         query.setFacets(options);
 
         SearchQueryResult result = searchService.query(query);
-        // Search in results (Because of alf 4.2 source language level is 1.7. No lambdas to make this pretty 🙁)
+        // Search in results (Because of alf 4.2 source language level is 1.7. No lambdas to make this pretty)
         for (FacetSearchResult facetResult : result.getFacets()) {
             String facetName = facetResult.getName();
             if (bucketedFacetNames.contains(facetName)) {

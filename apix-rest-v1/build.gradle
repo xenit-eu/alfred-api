@@ -8,34 +8,38 @@ apply plugin: 'eu.xenit.de'
 apply plugin: 'eu.xenit.alfresco'
 
 dependencies {
-    implementation platform("org.alfresco:acs-community-packaging:$alfresco_version") {
-        exclude group: 'org.mockito', module: 'mockito-core'
+    alfrescoProvided(platform("org.alfresco:acs-community-packaging:$alfresco_version")) {
+        exclude group: "org.mockito"
+        exclude group: "com.fasterxml.jackson.core"
     }
 
     // Alfresco dependency should be removed in the future
-    alfrescoProvided("org.alfresco:alfresco-repository")
+    alfrescoProvided("org.alfresco:alfresco-repository") {
+        exclude group: "com.fasterxml.jackson.core"
+    }
     alfrescoProvided project(':apix-interface')
-    alfrescoProvided('org.alfresco:alfresco-remote-api')
+    alfrescoProvided('org.alfresco:alfresco-remote-api')  {
+        exclude group: "com.fasterxml.jackson.core"
+    }
 
     // The REST API use one call from DE annotations-runtime for the bulk endpoint
     // although annotations-runtime is internal
-    compileOnly(group: 'eu.xenit.de', name: 'annotations-runtime', version: de_version) { transitive = false }
-    compileOnly(group: 'eu.xenit.de', name: 'annotations', version: de_version) { transitive = false }
-    compileOnly(group: 'eu.xenit.de', name: 'webscripts', version: de_version) { transitive = false }
+    alfrescoProvided(group: 'eu.xenit.de', name: 'annotations-runtime', version: de_version) { transitive = false }
+    alfrescoProvided(group: 'eu.xenit.de', name: 'annotations', version: de_version) { transitive = false }
+    alfrescoProvided(group: 'eu.xenit.de', name: 'webscripts', version: de_version) { transitive = false }
 
-    compile(project(':de-swagger-reader'))
+    implementation(project(':de-swagger-reader'))
+    alfrescoProvided "javax.servlet:javax.servlet-api:4.0.1"
 
     // Overriding the dependencies in swagger to use the same version everywhere, ideally we
     // can switch to a recent swagger version and have updated jackson versions.
-    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml"
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jackson_version"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:$jackson_version"
 
     testImplementation project(':apix-interface')
     testImplementation project(':apix-impl')
     testImplementation 'org.springframework:spring-core'
     testImplementation 'org.springframework:spring-test'
     testImplementation "org.alfresco.surf:spring-webscripts"
-    testImplementation 'org.alfresco:alfresco-repository'
-    testImplementation 'org.alfresco:alfresco-remote-api'
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.25.1'
 }

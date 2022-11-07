@@ -1,18 +1,38 @@
 group = 'eu.xenit.swagger'
 description = 'Xenit Dynamic-extensions Swagger Reader'
 
+apply from: "$rootProject.projectDir/alfresco/70/overrides.gradle"
+
 apply plugin: 'osgi'
+apply plugin: 'eu.xenit.de'
+apply plugin: 'eu.xenit.alfresco'
+apply plugin: 'java-library'
 
 dependencies {
-    compile group: 'commons-io', name: 'commons-io', version: '2.0.1'
-    compile(group: 'io.swagger', name: 'swagger-core', version: swagger_version) {
+    alfrescoProvided(platform("org.alfresco:acs-community-packaging:$alfresco_version")) {
+        exclude group: "com.fasterxml.jackson.core"
+    }
+    alfrescoProvided group: 'org.slf4j', name: 'slf4j-api', version: '1.7.22'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.0.1'
+    api(group: 'io.swagger', name: 'swagger-core', version: swagger_version) {
         exclude group: 'org.slf4j', module: 'slf4j-api'
+        exclude group: "com.fasterxml.jackson.core"
+        exclude group: "com.fasterxml.jackson.datatype"
+        exclude group: "com.fasterxml.jackson.dataformat"
     }
-    compileOnly group: 'org.slf4j', name: 'slf4j-api', version: '1.7.22'
-    compile group: 'io.swagger', name: 'swagger-annotations', version: swagger_version
-    compileOnly(group: 'eu.xenit.de', name: 'annotations', version: de_version) {
-        transitive = false
-    }
-    compileOnly(group: 'org.springframework', name: 'spring-core', version: '3.2.10.RELEASE')
-    compileOnly(group: 'org.springframework.extensions.surf', name: 'spring-webscripts', version: '5.0.d')
+    api group: 'io.swagger', name: 'swagger-annotations', version: swagger_version
+
+    alfrescoProvided(group: 'org.springframework', name: 'spring-core')
+    alfrescoProvided "org.alfresco.surf:spring-webscripts"
+
+    implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jackson_version"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:$jackson_version"
+
+    // The REST API use one call from DE annotations-runtime for the bulk endpoint
+    // although annotations-runtime is internal
+    alfrescoProvided(group: 'eu.xenit.de', name: 'annotations-runtime', version: de_version) { transitive = false }
+    alfrescoProvided(group: 'eu.xenit.de', name: 'annotations', version: de_version) { transitive = false }
+    alfrescoProvided(group: 'eu.xenit.de', name: 'webscripts', version: de_version) { transitive = false }
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
