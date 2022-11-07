@@ -1,14 +1,11 @@
 description = 'Xenit API-X Rest v1'
 
-configurations {
-    ampArtifact
-}
-
-artifacts {
-    ampArtifact amp
-}
-
 apply from: "$rootProject.projectDir/alfresco/70/overrides.gradle"
+
+apply plugin: 'idea'
+apply plugin: 'java-library'
+apply plugin: 'eu.xenit.de'
+apply plugin: 'eu.xenit.alfresco'
 
 dependencies {
     implementation platform("org.alfresco:acs-community-packaging:$alfrescoVersion")

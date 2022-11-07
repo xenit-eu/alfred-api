@@ -1,9 +1,9 @@
-sourceSets.main.java.srcDirs += 'src/main/java'
 subprojects {
     def shortAlfrescoVersion = project.name.split("-")[2]
     apply from: "${rootProject.projectDir}/alfresco/$shortAlfrescoVersion/overrides.gradle"
     apply from: "${rootProject.projectDir}/publish.gradle"
     apply plugin: 'eu.xenit.amp'
+    apply plugin: 'eu.xenit.alfresco'
     apply plugin: 'java-library'
 
     configurations {

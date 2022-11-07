@@ -1,13 +1,3 @@
-plugins {
-    id 'eu.xenit.docker-alfresco' version '5.3.1' apply false
-    id 'eu.xenit.docker-compose' version '5.3.1' apply false
-    id 'be.vbgn.ci-detect' version '0.5.0' apply false
-}
-
-ext {
-    de_version = "2.1.3"
-}
-
 subprojects {
     apply plugin: 'eu.xenit.docker-alfresco'
     apply plugin: 'eu.xenit.docker-compose'
@@ -23,10 +13,8 @@ subprojects {
 
     dependencies {
         alfrescoAmp project(path: ":apix-impl:apix-impl-${subproject_alfresco_version}", configuration: 'ampArtifact')
-        alfrescoAmp project(path: ':apix-integrationtests-model-amp', configuration: 'ampArchives')
+        alfrescoAmp project(path: ':apix-integrationtests:model-amp', configuration: 'ampArchives')
         alfrescoAmp project(path: ':apix-rest-v1', configuration: 'ampArtifact')
-        alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-rest:$mvc"
-        alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-aop:$mvc"
         alfrescoSM files(jar)
         alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${subproject_alfresco_version}:${de_version}@amp"
     }
