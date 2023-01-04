@@ -79,8 +79,8 @@ subprojects {
             name 'Xenit artifactory libs-release'
             url 'https://artifactory.xenit.eu/artifactory/libs-release'
             credentials {
-                username property("eu.xenit.artifactory.username")
-                password property("eu.xenit.artifactory.password")
+                username System.env.XENIT_ARTIFACTORY_USERNAME ?: property("eu.xenit.artifactory.username")
+                password System.env.XENIT_ARTIFACTORY_PASSWORD ?: property("eu.xenit.artifactory.password")
             }
         }
     }
