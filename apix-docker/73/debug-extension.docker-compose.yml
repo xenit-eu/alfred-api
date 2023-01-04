@@ -1,0 +1,16 @@
+version: '2'
+services:
+  alfresco-core:
+    ports:
+      - 8000:8000
+    environment:
+      - DEBUG=true
+      - SHARE_HOST=alfresco-share
+  alfresco-share:
+    image: docker.io/xenit/alfresco-share-community:7.3
+    ports:
+      - 8090:8080
+    environment:
+      - DEBUG=true
+      - ALFRESCO_HOST=alfresco-core
+      - ALFRESCO_INTERNAL_HOST=alfresco-core
