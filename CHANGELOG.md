@@ -1,16 +1,18 @@
 # Alfred API - Changelog
 
 
-## 3.1.1 (yyyy-mm-dd)
+## 4.0.0 (yyyy-mm-dd)
+This release adds support for Alfresco 7.3 and drops support for Alfresco 5.2 and 6.1.
 
 ### Added
-
-### Changed
+* [ALFREDAPI-505](https://xenitsupport.jira.com/browse/ALFREDAPI-505): Added support for Alfresco 7.3
 
 ### Fixed
 * [ALFREDAPI-503](https://xenitsupport.jira.com/browse/ALFREDAPI-503): Fixed issue where site information could not be retrieved if the user does not have permissions to one of the components
 
 ### Removed
+* [ALFREDAPI-505](https://xenitsupport.jira.com/browse/ALFREDAPI-505): Drop support for Alfresco 5.2 and 6.1
+
 
 ## 3.1.0 (2022-04-21)
 
