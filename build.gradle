@@ -43,20 +43,14 @@ ext {
     http_core_version = "4.3.3"
     http_version = "4.3.4"
 
-    alfresco_52_version = "5.2.f"
-    alfresco_61_version = "6.1"
     alfresco_62_version = "6.2"
     alfresco_70_version = "7.0"
     alfresco_71_version = "7.1"
     alfresco_72_version = "7.2"
     alfresco_73_version = "7.3"
 
-    // The introduction of hit highlights in search 52 required general versions bump to 5.2.f
-    // Additionally, an explicit dependency on the data-model was required, however
     // alfresco-data-model might have a different version number than the main war it's included in
     // ref: https://bitbucket.org/xenit/alfresco-bom/src/master/repo/eu/xenit/alfresco/ for the bom of vanilla alfresco
-    alfresco_52_dm_version = "6.16"
-    alfresco_61_dm_version = "8.25.1"
     alfresco_62_dm_version = "8.50.18"
     alfresco_70_dm_version = "8.424"
     alfresco_71_dm_version = "12.23"
