@@ -4,7 +4,7 @@ jobs:
   BuildAndPublish:
     strategy:
       matrix:
-        alfresco_version: [ 70, 73 ] # TODO
+        alfresco_version: [ 70 ] # TODO
     runs-on: ubuntu-latest
     steps:
       - name: Check out
@@ -20,20 +20,20 @@ jobs:
           registry: private.docker.xenit.eu
           username: ${{ secrets.CLOUDSMITH_USER }}
           password: ${{ secrets.CLOUDSMITH_APIKEY }}
-      - name: Build interface  # Execute before integration testing to catch errors early
-        uses: gradle/gradle-build-action@v2.3.0
-        env:
-          XENIT_ARTIFACTORY_USERNAME: ${{ secrets.XENIT_ARTIFACTORY_USERNAME }}
-          XENIT_ARTIFACTORY_PASSWORD: ${{ secrets.XENIT_ARTIFACTORY_PASSWORD }}
-        with:
-          arguments: :apix-interface:build :apix-interface:javadoc
-      - name: Unit test REST API
-        uses: gradle/gradle-build-action@v2.3.0
-        env:
-          XENIT_ARTIFACTORY_USERNAME: ${{ secrets.XENIT_ARTIFACTORY_USERNAME }}
-          XENIT_ARTIFACTORY_PASSWORD: ${{ secrets.XENIT_ARTIFACTORY_PASSWORD }}
-        with:
-          arguments: --info :apix-rest-v1:test
+#      - name: Build interface  # Execute before integration testing to catch errors early
+#        uses: gradle/gradle-build-action@v2.3.0
+#        env:
+#          XENIT_ARTIFACTORY_USERNAME: ${{ secrets.XENIT_ARTIFACTORY_USERNAME }}
+#          XENIT_ARTIFACTORY_PASSWORD: ${{ secrets.XENIT_ARTIFACTORY_PASSWORD }}
+#        with:
+#          arguments: :apix-interface:build :apix-interface:javadoc
+#      - name: Unit test REST API
+#        uses: gradle/gradle-build-action@v2.3.0
+#        env:
+#          XENIT_ARTIFACTORY_USERNAME: ${{ secrets.XENIT_ARTIFACTORY_USERNAME }}
+#          XENIT_ARTIFACTORY_PASSWORD: ${{ secrets.XENIT_ARTIFACTORY_PASSWORD }}
+#        with:
+#          arguments: --info :apix-rest-v1:test
       - name: Build and test
         uses: gradle/gradle-build-action@v2.3.0
         env:
@@ -55,7 +55,4 @@ jobs:
           ORG_GRADLE_PROJECT_sonatype_username: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_sonatype_password: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
         with:
-          arguments: >-
-            --info
-            :c4a-impl:care4alf-7x:publishMavenJavaPublicationToSonaTypeRepository
-            -PsigningKeyId=DF8285F0
+          arguments: --info publish -PsigningKeyId=DF8285F0

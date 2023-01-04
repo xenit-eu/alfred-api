@@ -1,14 +1,11 @@
 package eu.xenit.apix.tests.search;
 
 import eu.xenit.apix.alfresco.search.FtsNodeVisitor;
-import eu.xenit.apix.search.QueryBuilder;
 import eu.xenit.apix.search.json.SearchNodeJsonParser;
 import eu.xenit.apix.search.nodes.SearchSyntaxNode;
 import eu.xenit.apix.search.visitors.SearchSyntaxPrinter;
 import java.io.IOException;
-import java.util.Arrays;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
