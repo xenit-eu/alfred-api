@@ -1,7 +1,7 @@
 # Alfred API - Changelog
 
 
-## 4.0.0 (yyyy-mm-dd)
+## 4.0.0 (2023-01-17)
 This release adds support for Alfresco 7.3 and drops support for Alfresco 5.2 and 6.1.
 
 ### Added
