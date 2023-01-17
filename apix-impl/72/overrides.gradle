@@ -5,5 +5,5 @@ ext {
     alfresco_repo_version = '14.142'
     alfresco_dm_version = alfresco_72_dm_version
     alfresco_min_version = "7.2"
-    //Not setting alfresco_max_version here to make it easier to test on next Alfresco version (only for latest version)
+    alfresco_max_version = "7.2.99"
 }
