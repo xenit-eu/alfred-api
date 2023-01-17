@@ -1,9 +1,0 @@
-description = "Xenit API-X implementation Alfresco 5.2"
-
-ext {
-    alfresco_version = alfresco_52_version
-    alfresco_repo_version = alfresco_version
-    alfresco_dm_version = alfresco_52_dm_version
-    alfresco_min_version = "5.2"
-    alfresco_max_version = "5.2.99"
-}
