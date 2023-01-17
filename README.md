@@ -97,7 +97,7 @@ In a development scenario, it is possible to upload code changes to a running al
 This requires the running alfresco to already have an older or equal version of alfred-api installed, and
 the use of the jar artifact instead of the amp to do the new install. 
 The JAR has the format `apix-impl-{ALFRESCO-VERSION}-{APIX-VERSION}.jar` and can be found under 
-`apix-impl/{ALFRESCO-VERSION}/build/libs/`, where `ALFRESCO-VERSION` is one of *(52|61|62|70|71|72)*.
+`apix-impl/{ALFRESCO-VERSION}/build/libs/`, where `ALFRESCO-VERSION` is one of *(62|70|71|72|73)*.
 The new installation can be done either through the DE web interface, or with the following gradle task.
 ```bash
 ./gradlew :apix-impl:apix-impl-{ALFRESCO-VERSION}:installBundle -Phost={ALFRESCO-HOST} -Pport={ALFRESCO-PORT}

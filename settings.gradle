@@ -6,45 +6,39 @@ include ':swagger-doc-extractor'
 include ':de-swagger-reader'
 
 include ':apix-impl'
-include ':apix-impl:apix-impl-52'
-include ':apix-impl:apix-impl-61'
 include ':apix-impl:apix-impl-62'
 include ':apix-impl:apix-impl-70'
 include ':apix-impl:apix-impl-71'
 include ':apix-impl:apix-impl-72'
+include ':apix-impl:apix-impl-73'
 
 include ':apix-docker'
-include ':apix-docker:docker-52'
-include ':apix-docker:docker-61'
 include ':apix-docker:docker-62'
 include ':apix-docker:docker-70'
 include ':apix-docker:docker-71'
 include ':apix-docker:docker-72'
+include ':apix-docker:docker-73'
 
 include ':apix-integrationtests'
-include ':apix-integrationtests:test-52'
-include ':apix-integrationtests:test-61'
 include ':apix-integrationtests:test-62'
 include ':apix-integrationtests:test-70'
 include ':apix-integrationtests:test-71'
 include ':apix-integrationtests:test-72'
+include ':apix-integrationtests:test-73'
 include ':apix-integrationtests-model-amp'
 
-project(':apix-impl:apix-impl-52').projectDir = "$rootDir/apix-impl/52" as File
-project(':apix-impl:apix-impl-61').projectDir = "$rootDir/apix-impl/61" as File
 project(':apix-impl:apix-impl-62').projectDir = "$rootDir/apix-impl/62" as File
 project(':apix-impl:apix-impl-70').projectDir = "$rootDir/apix-impl/70" as File
 project(':apix-impl:apix-impl-71').projectDir = "$rootDir/apix-impl/71" as File
 project(':apix-impl:apix-impl-72').projectDir = "$rootDir/apix-impl/72" as File
-project(':apix-docker:docker-52').projectDir = "$rootDir/apix-docker/52" as File
-project(':apix-docker:docker-61').projectDir = "$rootDir/apix-docker/61" as File
+project(':apix-impl:apix-impl-73').projectDir = "$rootDir/apix-impl/73" as File
 project(':apix-docker:docker-62').projectDir = "$rootDir/apix-docker/62" as File
 project(':apix-docker:docker-70').projectDir = "$rootDir/apix-docker/70" as File
 project(':apix-docker:docker-71').projectDir = "$rootDir/apix-docker/71" as File
 project(':apix-docker:docker-72').projectDir = "$rootDir/apix-docker/72" as File
-project(':apix-integrationtests:test-52').projectDir = "$rootDir/apix-integrationtests/52" as File
-project(':apix-integrationtests:test-61').projectDir = "$rootDir/apix-integrationtests/61" as File
+project(':apix-docker:docker-73').projectDir = "$rootDir/apix-docker/73" as File
 project(':apix-integrationtests:test-62').projectDir = "$rootDir/apix-integrationtests/62" as File
 project(':apix-integrationtests:test-70').projectDir = "$rootDir/apix-integrationtests/70" as File
 project(':apix-integrationtests:test-71').projectDir = "$rootDir/apix-integrationtests/71" as File
 project(':apix-integrationtests:test-72').projectDir = "$rootDir/apix-integrationtests/72" as File
+project(':apix-integrationtests:test-73').projectDir = "$rootDir/apix-integrationtests/73" as File
