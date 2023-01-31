@@ -44,6 +44,13 @@ jobs:
             --info
             :apix-impl:apix-impl-${{ matrix.alfresco_version }}:test
             :apix-integrationtests:test-${{ matrix.alfresco_version }}:integrationTest
+      - name: Upload Artifact
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-result
+          path: /home/runner/work/**/build/reports
+          retention-days: 2
       - name: Publish
         #if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}"
         uses: gradle/gradle-build-action@v2.3.0
