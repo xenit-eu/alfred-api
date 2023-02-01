@@ -41,7 +41,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -290,7 +299,6 @@ public class NodesWebscript1 extends ApixV1Webscript {
     }
 
     @PostMapping(value = "/v1/nodes/nodeInfo")
-    // TODO @Zlatin MVC Pojo
     public ResponseEntity<Object> getAllInfoOfNodes(@RequestBody final String requestString) {
         logger.debug("request content: {}", requestString);
         JSONObject jsonObject = new JSONObject(requestString);
@@ -584,7 +592,6 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
 
     @PostMapping(value = "/v1/nodes/upload")
-    // TODO @Zlatin MVC Pojo
     public ResponseEntity<NodeInfo> uploadNode(
             @RequestPart(required = false) String type,
             @RequestPart(required = false) String parent,
