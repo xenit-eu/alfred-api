@@ -62,4 +62,7 @@ jobs:
           ORG_GRADLE_PROJECT_sonatype_username: ${{ secrets.SONATYPE_S01_USERNAME }}
           ORG_GRADLE_PROJECT_sonatype_password: ${{ secrets.SONATYPE_S01_PASSWORD }}
         with:
-          arguments: --info publish -PsigningKeyId=DF8285F0
+          arguments: >-
+            --info -PsigningKeyId=DF8285F0
+            :apix-interface:publish
+            :apix-impl:apix-impl-${{ matrix.alfresco_version }}:publish
