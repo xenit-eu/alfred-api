@@ -94,7 +94,7 @@ allprojects {
         alfrescoProvided('org.alfresco:alfresco-remote-api')
 
         implementation group: 'org.yaml', name: 'snakeyaml', version: '1.15'
-        implementation group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
+        implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
 
         testImplementation platform("org.alfresco:acs-community-packaging:$alfresco_version")
         testImplementation 'org.alfresco:alfresco-repository'
