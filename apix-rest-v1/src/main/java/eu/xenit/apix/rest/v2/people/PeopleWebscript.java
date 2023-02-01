@@ -5,9 +5,6 @@ import com.gradecak.alfresco.mvc.annotation.AuthenticationType;
 import eu.xenit.apix.people.IPeopleService;
 import eu.xenit.apix.people.Person;
 import eu.xenit.apix.rest.v2.ApixV2Webscript;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -31,8 +28,6 @@ public class PeopleWebscript extends ApixV2Webscript {
     }
 
     @GetMapping(value = "/v2/people/id/{space}/{store}/{guid}")
-    @ApiOperation(value = "Returns person information")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Person.class))
     public ResponseEntity<?> getPerson(@PathVariable final String space,
                                             @PathVariable final String store,
                                             @PathVariable final String guid) {
@@ -51,22 +46,16 @@ public class PeopleWebscript extends ApixV2Webscript {
     }
 
     @GetMapping(value = "/v2/people")
-    @ApiOperation(value = "Returns all people")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Person[].class))
     public ResponseEntity<List<Person>> getAllPeople() {
         return writeJsonResponse(personService.GetPeople());
     }
 
     @GetMapping(value = "/v2/people/-me-")
-    @ApiOperation(value = "Returns current user information")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Person.class))
     public ResponseEntity<?> getPersonCurrentUser() {
         return getPersonWithName("-me-");
     }
 
     @GetMapping(value = "/v2/people/{name}")
-    @ApiOperation(value = "Returns person information")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Person.class))
     public ResponseEntity<?> getPersonWithName(@PathVariable final String name) {
         logger.debug("Asked person with name: {}", name);
         try{
@@ -83,8 +72,6 @@ public class PeopleWebscript extends ApixV2Webscript {
     }
 
     @GetMapping(value = "/v2/ people/containergroups/{name}")
-    @ApiOperation(value = "Returns container groups of person")
-    @ApiResponses(value = @ApiResponse(code = 200, message = "Success", response = String[].class))
     public ResponseEntity<ArrayList<String>> getContainerGroupsOf(@PathVariable final String name) {
         logger.debug("Asked containergroups for person with name: {}", name);
         Set<String> result = personService.GetContainerGroups(name);

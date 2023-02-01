@@ -6,9 +6,6 @@ import eu.xenit.apix.categories.Category;
 import eu.xenit.apix.categories.ICategoryService;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,8 +23,6 @@ public class CategoryWebScript1 extends ApixV1Webscript {
     }
 
     @GetMapping(value = "/v1/category/aspect/{qname}")
-    @ApiOperation(value = "Return the categories available for an aspect")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Categories.class))
     public ResponseEntity<Categories> getCategoriesForAspect(@PathVariable final String qname) {
         QName apixQName = new QName(qname);
         List<Category> categories = categoryService.getCategoryTree(apixQName);

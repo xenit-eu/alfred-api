@@ -12,9 +12,6 @@ import eu.xenit.apix.dictionary.types.Types;
 import eu.xenit.apix.properties.Properties;
 import eu.xenit.apix.properties.PropertyDefinition;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,8 +35,6 @@ public class DictionaryWebScript1 extends ApixV1Webscript {
     }
 
     @GetMapping(value = "/v1/dictionary/properties/**")
-    @ApiOperation(value = "Return the definition of a property")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = PropertyDefinition.class))
     public ResponseEntity<?> getPropertyDefinition(HttpServletRequest request) {
         QName qname = extractQNameFromUrlPath(request, "/v1/dictionary/properties/");
         PropertyDefinition propDef = dictionaryService.GetPropertyDefinition(qname);
@@ -50,16 +45,12 @@ public class DictionaryWebScript1 extends ApixV1Webscript {
     }
 
     @GetMapping(value = "/v1/dictionary/properties")
-    @ApiOperation(value = "Return properties")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Properties.class))
     public ResponseEntity<Properties> getProperties() {
         return writeJsonResponse(dictionaryService.getProperties());
     }
 
 
     @GetMapping(value = "/v1/dictionary/types")
-    @ApiOperation(value = "Return the definitions of types")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Types.class))
     public ResponseEntity<Types> getSubTypeDefinitions(@RequestParam(defaultValue = "sys:base", required = false)
                                                            final String parent) {
         return writeJsonResponse(
@@ -70,10 +61,6 @@ public class DictionaryWebScript1 extends ApixV1Webscript {
     }
 
     @GetMapping(value = "/v1/dictionary/types/**")
-    @ApiOperation(value = "Return the definition of a type")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Success", response = TypeDefinition.class),
-            @ApiResponse(code = 404, message = "Not Found")})
     public ResponseEntity<?> getTypeDefinition(HttpServletRequest request) {
         QName qname = extractQNameFromUrlPath(request, "/v1/dictionary/types/");
         logger.debug("Received type qname {}", qname);
@@ -85,8 +72,6 @@ public class DictionaryWebScript1 extends ApixV1Webscript {
     }
 
     @GetMapping(value = "/v1/dictionary/aspects/**")
-    @ApiOperation(value = "Return the definition of a aspect")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = AspectDefinition.class))
     public ResponseEntity<?> getAspectDefinition(HttpServletRequest request) {
         QName qname = extractQNameFromUrlPath(request, "/v1/dictionary/aspects/");
         logger.debug("Received aspect qname {}", qname);
@@ -97,17 +82,12 @@ public class DictionaryWebScript1 extends ApixV1Webscript {
         return writeJsonResponse(classDef);
     }
 
-
     @GetMapping(value = "/v1/dictionary/aspects")
-    @ApiOperation(value = "Return apects")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Aspects.class))
     public ResponseEntity<Aspects> getAspects() {
         return writeJsonResponse(dictionaryService.getAspects());
     }
 
     @GetMapping(value = "/v1/dictionary/namespaces")
-    @ApiOperation(value = "Returns the namespaces")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Namespaces.class))
     public ResponseEntity<Namespaces> getNamespaces() {
         return writeJsonResponse(dictionaryService.getNamespaces());
     }

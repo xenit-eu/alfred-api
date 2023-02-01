@@ -3,9 +3,6 @@ package eu.xenit.apix.rest.v1.workingcopies;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.node.INodeService;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,8 +22,6 @@ public class WorkingcopiesWebscript1 extends ApixV1Webscript {
     }
 
     @PostMapping(value = "/v1/workingcopies")
-    @ApiOperation("Checks out a new working copy for given node")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NoderefResult.class))
     public ResponseEntity<?> createWorkingcopy(@RequestBody CheckoutBody checkoutBody) {
         final NodeRef originalRef = checkoutBody.getOriginal();
         NodeRef destinationRef = checkoutBody.getDestinationFolder();
@@ -43,13 +38,7 @@ public class WorkingcopiesWebscript1 extends ApixV1Webscript {
         return respondDoesNotExist(destinationRef);
     }
 
-    @ApiOperation(value = "Checks in given working copy and removes it",
-            notes = "Returns the noderef of the original node")
     @PostMapping(value = "/v1/workingcopies/{space}/{store}/{guid}/checkin")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Success", response = NoderefResult.class),
-            @ApiResponse(code = 404, message = "Not found")
-    })
     public ResponseEntity<?> checkinWorkingcopy(@PathVariable final String space, @PathVariable final String store,
                                    @PathVariable final String guid,
                                    @RequestBody final CheckinBody checkinBody) {
@@ -61,12 +50,7 @@ public class WorkingcopiesWebscript1 extends ApixV1Webscript {
         return respondDoesNotExist(nodeRef);
     }
 
-    @ApiOperation(value = "Cancels and removes a working copy", notes = "Returns the noderef of the original node")
     @DeleteMapping(value = "/v1/workingcopies/{space}/{store}/{guid}")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Success", response = NoderefResult.class),
-            @ApiResponse(code = 404, message = "Not found")
-    })
     public ResponseEntity<?> cancelWorkingcopy(@PathVariable final String space, @PathVariable final String store,
             @PathVariable final String guid) {
         final NodeRef workingCopyRef = createNodeRef(space, store, guid);
@@ -77,12 +61,7 @@ public class WorkingcopiesWebscript1 extends ApixV1Webscript {
         return respondDoesNotExist(workingCopyRef);
     }
 
-    @ApiOperation("Returns the original node for given working copy")
     @GetMapping(value = "/v1/workingcopies/{space}/{store}/{guid}/original")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Success", response = NoderefResult.class),
-            @ApiResponse(code = 404, message = "Not Found")
-    })
     public ResponseEntity<?> getWorkingCopySource(@PathVariable final String space, @PathVariable final String store,
             @PathVariable final String guid) {
         NodeRef workingCopyRef = createNodeRef(space, store, guid);

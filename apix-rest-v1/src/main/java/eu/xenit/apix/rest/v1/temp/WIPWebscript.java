@@ -3,11 +3,6 @@ package eu.xenit.apix.rest.v1.temp;
 import eu.xenit.apix.WIP.IWIPService;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,10 +18,7 @@ public class WIPWebscript extends ApixV1Webscript {
         this.wipService = wipService;
     }
 
-    @ApiOperation(value = "Downloads preview file for given node")
     @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/content/previews/pdf")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success"))
-    @ApiImplicitParams({@ApiImplicitParam(name = "file", paramType = "form", dataType = "file", required = true)})
     public ResponseEntity<?> getPreviewPdf(@PathVariable String space,
                               @PathVariable String store,
                               @PathVariable String guid) {

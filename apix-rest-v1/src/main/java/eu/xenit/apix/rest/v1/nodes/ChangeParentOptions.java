@@ -2,14 +2,12 @@ package eu.xenit.apix.rest.v1.nodes;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by Michiel Huygen on 12/05/2016.
  */
 class ChangeParentOptions {
 
-    @ApiModelProperty(required = true)
     public String parent;
 
     @JsonCreator

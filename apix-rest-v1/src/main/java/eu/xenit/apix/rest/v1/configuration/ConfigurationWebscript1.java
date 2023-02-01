@@ -9,10 +9,6 @@ import eu.xenit.apix.configuration.ConfigurationFileFlags;
 import eu.xenit.apix.configuration.ConfigurationService;
 import eu.xenit.apix.configuration.Configurations;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -49,20 +45,11 @@ public class ConfigurationWebscript1 extends ApixV1Webscript {
 
 
     @GetMapping(value = "/v1/configuration", consumes = {"application/js"}, produces = {"application/js"})
-    @ApiOperation("Returns configuration files information and content")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Configurations.class))
     public ResponseEntity<?> getJsConfigurationFiles(
-            @RequestParam(defaultValue = "content,nodeRef", required = false)
-            @ApiParam(
-                    value = "Comma separated field names to include.",
-                    defaultValue = "content,nodeRef",
-                    allowableValues = "content,nodeRef,path,metadata,parsedContent") String[] fields,
-            @RequestParam @ApiParam("The directory to search for configuration files, relative to the data dictionary")
-            String searchDirectory,
-            @RequestParam(value = "filter.name", required = false)
-            @ApiParam(name = "filter.name", value = "Regular expression that the node name should match.")
-            String nameFilter,
-            @RequestParam(required = false) @ApiParam("Javascript callback function") String callback
+            @RequestParam(defaultValue = "content,nodeRef", required = false) String[] fields,
+            @RequestParam String searchDirectory,
+            @RequestParam(value = "filter.name", required = false) String nameFilter,
+            @RequestParam(required = false) String callback
     ) throws IOException {
         List<String> fieldsList = Arrays.asList(fields);
         ConfigurationFileFlags configurationFileFlags = new ConfigurationFileFlags(
@@ -83,21 +70,10 @@ public class ConfigurationWebscript1 extends ApixV1Webscript {
     @GetMapping(value = "/v1/configuration" ,
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ApiOperation("Returns configuration files information and content")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Configurations.class))
     public ResponseEntity<?> getConfigurationFiles(
-            @RequestParam(defaultValue = "content,nodeRef", required = false)
-                @ApiParam(
-                    value = "Comma separated field names to include.",
-                    defaultValue = "content,nodeRef",
-                    allowableValues = "content,nodeRef,path,metadata,parsedContent")
-            String[] fields,
-            @RequestParam
-            @ApiParam("The directory to search for configuration files, relative to the data dictionary")
-                String searchDirectory,
-            @RequestParam(value = "filter.name", required = false)
-                @ApiParam(name = "filter.name", value = "Regular expression that the node name should match.")
-                String nameFilter
+            @RequestParam(defaultValue = "content,nodeRef", required = false) String[] fields,
+            @RequestParam String searchDirectory,
+            @RequestParam(value = "filter.name", required = false) String nameFilter
     ) throws IOException {
         List<String> fieldsList = Arrays.asList(fields);
         ConfigurationFileFlags configurationFileFlags = new ConfigurationFileFlags(

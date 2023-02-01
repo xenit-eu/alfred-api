@@ -11,9 +11,6 @@ import eu.xenit.apix.permissions.PermissionValue;
 import eu.xenit.apix.rest.v1.nodes.CreateNodeOptions;
 import eu.xenit.apix.rest.v1.nodes.NodeInfo;
 import eu.xenit.apix.rest.v2.ApixV2Webscript;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -54,11 +51,7 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
         this.serviceRegistry = serviceRegistry;
     }
 
-    @ApiOperation("Returns combined information of a node." +
-            "\nNote: versionstore does not support sourceAssocs. " +
-            "For version nodes, an empty list added to the result")
     @GetMapping(value = "/v2/nodes/{space}/{store}/{guid}")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NodeInfo.class))
     public ResponseEntity<NodeInfo> getAllInfo(@PathVariable String space,
                                                @PathVariable String store,
                                                @PathVariable String guid) {
@@ -70,44 +63,7 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
         return writeJsonResponse(nodeInfo);
     }
 
-    @ApiOperation(value = "Returns combined information of multiple nodes",
-            notes = "Example to get combined information of multiple nodes:\n" +
-                    "\n" +
-                    "```\n" +
-                    "POST /apix/v1/nodes/nodeInfo\n" +
-                    "{\n" +
-                    "\"retrieveMetadata\" : true, \n" +
-                    "\"retrievePath\" : true, \n" +
-                    "\"retrievePermissions\" : true, \n" +
-                    "\"retrieveAssocs\" : true, \n" +
-                    "\"retrieveChildAssocs\" : true, \n" +
-                    "\"retrieveParentAssocs\" : true, \n" +
-                    "\"retrieveTargetAssocs\" : true, \n" +
-                    "\"noderefs\": [ \n" +
-                    "  \"workspace://SpacesStore/123456789\", \n" +
-                    "  \"workspace://SpacesStore/147258369\", \n" +
-                    "  \"workspace://SpacesStore/478159236\" \n" +
-                    "]}\n" +
-                    "```" +
-                    "\n" +
-                    "'retrieveMetadata', 'retrievePath', 'retrievePermissions', 'retrieveAssocs', " +
-                    "'retrieveChildAssocs',\n"
-                    +
-                    "'retrieveParentAssocs', 'retrieveTargetAssocs' are optional parameters.\n" +
-                    "Set 'retrieveMetadata' to false to omit the aspects and properties from the result.\n" +
-                    "Set 'retrievePath' to false to omit the path from the result.\n" +
-                    "Set 'retrievePermissions' to false to omit the permissions from the result.\n" +
-                    "Set 'retrieveAssocs' to false to omit the associations (parent associations, child associations," +
-                    " peer associations) from the result.\n"
-                    +
-                    "Set 'retrieveChildAssocs' to false to omit the child associations from the result.\n" +
-                    "Set 'retrieveParentAssocs' to false to omit the parent associations from the result.\n" +
-                    "Set 'retrieveTargetAssocs' to false to omit the peer target associations from the result.\n" +
-                    "Set 'retrieveSourceAssocs' to false to omit the peer source associations from the result. " +
-                    "Note: versionstore does not support sourceAssocs. For version nodes, an empty list added to the " +
-                    "result\n")
     @PostMapping(value = "/v2/nodes/nodeInfo")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NodeInfo[].class))
     // TODO FIXME @Zlatin Alfresco MVC POJO MUCH? WTF.
     public ResponseEntity<?> getAllInfos(@RequestBody final String requestString) throws JSONException {
         logger.debug("entered getAllInfo method");
@@ -200,13 +156,7 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
         return writeJsonResponse(nodeInfoList);
     }
 
-    @ApiOperation(value = "Retrieve current user's permissions for a node",
-            notes = "Returns a key-value map of permissions keys to a value of 'DENY' or 'ALLOW'. " +
-                    "Possible keys are: Read, Write, Delete, CreateChildren, ReadPermissions, ChangePermissions, " +
-                    "or custom permissions")
     @GetMapping(value = "/v2/nodes/{space}/{store}/{guid}/permissions")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "Success", response = PermissionValue.class, responseContainer = "Map"))
     public ResponseEntity<Map<String, PermissionValue>> getPermissions(@PathVariable String space,
                                                                        @PathVariable String store,
                                                                        @PathVariable String guid) {
@@ -216,9 +166,7 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
         );
     }
 
-    @ApiOperation("Creates or copies a node")
     @PostMapping(value = "/v2/nodes")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = NodeInfo.class))
     public ResponseEntity<?> createNode(@RequestBody final CreateNodeOptions createNodeOptions) {
         final StringBuilder errorMessage = new StringBuilder();
         final AtomicInteger errorCode = new AtomicInteger();

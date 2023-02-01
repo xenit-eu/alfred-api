@@ -2,11 +2,9 @@ package eu.xenit.apix.rest.v1.nodes;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
 
 class InheritFromParent {
 
-    @ApiModelProperty(required = true)
     private boolean inheritFromParent;
 
     @JsonCreator
