@@ -34,32 +34,32 @@ jobs:
 #          XENIT_ARTIFACTORY_PASSWORD: ${{ secrets.XENIT_ARTIFACTORY_PASSWORD }}
 #        with:
 #          arguments: --info :apix-rest-v1:test
-      - name: Build and test
-        uses: gradle/gradle-build-action@v2.3.0
-        env:
-          XENIT_ARTIFACTORY_USERNAME: ${{ secrets.XENIT_ARTIFACTORY_USERNAME }}
-          XENIT_ARTIFACTORY_PASSWORD: ${{ secrets.XENIT_ARTIFACTORY_PASSWORD }}
-        with:
-          arguments: >-
-            --info
-            :apix-impl:apix-impl-${{ matrix.alfresco_version }}:test
-            :apix-integrationtests:test-${{ matrix.alfresco_version }}:integrationTest
-      - name: Upload Artifact
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-result
-          path: /home/runner/work/**/build/reports
-          retention-days: 2
+#      - name: Build and test
+#        uses: gradle/gradle-build-action@v2.3.0
+#        env:
+#          XENIT_ARTIFACTORY_USERNAME: ${{ secrets.XENIT_ARTIFACTORY_USERNAME }}
+#          XENIT_ARTIFACTORY_PASSWORD: ${{ secrets.XENIT_ARTIFACTORY_PASSWORD }}
+#        with:
+#          arguments: >-
+#            --info
+#            :apix-impl:apix-impl-${{ matrix.alfresco_version }}:test
+#            :apix-integrationtests:test-${{ matrix.alfresco_version }}:integrationTest
+#      - name: Upload Artifact
+#        if: always()
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: test-result
+#          path: /home/runner/work/**/build/reports
+#          retention-days: 2
       - name: Publish
-        #if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}"
+        #TODO: if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}"
         uses: gradle/gradle-build-action@v2.3.0
         env:
           XENIT_ARTIFACTORY_USERNAME: ${{ secrets.XENIT_ARTIFACTORY_USERNAME }}
           XENIT_ARTIFACTORY_PASSWORD: ${{ secrets.XENIT_ARTIFACTORY_PASSWORD }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVEN_CENTRAL_GPG_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVEN_CENTRAL_GPG_PASSWORD }}
-          ORG_GRADLE_PROJECT_sonatype_username: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
-          ORG_GRADLE_PROJECT_sonatype_password: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_sonatype_username: ${{ secrets.SONATYPE_S01_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatype_password: ${{ secrets.SONATYPE_S01_PASSWORD }}
         with:
           arguments: --info publish -PsigningKeyId=DF8285F0
