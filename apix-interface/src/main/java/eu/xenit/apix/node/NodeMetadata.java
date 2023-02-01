@@ -22,10 +22,6 @@ public class NodeMetadata {
     public List<QName> aspects;
     //TODO: parent
 
-    //Removed in favor of using the permissions endpoint public boolean canEditMetadata; // TODO: remove
-
-    //public NodeAssociation[] associations;
-
     public NodeMetadata(NodeRef id, QName type, QName baseType, long transactionId, Map<QName, List<String>> properties,
                         List<QName> aspects) {
         this.id = id;

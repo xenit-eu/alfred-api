@@ -64,7 +64,6 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
     }
 
     @PostMapping(value = "/v2/nodes/nodeInfo")
-    // TODO FIXME @Zlatin Alfresco MVC POJO MUCH? WTF.
     public ResponseEntity<?> getAllInfos(@RequestBody final String requestString) throws JSONException {
         logger.debug("entered getAllInfo method");
         if (requestString == null || requestString.isEmpty()) {

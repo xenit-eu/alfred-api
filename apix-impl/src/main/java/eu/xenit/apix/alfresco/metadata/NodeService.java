@@ -671,7 +671,6 @@ public class NodeService implements INodeService {
 
 
     @Override
-    // TODO @Zlatin MVC Extract file name in ContentInputStream pojo
     public eu.xenit.apix.data.ContentInputStream getContent(eu.xenit.apix.data.NodeRef nodeRef) {
         final ContentReader reader;
         try {

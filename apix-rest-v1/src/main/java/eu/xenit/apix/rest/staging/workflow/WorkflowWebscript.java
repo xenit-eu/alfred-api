@@ -110,8 +110,6 @@ public class WorkflowWebscript {
             return responseFrom(workflowService.updateTask(id, changes));
         } catch (Error ex) {
             return ResponseEntity.status(HttpStatus.SC_CONFLICT).build();
-            // TODO @Zlatin Alfresco MVC
-//            responseFrom(webScriptResponse, ex);
         }
     }
 
