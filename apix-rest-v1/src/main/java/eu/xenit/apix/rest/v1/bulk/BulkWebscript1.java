@@ -4,9 +4,6 @@ import com.fasterxml.jackson.core.io.JsonStringEncoder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,8 +37,6 @@ public class BulkWebscript1 extends ApixV1Webscript {
     }
 
     @PostMapping(value = "/v1/bulk")
-    @ApiOperation("Performs multiple Api-X operations in a single rest call")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = BulkSubResult[].class))
     public ResponseEntity<?> bulk(@RequestBody final BulkRequest[] bulkRequests, final WebScriptRequest req)
             throws IOException {
 

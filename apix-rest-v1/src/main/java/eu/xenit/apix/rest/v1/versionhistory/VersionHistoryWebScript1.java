@@ -7,11 +7,6 @@ import eu.xenit.apix.rest.v1.ApixV1Webscript;
 import eu.xenit.apix.versionhistory.IVersionHistoryService;
 import eu.xenit.apix.versionhistory.Version;
 import eu.xenit.apix.versionhistory.VersionHistory;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -46,8 +41,6 @@ public class VersionHistoryWebScript1 extends ApixV1Webscript {
     }
 
     @GetMapping(value = "/v1/versionhistory/{space}/{store}/{guid}/versions")
-    @ApiOperation(value = "Returns list of chronological version information for give node")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = VersionHistory.class))
     public ResponseEntity<VersionHistory> getVersionHistory(@PathVariable final String space,
                                                             @PathVariable final String store,
                                                             @PathVariable final String guid) {
@@ -58,8 +51,6 @@ public class VersionHistoryWebScript1 extends ApixV1Webscript {
     }
 
     @GetMapping(value = "/v1/versionhistory/{space}/{store}/{guid}/root")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Version.class))
-    @ApiOperation(value = "Returns the root (oldest) version")
     public ResponseEntity<Version> getVersionHistoryRoot(@PathVariable final String space,
                                                          @PathVariable final String store,
                                                          @PathVariable final String guid) {
@@ -69,8 +60,6 @@ public class VersionHistoryWebScript1 extends ApixV1Webscript {
     }
 
     @GetMapping(value = "/v1/versionhistory/{space}/{store}/{guid}/head")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Version.class))
-    @ApiOperation(value = "Returns the head (newest) version")
     public ResponseEntity<Version> getVersionHistoryHead(@PathVariable final String space,
                                                          @PathVariable final String store,
                                                          @PathVariable final String guid) {
@@ -80,10 +69,8 @@ public class VersionHistoryWebScript1 extends ApixV1Webscript {
     }
 
     @DeleteMapping(value = "/v1/versionhistory/{space}/{store}/{guid}")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success"))
     //No method available to disable versioning. deleting will merely reset version history,
     // starting a new history upon a new version change
-    @ApiOperation(value = "Permanently emoves version history")
     public ResponseEntity<?> deleteVersionHistory(@PathVariable final String space,
                                                        @PathVariable final String store,
                                                        @PathVariable final String guid) {
@@ -92,11 +79,6 @@ public class VersionHistoryWebScript1 extends ApixV1Webscript {
     }
 
     @PutMapping(value = "/v1/versionhistory/{space}/{store}/{guid}")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success"))
-    @ApiImplicitParams({
-            @ApiImplicitParam(dataType = "eu.xenit.apix.rest.v1.versionhistory.VersionOptions",
-                    paramType = "body", name = "body")})
-    @ApiOperation(value = "Enables versioning for this node, creating an initial version")
     public ResponseEntity<?> setVersionHistory(@PathVariable final String space,
                                                 @PathVariable final String store,
                                                 @PathVariable final String guid,
@@ -118,8 +100,6 @@ public class VersionHistoryWebScript1 extends ApixV1Webscript {
     }
 
     @PostMapping(value = "/v1/versionhistory/{space}/{store}/{guid}/versions/{label}/revert")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success"))
-    @ApiOperation(value = "(Shallow) Revert the node to version with given label")
     public ResponseEntity<?> revertVersionHistory(@PathVariable final String space,
                                                        @PathVariable final String store,
                                                        @PathVariable final String guid,
@@ -129,8 +109,6 @@ public class VersionHistoryWebScript1 extends ApixV1Webscript {
     }
 
     @DeleteMapping(value = "/v1/versionhistory/{space}/{store}/{guid}/versions/{label}")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success"))
-    @ApiOperation(value = "Permanently remove version with given label")
     public ResponseEntity<?> deleteVersion(@PathVariable final String space,
                                                 @PathVariable final String store,
                                                 @PathVariable final String guid,

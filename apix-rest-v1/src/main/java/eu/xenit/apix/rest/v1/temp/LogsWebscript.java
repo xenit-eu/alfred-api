@@ -3,7 +3,6 @@ package eu.xenit.apix.rest.v1.temp;
 import com.gradecak.alfresco.mvc.annotation.AlfrescoAuthentication;
 import com.gradecak.alfresco.mvc.annotation.AuthenticationType;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
-import io.swagger.annotations.Api;
 import java.io.File;
 import java.io.IOException;
 import org.springframework.core.env.Environment;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@Api(hidden = true)
 @RestController("eu.xenit.apix.rest.v1.temp.LogsWebscript")
 public class LogsWebscript extends ApixV1Webscript {
 

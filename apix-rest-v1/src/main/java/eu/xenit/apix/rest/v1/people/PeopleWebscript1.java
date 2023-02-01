@@ -5,9 +5,6 @@ import com.gradecak.alfresco.mvc.annotation.AuthenticationType;
 import eu.xenit.apix.people.IPeopleService;
 import eu.xenit.apix.people.Person;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import java.util.NoSuchElementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +26,6 @@ public class PeopleWebscript1 extends ApixV1Webscript {
     }
 
     @GetMapping(value = "/v1/people/{space}/{store}/{guid}")
-    @ApiOperation(value = "Returns person information")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Person.class))
     public ResponseEntity<?> getPerson(@PathVariable final String space,
                           @PathVariable final String store,
                           @PathVariable final String guid) {
@@ -51,8 +46,6 @@ public class PeopleWebscript1 extends ApixV1Webscript {
     }
 
     @GetMapping(value = "/v1/people")
-    @ApiOperation(value = "Returns person information given a userName", notes = "")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Person.class))
     public ResponseEntity<?> getPersonViaUserName(@RequestParam final String userName) {
         logger.debug("Asked person with name: {}", userName);
         try{

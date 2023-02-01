@@ -3,9 +3,6 @@ package eu.xenit.apix.rest.v1.translation;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
 import eu.xenit.apix.translation.ITranslationService;
 import eu.xenit.apix.translation.Translations;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import java.util.Locale;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,8 +19,6 @@ public class TranslationsWebscript1 extends ApixV1Webscript {
     }
 
     @GetMapping(value = "/v1/translations/{locale}/checksum")
-    @ApiOperation("Retrieve a checksum of all translations for given locale")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = TranslationChecksum.class))
     public ResponseEntity<TranslationChecksum> getChecksum(@PathVariable final String locale) {
         Locale language = Locale.forLanguageTag(locale);
         Long checksum = translationService.getTranslationsCheckSum(language);
@@ -32,8 +27,6 @@ public class TranslationsWebscript1 extends ApixV1Webscript {
     }
 
     @GetMapping(value = "/v1/translations/{locale}")
-    @ApiOperation("Get all available translations for given locale")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Translations.class))
     public ResponseEntity<Translations> getTranslations(@PathVariable final String locale) {
         Locale language = Locale.forLanguageTag(locale);
         Translations translations = translationService.getTranslations(language);

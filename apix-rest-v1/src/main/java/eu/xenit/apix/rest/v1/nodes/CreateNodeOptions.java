@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.xenit.apix.data.QName;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.HashMap;
 import java.util.Map;
 import org.alfresco.model.ContentModel;
@@ -15,7 +14,6 @@ import org.alfresco.model.ContentModel;
 public class CreateNodeOptions {
 
     public static final QName PROP_NAME_QNAME = new QName(ContentModel.PROP_NAME.toString());
-    @ApiModelProperty(required = true)
     public String parent;
     public String name;
     public String type;
