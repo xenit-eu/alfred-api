@@ -63,7 +63,7 @@ node {
 
         stage("Publishing") {
             def gitBranch = env.BRANCH_NAME
-            if(gitBranch.startsWith("release") || gitBranch == "master") {
+            if(gitBranch.startsWith("release") || gitBranch.startsWith("master")) {
                 withCredentials([
                         usernamePassword(credentialsId: 'sonatype', passwordVariable: 'sonatypePassword', usernameVariable: 'sonatypeUsername'),
                         string(credentialsId: 'gpgpassphrase', variable: 'gpgPassPhrase')]) {
