@@ -1,5 +1,11 @@
 name: 'Continuous Integration'
-on: [ push, pull_request ]
+on:
+  push:
+    branches:
+      - 'master*'
+      - 'release*'
+  pull_request:
+  workflow_dispatch:
 jobs:
   BuildAndPublish:
     strategy:
@@ -44,7 +50,7 @@ jobs:
             --info
             :apix-impl:apix-impl-${{ matrix.alfresco_version }}:test
             :apix-integrationtests:test-${{ matrix.alfresco_version }}:integrationTest
-      - name: Upload Artifact
+      - name: Upload test reports
         if: always()
         uses: actions/upload-artifact@v3
         with:
