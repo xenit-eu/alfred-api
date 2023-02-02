@@ -44,7 +44,7 @@ allprojects {
             // Already includes apix-interface, we need to exclude it to avoid Linkage errors from
             // having 2 of the same classes on the classpath
             // (1 in Alfresco from apix-impl AMP + 1 in DE from the integration tests fat jar)
-            exclude(group: "eu.xenit.apix", module: "apix-interface")
+            exclude(group: "eu.xenit.alfred.api", module: "apix-interface")
         }
 
         integrationTestImplementationRemote("org.apache.httpcomponents:fluent-hc:${http_version}") {
