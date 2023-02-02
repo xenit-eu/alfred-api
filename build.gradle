@@ -29,7 +29,7 @@ ext {
 subprojects {
     apply plugin: 'java'
 
-    group = 'eu.xenit.apix'
+    group = 'eu.xenit.alfred.api'
     version = versionWithoutQualifier + getVersionQualifier(System.env.BRANCH_NAME ?: 'local')
     sourceCompatibility = 11
     targetCompatibility = 11
