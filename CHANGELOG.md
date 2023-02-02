@@ -1,11 +1,10 @@
 # Alfred API - Changelog
 
-## 4.0.0 (yyyy-mm-dd)
+## 4.0.1 (yyyy-mm-dd)
 
 ### Added
 
 ### Changed
-* [ALFREDAPI-504](https://xenitsupport.jira.com/browse/ALFREDAPI-504): Refactored Alfred API from Dynamic Extensions to Alfresco MVC to reduce maintenance efforts and improve the integration with Spring
 
 
 ### Fixed
@@ -23,6 +22,8 @@
 
 
 ## 4.0.0 (2023-01-17)
+Alfred API drops Dynamic Extensions in favor of Alfresco MVC to reduce maintenance efforts.
+Updated maven group ID from "eu.xenit.apix" to "eu.xenit.alfred.api".
 This release adds support for Alfresco 7.3 and drops support for Alfresco 5.2 and 6.1.
 
 ### Added
@@ -33,6 +34,7 @@ This release adds support for Alfresco 7.3 and drops support for Alfresco 5.2 an
 
 ### Removed
 * [ALFREDAPI-505](https://xenitsupport.jira.com/browse/ALFREDAPI-505): Drop support for Alfresco 5.2 and 6.1
+* [ALFREDAPI-504](https://xenitsupport.jira.com/browse/ALFREDAPI-504): Drop Dynamic Extensions in favor of Alfresco MVC
 
 
 ## 3.1.0 (2022-04-21)
