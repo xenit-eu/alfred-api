@@ -65,6 +65,10 @@ public class IntermediateResponse extends WebScriptResponseImpl {
         // not supported
     }
 
+    public void reset(String preserveHeadersPattern) {
+        // not supported
+    }
+
     public void setCache(Cache cache) {
         // not supported
     }

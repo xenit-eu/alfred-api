@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.xenit.apix.data.QName;
-import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.alfresco.model.ContentModel;
@@ -16,7 +14,6 @@ import org.alfresco.model.ContentModel;
 public class CreateNodeOptions {
 
     public static final QName PROP_NAME_QNAME = new QName(ContentModel.PROP_NAME.toString());
-    @ApiModelProperty(required = true)
     public String parent;
     public String name;
     public String type;
@@ -34,7 +31,7 @@ public class CreateNodeOptions {
             @JsonProperty("properties") Map<QName, String[]> properties,
             @JsonProperty("aspectsToAdd") QName[] aspectsToAdd,
             @JsonProperty("aspectsToRemove") QName[] aspectsToRemove,
-            @JsonProperty("copyFrom") String copyFrom) throws IOException {
+            @JsonProperty("copyFrom") String copyFrom) {
         this.parent = parent;
         this.name = name;
         this.type = type;

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixSpringConfiguration;
 import eu.xenit.apix.alfresco.workflow.aps.ApsFormDefinition;
 import eu.xenit.apix.alfresco.workflow.aps.ApsFormField;
@@ -34,14 +33,16 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-@OsgiService
+@Service
 public class WorkflowServiceApsImpl implements IWorkflowService {
 
     @Autowired
@@ -250,7 +251,7 @@ public class WorkflowServiceApsImpl implements IWorkflowService {
         try {
             String jsonString = mapper.writeValueAsString(root);
             logger.debug("Post body:\n" + jsonString);
-            StringEntity jsonBody = new StringEntity(jsonString);
+            StringEntity jsonBody = new StringEntity(jsonString, ContentType.APPLICATION_JSON);
             postDirective.setEntity(jsonBody);
             HttpEntity res = doHttp(postDirective);
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

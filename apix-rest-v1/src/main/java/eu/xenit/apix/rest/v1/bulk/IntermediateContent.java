@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
+
 import org.apache.commons.io.IOUtils;
 import org.springframework.extensions.surf.util.Content;
 
@@ -43,7 +45,7 @@ public class IntermediateContent implements Content {
 
     @Override
     public InputStream getInputStream() {
-        return IOUtils.toInputStream(json);
+        return IOUtils.toInputStream(json, StandardCharsets.UTF_8);
     }
 
     @Override

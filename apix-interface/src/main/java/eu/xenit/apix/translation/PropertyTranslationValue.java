@@ -1,7 +1,6 @@
 package eu.xenit.apix.translation;
 
 import eu.xenit.apix.data.QName;
-import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Map;
 
@@ -11,7 +10,6 @@ import java.util.Map;
  */
 public class PropertyTranslationValue extends TranslationValue {
 
-    @ApiModelProperty(dataType = "Map[string,string]")
     private Map<String, String> values;
 
     public PropertyTranslationValue() {

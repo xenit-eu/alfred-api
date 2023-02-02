@@ -1,15 +1,13 @@
 package eu.xenit.apix.alfresco.transaction;
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.transaction.ITransactionService;
 import java.util.concurrent.Callable;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.ServiceRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@OsgiService
-@Component("eu.xenit.apix.alfresco.transaction.TransactionService")
+@Service("eu.xenit.apix.alfresco.transaction.TransactionService")
 public class TransactionService implements ITransactionService {
 
     @Autowired

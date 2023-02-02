@@ -1,16 +1,15 @@
 package eu.xenit.apix.alfresco.web;
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.web.IWebUtils;
 import org.alfresco.repo.admin.SysAdminParams;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * Provides utility functions to access information about the current web context
  */
-@Component("eu.xenit.apix.web.WebUtils")
-@OsgiService
+
+@Service("eu.xenit.apix.web.WebUtils")
 public class WebUtils implements IWebUtils {
 
     @Autowired

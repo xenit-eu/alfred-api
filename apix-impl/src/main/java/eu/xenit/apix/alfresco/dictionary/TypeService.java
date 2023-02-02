@@ -1,6 +1,5 @@
 package eu.xenit.apix.alfresco.dictionary;
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.dictionary.types.ITypeService;
@@ -18,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@OsgiService
 @Component("eu.xenit.apix.dictionary.types.ITypeService")
 public class TypeService implements ITypeService {
 

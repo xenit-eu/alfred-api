@@ -1,18 +1,14 @@
 package eu.xenit.apix.rest.v1.bulk;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Represents a single request in a bulk requests call Created by kenneth on 18.03.16.
  */
 public class BulkRequest {
 
-    @ApiModelProperty(required = true, allowableValues = "get,put,post,delete")
     private String method;
-    @ApiModelProperty(example = "/version?alf_ticket=TICKET_4654...", required = true)
     private String url;
-    @ApiModelProperty(dataType = "object", notes = "Only allowed for PUT and POST")
     private JsonNode body;
 
     public BulkRequest() {

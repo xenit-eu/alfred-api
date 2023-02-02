@@ -1,6 +1,5 @@
 package eu.xenit.apix.alfresco.workflow;
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.alfresco.workflow.activiti.query.ApixHistoricInstanceQuery;
 import eu.xenit.apix.alfresco.workflow.utils.DebugHelper;
@@ -32,8 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
-@OsgiService
+@Service
 public class WorkflowServiceActivitiImpl implements IWorkflowService {
 
     private final Logger logger = LoggerFactory.getLogger(WorkflowServiceActivitiImpl.class);
@@ -56,6 +56,7 @@ public class WorkflowServiceActivitiImpl implements IWorkflowService {
     private AbstractApixQueryConverter apixWfProcQueryConverter;
 
     @Autowired
+    @Qualifier("WorkflowService")
     private WorkflowService workflowService;
 
     @PostConstruct

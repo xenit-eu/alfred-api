@@ -26,6 +26,7 @@ import org.alfresco.util.ISO8601DateFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 public abstract class AbstractApixAlfrescoWorkflowConvertor extends AbstractApixWorkflowConvertor {
 
@@ -81,10 +82,13 @@ public abstract class AbstractApixAlfrescoWorkflowConvertor extends AbstractApix
     @Autowired
     protected ApixToAlfrescoConversion c;
     @Autowired
+    @Qualifier("WorkflowService")
     protected WorkflowService workflowService;
     @Autowired
+    @Qualifier("MessageService")
     private MessageService messageService;
     @Autowired
+    @Qualifier("NamespaceService")
     private NamespaceService namespaceService;
 
     protected static void setOwner(final WorkflowService ws, final String taskID, final String userName) {

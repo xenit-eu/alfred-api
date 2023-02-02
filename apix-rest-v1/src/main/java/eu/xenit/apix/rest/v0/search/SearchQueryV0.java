@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.search.SearchQuery;
 import eu.xenit.apix.search.nodes.SearchSyntaxNode;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,9 +84,7 @@ public class SearchQueryV0 {
 
         //private ArrayList<FacetFieldOptions> fields;
         private boolean retrieveDefaults = false;
-        @ApiModelProperty("Limits the number of values returned per facet")
         private Integer limit = -1;
-        @ApiModelProperty("Return only facet values with count >= mincount")
         private Integer mincount;
 
         public boolean isRetrieveDefaults() {

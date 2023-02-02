@@ -1,6 +1,5 @@
 package eu.xenit.apix.alfresco.people;
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.groups.Group;
@@ -27,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-@OsgiService
 @Service("eu.xenit.apix.people.IPeopleService")
 @Primary
 public class PeopleService implements IPeopleService {

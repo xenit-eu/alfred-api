@@ -1,6 +1,5 @@
 package eu.xenit.apix.alfresco.comments;
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.comments.Comment;
 import eu.xenit.apix.comments.Conversation;
@@ -26,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service("eu.xenit.apix.comments.CommentService")
-@OsgiService
 public class CommentService implements ICommentService {
     private final Logger logger = LoggerFactory.getLogger(CommentService.class);
 

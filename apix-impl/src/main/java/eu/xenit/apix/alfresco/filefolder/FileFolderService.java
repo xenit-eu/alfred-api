@@ -1,6 +1,5 @@
 package eu.xenit.apix.alfresco.filefolder;
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.StoreRef;
@@ -28,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@OsgiService
 @Component("eu.xenit.apix.filefolder.IFileFolderService")
 public class FileFolderService implements IFileFolderService {
 

@@ -2,7 +2,11 @@ package eu.xenit.apix.rest.v2;
 
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.filefolder.IFileFolderService;
-import eu.xenit.apix.node.*;
+import eu.xenit.apix.node.ChildParentAssociation;
+import eu.xenit.apix.node.INodeService;
+import eu.xenit.apix.node.NodeAssociation;
+import eu.xenit.apix.node.NodeAssociations;
+import eu.xenit.apix.node.NodeMetadata;
 import eu.xenit.apix.permissions.IPermissionService;
 import eu.xenit.apix.permissions.PermissionValue;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
@@ -19,11 +23,11 @@ import java.util.Map;
  */
 public class ApixV2Webscript extends ApixV1Webscript {
 
-    private final static Logger logger = LoggerFactory.getLogger(ApixV2Webscript.class);
+    private static final Logger logger = LoggerFactory.getLogger(ApixV2Webscript.class);
 
     protected List<NodeInfo> nodeRefToNodeInfo(List<NodeRef> nodeRefs, IFileFolderService fileFolderService,
             INodeService nodeService, IPermissionService permissionService) {
-        List<NodeInfo> nodeInfoList = new ArrayList<NodeInfo>();
+        List<NodeInfo> nodeInfoList = new ArrayList<>();
         for (NodeRef nodeRef : nodeRefs) {
             eu.xenit.apix.filefolder.NodePath path = fileFolderService.getPath(nodeRef);
             NodeMetadata nodeMetadata = nodeService.getMetadata(nodeRef);
@@ -42,7 +46,7 @@ public class ApixV2Webscript extends ApixV1Webscript {
             boolean retrievePermissions, boolean retrieveAssocs,
             boolean retrieveChildAssocs, boolean retrieveParentAssocs,
             boolean retrieveTargetAssocs, boolean retrieveSourceAssocs) {
-        List<NodeInfo> nodeInfoList = new ArrayList<NodeInfo>();
+        List<NodeInfo> nodeInfoList = new ArrayList<>();
         for (NodeRef nodeRef : nodeRefs) {
 
             if (!permissionService.hasPermission(nodeRef, IPermissionService.READ)) {

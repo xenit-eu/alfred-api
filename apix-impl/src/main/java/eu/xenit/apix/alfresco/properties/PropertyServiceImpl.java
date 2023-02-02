@@ -1,6 +1,5 @@
 package eu.xenit.apix.alfresco.properties;
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.dictionary.properties.IPropertyService;
 import eu.xenit.apix.properties.Properties;
@@ -21,11 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 
-@OsgiService
-@Component("eu.xenit.apix.properties.IPropertyService")
+@Service("eu.xenit.apix.properties.IPropertyService")
 @Primary
 public class PropertyServiceImpl implements IPropertyService {
 

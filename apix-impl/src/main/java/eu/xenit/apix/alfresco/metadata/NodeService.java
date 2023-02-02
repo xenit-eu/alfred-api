@@ -1,6 +1,5 @@
 package eu.xenit.apix.alfresco.metadata;
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.node.ChildParentAssociation;
 import eu.xenit.apix.node.INodeService;
@@ -59,14 +58,13 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 
 /**
  * Created by mhgam on 23/11/2015.
  */
-@OsgiService
-@Component("eu.xenit.apix.alfresco.metadata.NodeService")
+@Service("eu.xenit.apix.alfresco.metadata.NodeService")
 public class NodeService implements INodeService {
 
     private final static String NAMESPACE_BEGIN = "" + '{';

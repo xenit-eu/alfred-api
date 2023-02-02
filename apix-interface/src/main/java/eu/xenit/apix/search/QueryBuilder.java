@@ -1,9 +1,14 @@
 package eu.xenit.apix.search;
 
-import eu.xenit.apix.search.nodes.*;
-import eu.xenit.apix.utils.java8.Consumer;
+import eu.xenit.apix.search.nodes.InvertSearchNode;
+import eu.xenit.apix.search.nodes.OperatorSearchNode;
+import eu.xenit.apix.search.nodes.PropertySearchNode;
+import eu.xenit.apix.search.nodes.RangeValue;
+import eu.xenit.apix.search.nodes.SearchSyntaxNode;
+import eu.xenit.apix.search.nodes.TermSearchNode;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 /**
  * Object used to build a search query.
@@ -19,16 +24,9 @@ public class QueryBuilder {
     SearchSyntaxNode result = null;
 
     public QueryBuilder() {
-//        acceptNode = x -> {
-//            result = x;
-//            acceptNode = null;
-//        };
-        acceptNode = new Consumer<SearchSyntaxNode>() {
-            @Override
-            public void accept(SearchSyntaxNode searchSyntaxNode) {
-                result = searchSyntaxNode;
-                acceptNode = null;
-            }
+        acceptNode = searchSyntaxNode -> {
+            result = searchSyntaxNode;
+            acceptNode = null;
         };
     }
 
@@ -108,17 +106,11 @@ public class QueryBuilder {
     }
 
     private QueryBuilder startOperator(OperatorSearchNode.Operator operator) {
-        final OperatorSearchNode node = new OperatorSearchNode(operator, new ArrayList<SearchSyntaxNode>());
+        final OperatorSearchNode node = new OperatorSearchNode(operator, new ArrayList<>());
 
         QueryBuilder subBuilder = new QueryBuilder();
         subBuilder.result = node;
-//        subBuilder.acceptNode = x -> node.getChildren().add(x);
-        subBuilder.acceptNode = new Consumer<SearchSyntaxNode>() {
-            @Override
-            public void accept(SearchSyntaxNode searchSyntaxNode) {
-                node.getChildren().add(searchSyntaxNode);
-            }
-        };
+        subBuilder.acceptNode = searchSyntaxNode -> node.getChildren().add(searchSyntaxNode);
         subBuilder.parent = this;
 
         return subBuilder;
@@ -153,19 +145,9 @@ public class QueryBuilder {
 
         final Consumer<SearchSyntaxNode> oldAccept = acceptNode;
 
-//        acceptNode = x -> {
-//            // This has to be before accept, non-elegant solution, because the result-accept sets acceptNode to 0
-//            acceptNode = oldAccept;
-//            oldAccept.accept(new InvertSearchNode(x));
-//
-//        };
-
-        acceptNode = new Consumer<SearchSyntaxNode>() {
-            @Override
-            public void accept(SearchSyntaxNode searchSyntaxNode) {
-                acceptNode = oldAccept;
-                oldAccept.accept(new InvertSearchNode(searchSyntaxNode));
-            }
+        acceptNode = searchSyntaxNode -> {
+            acceptNode = oldAccept;
+            oldAccept.accept(new InvertSearchNode(searchSyntaxNode));
         };
 
         return this;
