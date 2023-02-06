@@ -49,7 +49,7 @@ jobs:
           arguments: >-
             --info
             :apix-impl:apix-impl-${{ matrix.alfresco_version }}:test
-            :apix-integrationtests:test-${{ matrix.alfresco_version }}:integrationTest
+            :apix-integrationtests:alfresco:${{ matrix.alfresco_version }}:integrationTest
       - name: Upload test reports
         if: always()
         uses: actions/upload-artifact@v3
