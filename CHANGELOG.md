@@ -1,6 +1,15 @@
 # Alfred API - Changelog
 
 
+## 4.0.1 (unreleased)
+
+### Added
+### Fixed
+### Changed
+* [ALFREDAPI-509](https://xenitsupport.jira.com/browse/ALFREDAPI-509): Moved CI to Github Actions
+### Removed
+
+
 ## 4.0.0 (2023-01-17)
 This release adds support for Alfresco 7.3 and drops support for Alfresco 5.2 and 6.1.
 

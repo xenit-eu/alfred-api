@@ -1,0 +1,74 @@
+name: 'Continuous Integration'
+on:
+  push:
+    branches:
+      - 'master*'
+      - 'release*'
+  pull_request:
+  workflow_dispatch:
+jobs:
+  BuildAndPublish:
+    strategy:
+      matrix:
+        alfresco_version: [ 62, 70, 71, 72, 73 ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: temurin
+      - name: Login to Docker
+        uses: docker/login-action@v2
+        with:
+          registry: private.docker.xenit.eu
+          username: ${{ secrets.CLOUDSMITH_USER }}
+          password: ${{ secrets.CLOUDSMITH_APIKEY }}
+      - name: Build interface  # Execute before integration testing to catch errors early
+        uses: gradle/gradle-build-action@v2.3.0
+        env:
+          XENIT_ARTIFACTORY_USERNAME: ${{ secrets.XENIT_ARTIFACTORY_USERNAME }}
+          XENIT_ARTIFACTORY_PASSWORD: ${{ secrets.XENIT_ARTIFACTORY_PASSWORD }}
+        with:
+          arguments: :apix-interface:build :apix-interface:javadoc
+      - name: Unit test REST API
+        uses: gradle/gradle-build-action@v2.3.0
+        env:
+          XENIT_ARTIFACTORY_USERNAME: ${{ secrets.XENIT_ARTIFACTORY_USERNAME }}
+          XENIT_ARTIFACTORY_PASSWORD: ${{ secrets.XENIT_ARTIFACTORY_PASSWORD }}
+        with:
+          arguments: --info :apix-rest-v1:test
+      - name: Build and test
+        uses: gradle/gradle-build-action@v2.3.0
+        env:
+          XENIT_ARTIFACTORY_USERNAME: ${{ secrets.XENIT_ARTIFACTORY_USERNAME }}
+          XENIT_ARTIFACTORY_PASSWORD: ${{ secrets.XENIT_ARTIFACTORY_PASSWORD }}
+        with:
+          arguments: >-
+            --info
+            :apix-impl:apix-impl-${{ matrix.alfresco_version }}:test
+            :apix-integrationtests:test-${{ matrix.alfresco_version }}:integrationTest
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-result
+          path: /home/runner/work/**/build/reports
+          retention-days: 2
+      - name: Publish
+        if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}"
+        uses: gradle/gradle-build-action@v2.3.0
+        env:
+          XENIT_ARTIFACTORY_USERNAME: ${{ secrets.XENIT_ARTIFACTORY_USERNAME }}
+          XENIT_ARTIFACTORY_PASSWORD: ${{ secrets.XENIT_ARTIFACTORY_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVEN_CENTRAL_GPG_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVEN_CENTRAL_GPG_PASSWORD }}
+          ORG_GRADLE_PROJECT_sonatype_username: ${{ secrets.SONATYPE_S01_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatype_password: ${{ secrets.SONATYPE_S01_PASSWORD }}
+        with:
+          arguments: >-
+            --info -PsigningKeyId=DF8285F0
+            :apix-interface:publish
+            :apix-impl:apix-impl-${{ matrix.alfresco_version }}:publish
