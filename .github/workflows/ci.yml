@@ -58,7 +58,7 @@ jobs:
           path: /home/runner/work/**/build/reports
           retention-days: 2
       - name: Publish
-        if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}"
+        if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}
         uses: gradle/gradle-build-action@v2.3.0
         env:
           XENIT_ARTIFACTORY_USERNAME: ${{ secrets.XENIT_ARTIFACTORY_USERNAME }}
