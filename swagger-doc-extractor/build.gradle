@@ -11,6 +11,7 @@ ext {
 }
 
 dependencies {
+    implementation(project(':apix-rest-v1'))
     implementation(project(':apix-impl'))
     implementation group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_version
     implementation group: 'eu.xenit.de', name: 'annotations-runtime', version: de_version
