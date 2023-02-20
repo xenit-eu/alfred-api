@@ -2,7 +2,6 @@ package eu.xenit.apix.swaggerdoc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import eu.xenit.apix.alfresco.version.VersionService;
-import eu.xenit.apix.rest.v1.DocumentationWebscript;
 import io.swagger.util.Json;
 
 public class Main {

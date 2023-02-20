@@ -7,6 +7,7 @@
 ### Fixed
 ### Changed
 * [ALFREDAPI-509](https://xenitsupport.jira.com/browse/ALFREDAPI-509): Moved CI to Github Actions
+* [ALFREDAPI-513](https://xenitsupport.jira.com/browse/ALFREDAPI-513): Remove swaggerui_5x from alfred-api artifact
 ### Removed
 
 

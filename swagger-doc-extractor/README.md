@@ -2,9 +2,11 @@
 Tiny Java application that extracts the Swagger specification for
 Alfred API based on its source code.
 
-It is only used by https://bitbucket.org/xenit/alfred-docs to build the
+It is only used by https://github.com/xenit-eu/alfred-docs to build the
 Swagger documentation served at https://docs.xenit.eu/alfred-api when a
 version of Alfred API is released.
+
+**Writes output to stdout.**
 
 
 ### Background
@@ -15,5 +17,5 @@ however we don't want the overhead of starting up an entire Alfred API stack.
 
 ## Usage
 ```bash
-./gradle --quiet :swagger-doc-extractor:run
+./gradlew --quiet :swagger-doc-extractor:run > ./swagger-doc-extractor/build/apix-swagger.json
 ```
