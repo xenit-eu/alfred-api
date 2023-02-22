@@ -20,8 +20,10 @@ def includeResource(configuration) {
 def getVersionQualifier(String branch_name) {
     if(branch_name.startsWith('release'))
         return ''
-    //Osgi in 5x accepts - in qualifier, 6x does not. Suggest removing branch section from snapshot qualifiers all together.
-    //Replacing - with . will break maven snapshot resolution. ATOW we're moving away from DE, therefore we maintain usage of -
+    //(DEVEM-463, ALFREDAPI-514): The current osgi version (6.0.0) in DE (3.0.0) has issues with version strings containing '-'
+    // We've tried replacing the '-' with at '.', but that breaks maven-style dependency resolution.
+    // We consider correct dependency resolution of snapshots a more important feature than DE, so we opt for the '-'
+    // Dynamic extensions bundles of snapshots are therefore broken.
     return '-SNAPSHOT'
 }
 
