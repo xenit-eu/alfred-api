@@ -14,7 +14,7 @@ def static getVersionQualifier(String branch_name) {
         return ''
     // Osgi in 5x accepts - in qualifier, 6x does not.
     // Suggest removing branch section from snapshot qualifiers all together.
-    return '.SNAPSHOT'
+    return '-SNAPSHOT'
 }
 
 ext {
