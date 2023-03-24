@@ -86,7 +86,10 @@ allprojects {
     apply plugin: 'java-library'
 
     dependencies {
-        api(project(":apix-interface"))
+        api(project(":apix-interface")) {
+            exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
+            exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
+        }
         implementation 'commons-lang:commons-lang:1.0'
 
         alfrescoProvided platform("org.alfresco:acs-community-packaging:${alfresco_version}")

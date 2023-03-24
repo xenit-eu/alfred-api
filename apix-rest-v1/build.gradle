@@ -29,7 +29,7 @@ dependencies {
     alfrescoProvided "com.gradecak.alfresco-mvc:alfresco-mvc-aop:${mvc}"
     alfrescoProvided "javax.servlet:javax.servlet-api:4.0.1"
 
-    testImplementation project(':apix-interface')
+    testImplementation (project(':apix-interface')) {transitive = false}
     testImplementation project(':apix-impl')
     testImplementation platform("org.alfresco:acs-community-packaging:${alfresco_version}")
     testImplementation 'org.springframework:spring-core'
