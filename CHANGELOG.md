@@ -18,6 +18,7 @@
 ### Fixed
 ### Changed
 * [ALFREDAPI-509](https://xenitsupport.jira.com/browse/ALFREDAPI-509): Moved CI to Github Actions
+* [ALFREDAPI-516](https://xenitsupport.jira.com/browse/ALFREDAPI-516): Classpath cleanup
 ### Removed
 
 
