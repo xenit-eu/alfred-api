@@ -2,50 +2,16 @@ sourceSets.main.java.srcDirs += 'src/main/java'
 subprojects {
     def shortAlfrescoVersion = project.name.split("-")[2]
     apply from: "${rootProject.projectDir}/alfresco/${shortAlfrescoVersion}/overrides.gradle"
-    apply from: "${rootProject.projectDir}/publish.gradle"
-    apply plugin: 'eu.xenit.amp'
     apply plugin: 'java-library'
-
-    configurations {
-        ampArtifact
-    }
-
-    artifacts {
-        ampArtifact amp
-    }
 
     dependencies {
         api(project(":apix-impl"))
-    }
-
-    publishing {
-        publications {
-            maven(MavenPublication) {
-                artifactId "${project.name}-amp"
-                artifact tasks.amp
-            }
-        }
     }
 
     sourceSets {
         main {
             java {
                 srcDirs = ["${project.parent.projectDir}/src/main/java"]
-            }
-            amp {
-                module {
-                    it.put("module.id", project.name)
-                    it.put("module.title", project.name)
-                    it.put("module.description",
-                            "Xenit API-X implementation Alfresco ${alfresco_version.substring(0, 3)}")
-                    it.put("module.version", project.version)
-                    it.put("module.repo.version.min", project.alfresco_min_version)
-                    if(project.hasProperty("alfresco_max_version")
-                        && project.alfresco_max_version != null) {
-                        it.put("module.repo.version.max", project.alfresco_max_version)
-                    }
-                }
-
             }
         }
         test {
@@ -54,25 +20,6 @@ subprojects {
             }
             testResultsDirName = "${project.parent.buildDir}/test-results/test"
         }
-    }
-
-    // Extend amp plugin task:
-    // We want to add 'alfresco-global.properties' etc to the module-specific folder in the AMP
-    // (e.g. 'config/module/alfresco/module/apix-impl-61/') without hard-coding project name for each Alfresco version.
-    amp {
-        into("config/alfresco/module/${project.name}") {
-            from("${project.parent.projectDir}/config/alfresco-global.properties")
-            from("${project.parent.projectDir}/config/log4j.properties")
-            from("${project.parent.projectDir}/config/module-context.xml")
-            expand(moduleId: project.name)
-        }
-        into("config/alfresco/module/${project.name}/messages") {
-            from("${project.parent.projectDir}/config/messages/")
-        }
-    }
-
-    afterEvaluate {
-        signMavenPublication.dependsOn amp
     }
 }
 
