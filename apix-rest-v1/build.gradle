@@ -1,19 +1,10 @@
 plugins {
     id 'java-library'
     id 'idea'
-    id 'eu.xenit.amp' version '1.1.0'
     id 'eu.xenit.alfresco' version '1.1.0'
 }
 
 description = 'Xenit API-X Rest v1'
-
-configurations {
-    ampArtifact
-}
-
-artifacts {
-    ampArtifact amp
-}
 
 apply from: "$rootProject.projectDir/alfresco/70/overrides.gradle"
 

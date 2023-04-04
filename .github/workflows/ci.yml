@@ -71,4 +71,4 @@ jobs:
           arguments: >-
             --info -PsigningKeyId=DF8285F0
             :apix-interface:publish
-            :apix-impl:apix-impl-${{ matrix.alfresco_version }}:publish
+            :alfresco:${{ matrix.alfresco_version }}:publish
