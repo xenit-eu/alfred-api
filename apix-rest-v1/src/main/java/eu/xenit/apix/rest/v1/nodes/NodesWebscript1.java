@@ -593,9 +593,9 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
     @PostMapping(value = "/v1/nodes/upload")
     public ResponseEntity<NodeInfo> uploadNode(
-            @RequestPart(required = false) String type,
-            @RequestPart(required = false) String parent,
-            @RequestPart(required = false) Boolean extractMetadata,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String parent,
+            @RequestParam(required = false) Boolean extractMetadata,
             @RequestPart(required = false) MetadataChanges metadata,
             @RequestPart final MultipartFile file) {
         RetryingTransactionHelper transactionHelper = serviceRegistry.getRetryingTransactionHelper();

@@ -1,4 +1,4 @@
-package eu.xenit.apix.rest.v1.bulk;
+package eu.xenit.apix.rest.v1.bulk.request;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
