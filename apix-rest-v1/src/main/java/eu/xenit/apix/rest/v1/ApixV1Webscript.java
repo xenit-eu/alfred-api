@@ -10,12 +10,15 @@ import eu.xenit.apix.node.NodeMetadata;
 import eu.xenit.apix.permissions.IPermissionService;
 import eu.xenit.apix.permissions.PermissionValue;
 import eu.xenit.apix.rest.v1.nodes.NodeInfo;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import eu.xenit.apix.rest.v1.nodes.NodeInfoRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ApixV1Webscript {
 
@@ -29,24 +32,26 @@ public class ApixV1Webscript {
         return new NodeRef(space, store, guid);
     }
 
-    protected List<NodeInfo> nodeRefToNodeInfo(List<NodeRef> nodeRefs,
-            IFileFolderService fileFolderService,
-            INodeService nodeService,
-            IPermissionService permissionService,
-            boolean retrievePath,
-            boolean retrieveMetadata,
-            boolean retrievePermissions,
-            boolean retrieveAssocs,
-            boolean retrieveChildAssocs,
-            boolean retrieveParentAssocs,
-            boolean retrieveTargetAssocs,
-            boolean retrieveSourceAssocs
+    protected List<NodeInfo> nodeRefToNodeInfo(NodeInfoRequest nodeInfoRequest,
+                                               IFileFolderService fileFolderService,
+                                               INodeService nodeService,
+                                               IPermissionService permissionService
     ) {
         List<NodeInfo> nodeInfoList = new ArrayList<>();
+        List<NodeRef> nodeRefs = nodeInfoRequest.getNoderefs().stream().map(NodeRef::new).collect(Collectors.toList());
         for (NodeRef nodeRef : nodeRefs) {
-            NodeInfo nodeInfo = nodeRefToNodeInfo(nodeRef, fileFolderService, nodeService, permissionService,
-                    retrievePath, retrieveMetadata, retrievePermissions, retrieveAssocs, retrieveChildAssocs,
-                    retrieveParentAssocs, retrieveTargetAssocs, retrieveSourceAssocs);
+            NodeInfo nodeInfo = nodeRefToNodeInfo(nodeRef,
+                    fileFolderService,
+                    nodeService,
+                    permissionService,
+                    nodeInfoRequest.getRetrievePath(),
+                    nodeInfoRequest.getRetrieveMetadata(),
+                    nodeInfoRequest.getRetrievePermissions(),
+                    nodeInfoRequest.getRetrieveAssocs(),
+                    nodeInfoRequest.getRetrieveChildAssocs(),
+                    nodeInfoRequest.getRetrieveParentAssocs(),
+                    nodeInfoRequest.getRetrieveTargetAssocs(),
+                    nodeInfoRequest.getRetrieveSourceAssocs());
             if (nodeInfo == null) {
                 continue;
             }

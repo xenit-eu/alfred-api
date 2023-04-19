@@ -10,16 +10,11 @@ import eu.xenit.apix.permissions.IPermissionService;
 import eu.xenit.apix.permissions.PermissionValue;
 import eu.xenit.apix.rest.v1.nodes.CreateNodeOptions;
 import eu.xenit.apix.rest.v1.nodes.NodeInfo;
+import eu.xenit.apix.rest.v1.nodes.NodeInfoRequest;
 import eu.xenit.apix.rest.v2.ApixV2Webscript;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.alfresco.service.ServiceRegistry;
 import org.apache.http.HttpStatus;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +23,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @AlfrescoAuthentication
 @RestController("eu.xenit.apix.rest.v2.NodesWebscript")
@@ -64,94 +63,12 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
     }
 
     @PostMapping(value = "/v2/nodes/nodeInfo")
-    public ResponseEntity<?> getAllInfos(@RequestBody final String requestString) throws JSONException {
-        logger.debug("entered getAllInfo method");
-        if (requestString == null || requestString.isEmpty()) {
-            String message = String
-                    .format("Malfromed body: request string could not be parsed to jsonObject: %s", requestString);
-            logger.debug(message);
-            return ResponseEntity.status(org.springframework.http.HttpStatus.BAD_REQUEST)
-                    .body(message);
-        }
-        logger.debug("request content: {}", requestString);
-        JSONObject jsonObject = new JSONObject(requestString);
-        logger.debug("json: {}", jsonObject);
-
-        boolean retrieveMetadata = true;
-        boolean retrievePath = true;
-        boolean retrievePermissions = true;
-        boolean retrieveAssocs = true;
-        boolean retrieveChildAssocs = true;
-        boolean retrieveParentAssocs = true;
-        boolean retrieveTargetAssocs = true;
-        boolean retrieveSourceAssocs = true;
-
-        List<NodeRef> nodeRefs = new ArrayList<NodeRef>();
-        try {
-            if (jsonObject.has("retrieveMetadata")) {
-                retrieveMetadata = jsonObject.getBoolean("retrieveMetadata");
-            }
-            if (jsonObject.has("retrievePath")) {
-                retrievePath = jsonObject.getBoolean("retrievePath");
-            }
-            if (jsonObject.has("retrievePermissions")) {
-                retrievePermissions = jsonObject.getBoolean("retrievePermissions");
-            }
-            if (jsonObject.has("retrieveAssocs")) {
-                retrieveAssocs = jsonObject.getBoolean("retrieveAssocs");
-            }
-            if (jsonObject.has("retrieveChildAssocs")) {
-                retrieveChildAssocs = jsonObject.getBoolean("retrieveChildAssocs");
-            }
-            if (jsonObject.has("retrieveParentAssocs")) {
-                retrieveParentAssocs = jsonObject.getBoolean("retrieveParentAssocs");
-            }
-            if (jsonObject.has("retrieveTargetAssocs")) {
-                retrieveTargetAssocs = jsonObject.getBoolean("retrieveTargetAssocs");
-            }
-            if (jsonObject.has("retrieveSourceAssocs")) {
-                retrieveSourceAssocs = jsonObject.getBoolean("retrieveSourceAssocs");
-            }
-
-            JSONArray nodeRefsJsonArray = jsonObject.getJSONArray("noderefs");
-            if (nodeRefsJsonArray == null) {
-                String message = String.format("Could not retrieve target noderefs from body: %s", jsonObject);
-                return ResponseEntity.status(org.springframework.http.HttpStatus.BAD_REQUEST)
-                        .body(message);
-            }
-            int nodeRefsJsonArrayLength = nodeRefsJsonArray.length();
-            logger.debug("nodeRefsJsonArrayLength: {}", nodeRefsJsonArrayLength);
-            for (int i = 0; i < nodeRefsJsonArrayLength; i++) {
-                String nodeRefString = (String) nodeRefsJsonArray.get(i);
-                logger.debug("nodeRefString: {}", nodeRefString);
-                NodeRef nodeRef = new NodeRef(nodeRefString);
-                nodeRefs.add(nodeRef);
-            }
-        } catch (JSONException e) {
-            logger.error("Error deserializing json body", e);
-            String message = String.format("Malformed json body %s", jsonObject);
-            return ResponseEntity.status(org.springframework.http.HttpStatus.BAD_REQUEST)
-                    .body(message);
-        }
-
-        logger.debug("done parsing request data");
-        logger.debug("start nodeRefToNodeInfo");
+    public ResponseEntity<List<NodeInfo>> getAllInfos(@RequestBody final NodeInfoRequest nodeInfoRequest) throws JSONException {
         List<NodeInfo> nodeInfoList = this.nodeRefToNodeInfo(
-                nodeRefs,
+                nodeInfoRequest,
                 this.fileFolderService,
                 this.nodeService,
-                this.permissionService,
-                retrievePath,
-                retrieveMetadata,
-                retrievePermissions,
-                retrieveAssocs,
-                retrieveChildAssocs,
-                retrieveParentAssocs,
-                retrieveTargetAssocs,
-                retrieveSourceAssocs);
-        logger.debug("end nodeRefToNodeInfo");
-
-        logger.debug("writeJsonResponse");
+                this.permissionService);
         return writeJsonResponse(nodeInfoList);
     }
 
@@ -161,7 +78,7 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
                                                                        @PathVariable String guid) {
         NodeRef nodeRef = this.createNodeRef(space, store, guid);
         return writeJsonResponse(
-            this.permissionService.getPermissionsFast(nodeRef)
+                this.permissionService.getPermissionsFast(nodeRef)
         );
     }
 
@@ -171,7 +88,7 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
         final AtomicInteger errorCode = new AtomicInteger();
         Object resultObject = serviceRegistry.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
-                    NodeRef parent = new NodeRef(createNodeOptions.parent);
+                    NodeRef parent = new NodeRef(createNodeOptions.getParent());
 
                     if (!nodeService.exists(parent)) {
                         errorCode.addAndGet(HttpStatus.SC_NOT_FOUND);
@@ -181,12 +98,12 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
 
                     NodeRef nodeRef;
                     NodeRef copyFrom = null;
-                    if (createNodeOptions.copyFrom == null) {
+                    if (createNodeOptions.getCopyFrom() == null) {
                         nodeRef = nodeService
-                                .createNode(parent, createNodeOptions.name,
-                                        new QName(createNodeOptions.type));
+                                .createNode(parent, createNodeOptions.getName(),
+                                        new QName(createNodeOptions.getType()));
                     } else {
-                        copyFrom = new NodeRef(createNodeOptions.copyFrom);
+                        copyFrom = new NodeRef(createNodeOptions.getCopyFrom());
                         if (!nodeService.exists(copyFrom)) {
                             errorCode.addAndGet(HttpStatus.SC_NOT_FOUND);
                             errorMessage.append("CopyFrom does not exist");
@@ -197,25 +114,25 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
 
                     MetadataChanges metadataChanges;
                     QName type;
-                    if (createNodeOptions.type != null) {
-                        type = new QName(createNodeOptions.type);
-                    } else if ( createNodeOptions.type == null && createNodeOptions.copyFrom != null ) {
+                    if (createNodeOptions.getType() != null) {
+                        type = new QName(createNodeOptions.getType());
+                    } else if (createNodeOptions.getCopyFrom() != null) {
                         type = nodeService.getMetadata(copyFrom).type;
                     } else {
                         errorCode.addAndGet(HttpStatus.SC_BAD_REQUEST);
                         errorMessage.append(
-                            "Please provide parameter \"type\" when creating a new node"
+                                "Please provide parameter \"type\" when creating a new node"
                         );
                         return null;
                     }
                     metadataChanges = new MetadataChanges(type, null, null,
-                            createNodeOptions.properties);
+                            createNodeOptions.getProperties());
                     nodeService.setMetadata(nodeRef, metadataChanges);
 
                     return nodeRef;
                 }, false, true);
 
-        if(resultObject == null) {
+        if (resultObject == null) {
             return ResponseEntity.status(errorCode.get())
                     .body(errorMessage.toString());
         }

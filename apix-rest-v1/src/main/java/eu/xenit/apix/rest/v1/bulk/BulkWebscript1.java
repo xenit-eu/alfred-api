@@ -1,6 +1,6 @@
 package eu.xenit.apix.rest.v1.bulk;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gradecak.alfresco.mvc.webscript.DispatcherWebscript;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
@@ -64,12 +64,11 @@ public class BulkWebscript1 extends ApixV1Webscript {
                     bulkHttpServletRequest.getMethod());
 
 
-            final IntermediateRequest intermediateRequest = new IntermediateRequest(wsReq, bulkHttpServletRequest,
-                    null);
+            final IntermediateRequest intermediateRequest = new IntermediateRequest(wsReq, bulkHttpServletRequest);
 
-            final IntermediateResponse mockRes = new IntermediateResponse();
-            final WebScriptServletResponse intermediateResponse = new WebScriptServletResponse(wsReq.getRuntime(),
-                    mockRes);
+            final IntermediateResponse intermediateResponse = new IntermediateResponse();
+            final WebScriptServletResponse webScriptServletResponse = new WebScriptServletResponse(wsReq.getRuntime(),
+                    intermediateResponse);
 
 
             // Each subrequest gets to run in its own transaction context, because even a caught exception can mark a
@@ -79,10 +78,10 @@ public class BulkWebscript1 extends ApixV1Webscript {
                     .doInTransaction((RetryingTransactionHelper.RetryingTransactionCallback<Object>) () -> {
                         try {
                             // Actual execution of called WebScript happens here
-                            dispatcherWebscript.execute(intermediateRequest, intermediateResponse);
+                            dispatcherWebscript.execute(intermediateRequest, webScriptServletResponse);
                             logger.debug("Resp body is '{}'", intermediateResponse.getWriter());
                             // Convert the response container to json + statuscode + headers
-                            return createBulkResult(mapper, mockRes);
+                            return createBulkResult(mapper, intermediateResponse);
                         } catch (Exception e) {
                             // Catching all exceptions to just print a stacktrace isn't super clean...
                             // But we want the bulk to continue with the other requests even if this one fails.
@@ -110,12 +109,16 @@ public class BulkWebscript1 extends ApixV1Webscript {
 
     private static BulkSubResult createBulkResult(ObjectMapper mapper, IntermediateResponse resp) throws IOException {
         int status = resp.getStatus();
-        JsonNode body;
+        Object body;
         String strBody = resp.getContentAsString();
         if (strBody == null || strBody.equals("")) {
             body = mapper.createObjectNode();
         } else {
-            body = mapper.readTree(strBody);
+            try {
+                body = mapper.readTree(strBody);
+            } catch (JsonParseException exception) {
+                body = strBody;
+            }
         }
 
         return new BulkSubResult(status, body, resp.getHeaderNames().stream().collect(

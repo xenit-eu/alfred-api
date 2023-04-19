@@ -65,7 +65,7 @@ public abstract class NodesBaseTest extends RestV1BaseTest {
 
         if (nodeInfo != null) {
             //deserialization succeeded
-            return nodeInfo.noderef;
+            return nodeInfo.getNoderef();
         } else {
             //deserialization failed
             HttpEntityEnclosingRequestBase req = new HttpPost(url);
@@ -104,24 +104,24 @@ public abstract class NodesBaseTest extends RestV1BaseTest {
 
     public void checkCreatedNode(NodeRef newRef, CreateNodeOptions createNodeOptions) {
         assertTrue(nodeService.exists(newRef));
-        assertEquals(createNodeOptions.parent, nodeService.getParentAssociations(newRef).get(0).getTarget().toString());
+        assertEquals(createNodeOptions.getParent(), nodeService.getParentAssociations(newRef).get(0).getTarget().toString());
 
-        if (createNodeOptions.type != null) {
-            assertEquals(createNodeOptions.type, nodeService.getMetadata(newRef).type.toString());
+        if (createNodeOptions.getType() != null) {
+            assertEquals(createNodeOptions.getType(), nodeService.getMetadata(newRef).type.toString());
         }
 
-        if (createNodeOptions.copyFrom != null) {
-            assertTrue(nodeService.exists(new NodeRef(createNodeOptions.copyFrom)));
+        if (createNodeOptions.getCopyFrom() != null) {
+            assertTrue(nodeService.exists(new NodeRef(createNodeOptions.getCopyFrom())));
         }
 
-        if (createNodeOptions.properties != null) {
-            for (Map.Entry<QName, String[]> property : createNodeOptions.properties.entrySet()) {
+        if (createNodeOptions.getProperties() != null) {
+            for (Map.Entry<QName, String[]> property : createNodeOptions.getProperties().entrySet()) {
                 assertArrayEquals(property.getValue(), nodeService.getMetadata(newRef).properties.get(property.getKey()).toArray());
             }
         }
 
-        if (createNodeOptions.aspectsToAdd != null) {
-            for (QName aspect : createNodeOptions.aspectsToAdd) {
+        if (createNodeOptions.getAspectsToAdd() != null) {
+            for (QName aspect : createNodeOptions.getAspectsToAdd()) {
                 assertNotNull(nodeService.getMetadata(newRef).aspects
                         .stream()
                         .filter(testAspect -> testAspect.equals(aspect))
@@ -130,8 +130,8 @@ public abstract class NodesBaseTest extends RestV1BaseTest {
             }
         }
 
-        if (createNodeOptions.aspectsToRemove != null) {
-            for (QName aspect : createNodeOptions.aspectsToRemove) {
+        if (createNodeOptions.getAspectsToRemove() != null) {
+            for (QName aspect : createNodeOptions.getAspectsToRemove()) {
                 assertNull(nodeService.getMetadata(newRef).aspects
                         .stream()
                         .filter(testAspect -> testAspect.equals(aspect))
