@@ -10,14 +10,14 @@ import java.util.Map;
 public class BulkSubResult {
 
     private int statusCode;
-    private JsonNode body;
+    private Object body;
     private Map<String, String> headers;
 
     public BulkSubResult() {
 
     }
 
-    public BulkSubResult(int statusCode, JsonNode body, Map<String, String> headers) {
+    public BulkSubResult(int statusCode, Object body, Map<String, String> headers) {
         this.statusCode = statusCode;
         this.body = body;
         this.headers = headers;
@@ -31,7 +31,7 @@ public class BulkSubResult {
         this.statusCode = statusCode;
     }
 
-    public JsonNode getBody() {
+    public Object getBody() {
         return body;
     }
 

@@ -21,12 +21,6 @@ import eu.xenit.apix.permissions.NodePermission;
 import eu.xenit.apix.permissions.PermissionValue;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
 import eu.xenit.apix.rest.v1.nodes.ChangeAclsOptions.Access;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
@@ -34,9 +28,6 @@ import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.InvalidNodeRefException;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.apache.http.HttpStatus;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
@@ -52,6 +43,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 @AlfrescoTransaction
@@ -82,11 +79,11 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
     @PostMapping(value = "/v1/nodes/{space}/{store}/{guid}/metadata")
     public ResponseEntity<NodeMetadata> setMetadata(@PathVariable final String space, @PathVariable final String store,
-                            @PathVariable final String guid, @RequestBody final MetadataChanges changes) {
+                                                    @PathVariable final String guid, @RequestBody final MetadataChanges changes) {
         NodeRef nodeRef = createNodeRef(space, store, guid);
         NodeMetadata nodeMetadata = nodeService.setMetadata(nodeRef, changes);
         if (nodeMetadata == null) {
-           ResponseEntity.notFound();
+            ResponseEntity.notFound();
         }
         return writeJsonResponse(nodeMetadata);
     }
@@ -233,7 +230,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
     @PostMapping(value = "/v1/nodes/{space}/{store}/{guid}/acl/inheritFromParent")
     public void setInheritParentPermissions(@PathVariable String space, @PathVariable String store,
-            @PathVariable String guid, @RequestBody final InheritFromParent inherit) {
+                                            @PathVariable String guid, @RequestBody final InheritFromParent inherit) {
         this.permissionService.setInheritParentPermissions(
                 this.createNodeRef(space, store, guid), inherit.isInheritFromParent()
         );
@@ -291,7 +288,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
                     .body(String.format("Insufficient permissions for node %s://%s/%s", space, store, guid));
         } catch (InvalidNodeRefException invalidNodeRefException) {
             logger.debug("Failed to get node info, node does not exist: {}://{}/{}", space, store, guid,
-                        invalidNodeRefException);
+                    invalidNodeRefException);
             return ResponseEntity
                     .status(HttpStatus.SC_NOT_FOUND)
                     .body("Failed to get node info, node does not exist.");
@@ -299,74 +296,12 @@ public class NodesWebscript1 extends ApixV1Webscript {
     }
 
     @PostMapping(value = "/v1/nodes/nodeInfo")
-    public ResponseEntity<Object> getAllInfoOfNodes(@RequestBody final String requestString) {
-        logger.debug("request content: {}", requestString);
-        JSONObject jsonObject = new JSONObject(requestString);
-        logger.debug("json: {}", jsonObject);
-
-        boolean retrieveMetadata = true;
-        boolean retrievePath = true;
-        boolean retrievePermissions = true;
-        boolean retrieveAssocs = true;
-        boolean retrieveChildAssocs = true;
-        boolean retrieveParentAssocs = true;
-        boolean retrieveTargetAssocs = true;
-        boolean retrieveSourceAssocs = true;
-
-        List<NodeRef> nodeRefs = new ArrayList<>();
-        try {
-            if (jsonObject.has("retrieveMetadata")) {
-                retrieveMetadata = jsonObject.getBoolean("retrieveMetadata");
-            }
-            if (jsonObject.has("retrievePath")) {
-                retrievePath = jsonObject.getBoolean("retrievePath");
-            }
-            if (jsonObject.has("retrievePermissions")) {
-                retrievePermissions = jsonObject.getBoolean("retrievePermissions");
-            }
-            if (jsonObject.has("retrieveAssocs")) {
-                retrieveAssocs = jsonObject.getBoolean("retrieveAssocs");
-            }
-            if (jsonObject.has("retrieveChildAssocs")) {
-                retrieveChildAssocs = jsonObject.getBoolean("retrieveChildAssocs");
-            }
-            if (jsonObject.has("retrieveParentAssocs")) {
-                retrieveParentAssocs = jsonObject.getBoolean("retrieveParentAssocs");
-            }
-            if (jsonObject.has("retrieveTargetAssocs")) {
-                retrieveTargetAssocs = jsonObject.getBoolean("retrieveTargetAssocs");
-            }
-            if (jsonObject.has("retrieveSourceAssocs")) {
-                retrieveSourceAssocs = jsonObject.getBoolean("retrieveSourceAssocs");
-            }
-
-            JSONArray nodeRefsJsonArray = jsonObject.getJSONArray("noderefs");
-            int nodeRefsJsonArrayLength = nodeRefsJsonArray.length();
-            logger.debug("nodeRefsJsonArrayLength: {}", nodeRefsJsonArrayLength);
-            for (int i = 0; i < nodeRefsJsonArrayLength; i++) {
-                String nodeRefString = (String) nodeRefsJsonArray.get(i);
-                logger.debug("nodeRefString: {}", nodeRefString);
-                NodeRef nodeRef = new NodeRef(nodeRefString);
-                nodeRefs.add(nodeRef);
-            }
-        } catch (JSONException e) {
-            logger.error("Error deserializing json body", e);
-            return ResponseEntity.badRequest().build();
-        }
-
-        List<NodeInfo> nodeInfoList = this.nodeRefToNodeInfo(nodeRefs,
+    public ResponseEntity<Object> getAllInfoOfNodes(@RequestBody final NodeInfoRequest nodeInfoRequest) {
+        List<NodeInfo> nodeInfoList = this.nodeRefToNodeInfo(nodeInfoRequest,
                 this.fileFolderService,
                 this.nodeService,
-                this.permissionService,
-                retrievePath,
-                retrieveMetadata,
-                retrievePermissions,
-                retrieveAssocs,
-                retrieveChildAssocs,
-                retrieveParentAssocs,
-                retrieveTargetAssocs,
-                retrieveSourceAssocs);
-
+                this.permissionService
+        );
         return writeJsonResponse(nodeInfoList);
     }
 
@@ -387,7 +322,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         } catch (InvalidNodeRefException ex) {
             logger.error("noderef does not exist", ex);
             return ResponseEntity.status(HttpStatus.SC_NOT_FOUND)
-                            .body(ex.getMessage());
+                    .body(ex.getMessage());
         } catch (AccessDeniedException ex) {
             logger.error("access denied on noderef", ex);
             return ResponseEntity.status(HttpStatus.SC_FORBIDDEN)
@@ -400,7 +335,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         try {
             Object resultObject = serviceRegistry.getRetryingTransactionHelper()
                     .doInTransaction(() -> {
-                        NodeRef parent = new NodeRef(createNodeOptions.parent);
+                        NodeRef parent = new NodeRef(createNodeOptions.getParent());
 
                         if (!nodeService.exists(parent)) {
                             return writeNotFoundResponse(parent);
@@ -408,12 +343,12 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
                         NodeRef nodeRef;
                         NodeRef copyFrom = null;
-                        if (createNodeOptions.copyFrom == null) {
+                        if (createNodeOptions.getCopyFrom() == null) {
                             nodeRef = nodeService
-                                    .createNode(parent, createNodeOptions.name,
-                                            new QName(createNodeOptions.type));
+                                    .createNode(parent, createNodeOptions.getName(),
+                                            new QName(createNodeOptions.getType()));
                         } else {
-                            copyFrom = new NodeRef(createNodeOptions.copyFrom);
+                            copyFrom = new NodeRef(createNodeOptions.getCopyFrom());
                             if (!nodeService.exists(copyFrom)) {
                                 return writeNotFoundResponse(copyFrom);
                             }
@@ -432,9 +367,9 @@ public class NodesWebscript1 extends ApixV1Webscript {
                         }
 
                         metadataChanges = new MetadataChanges(type,
-                                createNodeOptions.aspectsToAdd,
-                                createNodeOptions.aspectsToRemove,
-                                createNodeOptions.properties);
+                                createNodeOptions.getAspectsToAdd(),
+                                createNodeOptions.getAspectsToRemove(),
+                                createNodeOptions.getProperties());
                         nodeService.setMetadata(nodeRef, metadataChanges);
 
                         return nodeRef;
@@ -451,7 +386,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
             return writeJsonResponse(nodeInfo);
         } catch (org.alfresco.service.cmr.model.FileExistsException fileExistsException) {
             throw new FileExistsException(
-                    new NodeRef(createNodeOptions.copyFrom),
+                    new NodeRef(createNodeOptions.getCopyFrom()),
                     new NodeRef(fileExistsException.getParentNodeRef().toString()),
                     fileExistsException.getName());
         }
@@ -459,14 +394,14 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
     @PutMapping(value = "/v1/nodes/{space}/{store}/{guid}/parent")
     public ResponseEntity<NodeRef> setParent(@PathVariable final String space, @PathVariable final String store,
-                                        @PathVariable final String guid, @RequestBody ChangeParentOptions location) {
+                                             @PathVariable final String guid, @RequestBody ChangeParentOptions location) {
         NodeRef nodeToMove = createNodeRef(space, store, guid);
         try {
             return ResponseEntity.ok(
-                nodeService.moveNode(
-                    nodeToMove,
-                    new NodeRef(location.getParent())
-                )
+                    nodeService.moveNode(
+                            nodeToMove,
+                            new NodeRef(location.getParent())
+                    )
             );
         } catch (org.alfresco.service.cmr.model.FileExistsException fileExistsException) {
             throw new FileExistsException(
@@ -478,8 +413,8 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
     @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/comments")
     public ResponseEntity<?> getComments(@PathVariable String space, @PathVariable String store,
-                                             @PathVariable String guid, @RequestParam(defaultValue = "0") int skipcount,
-                                             @RequestParam(defaultValue = "10") int pagesize) {
+                                         @PathVariable String guid, @RequestParam(defaultValue = "0") int skipcount,
+                                         @RequestParam(defaultValue = "10") int pagesize) {
         final NodeRef target = this.createNodeRef(space, store, guid);
         if (!nodeService.exists(target)) {
             return writeNotFoundResponse(target);
@@ -495,7 +430,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
     @PostMapping(value = "/v1/nodes/{space}/{store}/{guid}/comments")
     public ResponseEntity<?> addComment(@PathVariable String space, @PathVariable String store,
-                                              @PathVariable String guid, @RequestBody final Comment newComment) {
+                                        @PathVariable String guid, @RequestBody final Comment newComment) {
         final NodeRef target = this.createNodeRef(space, store, guid);
         if (!nodeService.exists(target)) {
             return writeNotFoundResponse(target);
@@ -593,9 +528,9 @@ public class NodesWebscript1 extends ApixV1Webscript {
 
     @PostMapping(value = "/v1/nodes/upload")
     public ResponseEntity<NodeInfo> uploadNode(
-            @RequestPart(required = false) String type,
-            @RequestPart(required = false) String parent,
-            @RequestPart(required = false) Boolean extractMetadata,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String parent,
+            @RequestParam(required = false) Boolean extractMetadata,
             @RequestPart(required = false) MetadataChanges metadata,
             @RequestPart final MultipartFile file) {
         RetryingTransactionHelper transactionHelper = serviceRegistry.getRetryingTransactionHelper();
@@ -606,7 +541,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         // Both setting metadata and extracting metadata are optional.
         // They can happen (or not) independently from each other.
         type = type == null ? ContentModel.TYPE_CONTENT.toString() : type;
-        extractMetadata = extractMetadata != null && extractMetadata;
+        extractMetadata = Boolean.TRUE.equals(extractMetadata);
 
         if (file == null) {
             throw new IllegalArgumentException("Content must be supplied as a multipart 'file' field");
@@ -636,10 +571,10 @@ public class NodesWebscript1 extends ApixV1Webscript {
     }
 
     public NodeRef createNodeForUpload(String finalParent,
-            MultipartFile file,
-            String finalType,
-            MetadataChanges finalMetadata,
-            Boolean finalExtractMetadata) throws IOException {
+                                       MultipartFile file,
+                                       String finalType,
+                                       MetadataChanges finalMetadata,
+                                       Boolean finalExtractMetadata) throws IOException {
         NodeRef newNode = nodeService
                 .createNode(new NodeRef(finalParent), file.getOriginalFilename(),
                         new QName(finalType));
@@ -661,7 +596,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    private ResponseEntity<Object> writeNotAuthorizedResponse(AccessDeniedException ex) {
+    private ResponseEntity<String> writeNotAuthorizedResponse(AccessDeniedException ex) {
         logger.debug("Not Authorized", ex);
         return ResponseEntity
                 .status(HttpStatus.SC_FORBIDDEN)
@@ -669,7 +604,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
     }
 
     @ExceptionHandler(FileExistsException.class)
-    private ResponseEntity<Object> writeFileExistsResponse(FileExistsException fileExistsException) {
+    private ResponseEntity<String> writeFileExistsResponse(FileExistsException fileExistsException) {
         String message = fileExistsException.toString();
         logger.debug(message, fileExistsException);
         return ResponseEntity
@@ -677,7 +612,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
                 .body(message);
     }
 
-    private ResponseEntity<Object> writeNotFoundResponse(NodeRef requestedNode) {
+    private ResponseEntity<String> writeNotFoundResponse(NodeRef requestedNode) {
         String message = String.format("Node Not Found: %s", requestedNode);
         logger.debug(message);
         return ResponseEntity

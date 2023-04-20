@@ -12,11 +12,51 @@ import java.util.Map;
  */
 public class NodeInfo {
 
-    public NodeRef noderef;
-    public NodeMetadata metadata;
-    public Map<String, PermissionValue> permissions;
-    public NodeAssociations associations;
-    public NodePath path;
+    private NodeRef noderef;
+    private NodeMetadata metadata;
+    private Map<String, PermissionValue> permissions;
+    private NodeAssociations associations;
+    private NodePath path;
+
+    public NodeRef getNoderef() {
+        return noderef;
+    }
+
+    public void setNoderef(NodeRef noderef) {
+        this.noderef = noderef;
+    }
+
+    public NodeMetadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(NodeMetadata metadata) {
+        this.metadata = metadata;
+    }
+
+    public Map<String, PermissionValue> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Map<String, PermissionValue> permissions) {
+        this.permissions = permissions;
+    }
+
+    public NodeAssociations getAssociations() {
+        return associations;
+    }
+
+    public void setAssociations(NodeAssociations associations) {
+        this.associations = associations;
+    }
+
+    public NodePath getPath() {
+        return path;
+    }
+
+    public void setPath(NodePath path) {
+        this.path = path;
+    }
 
     public NodeInfo() {
 
