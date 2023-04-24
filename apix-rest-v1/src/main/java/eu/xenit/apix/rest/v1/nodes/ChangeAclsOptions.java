@@ -10,8 +10,12 @@ public class ChangeAclsOptions {
     private boolean inheritFromParent;
     private Set<Access> ownAccessList;
 
-    public ChangeAclsOptions( boolean inheritFromParent,
-                              Set<Access> ownAccessList) {
+    public ChangeAclsOptions() {
+    }
+
+    @JsonCreator
+    public ChangeAclsOptions(@JsonProperty("inheritFromParent") boolean inheritFromParent,
+                             @JsonProperty("ownAccessList") Set<Access> ownAccessList) {
         this.ownAccessList = ownAccessList;
         this.inheritFromParent = inheritFromParent;
     }

@@ -1,19 +1,12 @@
 package eu.xenit.apix.rest.v1.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.versionhistory.Version;
 import eu.xenit.apix.versionhistory.VersionHistory;
-import java.io.IOException;
-import java.util.HashMap;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.repo.version.VersionBaseModel;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.repository.NodeService;
@@ -22,6 +15,7 @@ import org.alfresco.service.transaction.TransactionService;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -36,10 +30,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.io.IOException;
+import java.util.HashMap;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 
 public class VersionHistoryTest extends RestV1BaseTest {
 
-    private final static Logger logger = LoggerFactory.getLogger(VersionHistoryTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(VersionHistoryTest.class);
     @Autowired
     @Qualifier("TransactionService")
     TransactionService transactionService;
@@ -119,12 +120,10 @@ public class VersionHistoryTest extends RestV1BaseTest {
                     return null;
                 }, true, true);
 
-        int statusCode = Request.Put(versionHistoryUrl)
+        HttpResponse response = Request.Put(versionHistoryUrl)
                 .execute()
-                .returnResponse()
-                .getStatusLine()
-                .getStatusCode();
-        assertEquals(200, statusCode);
+                .returnResponse();
+        assertEquals(200, response.getStatusLine().getStatusCode());
 
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
@@ -170,12 +169,11 @@ public class VersionHistoryTest extends RestV1BaseTest {
 
         HttpPut httpPut = new HttpPut(versionHistoryUrl2);
         httpPut.setEntity(new StringEntity(json(requestBody), ContentType.APPLICATION_JSON));
-        int statusCode2 = HttpClients.createDefault()
-                .execute(httpPut)
+        CloseableHttpResponse httpResponse = HttpClients.createDefault()
+                .execute(httpPut);
+        assertEquals(200, httpResponse
                 .getStatusLine()
-                .getStatusCode();
-
-        assertEquals(200, statusCode2);
+                .getStatusCode());
 
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {

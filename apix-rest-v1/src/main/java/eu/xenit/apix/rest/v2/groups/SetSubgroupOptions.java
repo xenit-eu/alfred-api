@@ -12,8 +12,10 @@ class SetSubgroupOptions {
         this.subgroups = subgroups;
     }
 
+    public SetSubgroupOptions() {
+    }
+
     public String[] getSubgroups() {
         return subgroups;
     }
-
 }

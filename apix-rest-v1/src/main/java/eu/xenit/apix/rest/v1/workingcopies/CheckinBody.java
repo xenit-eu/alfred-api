@@ -13,9 +13,12 @@ class CheckinBody {
 
     @JsonCreator
     public CheckinBody(@JsonProperty("comment") String comment,
-            @JsonProperty("majorVersion") boolean majorVersion) {
+                       @JsonProperty("majorVersion") boolean majorVersion) {
         this.comment = comment;
         this.majorVersion = majorVersion;
+    }
+
+    public CheckinBody() {
     }
 
     public String getComment() {

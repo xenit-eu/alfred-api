@@ -77,7 +77,6 @@ public class VersionHistoryWebScript1 extends ApixV1Webscript {
         versionHistoryService.deleteVersionHistory(createNodeRef(space, store, guid));
         return ResponseEntity.ok().build();
     }
-
     @PutMapping(value = "/v1/versionhistory/{space}/{store}/{guid}")
     public ResponseEntity<?> setVersionHistory(@PathVariable final String space,
                                                 @PathVariable final String store,

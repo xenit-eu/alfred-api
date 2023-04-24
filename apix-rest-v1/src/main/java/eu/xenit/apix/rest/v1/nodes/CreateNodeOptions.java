@@ -1,5 +1,7 @@
 package eu.xenit.apix.rest.v1.nodes;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.xenit.apix.data.QName;
 import org.alfresco.model.ContentModel;
 
@@ -27,13 +29,14 @@ public class CreateNodeOptions {
         this.aspectsToAdd = new QName[0];
     }
 
-    public CreateNodeOptions(String parent,
-                             String name,
-                             String type,
-                             Map<QName, String[]> properties,
-                             QName[] aspectsToAdd,
-                             QName[] aspectsToRemove,
-                             String copyFrom) {
+    @JsonCreator
+    public CreateNodeOptions(@JsonProperty("parent") String parent,
+                             @JsonProperty("name") String name,
+                             @JsonProperty("type") String type,
+                             @JsonProperty("properties") Map<QName, String[]> properties,
+                             @JsonProperty("aspectsToAdd") QName[] aspectsToAdd,
+                             @JsonProperty("aspectsToRemove") QName[] aspectsToRemove,
+                             @JsonProperty("copyFrom") String copyFrom) {
         this.parent = parent;
         this.name = name;
         this.type = type;

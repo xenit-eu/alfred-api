@@ -9,11 +9,6 @@ import eu.xenit.apix.workflow.model.WorkflowOrTaskChanges;
 import eu.xenit.apix.workflow.search.TaskOrWorkflowSearchResult;
 import eu.xenit.apix.workflow.search.TaskSearchQuery;
 import eu.xenit.apix.workflow.search.WorkflowSearchQuery;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +23,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 public class WorkflowWebscript {
@@ -93,7 +94,7 @@ public class WorkflowWebscript {
 
     @PutMapping(value = "/workflows/{id}")
     public ResponseEntity<Workflow> updateWorkflow(@PathVariable final String id,
-                                                    @RequestBody final WorkflowOrTaskChanges changes) {
+                                                   @RequestBody final WorkflowOrTaskChanges changes) {
         return responseFrom(workflowService.updateWorkflow(id, changes));
     }
 
@@ -104,8 +105,8 @@ public class WorkflowWebscript {
     }
 
     @PutMapping(value = "/tasks/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable  final String id,
-                                            @RequestBody final WorkflowOrTaskChanges changes) {
+    public ResponseEntity<Task> updateTask(@PathVariable final String id,
+                                           @RequestBody final WorkflowOrTaskChanges changes) {
         try {
             return responseFrom(workflowService.updateTask(id, changes));
         } catch (Error ex) {
@@ -114,27 +115,22 @@ public class WorkflowWebscript {
     }
 
     @PostMapping(value = "/staging/tasks/claim")
-    public ResponseEntity<Task> claimTask(@RequestBody final Map<String, String> body) {
-        logger.debug("Input: {}", body);
-        String id = body.get("id");
-        String userName = body.get("userName");
-
+    public ResponseEntity<Task> claimTask(@RequestBody final WorkflowClaimsBody workflowClaimsBody) {
         Task wfTask;
-        if (userName != null) {
-            logger.debug("Setting owner of task with id {} to {}", id, userName);
-            wfTask = workflowService.claimWorkflowTask(id, userName);
+        if (workflowClaimsBody.getUserName() != null) {
+            logger.debug("Setting owner of task with id {} to {}", workflowClaimsBody.getId(), workflowClaimsBody.getUserName());
+            wfTask = workflowService.claimWorkflowTask(workflowClaimsBody.getId(), workflowClaimsBody.getUserName());
         } else {
             logger.debug("Setting owner of task with id ");
-            wfTask = workflowService.claimWorkflowTask(id);
+            wfTask = workflowService.claimWorkflowTask(workflowClaimsBody.getId());
         }
         return responseFrom(wfTask);
     }
 
     @PostMapping(value = "/staging/tasks/release")
-    public ResponseEntity<Task> releaseTask(@RequestBody final Map<String, String> body) {
-        logger.debug("Setting owner of task {}", body);
-        String id = body.get("id");
-        Task wfTask = workflowService.releaseWorkflowTask(id);
+    public ResponseEntity<Task> releaseTask(@RequestBody final WorkflowReleaseBody workflowReleaseBody) {
+        logger.debug("Setting owner of task {}", workflowReleaseBody);
+        Task wfTask = workflowService.releaseWorkflowTask(workflowReleaseBody.getId());
         return responseFrom(wfTask);
     }
 
