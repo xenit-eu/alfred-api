@@ -52,7 +52,7 @@ import java.util.Set;
 
 
 @AlfrescoTransaction
-@RestController("eu.xenit.apix.rest.v1.NodesWebscript")
+@RestController
 public class NodesWebscript1 extends ApixV1Webscript {
 
     private static final Logger logger = LoggerFactory.getLogger(NodesWebscript1.class);
@@ -77,6 +77,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         this.serviceRegistry = serviceRegistry;
     }
 
+    @AlfrescoTransaction
     @PostMapping(value = "/v1/nodes/{space}/{store}/{guid}/metadata")
     public ResponseEntity<NodeMetadata> setMetadata(@PathVariable final String space, @PathVariable final String store,
                                                     @PathVariable final String guid, @RequestBody final MetadataChanges changes) {
@@ -87,7 +88,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         }
         return writeJsonResponse(nodeMetadata);
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/metadata")
     public ResponseEntity<NodeMetadata> getMetadata(@PathVariable String space, @PathVariable String store,
                                                     @PathVariable String guid) {
@@ -101,7 +102,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         }
     }
 
-
+    @AlfrescoTransaction
     @DeleteMapping(value = "/v1/nodes/{space}/{store}/{guid}")
     public ResponseEntity<String> deleteNode(@PathVariable final String space, @PathVariable final String store,
                                              @PathVariable final String guid,
@@ -119,7 +120,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
                 .status(HttpStatus.SC_NOT_FOUND)
                 .body(String.format("Failed to delete node, node does not exist: %s", nodeRef.toString()));
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/associations")
     public ResponseEntity<NodeAssociations> getAssociations(@PathVariable String space, @PathVariable String store,
                                                             @PathVariable String guid) {
@@ -130,6 +131,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         );
     }
 
+    @AlfrescoTransaction
     @PostMapping(value = "/v1/nodes/{space}/{store}/{guid}/associations")
     public ResponseEntity<Void> createAssociation(@PathVariable String space, @PathVariable String store,
                                                   @PathVariable String guid,
@@ -142,6 +144,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         return ResponseEntity.ok().build();
     }
 
+    @AlfrescoTransaction
     @DeleteMapping(value = "/v1/nodes/{space}/{store}/{guid}/associations")
     public ResponseEntity<Void> deleteAssociation(@PathVariable String space, @PathVariable String store,
                                                   @PathVariable String guid, @RequestParam NodeRef target,
@@ -154,7 +157,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         return ResponseEntity.ok().build();
     }
 
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/associations/parents")
     public ResponseEntity<List<ChildParentAssociation>> getParentAssociations(@PathVariable String space,
                                                                               @PathVariable String store,
@@ -165,7 +168,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
                 )
         );
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/associations/children")
     public ResponseEntity<List<ChildParentAssociation>> getChildAssociations(@PathVariable String space,
                                                                              @PathVariable String store,
@@ -176,7 +179,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
                 )
         );
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/associations/targets")
     public ResponseEntity<List<NodeAssociation>> getSourcePeerAssociations(@PathVariable String space,
                                                                            @PathVariable String store,
@@ -187,7 +190,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
                 )
         );
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/permissions")
     // It would seem permissions can always be retrieved?
     public ResponseEntity<Map<String, PermissionValue>> getPermissions(@PathVariable String space,
@@ -200,6 +203,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         );
     }
 
+    @AlfrescoTransaction
     @PostMapping(value = "/v1/nodes/{space}/{store}/{guid}/permissions/authority/{authority}/permission/{permission}")
     public ResponseEntity<Void> setPermission(@PathVariable String space, @PathVariable String store,
                                               @PathVariable String guid, @PathVariable String authority,
@@ -210,6 +214,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         return ResponseEntity.ok().build();
     }
 
+    @AlfrescoTransaction
     @DeleteMapping(value = "/v1/nodes/{space}/{store}/{guid}/permissions/authority/{authority}/permission/{permission}")
     public ResponseEntity<Void> deletePermission(@PathVariable String space, @PathVariable String store,
                                                  @PathVariable String guid, @PathVariable String authority,
@@ -217,7 +222,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         this.permissionService.deletePermission(this.createNodeRef(space, store, guid), authority, permission);
         return ResponseEntity.ok().build();
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/acl")
     public ResponseEntity<NodePermission> getAcls(@PathVariable String space, @PathVariable String store,
                                                   @PathVariable String guid) {
@@ -228,6 +233,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         );
     }
 
+    @AlfrescoTransaction
     @PostMapping(value = "/v1/nodes/{space}/{store}/{guid}/acl/inheritFromParent")
     public void setInheritParentPermissions(@PathVariable String space, @PathVariable String store,
                                             @PathVariable String guid, @RequestBody final InheritFromParent inherit) {
@@ -236,6 +242,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         );
     }
 
+    @AlfrescoTransaction
     @PutMapping(value = "/v1/nodes/{space}/{store}/{guid}/acl")
     public ResponseEntity<Void> setAcls(@PathVariable String space, @PathVariable String store,
                                         @PathVariable String guid,
@@ -260,7 +267,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         );
         return ResponseEntity.ok().build();
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/path")
     public ResponseEntity<NodePath> getPath(@PathVariable String space, @PathVariable String store,
                                             @PathVariable String guid) {
@@ -270,7 +277,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
                 )
         );
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}")
     public ResponseEntity<Object> getAllInfoOfNode(@PathVariable String space, @PathVariable String store,
                                                    @PathVariable String guid) {
@@ -295,6 +302,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         }
     }
 
+    @AlfrescoTransaction
     @PostMapping(value = "/v1/nodes/nodeInfo")
     public ResponseEntity<Object> getAllInfoOfNodes(@RequestBody final NodeInfoRequest nodeInfoRequest) {
         List<NodeInfo> nodeInfoList = this.nodeRefToNodeInfo(nodeInfoRequest,
@@ -304,7 +312,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         );
         return writeJsonResponse(nodeInfoList);
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/ancestors")
     public ResponseEntity<Object> retrieveAncestors(@PathVariable String space, @PathVariable String store,
                                                     @PathVariable String guid,
@@ -330,6 +338,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         }
     }
 
+    @AlfrescoTransaction
     @PostMapping(value = "/v1/nodes")
     public ResponseEntity<NodeInfo> createNode(@RequestBody final CreateNodeOptions createNodeOptions) {
         try {
@@ -360,7 +369,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
                         if (createNodeOptions.getType() != null) {
                             type = new QName(createNodeOptions.getType());
                         } else if (createNodeOptions.getType() == null && createNodeOptions.getCopyFrom() != null) {
-                            type = nodeService.getMetadata(copyFrom).type;
+                            type = nodeService.getMetadata(copyFrom).getType();
                         } else {
                             return ResponseEntity.status(HttpStatus.SC_BAD_REQUEST)
                                     .body("Please provide parameter \"type\" when creating a new node");
@@ -392,6 +401,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         }
     }
 
+    @AlfrescoTransaction
     @PutMapping(value = "/v1/nodes/{space}/{store}/{guid}/parent")
     public ResponseEntity<NodeRef> setParent(@PathVariable final String space, @PathVariable final String store,
                                              @PathVariable final String guid, @RequestBody ChangeParentOptions location) {
@@ -410,7 +420,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
                     fileExistsException.getName());
         }
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/comments")
     public ResponseEntity<?> getComments(@PathVariable String space, @PathVariable String store,
                                          @PathVariable String guid, @RequestParam(defaultValue = "0") int skipcount,
@@ -428,6 +438,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         return writeNotAuthorizedResponse(new AccessDeniedException(target.getValue()));
     }
 
+    @AlfrescoTransaction
     @PostMapping(value = "/v1/nodes/{space}/{store}/{guid}/comments")
     public ResponseEntity<?> addComment(@PathVariable String space, @PathVariable String store,
                                         @PathVariable String guid, @RequestBody final Comment newComment) {
@@ -438,7 +449,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         Comment responseComment = commentService.addNewComment(target, newComment.getContent());
         return writeJsonResponse(responseComment);
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/comments/{space}/{store}/{guid}")
     public ResponseEntity<?> getComment(@PathVariable String space, @PathVariable String store,
                                         @PathVariable String guid) {
@@ -454,6 +465,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         }
     }
 
+    @AlfrescoTransaction
     @PutMapping(value = "/v1/comments/{space}/{store}/{guid}")
     public ResponseEntity<?> updateComment(@PathVariable String space, @PathVariable String store,
                                            @PathVariable String guid, @RequestBody final Comment newComment) {
@@ -465,6 +477,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         return writeJsonResponse(updatedComment);
     }
 
+    @AlfrescoTransaction
     @DeleteMapping(value = "/v1/comments/{space}/{store}/{guid}")
     public ResponseEntity<?> deleteComment(@PathVariable String space, @PathVariable String store,
                                            @PathVariable String guid) {
@@ -475,7 +488,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         commentService.deleteComment(targetComment);
         return writeJsonResponse(String.format("Comment %s deleted", targetComment));
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/content")
     public ResponseEntity<?> getContent(@PathVariable String space, @PathVariable String store, @PathVariable String guid) {
         final NodeRef nodeRef = this.createNodeRef(space, store, guid);
@@ -487,6 +500,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
                 .body(new InputStreamResource(contentInputStream.getInputStream()));
     }
 
+    @AlfrescoTransaction
     @PutMapping(value = "/v1/nodes/{space}/{store}/{guid}/content")
     public ResponseEntity<Void> setContent(@PathVariable String space, @PathVariable String store,
                                            @PathVariable String guid, @RequestPart final MultipartFile file) {
@@ -501,7 +515,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         return ResponseEntity.ok().build();
     }
 
-
+    @AlfrescoTransaction
     @DeleteMapping(value = "/v1/nodes/{space}/{store}/{guid}/content")
     public ResponseEntity<Void> deleteContent(@PathVariable String space, @PathVariable String store,
                                               @PathVariable String guid) {
@@ -514,7 +528,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         return ResponseEntity.ok().build();
     }
 
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/exists")
     public ResponseEntity<Boolean> exists(@PathVariable String space, @PathVariable String store,
                                           @PathVariable String guid) {
@@ -525,7 +539,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         );
     }
 
-
+    @AlfrescoTransaction
     @PostMapping(value = "/v1/nodes/upload")
     public ResponseEntity<NodeInfo> uploadNode(
             @RequestParam(required = false) String type,

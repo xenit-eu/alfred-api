@@ -37,7 +37,7 @@ import org.springframework.stereotype.Component;
 @Component("eu.xenit.apix.dictionary.IDictionaryService")
 public class DictionaryService implements IDictionaryService {
 
-    private final static Logger logger = LoggerFactory.getLogger(DictionaryService.class);
+    private static final Logger logger = LoggerFactory.getLogger(DictionaryService.class);
     @Autowired
     private ApixToAlfrescoConversion c;
     @Autowired
@@ -55,8 +55,6 @@ public class DictionaryService implements IDictionaryService {
     @Autowired
     private NamespaceService namespaceService;
 
-    public DictionaryService() {
-    }
 
     public Namespaces getNamespaces() {
         Map<String, Namespace> ret = new HashMap<>();
@@ -65,7 +63,7 @@ public class DictionaryService implements IDictionaryService {
             if (s == null || s.length() == 0) {
                 continue;
             }
-            ret.put(s, new Namespace(s, new ArrayList<String>(this.namespaceService.getPrefixes(s))));
+            ret.put(s, new Namespace(s, new ArrayList<>(this.namespaceService.getPrefixes(s))));
         }
         return new Namespaces(ret);
     }

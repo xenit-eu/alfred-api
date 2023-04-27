@@ -112,23 +112,23 @@ public class CommentService implements ICommentService {
         Comment response = new Comment();
         response.setId(apixCommentNodeRef);
         response.setContent(content);
-        List<String> property = commentMetadata.properties.get(new QName(ContentModel.PROP_TITLE.toString()));
+        List<String> property = commentMetadata.getProperties().get(new QName(ContentModel.PROP_TITLE.toString()));
         if (property != null && !property.isEmpty()) {
             response.setTitle(property.get(0));
         }
-        property = commentMetadata.properties.get(new QName(ContentModel.PROP_CREATED.toString()));
+        property = commentMetadata.getProperties().get(new QName(ContentModel.PROP_CREATED.toString()));
         if (property != null && !property.isEmpty()) {
             response.setCreatedAt(property.get(0));
         }
-        property = commentMetadata.properties.get(new QName(ContentModel.PROP_CREATOR.toString()));
+        property = commentMetadata.getProperties().get(new QName(ContentModel.PROP_CREATOR.toString()));
         if (property != null && !property.isEmpty()) {
             response.setCreatedBy(property.get(0));
         }
-        property = commentMetadata.properties.get(new QName(ContentModel.PROP_MODIFIED.toString()));
+        property = commentMetadata.getProperties().get(new QName(ContentModel.PROP_MODIFIED.toString()));
         if (property != null && !property.isEmpty()) {
             response.setModifiedAt(property.get(0));
         }
-        property = commentMetadata.properties.get(new QName(ContentModel.PROP_MODIFIER.toString()));
+        property = commentMetadata.getProperties().get(new QName(ContentModel.PROP_MODIFIER.toString()));
         if (property != null && !property.isEmpty()) {
             response.setModifiedBy(property.get(0));
         }

@@ -1,6 +1,7 @@
 package eu.xenit.apix.rest.v2.nodes;
 
 import com.gradecak.alfresco.mvc.annotation.AlfrescoAuthentication;
+import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.filefolder.IFileFolderService;
@@ -29,7 +30,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @AlfrescoAuthentication
-@RestController("eu.xenit.apix.rest.v2.NodesWebscript")
+@RestController
 public class NodesWebscriptV2 extends ApixV2Webscript {
 
     private static final Logger logger = LoggerFactory.getLogger(NodesWebscriptV2.class);
@@ -50,6 +51,7 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
         this.serviceRegistry = serviceRegistry;
     }
 
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v2/nodes/{space}/{store}/{guid}")
     public ResponseEntity<NodeInfo> getAllInfo(@PathVariable String space,
                                                @PathVariable String store,
@@ -62,6 +64,7 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
         return writeJsonResponse(nodeInfo);
     }
 
+    @AlfrescoTransaction
     @PostMapping(value = "/v2/nodes/nodeInfo")
     public ResponseEntity<List<NodeInfo>> getAllInfos(@RequestBody final NodeInfoRequest nodeInfoRequest) throws JSONException {
         List<NodeInfo> nodeInfoList = this.nodeRefToNodeInfo(
@@ -72,6 +75,7 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
         return writeJsonResponse(nodeInfoList);
     }
 
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v2/nodes/{space}/{store}/{guid}/permissions")
     public ResponseEntity<Map<String, PermissionValue>> getPermissions(@PathVariable String space,
                                                                        @PathVariable String store,
@@ -82,6 +86,7 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
         );
     }
 
+    @AlfrescoTransaction
     @PostMapping(value = "/v2/nodes")
     public ResponseEntity<?> createNode(@RequestBody final CreateNodeOptions createNodeOptions) {
         final StringBuilder errorMessage = new StringBuilder();
@@ -117,7 +122,7 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
                     if (createNodeOptions.getType() != null) {
                         type = new QName(createNodeOptions.getType());
                     } else if (createNodeOptions.getCopyFrom() != null) {
-                        type = nodeService.getMetadata(copyFrom).type;
+                        type = nodeService.getMetadata(copyFrom).getType();
                     } else {
                         errorCode.addAndGet(HttpStatus.SC_BAD_REQUEST);
                         errorMessage.append(

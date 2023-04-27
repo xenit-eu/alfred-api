@@ -1,6 +1,7 @@
 package eu.xenit.apix.rest.v1.search;
 
 import com.gradecak.alfresco.mvc.annotation.AlfrescoAuthentication;
+import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
 import com.gradecak.alfresco.mvc.annotation.AuthenticationType;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
 import eu.xenit.apix.search.ISearchService;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @AlfrescoAuthentication(AuthenticationType.USER)
-@RestController("eu.xenit.apix.rest.v1.search.SearchWebScriptV1")
+@RestController
 public class SearchWebScript1 extends ApixV1Webscript {
 
     private final ISearchService service;
@@ -20,6 +21,7 @@ public class SearchWebScript1 extends ApixV1Webscript {
         this.service = service;
     }
 
+    @AlfrescoTransaction
     @PostMapping(value = "/v1/search")
     public ResponseEntity<?> execute(@RequestBody final SearchQuery query) {
         try {

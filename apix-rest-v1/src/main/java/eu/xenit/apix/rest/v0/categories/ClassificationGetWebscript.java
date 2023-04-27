@@ -1,15 +1,16 @@
 package eu.xenit.apix.rest.v0.categories;
 
+import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
 import eu.xenit.apix.categories.Category;
 import eu.xenit.apix.categories.ICategoryService;
 import eu.xenit.apix.data.QName;
-import java.util.List;
-
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class ClassificationGetWebscript {
@@ -20,6 +21,7 @@ public class ClassificationGetWebscript {
         this.catService = catService;
     }
 
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(
             value = "/classification/{aspectQName}",
             produces = MediaType.APPLICATION_JSON_VALUE

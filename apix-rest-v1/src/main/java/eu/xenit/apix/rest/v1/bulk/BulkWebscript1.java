@@ -2,6 +2,7 @@ package eu.xenit.apix.rest.v1.bulk;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
 import com.gradecak.alfresco.mvc.webscript.DispatcherWebscript;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
 import eu.xenit.apix.rest.v1.bulk.request.BulkHttpServletRequest;
@@ -30,7 +31,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
-@RestController("eu.xenit.apix.rest.v1.BulkWebscript")
+@RestController
 public class BulkWebscript1 extends ApixV1Webscript {
 
     private static final Logger logger = LoggerFactory.getLogger(BulkWebscript1.class);
@@ -45,6 +46,7 @@ public class BulkWebscript1 extends ApixV1Webscript {
         this.dispatcherWebscript = dispatcherWebscript;
     }
 
+    @AlfrescoTransaction
     @PostMapping(value = "/v1/bulk")
     public ResponseEntity<List<BulkSubResult>> bulk(@RequestBody final BulkRequest[] bulkRequests,
                                                     final HttpServletRequest req) {

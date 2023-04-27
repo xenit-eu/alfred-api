@@ -1,6 +1,7 @@
 package eu.xenit.apix.rest.v1.versionhistory;
 
 import com.gradecak.alfresco.mvc.annotation.AlfrescoAuthentication;
+import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
 import com.gradecak.alfresco.mvc.annotation.AuthenticationType;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @AlfrescoAuthentication(AuthenticationType.USER)
-@RestController("eu.xenit.apix.rest.v1.versionhistory.VersionHistoryWebScript1")
+@RestController
 public class VersionHistoryWebScript1 extends ApixV1Webscript {
 
     private static final Logger logger = LoggerFactory.getLogger(VersionHistoryWebScript1.class);
@@ -39,7 +40,7 @@ public class VersionHistoryWebScript1 extends ApixV1Webscript {
     public VersionHistoryWebScript1(IVersionHistoryService versionHistoryService) {
         this.versionHistoryService = versionHistoryService;
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/versionhistory/{space}/{store}/{guid}/versions")
     public ResponseEntity<VersionHistory> getVersionHistory(@PathVariable final String space,
                                                             @PathVariable final String store,
@@ -49,7 +50,7 @@ public class VersionHistoryWebScript1 extends ApixV1Webscript {
                 versionHistoryService.GetVersionHistory(createNodeRef(space, store, guid))
         );
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/versionhistory/{space}/{store}/{guid}/root")
     public ResponseEntity<Version> getVersionHistoryRoot(@PathVariable final String space,
                                                          @PathVariable final String store,
@@ -58,7 +59,7 @@ public class VersionHistoryWebScript1 extends ApixV1Webscript {
                 versionHistoryService.getRootVersion(createNodeRef(space, store, guid))
         );
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/versionhistory/{space}/{store}/{guid}/head")
     public ResponseEntity<Version> getVersionHistoryHead(@PathVariable final String space,
                                                          @PathVariable final String store,
@@ -68,6 +69,7 @@ public class VersionHistoryWebScript1 extends ApixV1Webscript {
         );
     }
 
+    @AlfrescoTransaction
     @DeleteMapping(value = "/v1/versionhistory/{space}/{store}/{guid}")
     //No method available to disable versioning. deleting will merely reset version history,
     // starting a new history upon a new version change
@@ -77,6 +79,8 @@ public class VersionHistoryWebScript1 extends ApixV1Webscript {
         versionHistoryService.deleteVersionHistory(createNodeRef(space, store, guid));
         return ResponseEntity.ok().build();
     }
+
+    @AlfrescoTransaction
     @PutMapping(value = "/v1/versionhistory/{space}/{store}/{guid}")
     public ResponseEntity<?> setVersionHistory(@PathVariable final String space,
                                                 @PathVariable final String store,
@@ -98,6 +102,7 @@ public class VersionHistoryWebScript1 extends ApixV1Webscript {
         return ResponseEntity.ok().build();
     }
 
+    @AlfrescoTransaction
     @PostMapping(value = "/v1/versionhistory/{space}/{store}/{guid}/versions/{label}/revert")
     public ResponseEntity<?> revertVersionHistory(@PathVariable final String space,
                                                        @PathVariable final String store,
@@ -107,6 +112,7 @@ public class VersionHistoryWebScript1 extends ApixV1Webscript {
         return ResponseEntity.ok().build();
     }
 
+    @AlfrescoTransaction
     @DeleteMapping(value = "/v1/versionhistory/{space}/{store}/{guid}/versions/{label}")
     public ResponseEntity<?> deleteVersion(@PathVariable final String space,
                                                 @PathVariable final String store,

@@ -69,10 +69,6 @@ jobs:
     needs: [ test, integration-test ]
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}
-    strategy:
-      fail-fast: false
-      matrix:
-        alfresco_version: [ 62, 70, 71, 72, 73 ]
     steps:
       - name: Check out
         uses: actions/checkout@v3
@@ -92,4 +88,4 @@ jobs:
           arguments: >-
             --info -PsigningKeyId=DF8285F0
             :apix-interface:publish
-            :apix-impl:apix-impl-${{ matrix.alfresco_version }}:publish
+            :alfresco:publish

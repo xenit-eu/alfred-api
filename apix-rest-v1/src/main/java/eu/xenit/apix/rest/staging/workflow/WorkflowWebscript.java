@@ -1,5 +1,6 @@
 package eu.xenit.apix.rest.staging.workflow;
 
+import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
 import eu.xenit.apix.workflow.IWorkflowService;
 import eu.xenit.apix.workflow.model.Task;
 import eu.xenit.apix.workflow.model.Workflow;
@@ -39,7 +40,7 @@ public class WorkflowWebscript {
     public WorkflowWebscript(@Qualifier("eu.xenit.apix.workflow.IWorkflowService") IWorkflowService workflowService) {
         this.workflowService = workflowService;
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(
             value = "/staging/workflows/definitions",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -56,11 +57,13 @@ public class WorkflowWebscript {
         return responseFrom(new WorkflowDefinitionList(definitions));
     }
 
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/workflows/definition/{name}")
     public ResponseEntity<WorkflowDefinition> getWorkflowDefinition(@PathVariable final String name) {
         return responseFrom(workflowService.getWorkflowDefinition(name));
     }
 
+    @AlfrescoTransaction
     @PostMapping(value = "/workflows/search")
     public ResponseEntity<TaskOrWorkflowSearchResult> workflowsActiviti(@RequestBody final WorkflowSearchQuery query) {
         TaskOrWorkflowSearchResult result = workflowService.searchWorkflows(query);
@@ -69,51 +72,57 @@ public class WorkflowWebscript {
         return responseFrom(result);
     }
 
+    @AlfrescoTransaction
     @PostMapping(value = "/tasks/search")
     public ResponseEntity<TaskOrWorkflowSearchResult> tasksActiviti(@RequestBody final TaskSearchQuery query) {
         return responseFrom(workflowService.searchTasks(query));
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/workflows/{id}")
     public ResponseEntity<Workflow> workflow(@PathVariable final String id) {
         return responseFrom(workflowService.getWorkflowInfo(id));
     }
 
+    @AlfrescoTransaction
     @PostMapping(value = "/workflows/{id}/start")
     public ResponseEntity<Workflow> startWorkflow(@PathVariable final String id,
                                                   @RequestBody final Map<String, Serializable> variables) {
         logger.debug("variables: {}", variables);
         return responseFrom(workflowService.startWorkflow(id, variables));
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/tasks/{id}")
     public ResponseEntity<Void> task(@PathVariable final String id) {
         responseFrom(workflowService.getTaskInfo(id));
         return ResponseEntity.ok().build();
     }
 
+    @AlfrescoTransaction
     @PutMapping(value = "/workflows/{id}")
     public ResponseEntity<Workflow> updateWorkflow(@PathVariable final String id,
                                                    @RequestBody final WorkflowOrTaskChanges changes) {
         return responseFrom(workflowService.updateWorkflow(id, changes));
     }
 
+    @AlfrescoTransaction
     @DeleteMapping(value = "/workflows/{id}")
     public ResponseEntity<Void> cancelWorkflow(@PathVariable final String id) {
         workflowService.cancelWorkflow(id);
         return ResponseEntity.ok().build();
     }
 
+    @AlfrescoTransaction
     @PutMapping(value = "/tasks/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable final String id,
                                            @RequestBody final WorkflowOrTaskChanges changes) {
         try {
             return responseFrom(workflowService.updateTask(id, changes));
-        } catch (Error ex) {
+        } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.SC_CONFLICT).build();
         }
     }
 
+    @AlfrescoTransaction
     @PostMapping(value = "/staging/tasks/claim")
     public ResponseEntity<Task> claimTask(@RequestBody final WorkflowClaimsBody workflowClaimsBody) {
         Task wfTask;
@@ -127,6 +136,7 @@ public class WorkflowWebscript {
         return responseFrom(wfTask);
     }
 
+    @AlfrescoTransaction
     @PostMapping(value = "/staging/tasks/release")
     public ResponseEntity<Task> releaseTask(@RequestBody final WorkflowReleaseBody workflowReleaseBody) {
         logger.debug("Setting owner of task {}", workflowReleaseBody);
@@ -134,11 +144,12 @@ public class WorkflowWebscript {
         return responseFrom(wfTask);
     }
 
+    @AlfrescoTransaction
     @PostMapping(value = "/staging/tasks/{id}/end/{transition}")
     public void transitionTask(@PathVariable String id, @PathVariable String transition) {
         workflowService.endTask(id, transition);
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/staging/workflows/generate/{amount}/{username}")
     public void generateWorkflow(@PathVariable final int amount, @PathVariable final String username) {
         workflowService.GenerateWorkflows(amount, username);

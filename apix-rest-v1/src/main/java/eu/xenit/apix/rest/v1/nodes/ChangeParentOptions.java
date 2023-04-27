@@ -19,11 +19,11 @@ class ChangeParentOptions {
     public ChangeParentOptions() {
     }
 
-    public void setParent(String parent) {
-        this.parent = parent;
-    }
-
     public String getParent() {
         return parent;
+    }
+
+    public void setParent(String parent) {
+        this.parent = parent;
     }
 }

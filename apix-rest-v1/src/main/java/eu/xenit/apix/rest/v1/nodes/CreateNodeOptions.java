@@ -55,60 +55,59 @@ public class CreateNodeOptions {
         this.copyFrom = copyFrom;
     }
 
-    public void setParent(String parent) {
-        this.parent = parent;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setProperties(Map<QName, String[]> properties) {
-        this.properties = properties;
-    }
-
-    public void setAspectsToAdd(QName[] aspectsToAdd) {
-        this.aspectsToAdd = aspectsToAdd;
-    }
-
-    public void setAspectsToRemove(QName[] aspectsToRemove) {
-        this.aspectsToRemove = aspectsToRemove;
-    }
-
-    public void setCopyFrom(String copyFrom) {
-        this.copyFrom = copyFrom;
-    }
-
-
     public String getParent() {
         return parent;
+    }
+
+    public void setParent(String parent) {
+        this.parent = parent;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getType() {
         return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Map<QName, String[]> getProperties() {
         return properties;
     }
 
+    public void setProperties(Map<QName, String[]> properties) {
+        this.properties = properties;
+    }
+
     public QName[] getAspectsToAdd() {
         return aspectsToAdd;
+    }
+
+    public void setAspectsToAdd(QName[] aspectsToAdd) {
+        this.aspectsToAdd = aspectsToAdd;
     }
 
     public QName[] getAspectsToRemove() {
         return aspectsToRemove;
     }
 
+    public void setAspectsToRemove(QName[] aspectsToRemove) {
+        this.aspectsToRemove = aspectsToRemove;
+    }
+
     public String getCopyFrom() {
         return copyFrom;
+    }
+
+    public void setCopyFrom(String copyFrom) {
+        this.copyFrom = copyFrom;
     }
 }

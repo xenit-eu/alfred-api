@@ -1,5 +1,6 @@
 package eu.xenit.apix.rest.v0.search;
 
+import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
 import eu.xenit.apix.search.ISearchService;
 import eu.xenit.apix.search.SearchQueryResult;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ public class SearchWebScript0 {
         this.service = service;
     }
 
+    @AlfrescoTransaction
     @PostMapping(
             value = "/eu/xenit/search",
             produces = MediaType.APPLICATION_JSON_VALUE

@@ -1,5 +1,6 @@
 package eu.xenit.apix.rest.v1.workingcopies;
 
+import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.node.INodeService;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("eu.xenit.apix.rest.v1.WorkingcopiesWebscript1")
+@RestController
 public class WorkingcopiesWebscript1 extends ApixV1Webscript {
 
     private final INodeService nodeService;
@@ -21,6 +22,7 @@ public class WorkingcopiesWebscript1 extends ApixV1Webscript {
         this.nodeService = nodeService;
     }
 
+    @AlfrescoTransaction
     @PostMapping(value = "/v1/workingcopies")
     public ResponseEntity<?> createWorkingcopy(@RequestBody CheckoutBody checkoutBody) {
         final NodeRef originalRef = checkoutBody.getOriginal();
@@ -38,6 +40,7 @@ public class WorkingcopiesWebscript1 extends ApixV1Webscript {
         return respondDoesNotExist(destinationRef);
     }
 
+    @AlfrescoTransaction
     @PostMapping(value = "/v1/workingcopies/{space}/{store}/{guid}/checkin")
     public ResponseEntity<?> checkinWorkingcopy(@PathVariable final String space, @PathVariable final String store,
                                    @PathVariable final String guid,
@@ -50,6 +53,7 @@ public class WorkingcopiesWebscript1 extends ApixV1Webscript {
         return respondDoesNotExist(nodeRef);
     }
 
+    @AlfrescoTransaction
     @DeleteMapping(value = "/v1/workingcopies/{space}/{store}/{guid}")
     public ResponseEntity<?> cancelWorkingcopy(@PathVariable final String space, @PathVariable final String store,
             @PathVariable final String guid) {
@@ -60,7 +64,7 @@ public class WorkingcopiesWebscript1 extends ApixV1Webscript {
         }
         return respondDoesNotExist(workingCopyRef);
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/workingcopies/{space}/{store}/{guid}/original")
     public ResponseEntity<?> getWorkingCopySource(@PathVariable final String space, @PathVariable final String store,
             @PathVariable final String guid) {

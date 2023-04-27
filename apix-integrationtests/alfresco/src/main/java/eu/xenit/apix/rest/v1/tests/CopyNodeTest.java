@@ -132,7 +132,7 @@ public class CopyNodeTest extends NodesBaseTest {
     @Test
     public void testCopyFolderDuplicateName() {
         final NodeRef childRef = nodeService.getChildAssociations(mainTestFolder).get(0).getTarget();
-        final String newName = nodeService.getMetadata(childRef).properties.get(c.apix(ContentModel.PROP_NAME)).get(0);
+        final String newName = nodeService.getMetadata(childRef).getProperties().get(c.apix(ContentModel.PROP_NAME)).get(0);
         CreateNodeOptions createNodeOptions = getCreateNodeOptions(mainTestFolder, newName,
                 null, null, copyFromFolder);
         NodeRef newRef = transactionService.getRetryingTransactionHelper()

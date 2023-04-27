@@ -107,7 +107,7 @@ public abstract class NodesBaseTest extends RestV1BaseTest {
         assertEquals(createNodeOptions.getParent(), nodeService.getParentAssociations(newRef).get(0).getTarget().toString());
 
         if (createNodeOptions.getType() != null) {
-            assertEquals(createNodeOptions.getType(), nodeService.getMetadata(newRef).type.toString());
+            assertEquals(createNodeOptions.getType(), nodeService.getMetadata(newRef).getType().toString());
         }
 
         if (createNodeOptions.getCopyFrom() != null) {
@@ -116,13 +116,13 @@ public abstract class NodesBaseTest extends RestV1BaseTest {
 
         if (createNodeOptions.getProperties() != null) {
             for (Map.Entry<QName, String[]> property : createNodeOptions.getProperties().entrySet()) {
-                assertArrayEquals(property.getValue(), nodeService.getMetadata(newRef).properties.get(property.getKey()).toArray());
+                assertArrayEquals(property.getValue(), nodeService.getMetadata(newRef).getProperties().get(property.getKey()).toArray());
             }
         }
 
         if (createNodeOptions.getAspectsToAdd() != null) {
             for (QName aspect : createNodeOptions.getAspectsToAdd()) {
-                assertNotNull(nodeService.getMetadata(newRef).aspects
+                assertNotNull(nodeService.getMetadata(newRef).getAspects()
                         .stream()
                         .filter(testAspect -> testAspect.equals(aspect))
                         .findFirst()
@@ -132,7 +132,7 @@ public abstract class NodesBaseTest extends RestV1BaseTest {
 
         if (createNodeOptions.getAspectsToRemove() != null) {
             for (QName aspect : createNodeOptions.getAspectsToRemove()) {
-                assertNull(nodeService.getMetadata(newRef).aspects
+                assertNull(nodeService.getMetadata(newRef).getAspects()
                         .stream()
                         .filter(testAspect -> testAspect.equals(aspect))
                         .findFirst()

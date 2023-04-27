@@ -1,7 +1,6 @@
 package eu.xenit.apix.data;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.io.Serializable;

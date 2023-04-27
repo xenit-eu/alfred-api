@@ -1,6 +1,7 @@
 package eu.xenit.apix.rest.v1.temp;
 
 import com.gradecak.alfresco.mvc.annotation.AlfrescoAuthentication;
+import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
 import com.gradecak.alfresco.mvc.annotation.AuthenticationType;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
 import java.io.File;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@RestController("eu.xenit.apix.rest.v1.temp.LogsWebscript")
+@RestController
 public class LogsWebscript extends ApixV1Webscript {
 
     private final String logPath;
@@ -21,7 +22,7 @@ public class LogsWebscript extends ApixV1Webscript {
     public LogsWebscript(Environment env) {
         logPath = env.resolvePlaceholders("$CATALINA_HOME/logs/catalina.out");
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/tmp/log", produces = { MediaType.TEXT_PLAIN_VALUE })
     @AlfrescoAuthentication(AuthenticationType.ADMIN)
     public ResponseEntity<String> showLog(@RequestParam(defaultValue = "200") int lines) throws IOException {

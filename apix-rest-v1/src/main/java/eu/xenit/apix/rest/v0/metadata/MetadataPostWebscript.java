@@ -1,5 +1,6 @@
 package eu.xenit.apix.rest.v0.metadata;
 
+import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.node.INodeService;
 import eu.xenit.apix.permissions.IPermissionService;
@@ -21,6 +22,7 @@ public class MetadataPostWebscript {
         this.permissionService = permissionService;
     }
 
+    @AlfrescoTransaction
     @PostMapping(
             value = "/eu/xenit/metadata",
             produces = MediaType.APPLICATION_JSON_VALUE

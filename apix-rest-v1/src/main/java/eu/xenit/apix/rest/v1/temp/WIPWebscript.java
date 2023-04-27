@@ -1,5 +1,6 @@
 package eu.xenit.apix.rest.v1.temp;
 
+import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
 import eu.xenit.apix.WIP.IWIPService;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
@@ -18,10 +19,11 @@ public class WIPWebscript extends ApixV1Webscript {
         this.wipService = wipService;
     }
 
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/content/previews/pdf")
     public ResponseEntity<?> getPreviewPdf(@PathVariable String space,
-                              @PathVariable String store,
-                              @PathVariable String guid) {
+                                           @PathVariable String store,
+                                           @PathVariable String guid) {
         final NodeRef nodeRef = new NodeRef(space, store, guid);
         //TODO: from /searchapp/download
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
