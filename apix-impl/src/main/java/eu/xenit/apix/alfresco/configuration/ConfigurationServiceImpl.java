@@ -111,7 +111,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
                 ContentInputStream configStream = contentService.getContent(configurationFile.getNodeRef());
                 if (configStream != null) {
                     String mimetype = configStream.getMimetype();
-                    String name = configurationFile.getMetadata().properties.get(QNAME_NAME).get(0);
+                    String name = configurationFile.getMetadata().getProperties().get(QNAME_NAME).get(0);
                     logger.debug("Mimetype is {}; filename is {}", mimetype, name);
                     Object parsedContent = null;
                     if (mimetype.equals("text/x-yaml") || name.endsWith(".yaml") || name.endsWith(".yml")) {
@@ -144,7 +144,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         for (ChildParentAssociation childParentAssociation : childParentAssociations) {
             NodeRef child = childParentAssociation.getTarget();
             NodeMetadata childMetadata = nodeService.getMetadata(child);
-            if (childMetadata.type.getValue().equals(QNAME_FOLDER)) {
+            if (childMetadata.getType().getValue().equals(QNAME_FOLDER)) {
                 files.addAll(getChildrenRecursive(child, filter));
             } else if (filter.isAccepted(childMetadata)) {
                 files.add(new ConfigurationFile(child, childMetadata));
@@ -171,7 +171,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
         @Override
         public boolean isAccepted(NodeMetadata metadata) {
-            String name = metadata.properties.get(QNAME_NAME).get(0);
+            String name = metadata.getProperties().get(QNAME_NAME).get(0);
             logger.debug("Checking if {} matches {}", name, filter);
             return filter.matcher(name).find();
         }

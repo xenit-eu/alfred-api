@@ -7,6 +7,9 @@ class SetUsersInGroupOptions {
 
     private String[] users;
 
+    public SetUsersInGroupOptions() {
+    }
+
     @JsonCreator
     public SetUsersInGroupOptions(@JsonProperty("users") String[] users) {
         this.users = users;

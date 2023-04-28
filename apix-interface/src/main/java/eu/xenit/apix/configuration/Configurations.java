@@ -7,6 +7,9 @@ public class Configurations {
 
     private List<ConfigurationFile> files;
 
+    public Configurations() {
+    }
+
     public Configurations(List<ConfigurationFile> files) {
         this.files = new ArrayList<>(files);
         this.files.sort(new ConfigurationFileComparator());

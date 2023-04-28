@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gradecak.alfresco.mvc.annotation.AlfrescoAuthentication;
+import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
 import com.gradecak.alfresco.mvc.annotation.AuthenticationType;
 import eu.xenit.apix.configuration.ConfigurationFileFlags;
 import eu.xenit.apix.configuration.ConfigurationService;
@@ -25,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @AlfrescoAuthentication(AuthenticationType.USER)
-@RestController("eu.xenit.apix.rest.v1.configuration.ConfigurationWebscript1")
+@RestController
 public class ConfigurationWebscript1 extends ApixV1Webscript {
 
     private static final Logger log = LoggerFactory.getLogger(ConfigurationWebscript1.class);
@@ -43,7 +44,7 @@ public class ConfigurationWebscript1 extends ApixV1Webscript {
         mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
     }
 
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/configuration", consumes = {"application/js"}, produces = {"application/js"})
     public ResponseEntity<?> getJsConfigurationFiles(
             @RequestParam(defaultValue = "content,nodeRef", required = false) String[] fields,
@@ -66,7 +67,7 @@ public class ConfigurationWebscript1 extends ApixV1Webscript {
                                 mapper.writeValueAsString(configurations)));
     }
 
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/configuration" ,
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})

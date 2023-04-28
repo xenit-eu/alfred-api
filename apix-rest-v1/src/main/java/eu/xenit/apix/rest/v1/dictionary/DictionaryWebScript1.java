@@ -1,6 +1,7 @@
 package eu.xenit.apix.rest.v1.dictionary;
 
 import com.gradecak.alfresco.mvc.annotation.AlfrescoAuthentication;
+import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
 import com.gradecak.alfresco.mvc.annotation.AuthenticationType;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.dictionary.IDictionaryService;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 
 @AlfrescoAuthentication(AuthenticationType.USER)
-@RestController("eu.xenit.apix.rest.v1.property.DictionaryWebScript1")
+@RestController
 public class DictionaryWebScript1 extends ApixV1Webscript {
 
     private static final Logger logger = LoggerFactory.getLogger(DictionaryWebScript1.class);
@@ -34,6 +35,7 @@ public class DictionaryWebScript1 extends ApixV1Webscript {
         this.dictionaryService = dictionaryService;
     }
 
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/dictionary/properties/**")
     public ResponseEntity<?> getPropertyDefinition(HttpServletRequest request) {
         QName qname = extractQNameFromUrlPath(request, "/v1/dictionary/properties/");
@@ -44,15 +46,15 @@ public class DictionaryWebScript1 extends ApixV1Webscript {
         return writeJsonResponse(propDef);
     }
 
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/dictionary/properties")
     public ResponseEntity<Properties> getProperties() {
         return writeJsonResponse(dictionaryService.getProperties());
     }
 
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/dictionary/types")
-    public ResponseEntity<Types> getSubTypeDefinitions(@RequestParam(defaultValue = "sys:base", required = false)
-                                                           final String parent) {
+    public ResponseEntity<Types> getSubTypeDefinitions(@RequestParam(defaultValue = "sys:base", required = false) final String parent) {
         return writeJsonResponse(
                 dictionaryService.GetSubTypeDefinitions(
                         new QName(parent), true
@@ -60,6 +62,7 @@ public class DictionaryWebScript1 extends ApixV1Webscript {
         );
     }
 
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/dictionary/types/**")
     public ResponseEntity<?> getTypeDefinition(HttpServletRequest request) {
         QName qname = extractQNameFromUrlPath(request, "/v1/dictionary/types/");
@@ -71,6 +74,7 @@ public class DictionaryWebScript1 extends ApixV1Webscript {
         return writeJsonResponse(classDef);
     }
 
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/dictionary/aspects/**")
     public ResponseEntity<?> getAspectDefinition(HttpServletRequest request) {
         QName qname = extractQNameFromUrlPath(request, "/v1/dictionary/aspects/");
@@ -82,11 +86,13 @@ public class DictionaryWebScript1 extends ApixV1Webscript {
         return writeJsonResponse(classDef);
     }
 
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/dictionary/aspects")
     public ResponseEntity<Aspects> getAspects() {
         return writeJsonResponse(dictionaryService.getAspects());
     }
 
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/dictionary/namespaces")
     public ResponseEntity<Namespaces> getNamespaces() {
         return writeJsonResponse(dictionaryService.getNamespaces());

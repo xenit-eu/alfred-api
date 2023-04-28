@@ -80,7 +80,7 @@ public class AllNodeInfoTest extends RestV2BaseTest {
 
     @Test
     public void testGetAllNodeInfoWithNoNodesListed() throws IOException {
-        String jsonString = json("{}");
+        String jsonString = json("");
 
         final CloseableHttpClient httpclient = HttpClients.createDefault();
         final String url = makeAlfrescoBaseurl("admin", "admin") + "/apix/v2/nodes/nodeInfo";

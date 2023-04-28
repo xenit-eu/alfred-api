@@ -4,7 +4,7 @@
     <authentication>user</authentication>
     <transaction>none</transaction>
     <format default="json"/>
-    <formdata multipart-processing="false" />
+    <formdata multipart-processing="false"/>
     <cache>
         <never>true</never>
     </cache>

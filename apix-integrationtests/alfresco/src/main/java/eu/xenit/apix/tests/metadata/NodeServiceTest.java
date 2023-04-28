@@ -270,14 +270,14 @@ public class NodeServiceTest extends BaseTest {
         NodeMetadata metadatas = service.getMetadata(c.apix(roots.iterator().next()));
         logger.debug(metadatas.toString().replaceAll(",", ",\n"));
 
-        assertEquals(c.apix(roots.iterator().next()), metadatas.id);
+        assertEquals(c.apix(roots.iterator().next()), metadatas.getId());
 
-        assertTrue(metadatas.properties.containsKey(c.apix(ContentModel.PROP_NAME)));
+        assertTrue(metadatas.getProperties().containsKey(c.apix(ContentModel.PROP_NAME)));
     }
 
     private Boolean nodeIsInMetaList(NodeRef node, List<NodeMetadata> metadatas) {
         for (NodeMetadata metadata : metadatas) {
-            if (metadata.id.equals(node.toString())) {
+            if (metadata.getId().equals(node.toString())) {
                 return true;
             }
         }

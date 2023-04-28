@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @AlfrescoTransaction
-@RestController("eu.xenit.apix.rest.v1.SitesWebscript")
+@RestController
 public class SitesWebscript1 extends ApixV1Webscript {
 
     private static final Logger logger = LoggerFactory.getLogger(SitesWebscript1.class);
@@ -45,7 +45,7 @@ public class SitesWebscript1 extends ApixV1Webscript {
         this.siteService = siteService;
         this.serviceRegistry = serviceRegistry;
     }
-
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/sites/mySites")
     public ResponseEntity<List<SiteInfo>> getMySites(
              @RequestParam(required = false, defaultValue = "false") Boolean retrieveMetadata,

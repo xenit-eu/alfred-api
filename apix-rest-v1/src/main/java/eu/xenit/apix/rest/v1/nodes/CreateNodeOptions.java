@@ -1,5 +1,7 @@
 package eu.xenit.apix.rest.v1.nodes;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.xenit.apix.data.QName;
 import org.alfresco.model.ContentModel;
 
@@ -27,13 +29,14 @@ public class CreateNodeOptions {
         this.aspectsToAdd = new QName[0];
     }
 
-    public CreateNodeOptions(String parent,
-                             String name,
-                             String type,
-                             Map<QName, String[]> properties,
-                             QName[] aspectsToAdd,
-                             QName[] aspectsToRemove,
-                             String copyFrom) {
+    @JsonCreator
+    public CreateNodeOptions(@JsonProperty("parent") String parent,
+                             @JsonProperty("name") String name,
+                             @JsonProperty("type") String type,
+                             @JsonProperty("properties") Map<QName, String[]> properties,
+                             @JsonProperty("aspectsToAdd") QName[] aspectsToAdd,
+                             @JsonProperty("aspectsToRemove") QName[] aspectsToRemove,
+                             @JsonProperty("copyFrom") String copyFrom) {
         this.parent = parent;
         this.name = name;
         this.type = type;
@@ -52,60 +55,59 @@ public class CreateNodeOptions {
         this.copyFrom = copyFrom;
     }
 
-    public void setParent(String parent) {
-        this.parent = parent;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setProperties(Map<QName, String[]> properties) {
-        this.properties = properties;
-    }
-
-    public void setAspectsToAdd(QName[] aspectsToAdd) {
-        this.aspectsToAdd = aspectsToAdd;
-    }
-
-    public void setAspectsToRemove(QName[] aspectsToRemove) {
-        this.aspectsToRemove = aspectsToRemove;
-    }
-
-    public void setCopyFrom(String copyFrom) {
-        this.copyFrom = copyFrom;
-    }
-
-
     public String getParent() {
         return parent;
+    }
+
+    public void setParent(String parent) {
+        this.parent = parent;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getType() {
         return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Map<QName, String[]> getProperties() {
         return properties;
     }
 
+    public void setProperties(Map<QName, String[]> properties) {
+        this.properties = properties;
+    }
+
     public QName[] getAspectsToAdd() {
         return aspectsToAdd;
+    }
+
+    public void setAspectsToAdd(QName[] aspectsToAdd) {
+        this.aspectsToAdd = aspectsToAdd;
     }
 
     public QName[] getAspectsToRemove() {
         return aspectsToRemove;
     }
 
+    public void setAspectsToRemove(QName[] aspectsToRemove) {
+        this.aspectsToRemove = aspectsToRemove;
+    }
+
     public String getCopyFrom() {
         return copyFrom;
+    }
+
+    public void setCopyFrom(String copyFrom) {
+        this.copyFrom = copyFrom;
     }
 }

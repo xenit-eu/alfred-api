@@ -1,15 +1,17 @@
 package eu.xenit.apix.rest.v1.translation;
 
+import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
 import eu.xenit.apix.translation.ITranslationService;
 import eu.xenit.apix.translation.Translations;
-import java.util.Locale;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("eu.xenit.apix.rest.v1.translation.TranslationsWebscript1")
+import java.util.Locale;
+
+@RestController
 public class TranslationsWebscript1 extends ApixV1Webscript {
 
     private final ITranslationService translationService;
@@ -18,6 +20,7 @@ public class TranslationsWebscript1 extends ApixV1Webscript {
         this.translationService = translationService;
     }
 
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/translations/{locale}/checksum")
     public ResponseEntity<TranslationChecksum> getChecksum(@PathVariable final String locale) {
         Locale language = Locale.forLanguageTag(locale);
@@ -26,6 +29,7 @@ public class TranslationsWebscript1 extends ApixV1Webscript {
         return writeJsonResponse(checksumObj);
     }
 
+    @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/translations/{locale}")
     public ResponseEntity<Translations> getTranslations(@PathVariable final String locale) {
         Locale language = Locale.forLanguageTag(locale);

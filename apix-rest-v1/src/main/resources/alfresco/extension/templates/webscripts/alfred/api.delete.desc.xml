@@ -2,9 +2,9 @@
     <shortname>Alfred API Delete</shortname>
     <url>/apix/{path}</url>
     <authentication>user</authentication>
-    <transaction>required</transaction>
+    <transaction>none</transaction>
     <format default="json"/>
-    <formdata multipart-processing="false" />
+    <formdata multipart-processing="false"/>
     <cache>
         <never>true</never>
     </cache>
