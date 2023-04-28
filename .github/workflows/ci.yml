@@ -65,7 +65,7 @@ jobs:
           name: test-result-${{ matrix.alfresco_version }}
           path: /home/runner/work/**/build/reports
           retention-days: 2
-  publish:
+  publish-interface:
     needs: [ test, integration-test ]
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}
@@ -88,4 +88,30 @@ jobs:
           arguments: >-
             --info -PsigningKeyId=DF8285F0
             :apix-interface:publish
-            :alfresco:publish
+  publish-impl:
+    needs: [ test, integration-test ]
+    runs-on: ubuntu-latest
+    if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}
+    strategy:
+      fail-fast: false
+      matrix:
+        alfresco_version: [ 62, 70, 71, 72, 73 ]
+    steps:
+      - name: Check out
+        uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: temurin
+      - name: Publish
+        uses: gradle/gradle-build-action@v2.3.0
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVEN_CENTRAL_GPG_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVEN_CENTRAL_GPG_PASSWORD }}
+          ORG_GRADLE_PROJECT_sonatype_username: ${{ secrets.SONATYPE_S01_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatype_password: ${{ secrets.SONATYPE_S01_PASSWORD }}
+        with:
+          arguments: >-
+            --info -PsigningKeyId=DF8285F0
+            :alfresco:${{ matrix.alfresco_version }}:publish
