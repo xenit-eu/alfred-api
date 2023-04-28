@@ -3,8 +3,8 @@ on:
   push:
   workflow_dispatch:
 env:
-  XENIT_ARTIFACTORY_USERNAME: ${{ secrets.XENIT_ARTIFACTORY_USERNAME }}
-  XENIT_ARTIFACTORY_PASSWORD: ${{ secrets.XENIT_ARTIFACTORY_PASSWORD }}
+  ALFRESCO_NEXUS_USERNAME: ${{ secrets.ALFRESCO_NEXUS_USERNAME }}
+  ALFRESCO_NEXUS_PASSWORD: ${{ secrets.ALFRESCO_NEXUS_PASSWORD }}
 jobs:
   test:
     runs-on: ubuntu-latest
