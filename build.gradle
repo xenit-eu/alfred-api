@@ -75,15 +75,15 @@ subprojects {
     repositories {
         mavenCentral()
         maven { url "https://artifacts.alfresco.com/nexus/content/groups/public" }
-        maven { url "https://repo.springsource.org/release" }
+        maven { url "https://repo.xenit.eu/zRCLvpH8FA0bR2ha/legacy/maven/" }
+
         // This private repository provides Xenit with Alfresco enterprise artefacts.
         // External developers should replace it with their own library repository.
         maven {
-            name 'Xenit artifactory libs-release'
-            url 'https://artifactory.xenit.eu/artifactory/libs-release'
+            url 'https://artifacts.alfresco.com/nexus/content/groups/private'
             credentials {
-                username System.env.XENIT_ARTIFACTORY_USERNAME ?: property("eu.xenit.artifactory.username")
-                password System.env.XENIT_ARTIFACTORY_PASSWORD ?: property("eu.xenit.artifactory.password")
+                username System.env.ALFRESCO_NEXUS_USERNAME ?: property('org.alfresco.maven.nexus.username')
+                password System.env.ALFRESCO_NEXUS_PASSWORD ?: property('org.alfresco.maven.nexus.password')
             }
         }
     }
