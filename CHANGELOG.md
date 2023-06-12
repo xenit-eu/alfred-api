@@ -9,6 +9,7 @@
 * [ALFREDAPI-509](https://xenitsupport.jira.com/browse/ALFREDAPI-509): Moved CI to Github Actions
 * [ALFREDAPI-513](https://xenitsupport.jira.com/browse/ALFREDAPI-513): Remove swaggerui_5x from alfred-api artifact
 * [ALFREDAPI-514](https://xenitsupport.jira.com/browse/ALFREDAPI-514): Change generation of Snapshot qualifier to comform to maven format.
+* [ALFREDAPI-522](https://xenitsupport.jira.com/browse/ALFREDAPI-522): Change gradle repositories from artifactory.xenit to cloudsmith && artifactory.alfresco.
 ### Removed
 
 
