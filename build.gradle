@@ -75,7 +75,13 @@ subprojects {
     repositories {
         mavenCentral()
         maven { url "https://artifacts.alfresco.com/nexus/content/groups/public" }
-        maven { url "https://cloudsmith.io/~xenit/repos/legacy/setup/?auth_method=basic_token#formats-maven" }
+        maven {
+            url "https://cloudsmith.io/~xenit/repos/legacy/setup/?auth_method=basic_token#formats-maven"
+            credentials {
+                username System.env.CLOUDSMITH_USER ?: property('eu.xenit.cloudsmith.username')
+                password System.env.CLOUDSMITH_APIKEY ?: property('eu.xenit.cloudsmith.password')
+            }
+        }
         // This private repository provides Xenit with Alfresco enterprise artefacts.
         // External developers should replace it with their own library repository.
         maven {
