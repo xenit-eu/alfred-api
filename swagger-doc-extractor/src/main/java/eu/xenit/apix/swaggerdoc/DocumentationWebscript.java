@@ -1,13 +1,12 @@
-package eu.xenit.apix.rest.v1;
+package eu.xenit.apix.swaggerdoc;
 
 import com.fasterxml.jackson.databind.type.SimpleType;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Authentication;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.AuthenticationType;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.HttpMethod;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.WebScript;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
+import eu.xenit.apix.rest.v1.ApixSwaggerDescription;
+import eu.xenit.apix.rest.v1.ApixV1Webscript;
+import eu.xenit.apix.rest.v1.GeneralWebscript;
+import eu.xenit.apix.rest.v1.RestV1Config;
 import eu.xenit.apix.rest.v1.bulk.BulkWebscript1;
 import eu.xenit.apix.rest.v1.categories.CategoryWebScript1;
 import eu.xenit.apix.rest.v1.configuration.ConfigurationWebscript1;
@@ -26,9 +25,6 @@ import eu.xenit.apix.rest.v2.nodes.NodesWebscriptV2;
 import eu.xenit.apix.version.IVersionService;
 import eu.xenit.apix.web.IWebUtils;
 import eu.xenit.swagger.reader.Reader;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import io.swagger.converter.ModelConverter;
 import io.swagger.converter.ModelConverterContext;
 import io.swagger.converter.ModelConverters;
@@ -41,8 +37,6 @@ import io.swagger.models.Scheme;
 import io.swagger.models.Swagger;
 import io.swagger.models.properties.FileProperty;
 import io.swagger.models.properties.Property;
-import io.swagger.util.Json;
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -52,49 +46,17 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.extensions.surf.util.URLEncoder;
-import org.springframework.extensions.webscripts.WebScriptRequest;
-import org.springframework.extensions.webscripts.WebScriptResponse;
-import org.springframework.stereotype.Component;
 
-@WebScript(
-        baseUri = RestV1Config.BaseUrl + "/docs",
-        families = {RestV1Config.Family},
-        defaultFormat = "json",
-        description = "Access API Documentation",
-        value = "Documentation")
-@Component("eu.xenit.apix.rest.v1.DocumentationWebscript")
-@Authentication(AuthenticationType.USER)
-public class DocumentationWebscript extends ApixV1Webscript {//implements BeanFactoryAware{
+public class DocumentationWebscript extends ApixV1Webscript {
 
     Logger logger = LoggerFactory.getLogger(DocumentationWebscript.class);
 
     private IVersionService versionService;
     private IWebUtils webUtils;
 
-    @Autowired
     public DocumentationWebscript(IVersionService versionService, IWebUtils webUtils) {
         this.versionService = versionService;
         this.webUtils = webUtils;
-    }
-
-    @Uri(value = "/swagger.json", method = HttpMethod.GET)
-    @ApiOperation("The Swagger Spec for Alfred API")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success"))
-    public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
-        webScriptResponse.setContentType("json");
-        Swagger s = generateSwagger();
-        Json.mapper().writeValue(webScriptResponse.getOutputStream(), s);
-    }
-
-    @Uri(value = "/ui", method = HttpMethod.GET)
-    public void redirectToSwaggerUi(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) {
-        webScriptResponse.setStatus(302);
-        String swaggerUi = webScriptRequest.getServiceContextPath() + "/swagger/ui/";
-        String servicePath = webScriptRequest.getServicePath();
-        String swaggerJsonUrl = servicePath.substring(0, servicePath.lastIndexOf(47) + 1) + "swagger.json";
-        webScriptResponse.setHeader("Location", swaggerUi + "?url=" + URLEncoder.encode(swaggerJsonUrl));
     }
 
     public Swagger generateSwagger() {

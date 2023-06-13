@@ -15,7 +15,7 @@ services:
       - GLOBAL_localTransform.core-aio.url=http://transform-core-aio:8090/
 
   solr:
-    image: hub.xenit.eu/alfresco-enterprise/alfresco-solr6:2.0.1
+    image: private.docker.xenit.eu/alfresco-enterprise/alfresco-solr6:2.0.3
     volumes:
       - solr:/opt/alfresco/alf_data
     restart: unless-stopped
