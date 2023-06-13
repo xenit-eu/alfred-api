@@ -6,6 +6,9 @@ on:
       - 'release*'
   pull_request:
   workflow_dispatch:
+env:
+  ALFRESCO_NEXUS_USERNAME: ${{ secrets.ALFRESCO_NEXUS_USERNAME }}
+  ALFRESCO_NEXUS_PASSWORD: ${{ secrets.ALFRESCO_NEXUS_PASSWORD }}
 jobs:
   BuildAndPublish:
     strategy:
@@ -28,23 +31,14 @@ jobs:
           password: ${{ secrets.CLOUDSMITH_APIKEY }}
       - name: Build interface  # Execute before integration testing to catch errors early
         uses: gradle/gradle-build-action@v2.3.0
-        env:
-          XENIT_ARTIFACTORY_USERNAME: ${{ secrets.XENIT_ARTIFACTORY_USERNAME }}
-          XENIT_ARTIFACTORY_PASSWORD: ${{ secrets.XENIT_ARTIFACTORY_PASSWORD }}
         with:
           arguments: :apix-interface:build :apix-interface:javadoc
       - name: Unit test REST API
         uses: gradle/gradle-build-action@v2.3.0
-        env:
-          XENIT_ARTIFACTORY_USERNAME: ${{ secrets.XENIT_ARTIFACTORY_USERNAME }}
-          XENIT_ARTIFACTORY_PASSWORD: ${{ secrets.XENIT_ARTIFACTORY_PASSWORD }}
         with:
           arguments: --info :apix-rest-v1:test
       - name: Build and test
         uses: gradle/gradle-build-action@v2.3.0
-        env:
-          XENIT_ARTIFACTORY_USERNAME: ${{ secrets.XENIT_ARTIFACTORY_USERNAME }}
-          XENIT_ARTIFACTORY_PASSWORD: ${{ secrets.XENIT_ARTIFACTORY_PASSWORD }}
         with:
           arguments: >-
             --info
@@ -61,8 +55,6 @@ jobs:
         if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}
         uses: gradle/gradle-build-action@v2.3.0
         env:
-          XENIT_ARTIFACTORY_USERNAME: ${{ secrets.XENIT_ARTIFACTORY_USERNAME }}
-          XENIT_ARTIFACTORY_PASSWORD: ${{ secrets.XENIT_ARTIFACTORY_PASSWORD }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVEN_CENTRAL_GPG_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVEN_CENTRAL_GPG_PASSWORD }}
           ORG_GRADLE_PROJECT_sonatype_username: ${{ secrets.SONATYPE_S01_USERNAME }}
