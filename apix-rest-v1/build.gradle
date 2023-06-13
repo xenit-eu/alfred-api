@@ -1,6 +1,7 @@
 description = 'Xenit API-X Rest v1'
-ext{
-    alfresco_repository_version="6.2"
+ext {
+    // This is the lowest supported Alfresco version
+    alfresco_repository_version = "6.2"
 }
 dependencies {
     // Alfresco dependency should be removed in the future
@@ -27,8 +28,8 @@ dependencies {
     testCompile group: 'eu.xenit.de', name: 'annotations', version: de_version
     testCompile group: 'eu.xenit.de', name: 'annotations-runtime', version: de_version
     testCompile group: 'eu.xenit.de', name: 'webscripts', version: de_version
-    testCompile (group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_repository_version) { exclude group: 'maven-plugins' }
-    testCompile (group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_repository_version) { exclude group: 'maven-plugins' }
+    testCompile(group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_repository_version) { exclude group: 'maven-plugins' }
+    testCompile(group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_repository_version) { exclude group: 'maven-plugins' }
     testCompile project(':apix-interface')
     testCompile project(':apix-impl')
 }
