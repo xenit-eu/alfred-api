@@ -40,6 +40,15 @@ allprojects {
         alfrescoProvided group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_remote_api_version
         alfrescoProvided group: 'org.alfresco', name: 'alfresco-data-model', version: alfresco_dm_version
         alfrescoProvided group: 'org.osgi', name: 'org.osgi.core', version: '4.3.1'
+
+        // Below is a temporary fix to circumvent using commons-lang 1.0.0 JAR. This jar
+        //  - is injected by alfresco-remote-testrunner
+        //  - is not on Maven Central (only 1.0) is
+        //  - nobody what it used for exactly
+        //  - nobody knows where it came from
+        // Ergo, kill it with fire.
+        // The proper way is a fix of alfresco-remote-testrunner, but until then we use this workaround.
+        integrationTestImplementationLocal "commons-lang:commons-lang:1.0"
     }
 }
 

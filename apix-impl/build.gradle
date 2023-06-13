@@ -26,8 +26,6 @@ subprojects {
 
     dependencies {
         compile(project(":apix-impl"))
-        // Works for >5 too
-        dynamicExtensionsBundles(group: 'eu.xenit.swagger.ui', name: 'swagger-ui_5x', version: '1.3.0') { transitive = false }
     }
 
     publishing {

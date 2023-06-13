@@ -33,37 +33,21 @@ publishing {
 
     repositories {
         maven {
-            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
 
             credentials {
-                username = project.hasProperty('publish_username') ? project.publish_username : ''
-                password = project.hasProperty('publish_password') ? project.publish_password : ''
+                username = project.findProperty('sonatype_username')
+                password = project.findProperty('sonatype_password')
             }
         }
     }
 }
 
-afterEvaluate {
-    signing {
-        required { !version.endsWith('SNAPSHOT') && gradle.taskGraph.hasTask(publish) }
-        sign publishing.publications
-    }
-}
-
-gradle.taskGraph.whenReady { graph ->
-    if(graph.hasTask(publish)) {
-        if(!project.hasProperty('keyId') || !project.hasProperty('secretKeyRingFile') || !project.hasProperty('password')) {
-            throw new GradleException('You need to provide signing params in order to sign artifacts')
-        }
-
-        def id = project.hasProperty('keyId') ? project.keyId : ''
-        def file = project.hasProperty('secretKeyRingFile') ? project.secretKeyRingFile : ''
-        def password = project.hasProperty('password') ? project.password : ''
-
-        ext."signing.keyId" = id
-        ext."signing.secretKeyRingFile" = file
-        ext."signing.password" = password
-    }
+signing {
+    required { !version.toString().endsWith("SNAPSHOT") }
+    // This needs to be changed once Gradle is upgraded to https://github.com/xenit-eu/xenit-java-logging/blob/master/publish.gradle#L54
+    useInMemoryPgpKeys(findProperty("signingKey"), findProperty("signingPassword"))
+    sign publishing.publications
 }
