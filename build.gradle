@@ -18,7 +18,7 @@ def includeResource(configuration) {
 }
 
 def getVersionQualifier(String branch_name) {
-    if(branch_name.startsWith('release'))
+    if (branch_name.startsWith('release'))
         return ''
     //(DEVEM-463, ALFREDAPI-514): The current osgi version (6.0.0) in DE (3.0.0) has issues with version strings containing '-'
     // We've tried replacing the '-' with at '.', but that breaks maven-style dependency resolution.
@@ -75,7 +75,14 @@ subprojects {
     repositories {
         mavenCentral()
         maven { url "https://artifacts.alfresco.com/nexus/content/groups/public" }
-        maven { url "https://repo.xenit.eu/zRCLvpH8FA0bR2ha/legacy/maven/" }
+
+        maven {
+            url "https://repo.xenit.eu/basic/legacy/maven/"
+            credentials {
+                username System.env.CLOUDSMITH_USER ?: property('eu.xenit.cloudsmith.username')
+                password System.env.CLOUDSMITH_APIKEY ?: property('eu.xenit.cloudsmith.password')
+            }
+        }
         // This private repository provides Xenit with Alfresco enterprise artefacts.
         // External developers should replace it with their own library repository.
         maven {

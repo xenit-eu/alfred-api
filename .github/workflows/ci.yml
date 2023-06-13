@@ -9,6 +9,8 @@ on:
 env:
   ALFRESCO_NEXUS_USERNAME: ${{ secrets.ALFRESCO_NEXUS_USERNAME }}
   ALFRESCO_NEXUS_PASSWORD: ${{ secrets.ALFRESCO_NEXUS_PASSWORD }}
+  CLOUDSMITH_USER: ${{ secrets.CLOUDSMITH_USER }}
+  CLOUDSMITH_APIKEY: ${{ secrets.CLOUDSMITH_APIKEY }}
 jobs:
   BuildAndPublish:
     strategy:
