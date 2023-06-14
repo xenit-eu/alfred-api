@@ -32,15 +32,15 @@ jobs:
           username: ${{ secrets.CLOUDSMITH_USER }}
           password: ${{ secrets.CLOUDSMITH_APIKEY }}
       - name: Build interface  # Execute before integration testing to catch errors early
-        uses: gradle/gradle-build-action@v2.3.0
+        uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: :apix-interface:build :apix-interface:javadoc
       - name: Unit test REST API
-        uses: gradle/gradle-build-action@v2.3.0
+        uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: --info :apix-rest-v1:test
       - name: Build and test
-        uses: gradle/gradle-build-action@v2.3.0
+        uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: >-
             --info
@@ -55,7 +55,7 @@ jobs:
           retention-days: 2
       - name: Publish
         if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}
-        uses: gradle/gradle-build-action@v2.3.0
+        uses: gradle/gradle-build-action@v2.4.2
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVEN_CENTRAL_GPG_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVEN_CENTRAL_GPG_PASSWORD }}
