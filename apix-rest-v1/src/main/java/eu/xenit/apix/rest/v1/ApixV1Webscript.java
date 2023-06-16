@@ -12,8 +12,10 @@ import eu.xenit.apix.permissions.IPermissionService;
 import eu.xenit.apix.permissions.PermissionValue;
 import eu.xenit.apix.rest.v1.nodes.NodeInfo;
 import eu.xenit.apix.rest.v1.nodes.NodeInfoRequest;
+import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
@@ -26,7 +28,9 @@ public class ApixV1Webscript {
     private static final Logger logger = LoggerFactory.getLogger(ApixV1Webscript.class);
 
     protected <T> ResponseEntity<T> writeJsonResponse(T object) {
-        return ResponseEntity.ok(object);
+        return ResponseEntity.ok()
+                .contentType(new MediaType("application", "json", StandardCharsets.UTF_8))
+                .body(object);
     }
 
     protected NodeRef createNodeRef(String space, String store, String guid) {
