@@ -57,9 +57,10 @@ jobs:
         uses: mikepenz/action-junit-report@v3.7.6
         if: success() || failure()
         with:
-          check_name: 'test_reports'
+          check_name: "test-reports-${{ matrix.alfresco_version }}"
           report_paths: '**/build/test-results/**/TEST-*.xml'
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          detailed_summary: true
 
       - name: Publish
         if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}
