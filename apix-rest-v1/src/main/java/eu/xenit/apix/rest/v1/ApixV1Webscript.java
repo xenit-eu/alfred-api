@@ -28,9 +28,7 @@ public class ApixV1Webscript {
     private static final Logger logger = LoggerFactory.getLogger(ApixV1Webscript.class);
 
     protected <T> ResponseEntity<T> writeJsonResponse(T object) {
-        return ResponseEntity.ok()
-                .contentType(new MediaType("application", "json", StandardCharsets.UTF_8))
-                .body(object);
+        return ResponseEntity.ok(object);
     }
 
     protected NodeRef createNodeRef(String space, String store, String guid) {

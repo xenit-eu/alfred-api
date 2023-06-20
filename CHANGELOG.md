@@ -7,7 +7,7 @@
 ### Changed
 
 ### Fixed
-* [ALFREDAPI-520](https://xenitsupport.jira.com/browse/ALFREDAPI-520): Enforce encoding on json responses to guarantee clean response in bulk webscript
+* [ALFREDAPI-520](https://xenitsupport.jira.com/browse/ALFREDAPI-520): Enforce encoding on bulk json responses to guarantee clean text
 
 ### Removed
 
