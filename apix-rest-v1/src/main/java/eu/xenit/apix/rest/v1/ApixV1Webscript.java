@@ -12,10 +12,8 @@ import eu.xenit.apix.permissions.IPermissionService;
 import eu.xenit.apix.permissions.PermissionValue;
 import eu.xenit.apix.rest.v1.nodes.NodeInfo;
 import eu.xenit.apix.rest.v1.nodes.NodeInfoRequest;
-import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
