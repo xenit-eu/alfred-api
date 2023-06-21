@@ -39,7 +39,7 @@ public class WorkflowService_SearchContextMyPooledTasks_Test extends WorkflowSer
 
     @Test
     public void testDummy(){
-        System.out.println("test to resolve: NoRunableMethodExceptionExample: to Delete");
+        logger.debug("dummytest: NoRunableMethodExceptionExample: solves race condition of  testSearchContextMyPooledTask");
         assertEquals(1,1);
     }
     @Test
