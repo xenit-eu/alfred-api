@@ -1,16 +1,15 @@
 # Alfred API - Changelog
 
-## 4.0.1 (yyyy-mm-dd)
+## 4.0.2 (yyyy-mm-dd)
 
 ### Added
 
 ### Changed
 
-
 ### Fixed
+* [ALFREDAPI-520](https://xenitsupport.jira.com/browse/ALFREDAPI-520): Enforce encoding on bulk json responses to guarantee clean text
 
 ### Removed
-
 
 ## 4.0.1 (unreleased)
 

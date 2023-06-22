@@ -9,6 +9,7 @@ import eu.xenit.apix.rest.v1.bulk.request.BulkHttpServletRequest;
 import eu.xenit.apix.rest.v1.bulk.request.BulkRequest;
 import eu.xenit.apix.rest.v1.bulk.request.IntermediateRequest;
 import eu.xenit.apix.rest.v1.bulk.response.IntermediateResponse;
+import java.nio.charset.StandardCharsets;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.ServiceRegistry;
 import org.slf4j.Logger;
@@ -69,6 +70,12 @@ public class BulkWebscript1 extends ApixV1Webscript {
             final IntermediateRequest intermediateRequest = new IntermediateRequest(wsReq, bulkHttpServletRequest);
 
             final IntermediateResponse intermediateResponse = new IntermediateResponse();
+            // ALFREDAPI-520: Due to the bulk script circumventing the spring framework config
+            // through the alfresco-mvc dispatcher servlet, the encoding of the response can be mangled.
+            // Setting it here avoids this issue.
+            // This is not considered breaking since the original implementation did not have a mechanism for the client
+            // to request certain encodings.
+            intermediateResponse.setCharacterEncoding(StandardCharsets.UTF_8.toString());
             final WebScriptServletResponse webScriptServletResponse = new WebScriptServletResponse(wsReq.getRuntime(),
                     intermediateResponse);
 
