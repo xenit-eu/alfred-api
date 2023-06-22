@@ -1,6 +1,15 @@
 # Alfred API - Changelog
 
 
+## 4.0.2 (unreleased)
+
+
+### Added
+### Changed
+### Fixed
+### Removed
+
+
 ## 4.0.1 (2023-06-13)
 This release removes swaggerui_5x from alfred-api artifact and changes generation of Snapshot qualifier to comform to maven format.
 
