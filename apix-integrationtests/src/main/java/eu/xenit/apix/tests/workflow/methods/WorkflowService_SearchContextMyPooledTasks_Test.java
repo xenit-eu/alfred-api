@@ -36,10 +36,12 @@ public class WorkflowService_SearchContextMyPooledTasks_Test extends WorkflowSer
     }
 
     @Test
-    public void testDummy(){
-        logger.debug("dummytest: NoRunableMethodExceptionExample: solves race condition of  testSearchContextMyPooledTask");
-        assertEquals(1,1);
+    public void testDummy() {
+        logger.debug(
+                "dummytest: NoRunableMethodExceptionExample: solves race condition of  testSearchContextMyPooledTask");
+        assertEquals(1, 1);
     }
+
     @Test
     public void testSearchContextMyPooledTask() {
         String testName = new Object() {
