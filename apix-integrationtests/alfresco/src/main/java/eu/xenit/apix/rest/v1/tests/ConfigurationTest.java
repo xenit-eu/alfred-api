@@ -1,17 +1,10 @@
 package eu.xenit.apix.rest.v1.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import eu.xenit.apix.content.IContentService;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.filefolder.IFileFolderService;
 import eu.xenit.apix.node.INodeService;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.net.URLEncoder;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.node.archive.NodeArchiveService;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -37,12 +30,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.URLEncoder;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+
 /**
  * Created by kenneth on 14.03.16.
  */
 public class ConfigurationTest extends RestV1BaseTest {
 
-    private final static Logger logger = LoggerFactory.getLogger(ConfigurationTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConfigurationTest.class);
 
     @Autowired
     @Qualifier("FileFolderService")
@@ -125,20 +127,7 @@ public class ConfigurationTest extends RestV1BaseTest {
 
     @Test
     public void testConfigurationGet() throws IOException, JSONException {
-        String requestUrl = makeBasePath();
-
-        HttpResponse response = Request
-                .Get(requestUrl)
-                .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .execute()
-                .returnResponse();
-
-        assertEquals(200, response.getStatusLine().getStatusCode());
-
-        JSONObject jsonObject = new JSONObject(EntityUtils.toString(response.getEntity()));
-
-        JSONArray jsonFiles = jsonObject.getJSONArray("files");
-
+        JSONArray jsonFiles = callConfiguration(makeBasePath());
         assertEquals(4, jsonFiles.length());
 
         for (int i = 0; i < jsonFiles.length(); i++) {
@@ -157,21 +146,20 @@ public class ConfigurationTest extends RestV1BaseTest {
     }
 
     @Test
-    public void testConfigurationGetFields() throws IOException, JSONException {
-        String requestUrl = makeBasePath() + "&fields=nodeRef,path,metadata,parsedContent";
-
+    public void testConfigurationGetJS() throws IOException, JSONException {
         HttpResponse response = Request
-                .Get(requestUrl)
-                .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .Get(makeBasePath())
+                .addHeader(HttpHeaders.ACCEPT, "application/js")
                 .execute()
                 .returnResponse();
-
         assertEquals(200, response.getStatusLine().getStatusCode());
+        assertEquals("application/js", response.getFirstHeader(CONTENT_TYPE).getValue());
+    }
 
-        JSONObject jsonObject = new JSONObject(EntityUtils.toString(response.getEntity()));
-
-        JSONArray jsonFiles = jsonObject.getJSONArray("files");
-
+    @Test
+    public void testConfigurationGetFields() throws IOException, JSONException {
+        String requestUrl = makeBasePath() + "&fields=nodeRef,path,metadata,parsedContent";
+        JSONArray jsonFiles = callConfiguration(requestUrl);
         assertEquals(4, jsonFiles.length());
 
         for (int i = 0; i < jsonFiles.length(); i++) {
@@ -207,10 +195,7 @@ public class ConfigurationTest extends RestV1BaseTest {
 
     }
 
-    @Test
-    public void testConfigurationFilterFields() throws IOException, JSONException {
-        String requestUrl = makeBasePath() + "&filter.name=" + URLEncoder.encode("\\.yaml$", "UTF-8");
-
+    private JSONArray callConfiguration(String requestUrl) throws IOException {
         HttpResponse response = Request
                 .Get(requestUrl)
                 .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -218,11 +203,19 @@ public class ConfigurationTest extends RestV1BaseTest {
                 .returnResponse();
 
         assertEquals(200, response.getStatusLine().getStatusCode());
+        assertEquals("application/json", response.getFirstHeader(CONTENT_TYPE).getValue());
 
         JSONObject jsonObject = new JSONObject(EntityUtils.toString(response.getEntity()));
 
         JSONArray jsonFiles = jsonObject.getJSONArray("files");
 
+        return jsonFiles;
+    }
+
+    @Test
+    public void testConfigurationFilterFields() throws IOException, JSONException {
+        String requestUrl = makeBasePath() + "&filter.name=" + URLEncoder.encode("\\.yaml$", "UTF-8");
+        JSONArray jsonFiles = callConfiguration(requestUrl);
         assertEquals(2, jsonFiles.length());
         for (int i = 0; i < jsonFiles.length(); i++) {
             JSONObject jsonFile = jsonFiles.getJSONObject(i);
@@ -235,19 +228,7 @@ public class ConfigurationTest extends RestV1BaseTest {
     @Test
     public void testConfigurationSubdirectory() throws IOException, JSONException {
         String requestUrl = makeBasePath() + "/subFolder";
-
-        HttpResponse response = Request
-                .Get(requestUrl)
-                .addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .execute()
-                .returnResponse();
-
-        assertEquals(200, response.getStatusLine().getStatusCode());
-
-        JSONObject jsonObject = new JSONObject(EntityUtils.toString(response.getEntity()));
-
-        JSONArray jsonFiles = jsonObject.getJSONArray("files");
-
+        JSONArray jsonFiles = callConfiguration(requestUrl);
         assertEquals(1, jsonFiles.length());
         for (int i = 0; i < jsonFiles.length(); i++) {
             JSONObject jsonFile = jsonFiles.getJSONObject(i);
@@ -267,7 +248,6 @@ public class ConfigurationTest extends RestV1BaseTest {
                 removeTestNode(new org.alfresco.service.cmr.repository.NodeRef(testFolder.toString()));
             } catch (RuntimeException ex) {
                 logger.debug("Did not need to remove mainTestFolder because it did not exist");
-                //ex.printStackTrace();
             }
             return null;
         };
