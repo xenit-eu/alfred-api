@@ -1,4 +1,4 @@
-description = 'Xenit API-X Java interface'
+description = 'Xenit Alfred API Java interface'
 
 apply from: "${rootProject.projectDir}/publish.gradle"
 

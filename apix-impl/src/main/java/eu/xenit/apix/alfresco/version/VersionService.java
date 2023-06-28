@@ -12,7 +12,7 @@ public class VersionService implements IVersionService {
     public VersionDescription getVersionDescription() {
         VersionDescription ret = VersionDescription.createFromVersionString(
                 Version.Number,
-                "XeniT Api-X java alfresco wrapper and REST interface");
+                "Xenit Alfred API Alfresco wrapper and REST interface");
         return ret;
     }
 }

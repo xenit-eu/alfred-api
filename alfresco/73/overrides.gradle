@@ -1,4 +1,4 @@
-description = "Xenit API-X implementation Alfresco 7.3"
+description = "Xenit Alfred API implementation Alfresco 7.3"
 
 ext {
     alfresco_version = '7.3.1'

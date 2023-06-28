@@ -4,7 +4,7 @@ plugins {
     id 'eu.xenit.alfresco' version '1.1.0'
 }
 
-description = 'Xenit API-X Rest v1'
+description = 'Xenit Alfred API Rest v1'
 
 apply from: "$rootProject.projectDir/alfresco/70/overrides.gradle"
 
