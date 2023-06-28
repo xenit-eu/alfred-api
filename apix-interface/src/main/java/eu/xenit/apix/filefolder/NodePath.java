@@ -9,6 +9,14 @@ public class NodePath {
     private String displayPath;
     private String qnamePath;
 
+    public NodePath() {
+    }
+
+    public NodePath(String displayPath, String qnamePath) {
+        this.displayPath = displayPath;
+        this.qnamePath = qnamePath;
+    }
+
     public String getDisplayPath() {
         return displayPath;
     }

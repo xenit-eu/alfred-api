@@ -2,9 +2,6 @@ package eu.xenit.apix.alfresco.configuration;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.HttpMethod;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
 import eu.xenit.apix.configuration.ConfigurationFile;
 import eu.xenit.apix.configuration.ConfigurationFileFlags;
 import eu.xenit.apix.configuration.ConfigurationService;
@@ -17,13 +14,12 @@ import eu.xenit.apix.filefolder.IFileFolderService;
 import eu.xenit.apix.node.ChildParentAssociation;
 import eu.xenit.apix.node.INodeService;
 import eu.xenit.apix.node.NodeMetadata;
-import eu.xenit.apix.rest.v1.configuration.ConfigurationWebscript1;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.rest.framework.core.exceptions.InvalidArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 
@@ -31,20 +27,18 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import static org.alfresco.model.ContentModel.PROP_NAME;
 import static org.alfresco.model.ContentModel.TYPE_FOLDER;
 
-@OsgiService
-@Component("eu.xenit.apix.configuration.ConfigurationService")
+@Service("eu.xenit.apix.configuration.ConfigurationService")
 public class ConfigurationServiceImpl implements ConfigurationService {
 
     private static final String QNAME_FOLDER = TYPE_FOLDER.toString();
     private static final QName QNAME_NAME = new QName(PROP_NAME.toString());
-    Logger logger = LoggerFactory.getLogger(ConfigurationWebscript1.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConfigurationServiceImpl.class);
 
     @Autowired
     IFileFolderService fileFolderService;
@@ -117,7 +111,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
                 ContentInputStream configStream = contentService.getContent(configurationFile.getNodeRef());
                 if (configStream != null) {
                     String mimetype = configStream.getMimetype();
-                    String name = configurationFile.getMetadata().properties.get(QNAME_NAME).get(0);
+                    String name = configurationFile.getMetadata().getProperties().get(QNAME_NAME).get(0);
                     logger.debug("Mimetype is {}; filename is {}", mimetype, name);
                     Object parsedContent = null;
                     if (mimetype.equals("text/x-yaml") || name.endsWith(".yaml") || name.endsWith(".yml")) {
@@ -150,7 +144,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         for (ChildParentAssociation childParentAssociation : childParentAssociations) {
             NodeRef child = childParentAssociation.getTarget();
             NodeMetadata childMetadata = nodeService.getMetadata(child);
-            if (childMetadata.type.getValue().equals(QNAME_FOLDER)) {
+            if (childMetadata.getType().getValue().equals(QNAME_FOLDER)) {
                 files.addAll(getChildrenRecursive(child, filter));
             } else if (filter.isAccepted(childMetadata)) {
                 files.add(new ConfigurationFile(child, childMetadata));
@@ -177,7 +171,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
         @Override
         public boolean isAccepted(NodeMetadata metadata) {
-            String name = metadata.properties.get(QNAME_NAME).get(0);
+            String name = metadata.getProperties().get(QNAME_NAME).get(0);
             logger.debug("Checking if {} matches {}", name, filter);
             return filter.matcher(name).find();
         }

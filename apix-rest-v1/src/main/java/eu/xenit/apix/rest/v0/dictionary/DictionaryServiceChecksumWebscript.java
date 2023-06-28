@@ -1,47 +1,35 @@
 package eu.xenit.apix.rest.v0.dictionary;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Authentication;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.AuthenticationType;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.HttpMethod;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.WebScript;
+import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
 import eu.xenit.apix.dictionary.IDictionaryService;
-import eu.xenit.apix.rest.v0.RestV0Config;
-import java.io.IOException;
-import org.alfresco.service.ServiceRegistry;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.extensions.webscripts.AbstractWebScript;
-import org.springframework.extensions.webscripts.WebScriptRequest;
-import org.springframework.extensions.webscripts.WebScriptResponse;
-import org.springframework.stereotype.Component;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Component("eu.xenit.apix.rest.v0.dictionary.DictionaryServiceChecksumWebscript")
-@WebScript(families = {RestV0Config.Family}, defaultFormat = "json")
-@Authentication(AuthenticationType.USER)
-public class DictionaryServiceChecksumWebscript extends AbstractWebScript {
+import java.util.Collections;
+import java.util.Map;
 
-    @Autowired
-    private IDictionaryService service;
-    @Autowired
-    private ServiceRegistry serviceRegistry;
+@RestController
+public class DictionaryServiceChecksumWebscript {
 
-    @Override
-    @Uri(value = "/eu/xenit/dictionary/checksum", method = HttpMethod.GET)
-    public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
+    private final IDictionaryService service;
 
-        long checksum = service.getContentModelCheckSum();
-
-        ObjectMapper m = new ObjectMapper();
-
-        com.fasterxml.jackson.databind.node.ObjectNode ret = m.createObjectNode();
-        ret.put("checksum", checksum);
-        webScriptResponse.setContentType("json");
-        webScriptResponse.getWriter().write(ret.toString());
+    public DictionaryServiceChecksumWebscript(IDictionaryService service) {
+        this.service = service;
     }
 
-    public void setServiceRegistry(ServiceRegistry serviceRegistry) {
-        this.serviceRegistry = serviceRegistry;
+    @AlfrescoTransaction(readOnly = true)
+    @GetMapping(
+            value = "/dictionary/checksum",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Map<String, Long>> execute() {
+        return ResponseEntity.ok(
+                Collections.singletonMap(
+                        "checksum",
+                        service.getContentModelCheckSum()
+                )
+        );
     }
-
 }

@@ -1,61 +1,45 @@
 package eu.xenit.apix.rest.v1.translation;
 
-import com.github.dynamicextensionsalfresco.webscripts.annotations.HttpMethod;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.UriVariable;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.WebScript;
+import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
-import eu.xenit.apix.rest.v1.RestV1Config;
 import eu.xenit.apix.translation.ITranslationService;
 import eu.xenit.apix.translation.Translations;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import java.io.IOException;
-import java.util.Locale;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.extensions.webscripts.WebScriptResponse;
-import org.springframework.stereotype.Component;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Created by Stan on 30-Mar-16.
- */
-@WebScript(baseUri = RestV1Config.BaseUrl, families = RestV1Config.Family, defaultFormat = "json",
-        description = "Retrieve translations", value = "Translations")
-@Component("eu.xenit.apix.rest.v1.translation.TranslationsWebscript1")
+import java.util.Locale;
+
+@RestController
 public class TranslationsWebscript1 extends ApixV1Webscript {
 
-    @Autowired
-    ITranslationService translationService;
+    private final ITranslationService translationService;
 
-
-    @Uri(value = "/translations/{locale}/checksum", method = HttpMethod.GET)
-    @ApiOperation("Retrieve a checksum of all translations for given locale")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = TranslationChecksum.class))
-    public void getChecksum(@UriVariable final String locale, WebScriptResponse response) throws IOException {
-        Locale language = Locale.forLanguageTag(locale);
-
-        Long checksum = translationService.getTranslationsCheckSum(language);
-
-        TranslationChecksum checksumObj = new TranslationChecksum(checksum);
-
-        writeJsonResponse(response, checksumObj);
+    public TranslationsWebscript1(ITranslationService translationService) {
+        this.translationService = translationService;
     }
 
-    @Uri(value = "/translations/{locale}", method = HttpMethod.GET)
-    @ApiOperation("Get all available translations for given locale")
-    @ApiResponses(@ApiResponse(code = 200, message = "Success", response = Translations.class))
-    public void getTranslations(@UriVariable final String locale, WebScriptResponse response) throws IOException {
+    @AlfrescoTransaction(readOnly = true)
+    @GetMapping(value = "/v1/translations/{locale}/checksum")
+    public ResponseEntity<TranslationChecksum> getChecksum(@PathVariable final String locale) {
         Locale language = Locale.forLanguageTag(locale);
+        Long checksum = translationService.getTranslationsCheckSum(language);
+        TranslationChecksum checksumObj = new TranslationChecksum(checksum);
+        return writeJsonResponse(checksumObj);
+    }
 
+    @AlfrescoTransaction(readOnly = true)
+    @GetMapping(value = "/v1/translations/{locale}")
+    public ResponseEntity<Translations> getTranslations(@PathVariable final String locale) {
+        Locale language = Locale.forLanguageTag(locale);
         Translations translations = translationService.getTranslations(language);
-
-        writeJsonResponse(response, translations);
+        return writeJsonResponse(translations);
     }
 
     public static class TranslationChecksum {
 
-        public Long checksum;
+        private Long checksum;
 
         public TranslationChecksum(Long checksum) {
             this.checksum = checksum;
@@ -69,6 +53,4 @@ public class TranslationsWebscript1 extends ApixV1Webscript {
             this.checksum = checksum;
         }
     }
-
-
 }

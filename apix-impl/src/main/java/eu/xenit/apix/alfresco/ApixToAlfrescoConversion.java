@@ -1,7 +1,6 @@
 package eu.xenit.apix.alfresco;
 
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Component;
 
 
 @Component("eu.xenit.apix.alfresco.ApixToAlfrescoConversion")
-@OsgiService
 public class ApixToAlfrescoConversion {
 
     private static final Logger logger = LoggerFactory.getLogger(ApixToAlfrescoConversion.class);

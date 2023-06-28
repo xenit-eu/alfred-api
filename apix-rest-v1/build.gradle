@@ -1,35 +1,32 @@
-description = 'Xenit API-X Rest v1'
-ext {
-    // This is the lowest supported Alfresco version
-    alfresco_repository_version = "6.2"
+plugins {
+    id 'java-library'
+    id 'idea'
+    id 'eu.xenit.alfresco' version '1.1.0'
 }
+
+description = 'Xenit API-X Rest v1'
+
+apply from: "$rootProject.projectDir/alfresco/70/overrides.gradle"
+
 dependencies {
+    implementation platform("org.alfresco:acs-community-packaging:${alfresco_version}")
+
     // Alfresco dependency should be removed in the future
-    compileOnly(group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_repository_version) { exclude group: 'maven-plugins' }
-    compileOnly project(':apix-interface')
+    alfrescoProvided("org.alfresco:alfresco-repository")
+    alfrescoProvided project(':apix-interface')
+    alfrescoProvided('org.alfresco:alfresco-remote-api')
 
-    // The REST API use one call from DE annotations-runtime for the bulk endpoint 
-    // although annotations-runtime is internal
-    compileOnly(group: 'eu.xenit.de', name: 'annotations-runtime', version: de_version) { transitive = false }
-    compileOnly(group: 'eu.xenit.de', name: 'annotations', version: de_version) { transitive = false }
-    compileOnly(group: 'eu.xenit.de', name: 'webscripts', version: de_version) { transitive = false }
+    alfrescoProvided "com.gradecak.alfresco-mvc:alfresco-mvc-rest:${mvc}"
+    alfrescoProvided "com.gradecak.alfresco-mvc:alfresco-mvc-aop:${mvc}"
+    alfrescoProvided "javax.servlet:javax.servlet-api:4.0.1"
 
-    compile(project(':de-swagger-reader'))
-
-    // Overriding the dependencies in swagger to use the same version everywhere, ideally we
-    // can switch to a recent swagger version and have updated jackson versions.
-    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: jackson_version
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-joda', version: jackson_version
-
-    testCompile group: 'org.springframework', name: 'spring-core', version: '3.2.10.RELEASE'
-    testCompile group: 'org.springframework', name: 'spring-test', version: '3.2.10.RELEASE'
-    testCompile group: 'org.alfresco.surf', name: 'spring-webscripts', version: alfresco_repository_version
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.25.1'
-    testCompile group: 'eu.xenit.de', name: 'annotations', version: de_version
-    testCompile group: 'eu.xenit.de', name: 'annotations-runtime', version: de_version
-    testCompile group: 'eu.xenit.de', name: 'webscripts', version: de_version
-    testCompile(group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_repository_version) { exclude group: 'maven-plugins' }
-    testCompile(group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_repository_version) { exclude group: 'maven-plugins' }
-    testCompile project(':apix-interface')
-    testCompile project(':apix-impl')
+    testImplementation (project(':apix-interface')) {transitive = false}
+    testImplementation project(':apix-impl')
+    testImplementation platform("org.alfresco:acs-community-packaging:${alfresco_version}")
+    testImplementation 'org.springframework:spring-core'
+    testImplementation 'org.springframework:spring-test'
+    testImplementation "org.alfresco.surf:spring-webscripts"
+    testImplementation 'org.alfresco:alfresco-repository'
+    testImplementation 'org.alfresco:alfresco-remote-api'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.25.1'
 }
