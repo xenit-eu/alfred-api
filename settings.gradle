@@ -8,16 +8,14 @@ include ':apix-docker'
 include ':apix-integrationtests'
 include ':apix-integrationtests:model-amp'
 
-ext {
-    versions = ["6.2", "7.0", "7.1", "7.2", "7.3"]
-}
+for (String version : ["6.2", "7.0", "7.1", "7.2", "7.3"]) {
+    def shortVersion = version.replaceAll("\\.", "")
 
-for(String version : versions) {
-    def shortVersion = version.replaceAll("\\.","")
     include ":apix-impl:apix-impl-$shortVersion"
     include ":alfresco:$shortVersion"
     include ":apix-docker:docker-$shortVersion"
     include ":apix-integrationtests:alfresco:$shortVersion"
+
     project(":apix-impl:apix-impl-$shortVersion").projectDir = "$rootDir/apix-impl/$shortVersion" as File
     project(":apix-docker:docker-$shortVersion").projectDir = "$rootDir/apix-docker/$shortVersion" as File
     project(":alfresco:$shortVersion").projectDir = "$rootDir/alfresco/$shortVersion" as File
