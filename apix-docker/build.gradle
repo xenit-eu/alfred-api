@@ -22,7 +22,7 @@ subprojects {
 
     dockerCompose {
         useComposeFiles = ['docker-compose.yml']
-        // Don't use the dev compose file on Jenkins
+        // Don't use the dev compose file during CI builds
         if (!ci.isCi()) {
             // Allow the dev compose file to be deleted
             def extraComposeFile = 'debug-extension.docker-compose.yml'
