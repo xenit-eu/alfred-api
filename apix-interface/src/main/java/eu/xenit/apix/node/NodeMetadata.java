@@ -14,17 +14,15 @@ import java.util.Map;
  */
 public class NodeMetadata {
 
-    public NodeRef id;
-    public QName type; // qname
-    public QName baseType; //qname
-    public long transactionId;
-    public Map<QName, List<String>> properties;//: { [k: string]: Translation[]; }
-    public List<QName> aspects;
-    //TODO: parent
+    private NodeRef id;
+    private QName type; // qname
+    private QName baseType; //qname
+    private long transactionId;
+    private Map<QName, List<String>> properties;//: { [k: string]: Translation[]; }
+    private List<QName> aspects;
 
-    //Removed in favor of using the permissions endpoint public boolean canEditMetadata; // TODO: remove
-
-    //public NodeAssociation[] associations;
+    public NodeMetadata() {
+    }
 
     public NodeMetadata(NodeRef id, QName type, QName baseType, long transactionId, Map<QName, List<String>> properties,
                         List<QName> aspects) {
@@ -33,6 +31,55 @@ public class NodeMetadata {
         this.baseType = baseType;
         this.transactionId = transactionId;
         this.properties = properties;
+        this.aspects = aspects;
+    }
+
+    public NodeRef getId() {
+        return id;
+    }
+
+    public void setId(NodeRef id) {
+        this.id = id;
+    }
+
+    public QName getType() {
+        return type;
+    }
+
+    public void setType(QName type) {
+        this.type = type;
+    }
+
+    public QName getBaseType() {
+        return baseType;
+    }
+
+    public void setBaseType(QName baseType) {
+        this.baseType = baseType;
+    }
+
+    public long getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(long transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public Map<QName, List<String>> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Map<QName, List<String>> properties) {
+        this.properties = properties;
+    }
+    //TODO: parent
+
+    public List<QName> getAspects() {
+        return aspects;
+    }
+
+    public void setAspects(List<QName> aspects) {
         this.aspects = aspects;
     }
 

@@ -9,8 +9,7 @@ services:
     - alfresco:/opt/alfresco/alf_data
     restart: unless-stopped
     environment:
-    - SOLR_HOST=solr
-    - TERM=xterm
+      - TERM=xterm
 
   solr:
     image: private.docker.xenit.eu/alfresco-enterprise/alfresco-solr6:2.0.3

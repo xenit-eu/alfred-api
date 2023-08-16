@@ -1,95 +1,49 @@
-def bundleClassPath(configuration) {
-    def list = ['.']
-    configuration.each {
-        list += 'lib/' + it.name
-    }
-    return list.join(',')
+plugins {
+    // Centralize plugin version management
+    id 'be.vbgn.ci-detect' version '0.5.0' apply false
+    id 'eu.xenit.de' version '3.0.0' apply false
+    id 'eu.xenit.amp' version '1.1.0' apply false
+    id 'eu.xenit.alfresco' version '1.1.0' apply false
+    id 'eu.xenit.docker-alfresco' version '5.3.1' apply false
+    id 'eu.xenit.docker-compose' version '5.3.1' apply false
+    id 'eu.xenit.alfresco-remote-testrunner' version '2.0.1' apply false
 }
 
-def includeResource(configuration) {
-    def list = []
-    configuration.each {
-        //We have to replace the backslashes with forward slashes because on windows the path will just be unseparated.
-        //For example when you have path "C\:Users\Someone\.gradle\caches" it will become "C\:UsersSomeone.gradlecaches"
-        def normalizedPath = it.path.replace("\\", "/")
-        list += 'lib/' + it.name + "=" + normalizedPath
-    }
-    return list.join(',')
-}
-
-def getVersionQualifier(String branch_name) {
-    if (branch_name.startsWith('release'))
+def static getVersionQualifier(String branch_name) {
+    if(branch_name.startsWith('release'))
         return ''
-    //(DEVEM-463, ALFREDAPI-514): The current osgi version (6.0.0) in DE (3.0.0) has issues with version strings containing '-'
-    // We've tried replacing the '-' with at '.', but that breaks maven-style dependency resolution.
-    // We consider correct dependency resolution of snapshots a more important feature than DE, so we opt for the '-'
-    // Dynamic extensions bundles of snapshots are therefore broken.
     return '-SNAPSHOT'
 }
 
-buildscript {
-    repositories {
-        mavenCentral()
-        maven {
-            url "https://maven.alfresco.com/nexus/content/groups/public"
-        }
-    }
-}
-
 ext {
-    versionWithoutQualifier = '4.0.2'
+    versionWithoutQualifier = '4.1.0'
 
+    de_version = '3.0.0'
+    mvc = '8.0.0'
     jackson_version = '2.8.3'
-    swagger_version = "1.5.7"
-    de_version = "3.0.0"
-
-    http_core_version = "4.3.3"
-    http_version = "4.3.4"
-
-    alfresco_62_version = "6.2"
-    alfresco_70_version = "7.0"
-    alfresco_71_version = "7.1"
-    alfresco_72_version = "7.2"
-    alfresco_73_version = "7.3"
-
-    // alfresco-data-model might have a different version number than the main war it's included in
-    // ref: https://bitbucket.org/xenit/alfresco-bom/src/master/repo/eu/xenit/alfresco/ for the bom of vanilla alfresco
-    alfresco_62_dm_version = "8.50.18"
-    alfresco_70_dm_version = "8.424"
-    alfresco_71_dm_version = "12.23"
-    alfresco_72_dm_version = "14.142"
-    alfresco_73_dm_version = "17.175"
-
     care4alfVersion = '2.3.0'
+    http_version = '4.3.4' // Used by integration tests
 }
 
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'maven'
 
-    group = 'eu.xenit.apix'
+    group = 'eu.xenit.alfred.api'
     version = versionWithoutQualifier + getVersionQualifier(System.env.BRANCH_NAME ?: 'local')
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = 11
+    targetCompatibility = 11
 
     repositories {
         mavenCentral()
         maven { url "https://artifacts.alfresco.com/nexus/content/groups/public" }
-
-        maven {
-            url "https://repo.xenit.eu/basic/legacy/maven/"
-            credentials {
-                username System.env.CLOUDSMITH_USER ?: property('eu.xenit.cloudsmith.username')
-                password System.env.CLOUDSMITH_APIKEY ?: property('eu.xenit.cloudsmith.password')
-            }
-        }
+        maven { url "https://repo.springsource.org/release" }
         // This private repository provides Xenit with Alfresco enterprise artefacts.
         // External developers should replace it with their own library repository.
         maven {
             url 'https://artifacts.alfresco.com/nexus/content/groups/private'
             credentials {
-                username System.env.ALFRESCO_NEXUS_USERNAME ?: property('org.alfresco.maven.nexus.username')
-                password System.env.ALFRESCO_NEXUS_PASSWORD ?: property('org.alfresco.maven.nexus.password')
+                username System.env.ALFRESCO_NEXUS_USERNAME ?: property("org.alfresco.maven.nexus.username")
+                password System.env.ALFRESCO_NEXUS_PASSWORD ?: property("org.alfresco.maven.nexus.password")
             }
         }
     }

@@ -1,7 +1,6 @@
 package eu.xenit.apix.alfresco.dictionary;
 
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.dictionary.IDictionaryService;
 import eu.xenit.apix.dictionary.aspects.AspectDefinition;
@@ -35,11 +34,10 @@ import org.springframework.stereotype.Component;
  * Created by Michiel Huygen on 24/11/2015.
  */
 
-@OsgiService
 @Component("eu.xenit.apix.dictionary.IDictionaryService")
 public class DictionaryService implements IDictionaryService {
 
-    private final static Logger logger = LoggerFactory.getLogger(DictionaryService.class);
+    private static final Logger logger = LoggerFactory.getLogger(DictionaryService.class);
     @Autowired
     private ApixToAlfrescoConversion c;
     @Autowired
@@ -57,8 +55,6 @@ public class DictionaryService implements IDictionaryService {
     @Autowired
     private NamespaceService namespaceService;
 
-    public DictionaryService() {
-    }
 
     public Namespaces getNamespaces() {
         Map<String, Namespace> ret = new HashMap<>();
@@ -67,7 +63,7 @@ public class DictionaryService implements IDictionaryService {
             if (s == null || s.length() == 0) {
                 continue;
             }
-            ret.put(s, new Namespace(s, new ArrayList<String>(this.namespaceService.getPrefixes(s))));
+            ret.put(s, new Namespace(s, new ArrayList<>(this.namespaceService.getPrefixes(s))));
         }
         return new Namespaces(ret);
     }

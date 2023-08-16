@@ -21,13 +21,6 @@ are not supported by the Alfresco Public API.
 ## Usage
 Full documentation can be found at the [project's documentation](https://docs.xenit.eu/alfred-api/stable-user/index.html).
 
-## Installation
-
-### Pre-requisites
-Alfred API requires **_Dynamic Extensions For Alfresco_**, version 2.0.1 or later. This module should be installed first.
-Acquisition and installation instructions can be found [here](https://github.com/xenit-eu/dynamic-extensions-for-alfresco).
-
-
 ## Contributing
 
 ### Rules for pull requests
@@ -49,12 +42,10 @@ Acquisition and installation instructions can be found [here](https://github.com
 * *apix-interface* builds the interface of Alfred API. This part is agnostic of the 
 Alfresco version used.
 * *apix-rest-v1* builds the REST API of Alfred API. 
-* *apix-impl* builds the AMP which is the main deliverable for Alfred API. The AMP contains the JARs of 
-*apix-interface* and *apix-rest-v1*.
-  * The top directory also contains code shared over different Alfresco versions.
-  * *apix-impl/xx* contains all code per Alfresco version. It has a *src/java* folder
-  for code specific to that Alfresco version and a *src/java-shared code* for the code shared between
-  versions. This code is automatically symlinked from the *apix-impl* directory.   
+* *apix-impl* builds the Java code for each version of Alfresco.
+* *alfresco* builds the AMP for each Alfresco version that is the main deliverable for Alfred API. The AMP contains
+  the JARs of *apix-interface* and *apix-rest-v1*.
+    * *alfresco/xx* contains the correct properties for each Alfresco version.
 * *apix-integrationtests* contains the integration tests for each Alfresco version.
 
 ### How to
@@ -70,7 +61,7 @@ Where `VERSION` is e.g. `70`.
 
 #### Run integration tests
 ```bash
-./gradlew :apix-integrationtests:test-${VERSION}:integrationTest
+./gradlew :apix-integrationtests:alfresco:${VERSION}:integrationTest
 ```  
 Again, where `VERSION` is e.g. `70`.
 
@@ -84,25 +75,13 @@ However, this starts (and afterwards stops) docker containers. This includes sta
 
 #### Run integration tests under debugger
 1. Debugging settings are already added by `apix-docker/${VERSION}/debug-extension.docker-compose.yml`, including a 
-portmapping `8000:8000`. This file does not get loaded when running in Jenkins.
+portmapping `8000:8000`. This file does not get loaded when running in CI.
 2. Prepare your remote debugger in IntelliJ and set breakpoints where you want in your tests
  (or Alfred API code).
 3. Run the integration tests (see section above).
 4. Wait until the container is started and healthy, then attach the debugger.
 
 Again, where `VERSION` is e.g. `70`.
-
-#### Deploy code changes for development
-In a development scenario, it is possible to upload code changes to a running alfresco through dynamic extensions.
-This requires the running alfresco to already have an older or equal version of alfred-api installed, and
-the use of the jar artifact instead of the amp to do the new install. 
-The JAR has the format `apix-impl-{ALFRESCO-VERSION}-{APIX-VERSION}.jar` and can be found under 
-`apix-impl/{ALFRESCO-VERSION}/build/libs/`, where `ALFRESCO-VERSION` is one of *(62|70|71|72|73)*.
-The new installation can be done either through the DE web interface, or with the following gradle task.
-```bash
-./gradlew :apix-impl:apix-impl-{ALFRESCO-VERSION}:installBundle -Phost={ALFRESCO-HOST} -Pport={ALFRESCO-PORT}
-```
-Where `VERSION` is e.g. `70` and here `PORT` is the port mapping of the *alfresco-core* container e.g. `32774`.
 
 *Protip:* If you get tired of changing the port after every `docker-compose up`, you can temporarily put a
 fixed port in the *docker-compose.yml* of the version you are working with. (The rationale behind using 

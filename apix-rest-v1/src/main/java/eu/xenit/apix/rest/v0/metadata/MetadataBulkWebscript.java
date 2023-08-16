@@ -1,76 +1,39 @@
 package eu.xenit.apix.rest.v0.metadata;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Authentication;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.AuthenticationType;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.HttpMethod;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.WebScript;
+import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.node.INodeService;
 import eu.xenit.apix.permissions.IPermissionService;
-import eu.xenit.apix.rest.v0.RestV0Config;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import org.alfresco.service.ServiceRegistry;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.extensions.webscripts.AbstractWebScript;
-import org.springframework.extensions.webscripts.WebScriptRequest;
-import org.springframework.extensions.webscripts.WebScriptResponse;
-import org.springframework.stereotype.Component;
 
-@WebScript(families = {RestV0Config.Family}, defaultFormat = "json")
-@Component("eu.xenit.apix.rest.v0.metadata.MetadataBulkWebscript")
-@Authentication(AuthenticationType.USER)
-public class MetadataBulkWebscript extends AbstractWebScript {
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-    @Autowired
-    private INodeService service;
-    @Autowired
-    private IPermissionService permissionService;
-    @Autowired
-    private ServiceRegistry serviceRegistry;
+@RestController
+public class MetadataBulkWebscript {
 
-    @Uri(value = "/eu/xenit/metadata/bulk", method = HttpMethod.POST)
-    @Override
-    public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
-        ObjectMapper m = new ObjectMapper();
+    private final INodeService service;
+    private final IPermissionService permissionService;
 
-        JsonNode input = m.readTree(webScriptRequest.getContent().getContent());
-        if (!input.isArray()) {
-            throw new RuntimeException("Should be an array of noderefs");
-        }
+    public MetadataBulkWebscript(INodeService service, IPermissionService permissionService) {
+        this.service = service;
+        this.permissionService = permissionService;
+    }
 
-        List<NodeRef> refs = new ArrayList<>(input.size());
-        Iterator<JsonNode> iterator = input.elements();
-        while (iterator.hasNext()) {
-            refs.add(new NodeRef(iterator.next().asText()));
-        }
-
+    @AlfrescoTransaction
+    @PostMapping(
+            value = "/eu/xenit/metadata/bulk",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<List<NodeMetadataV0>> execute(@RequestBody final List<NodeRef> nodeRefs) {
         List<NodeMetadataV0> metadatas = new ArrayList<>();
-
-        for (NodeRef el : refs) {
+        for (NodeRef el : nodeRefs) {
             metadatas.add(NodeMetadataV0.FromV1(service.getMetadata(el), permissionService));
         }
-
-        ArrayNode node = m.createArrayNode();
-
-        for (NodeMetadataV0 metadata : metadatas) {
-            node.add(m.valueToTree(metadata));
-        }
-
-        String retStr = node.toString();
-
-        webScriptResponse.setContentType("json");
-        webScriptResponse.getWriter().write(retStr);
+        return ResponseEntity.ok(metadatas);
     }
-
-    public void setServiceRegistry(ServiceRegistry serviceRegistry) {
-        this.serviceRegistry = serviceRegistry;
-    }
-
 }

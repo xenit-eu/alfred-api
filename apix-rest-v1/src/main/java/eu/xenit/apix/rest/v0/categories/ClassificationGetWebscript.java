@@ -1,42 +1,34 @@
 package eu.xenit.apix.rest.v0.categories;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Authentication;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.AuthenticationType;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.WebScript;
+import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
+import eu.xenit.apix.categories.Category;
 import eu.xenit.apix.categories.ICategoryService;
 import eu.xenit.apix.data.QName;
-import eu.xenit.apix.rest.v0.RestV0Config;
-import java.io.IOException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.extensions.webscripts.AbstractWebScript;
-import org.springframework.extensions.webscripts.WebScriptRequest;
-import org.springframework.extensions.webscripts.WebScriptResponse;
-import org.springframework.stereotype.Component;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Created by Michiel Huygen on 01/12/2015.
- */
-@WebScript(families = {RestV0Config.Family}, defaultFormat = "json")
-@Component("eu.xenit.apix.rest.v0.categories.ClassificationGetWebscript")
-@Authentication(AuthenticationType.USER)
-public class ClassificationGetWebscript extends AbstractWebScript {
+import java.util.List;
 
-    @Autowired
-    private ICategoryService catService;
+@RestController
+public class ClassificationGetWebscript {
 
-    @Uri("/eu/xenit/classification/{aspectqname}")
-    @Override()
-    public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
+    private final ICategoryService catService;
 
-        QName aspectQname = new QName(req.getServiceMatch().getTemplateVars().get("aspectqname"));
+    public ClassificationGetWebscript(ICategoryService catService) {
+        this.catService = catService;
+    }
 
-        ObjectMapper m = new ObjectMapper();
-        String ret = m.writeValueAsString(catService.getCategoryTree(aspectQname));
-
-        res.getWriter().write(ret);
-
-
+    @AlfrescoTransaction(readOnly = true)
+    @GetMapping(
+            value = "/classification/{aspectQName}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<List<Category>> execute(@PathVariable final QName aspectQName) {
+        return ResponseEntity.ok(
+                catService.getCategoryTree(aspectQName)
+        );
     }
 }

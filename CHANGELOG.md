@@ -1,13 +1,22 @@
 # Alfred API - Changelog
 
+## 4.1.0 (unreleased)
+From this version onward Dynamic Extensions is replaced by [Alfresco MVC](https://github.com/dgradecak/alfresco-mvc)
+as framework to reduce maintenance efforts.
 
-## 4.0.2 (unreleased)
-
+To make this change clearer the Alfred API Maven group ID has been updated from `eu.xenit.apix`
+to `eu.xenit.alfred.api`.
 
 ### Added
+
 ### Changed
+
 ### Fixed
+* [ALFREDAPI-520](https://xenitsupport.jira.com/browse/ALFREDAPI-520): Enforce encoding on bulk json responses to guarantee clean text
+
 ### Removed
+* [ALFREDAPI-504](https://xenitsupport.jira.com/browse/ALFREDAPI-504): Drop Dynamic Extensions in favor of Alfresco MVC
+
 
 
 ## 4.0.1 (2023-06-13)
@@ -18,6 +27,7 @@ This release removes swaggerui_5x from alfred-api artifact and changes generatio
 * [ALFREDAPI-513](https://xenitsupport.jira.com/browse/ALFREDAPI-513): Remove swaggerui_5x from alfred-api artifact
 * [ALFREDAPI-514](https://xenitsupport.jira.com/browse/ALFREDAPI-514): Change generation of Snapshot qualifier to comform to maven format.
 * [ALFREDAPI-522](https://xenitsupport.jira.com/browse/ALFREDAPI-522): Change gradle repositories from artifactory.xenit to cloudsmith && artifactory.alfresco.
+* [ALFREDAPI-516](https://xenitsupport.jira.com/browse/ALFREDAPI-516): Classpath cleanup
 
 
 ## 4.0.0 (2023-01-17)

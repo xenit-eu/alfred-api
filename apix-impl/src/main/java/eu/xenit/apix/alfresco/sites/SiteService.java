@@ -1,6 +1,5 @@
 package eu.xenit.apix.alfresco.sites;
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.sites.ISite;
@@ -15,10 +14,9 @@ import org.alfresco.service.cmr.site.SiteInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@OsgiService
-@Component("eu.xenit.apix.alfresco.sites.SiteService")
+@Service("eu.xenit.apix.alfresco.sites.SiteService")
 public class SiteService implements ISiteService {
 
     private final static Logger logger = LoggerFactory.getLogger(SiteService.class);

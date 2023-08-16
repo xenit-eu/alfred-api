@@ -1,6 +1,5 @@
 package eu.xenit.apix.alfresco.WIP;
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.WIP.IWIPService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import org.alfresco.service.ServiceRegistry;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 /**
  * Created by jasper on 29/09/17.
  */
-@OsgiService
 @Service("eu.xenit.apix.WIP.WIPService")
 public class WIPServiceImpl implements IWIPService {
 
