@@ -1,12 +1,14 @@
 # Alfred API - Changelog
 
 
-## 4.0.2 (unreleased)
+## 4.1.0 (unreleased)
 
 
 ### Added
 ### Changed
 ### Fixed
+* [ALFREDAPI-546](https://xenitsupport.jira.com/browse/ALFREDAPI-546): Fix facet qname splitting for dates (cfr. [ALFREDAPI-531])
+
 ### Removed
 
 
