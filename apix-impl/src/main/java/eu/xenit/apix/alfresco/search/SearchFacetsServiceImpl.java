@@ -248,8 +248,8 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
             // facetTokenName => @{http://www.alfresco.org/model/content/1.0}created
             // qName => {http://www.alfresco.org/model/content/1.0}created
             // 7 => {!afts}
-            key = key.substring(7);
-            String facetTokenName = key.substring(0, key.lastIndexOf(':'));
+            key = key.replace("{!afts}","");
+            String facetTokenName = key.substring(0, key.indexOf(":["));
             String qName = facetTokenToQname(facetTokenName);
 
             // Retrieve the previous facet queries
@@ -260,7 +260,7 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
 
             // Get the handler for this qName
             FacetLabelDisplayHandler handler = facetLabelDisplayHandlerRegistry.getDisplayHandler(facetTokenName);
-            String val = key.substring(key.indexOf('}') + key.substring(key.indexOf('}')).indexOf(':') + 1);
+            String val = key.substring( key.indexOf(":[") + 1);
             FacetLabel facetLabel = (handler == null) ? new FacetLabel(val, val, -1) : handler.getDisplayLabel(key);
 
             // See if we have a nice textual version of this label

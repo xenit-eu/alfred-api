@@ -12,6 +12,7 @@ to `eu.xenit.alfred.api`.
 ### Changed
 
 ### Fixed
+* [ALFREDAPI-531](https://xenitsupport.jira.com/browse/ALFREDAPI-531): Fix facet qname splitting for dates
 * [ALFREDAPI-520](https://xenitsupport.jira.com/browse/ALFREDAPI-520): Enforce encoding on bulk json responses to guarantee clean text
 
 ### Removed
