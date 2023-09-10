@@ -1,21 +1,11 @@
 package eu.xenit.apix.tests.search;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import eu.xenit.apix.alfresco.search.SearchFacetsService;
 import eu.xenit.apix.alfresco.search.SearchFacetsServiceImpl;
 import eu.xenit.apix.search.FacetSearchResult;
 import eu.xenit.apix.search.FacetSearchResult.FacetValue;
 import eu.xenit.apix.search.SearchQuery.FacetOptions;
 import eu.xenit.apix.translation.ITranslationService;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import org.alfresco.repo.dictionary.constraint.ListOfValuesConstraint;
 import org.alfresco.repo.search.impl.solr.facet.SolrFacetHelper;
 import org.alfresco.repo.search.impl.solr.facet.SolrFacetService;
@@ -33,6 +23,17 @@ import org.alfresco.service.namespace.QName;
 import org.alfresco.util.Pair;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class SearchFacetServiceUnitTest {
 
@@ -110,7 +111,11 @@ public class SearchFacetServiceUnitTest {
                 .thenReturn(languageFieldFacetResults);
         when(resultSetMock.getFieldFacet("@{http://test.apix.xenit.eu/model/content}documentStatus"))
                 .thenReturn(documentStatusFieldFacetResults);
-        when(resultSetMock.getFacetQueries()).thenReturn(new HashMap<String, Integer>());
+        Map<String, Integer> facetQueries = new HashMap<>();
+        facetQueries.put("{!afts}@{http://www.alfresco.org/model/content/1.0}content.size:[0 TO 10240]", 1);
+        facetQueries.put("{!afts}@{http://www.alfresco.org/model/content/1.0}modified:[NOW/DAY-1YEAR TO NOW/DAY+1DAY]", 2);
+        facetQueries.put("{!afts}@{http://www.alfresco.org/model/content/1.0}created:[2020-08-31T07:00:00.000Z TO 2023-09-02T10:01:00.000Z]", 1);
+        when(resultSetMock.getFacetQueries()).thenReturn(facetQueries);
 
         searchParametersMock = mock(SearchParameters.class);
         List<FieldFacet> fieldFacets = new ArrayList<>();
@@ -145,6 +150,33 @@ public class SearchFacetServiceUnitTest {
         documentStatusValues.add(draftFacetValue);
         documentStatusResult.setValues(documentStatusValues);
         expectedResult.add(documentStatusResult);
+        FacetSearchResult contentResult = new FacetSearchResult();
+        contentResult.setName("{http://www.alfresco.org/model/content/1.0}content.size");
+        List<FacetValue> contentValues = new ArrayList<>();
+        FacetValue contentFacetValue = new FacetValue();
+        contentFacetValue.setValue("[0 TO 10240]");
+        contentFacetValue.setCount(1);
+        contentValues.add(contentFacetValue);
+        contentResult.setValues(contentValues);
+        expectedResult.add(contentResult);
+        FacetSearchResult modifiedResult = new FacetSearchResult();
+        modifiedResult.setName("{http://www.alfresco.org/model/content/1.0}modified");
+        List<FacetValue> modifiedValues = new ArrayList<>();
+        FacetValue modifiedFacetValue = new FacetValue();
+        modifiedFacetValue.setValue("[NOW/DAY-1YEAR TO NOW/DAY+1DAY]");
+        modifiedFacetValue.setCount(2);
+        modifiedValues.add(modifiedFacetValue);
+        modifiedResult.setValues(modifiedValues);
+        expectedResult.add(modifiedResult);
+        FacetSearchResult createdResult = new FacetSearchResult();
+        createdResult.setName("{http://www.alfresco.org/model/content/1.0}created");
+        List<FacetValue> createdValues = new ArrayList<>();
+        FacetValue createdFacetValue = new FacetValue();
+        createdFacetValue.setValue("[2020-08-31T07:00:00.000Z TO 2023-09-02T10:01:00.000Z]");
+        createdFacetValue.setCount(1);
+        createdValues.add(createdFacetValue);
+        createdResult.setValues(createdValues);
+        expectedResult.add(createdResult);
         return expectedResult;
     }
 
