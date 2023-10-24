@@ -1,5 +1,7 @@
 # Alfred API - Changelog
 
+## 4.0.2 92023-10-24)
+* [ALFREDAPI-534](https://xenitsupport.jira.com/browse/ALFREDAPI-534) Use alfresco BOM file to have correct dependencies 
 
 ## 4.0.1 (2023-06-13)
 This release removes swaggerui_5x from alfred-api artifact and changes generation of Snapshot qualifier to comform to maven format.

@@ -1,9 +1,7 @@
 ext {
     subproject_alfresco_version = "71"
     alfresco_version = alfresco_71_version
-    alfresco_dm_version = alfresco_71_dm_version
-    alfresco_repo_version = '12.23'
-    alfresco_remote_api_version = '12.23'
+    alfresco_packaging_version = alfresco_71_packaging_version
 }
 
 dependencies {

@@ -40,6 +40,7 @@ public class V1SearchWebscriptTest extends RestV1BaseTest {
         CloseableHttpResponse response = checkoutHttpclient.execute(checkoutHttppost);
         if (500 == response.getStatusLine().getStatusCode()) {
             //Internal server error!
+            logger.error("FAILING ....");
             logger.error(response.getStatusLine().getReasonPhrase());
             logger.error(response.toString());
         }

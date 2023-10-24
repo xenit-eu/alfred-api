@@ -52,7 +52,7 @@ public abstract class BulkTest extends RestV1BaseTest {
     @Autowired
     ServiceRegistry serviceRegistry;
 
-    private String jsonObjectGetStringFromInt(JSONObject targetObject, String key) {
+    private static String jsonObjectGetStringFromInt(JSONObject targetObject, String key) throws JSONException{
         return String.valueOf(targetObject.getInt(key));
     }
 

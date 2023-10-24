@@ -7,10 +7,10 @@ plugins {
 // Give IntelliJ a default source of non-shared classes
 ext {
     alfresco_version = alfresco_62_version
-    alfresco_repo_version = '7.199.0'
-    alfresco_dm_version = alfresco_62_dm_version
+    alfresco_packaging_version = alfresco_62_packaging_version
     alfresco_min_version = '6.2'
-}
+    alfresco_jackson_version = alfresco_62_jackson_version
+ }
 
 sourceSets.main.java.srcDirs += 'src/main/java'
 
@@ -25,7 +25,11 @@ subprojects {
     }
 
     dependencies {
-        compile(project(":apix-impl"))
+        implementation(project(":apix-impl")) {
+            exclude group: 'com.fasterxml.jackson.core'
+            exclude group: 'com.fasterxml.jackson.dataformat'
+            exclude group: 'com.fasterxml.jackson.datatype'
+        }
     }
 
     publishing {
@@ -86,24 +90,41 @@ allprojects {
     apply plugin: 'eu.xenit.alfresco'
 
     dependencies {
-        compile(project(":apix-interface"))
+        compile(project(":apix-interface")) {
+            exclude group: 'com.fasterxml.jackson.core'
+        }
         compile(project(":apix-rest-v1")) {
             exclude group: 'org.alfresco'
+            exclude group: 'com.fasterxml.jackson.core'
+            exclude group: 'com.fasterxml.jackson.datatype'
+            exclude group: 'com.fasterxml.jackson.dataformat'
         }
-        alfrescoProvided group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_version
-        alfrescoProvided group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_version
-
+        alfrescoProvided platform("org.alfresco:acs-packaging:${alfresco_packaging_version}")
+        alfrescoProvided 'org.alfresco:alfresco-repository'
+        alfrescoProvided 'org.alfresco:alfresco-remote-api'
+        compile group: 'io.swagger', name: 'swagger-annotations', version: swagger_version
+        if (alfresco_jackson_version.isEmpty()) {
+            alfrescoProvided 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
+        }
+        else {
+            // versions 6.2 and 7.0
+            compile ("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${alfresco_jackson_version}") {
+                exclude group: 'com.fasterxml.jackson.core'
+            }
+        }
         compile group: 'org.yaml', name: 'snakeyaml', version: '1.15'
         compile group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
-
-        testCompile group: 'eu.xenit.de', name: 'annotations', version: de_version
-        testCompile group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_repo_version
-        testCompile group: 'org.alfresco', name: 'alfresco-data-model', version: alfresco_dm_version
-        testCompile group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_version
-
-        testCompile group: 'org.mockito', name: 'mockito-core', version: '2.25.1'
-        testCompile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
-        testCompile group: 'eu.xenit.testing', name: 'integration-testing', version: '1.1.0'
+        if (alfresco_version == alfresco_73_version) {
+             alfrescoProvided 'javax.annotation:javax.annotation-api'
+        }
+        testImplementation platform("org.alfresco:acs-packaging:${alfresco_packaging_version}")
+        testImplementation 'org.alfresco:alfresco-repository'
+        testImplementation 'org.alfresco:alfresco-data-model'
+        testImplementation 'org.alfresco:alfresco-remote-api'
+        testImplementation 'org.mockito:mockito-core'
+        testImplementation group: 'eu.xenit.de', name: 'annotations', version: de_version
+        testImplementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
+        testImplementation group: 'eu.xenit.testing', name: 'integration-testing', version: '1.1.0'
     }
 
     task generateVersionFile(type: Task) {

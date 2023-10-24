@@ -1,5 +1,5 @@
 dependencies {
-    baseAlfrescoWar platform("org.alfresco:acs-packaging:7.1.0")
+    baseAlfrescoWar platform("org.alfresco:acs-packaging:${alfresco_71_packaging_version}")
     baseAlfrescoWar 'org.alfresco:content-services@war'
 }
 

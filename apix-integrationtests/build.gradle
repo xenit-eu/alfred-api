@@ -32,14 +32,17 @@ allprojects {
     }
 
     dependencies {
+
         alfrescoProvided project(":apix-rest-v1")
         alfrescoProvided project(":apix-interface")
         alfrescoProvided project(":apix-impl:apix-impl-${subproject_alfresco_version}")
 
-        alfrescoProvided group: 'org.alfresco', name: 'alfresco-repository', version: alfresco_repo_version
-        alfrescoProvided group: 'org.alfresco', name: 'alfresco-remote-api', version: alfresco_remote_api_version
-        alfrescoProvided group: 'org.alfresco', name: 'alfresco-data-model', version: alfresco_dm_version
+        alfrescoProvided platform("org.alfresco:acs-packaging:$alfresco_packaging_version")
+        alfrescoProvided 'org.alfresco:alfresco-repository'
+        alfrescoProvided 'org.alfresco:alfresco-remote-api'
+        alfrescoProvided 'org.alfresco:alfresco-data-model'
         alfrescoProvided group: 'org.osgi', name: 'org.osgi.core', version: '4.3.1'
+
 
         // Below is a temporary fix to circumvent using commons-lang 1.0.0 JAR. This jar
         //  - is injected by alfresco-remote-testrunner

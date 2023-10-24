@@ -66,22 +66,36 @@ public abstract class SolrTestHelperBaseImpl implements SolrTestHelper {
 
     @Override
     public int getNumberOfFtsStatusCleanDocs() {
-        return (Integer) getSummaryFtsSection().get(SOLR_SUMMARY_FTS_CLEAN);
+        try {
+            return (Integer) getSummaryFtsSection().get(SOLR_SUMMARY_FTS_CLEAN);
+        } catch (Exception e) {
+            throw (e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e));
+        }
     }
 
     @Override
     public boolean isContentIndexed() {
-        JSONObject ftsBlock = getSummaryFtsSection();
-        logger.debug("solrSummaryFTSBlock: {}", ftsBlock.toString(4));
-        return 0 == (Integer) ftsBlock.get(SOLR_SUMMARY_FTS_DIRTY);
+        try {
+            JSONObject ftsBlock = getSummaryFtsSection();
+            logger.debug("solrSummaryFTSBlock: {}", ftsBlock.toString(4));
+            return 0 == (Integer) ftsBlock.get(SOLR_SUMMARY_FTS_DIRTY);
+        } catch (Exception e) {
+            throw (e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e));
+        }
+
     }
 
     @Override
     public boolean isContentIndexed(int previousCleanCount) {
+        try {
         JSONObject ftsBlock = getSummaryFtsSection();
         logger.debug("solrSummaryFTSBlock: {}", ftsBlock.toString(4));
         return 0 == (Integer) ftsBlock.get(SOLR_SUMMARY_FTS_DIRTY)
                 && previousCleanCount < ((Integer) ftsBlock.get(SOLR_SUMMARY_FTS_CLEAN));
+        } catch (Exception e) {
+            throw (e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e));
+        }
+
     }
 
     @Override
@@ -131,6 +145,11 @@ public abstract class SolrTestHelperBaseImpl implements SolrTestHelper {
     }
 
     protected JSONObject getSummaryFtsSection() {
+        try {
         return solrAdminClient.getSolrSummaryJson().getJSONObject(SOLR_SUMMARY_CORE_ALFRESCO).getJSONObject(SOLR_SUMMARY_FTS);
+        } catch (Exception e) {
+            throw (e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e));
+        }
+
     }
 }
