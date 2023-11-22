@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 
@@ -84,7 +85,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
         logger.debug("Found {} configuration files: {}", configurationFiles.size(), configurationFiles);
 
-        Yaml yamlMapper = new Yaml(new SafeConstructor());
+        Yaml yamlMapper = new Yaml(new SafeConstructor(new LoaderOptions()));
         ObjectMapper jsonMapper = new ObjectMapper(new JsonFactory());
 
         for (ConfigurationFile configurationFile : configurationFiles) {
