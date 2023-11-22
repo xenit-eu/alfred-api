@@ -8,6 +8,7 @@ To make this change clearer the Alfred API Maven group ID has been updated from 
 to `eu.xenit.alfred.api`.
 
 ### Added
+* [ALFREDAPI-519](https://xenitsupport.jira.com/browse/ALFREDAPI-519): Add support for Alfresco 7.4
 
 ### Changed
 
