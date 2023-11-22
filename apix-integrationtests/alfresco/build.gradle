@@ -73,7 +73,7 @@ allprojects {
 }
 
 subprojects {
-    // Subproject of supported Alfresco version 61/62/70/71/72
+    // Subproject of supported Alfresco versions
     def projectApixImpl = project(":apix-impl:apix-impl-${project.projectDir.name}")
     def projectDocker = project(":apix-docker:docker-${project.projectDir.name}")
     evaluationDependsOn(projectApixImpl.path)

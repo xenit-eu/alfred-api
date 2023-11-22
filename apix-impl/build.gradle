@@ -24,7 +24,7 @@ subprojects {
 }
 
 allprojects {
-    // Subproject of supported Alfresco version 62/70/71/72/73
+    // Subproject of supported Alfresco versions
     def subproject_alfresco_version = project.projectDir.name == "apix-impl"
             ? "70" : project.projectDir.name
     apply from: "$rootProject.projectDir/alfresco/${subproject_alfresco_version}/overrides.gradle"
