@@ -122,9 +122,10 @@ subprojects {
         finalizedBy composeDownTask
     }
 
-    // Fix to let BND deal with multi-releases of snakeyaml
+    // Fix to let BND deal with multi-releases JARs
+    // So far this only applies to snakeyaml
     integrationTestFatJar {
-        bnd('-fixupmessages': '^Classes found in the wrong directory: \\\\{META-INF/versions/9/.*')
+        bnd('-fixupmessages': '^Classes found in the wrong directory: \\\\{META-INF/versions/.*')
     }
 }
 
