@@ -13,7 +13,7 @@ MANUALS_HUGO_GENERATOR_IMAGE="private.docker.xenit.eu/customer/xenit/xenit-manua
 WEIGHT=0
 
 build_manual() {
-    echo "Build manual $@"
+    echo "===== Building manual ====="
     local productName="$1"
     local versionName="$2"
     shift 2;
@@ -29,7 +29,7 @@ build_manual() {
 }
 
 split_manual() {
-    echo "Split manual $@"
+    echo "===== Splitting manual ====="
     local productName="$1"
     local versionName="$2"
     WEIGHT=$[$WEIGHT + 1]
@@ -41,12 +41,12 @@ split_manual() {
 }
 
 build_and_split_manual() {
-    echo "Build & Split manual $@"
     build_manual "$@"
     split_manual "$1" "$2"
 }
 
 build_product_website() {
+    echo "===== Building website ====="
     local productName="$1"
     mkdir -p "build/website/$productName"
     cp -r "docs/$productName/_hugo" "build/product/$productName/_hugo"
@@ -58,26 +58,25 @@ build_product_website() {
 
 # Both Alfred API Javadoc and Swagger doc are built by the git submodule of the 'alfred-api' repository
 build_alfredapi_javadoc() {
-    local alfredapidir="repo/alfred-api/stable"
+    echo "===== Generating javadoc ====="
+    local productName="$1"
+    local versionName="$2"
+    local alfredapidir=".."
+
     pushd "$alfredapidir"
     ./gradlew clean :apix-interface:javadoc
     popd
 
-    local outputdir="build/website/alfred-api/stable-user"
+    local outputdir="build/website/$productName/$versionName"
     mkdir -p "$outputdir"
     cp -a "$alfredapidir/apix-interface/build/docs/javadoc" $outputdir
 }
 
 rm -rf build/
-
 build_and_split_manual alfred-api user "user-guide.md"
 build_product_website alfred-api
-echo 40
-build_alfredapi_javadoc
-echo 60
-echo 80
+build_alfredapi_javadoc alfred-api user
 
 find build/website -type f -name '*.html' -print0 | xargs -0 sed -i "/^<\!DOCTYPE html>$/a\
 \<\!-- alfred-docs@$(git describe --always --dirty) --\>"
-
 tar czf build/website-alfred-api.tar.gz -C build/website .
