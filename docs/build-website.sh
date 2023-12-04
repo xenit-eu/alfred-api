@@ -87,4 +87,6 @@ build_swaggerdoc alfred-api
 
 find build/website -type f -name '*.html' -print0 | xargs -0 sed -i "/^<\!DOCTYPE html>$/a\
 \<\!-- alfred-docs@$(git describe --always --dirty) --\>"
-tar czf build/website-alfred-api.tar.gz -C build/website .
+
+TODAY=$( date -I )
+tar czf "build/website-alfred-api_$TODAY.tar.gz" -C build/website .
