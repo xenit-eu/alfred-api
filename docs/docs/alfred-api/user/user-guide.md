@@ -748,7 +748,7 @@ Since version 5.0.0, however, Dynamic Extensions is no longer needed.
 
 ## Artifacts
 ### Prebuilt
-Artifacts can be freely obtained through [Maven Central](https://search.maven.org/search?q=g:eu.xenit.apix).
+Artifacts can be freely obtained through [Maven Central](https://search.maven.org/search?q=g:eu.xenit.alfred.api).
 The application is available as an Alfresco AMP artifact, which is the preferred distribution for production environments.
 
 To install the AMP, follow the Alfresco AMP installation guidelines your version of Alfresco: 
