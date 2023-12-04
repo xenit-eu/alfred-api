@@ -19,7 +19,7 @@ are not supported by the Alfresco Public API.
 
 
 ## Usage
-Full documentation can be found at the [project's documentation](https://docs.xenit.eu/alfred-api/stable-user/index.html).
+Full documentation can be found at the [project's documentation](https://docs.xenit.eu/alfred-api/).
 
 ## Contributing
 
@@ -33,7 +33,7 @@ Full documentation can be found at the [project's documentation](https://docs.xe
     * Add a note to the changelog with upgrade instructions
     * Notify all customers at the next release
 * When working in REST code, please comply to **REST HTTP result codes** policy outlined in the
-  [user guide](https://docs.xenit.eu/alfred-api/stable-user/rest-api/index.html#rest-http-result-codes).
+  [user guide](https://docs.xenit.eu/alfred-api/user/rest-api/index.html#rest-http-result-codes).
 * Prefer unit tests over integration tests to keep builds fast
 * Avoid `this.` prefix for consistency (unless the scope is ambiguous).
 * Follow our [coding styleguide and other active procedures](https://xenitsupport.jira.com/wiki/spaces/XEN/pages/624558081/XeniT+Enhancement+Proposals+XEP).

@@ -41,7 +41,7 @@ When the API is installed, all of its service are available as beans and can be 
 
 ## Services
 Only the most important services are described below. Full documentation is available in
-[the generated JavaDoc](https://docs.xenit.eu/alfred-api/stable-user/javadoc/).
+[the generated JavaDoc](../../javadoc/).
 
 ### NodeService
 The `NodeService` provides operations on nodes.

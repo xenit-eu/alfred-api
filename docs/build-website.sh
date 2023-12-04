@@ -56,22 +56,21 @@ build_product_website() {
     sync
 }
 
-build_alfredapi_javadoc() {
+build_javadoc() {
     echo "===== Generating javadoc ====="
     local productName="$1"
-    local versionName="$2"
     local alfredapidir=".."
 
     pushd "$alfredapidir"
     ./gradlew clean :apix-interface:javadoc
     popd
 
-    local outputdir="build/website/$productName/$versionName"
+    local outputdir="build/website/$productName/"
     mkdir -p "$outputdir"
     cp -a "$alfredapidir/apix-interface/build/docs/javadoc" $outputdir
 }
 
-build_alfredapi_swaggerdoc() {
+build_swaggerdoc() {
     echo "===== Copying swaggerdoc ====="
     local productName="$1"
     local swaggerdir="docs/$productName/swagger-ui"
@@ -84,8 +83,8 @@ build_alfredapi_swaggerdoc() {
 rm -rf build/
 build_and_split_manual alfred-api user "user-guide.md"
 build_product_website alfred-api
-build_alfredapi_javadoc alfred-api user
-build_alfredapi_swaggerdoc alfred-api user
+build_javadoc alfred-api
+build_swaggerdoc alfred-api
 
 find build/website -type f -name '*.html' -print0 | xargs -0 sed -i "/^<\!DOCTYPE html>$/a\
 \<\!-- alfred-docs@$(git describe --always --dirty) --\>"
