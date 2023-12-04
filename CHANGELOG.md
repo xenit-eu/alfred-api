@@ -15,8 +15,9 @@ This release also drop* support for Alfresco 6.2 and adds support for 7.4.
 ### Changed
 
 ### Fixed
-* [ALFREDAPI-531](https://xenitsupport.jira.com/browse/ALFREDAPI-531): Fix facet qname splitting for dates
 * [ALFREDAPI-520](https://xenitsupport.jira.com/browse/ALFREDAPI-520): Enforce encoding on bulk json responses to guarantee clean text
+* [ALFREDAPI-531](https://xenitsupport.jira.com/browse/ALFREDAPI-531): Fix facet qname splitting for dates
+* [ALFREDAPI-532](https://xenitsupport.jira.com/browse/ALFREDAPI-532): Fix :apix-interface:javadoc
 
 ### Removed
 * [ALFREDAPI-504](https://xenitsupport.jira.com/browse/ALFREDAPI-504): Drop Dynamic Extensions in favor of Alfresco MVC
