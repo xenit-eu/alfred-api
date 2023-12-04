@@ -69,7 +69,7 @@ However, this starts (and afterwards stops) docker containers. This includes sta
  adding a startup time of several minutes. To circumvent this you also run the test on already running containers with
  for example:
  ```bash
-./gradlew -x composeUp -x composeDown :apix-integrationtests:test-61:integrationTest -Pprotocol=http -Phost=localhost -Pport=8061
+./gradlew -x composeUp -x composeDown :apix-integrationtests:alfresco:74:integrationTest -Pprotocol=http -Phost=localhost -Pport=8074
 ```
 
 If you only want to run specific tests, you can specify this on the Gradle invocation with a pattern. For example:
@@ -86,28 +86,3 @@ portmapping `8000:8000`. This file does not get loaded when running in CI.
 4. Wait until the container is started and healthy, then attach the debugger.
 
 Again, where `VERSION` is e.g. `70`.
-
-*Protip:* If you get tired of changing the port after every `docker-compose up`, you can temporarily put a
-fixed port in the *docker-compose.yml* of the version you are working with. (The rationale behind using 
-variable ephemeral ports is that during parallel builds on Jenkins port clashes must be avoided.)
-
-For example for version 7.0, change in *apix-docker/70/docker-compose.yml* 
-the ports line from:
-```yaml
-services:
-  alfresco-core:
-    ports:
-      - ${DOCKER_IP}:8080
-``` 
-to: 
-```yaml
-services:
-  alfresco-core:
-    ports:
-      - ${DOCKER_IP}:9070:8080
-```
-and then restart the containers with:
-
-```bash
-./gradlew :apix-docker:docker-70:composeUp --info
-```
