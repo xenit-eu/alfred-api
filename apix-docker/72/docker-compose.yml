@@ -4,7 +4,7 @@ services:
   alfresco-core:
     image: ${DOCKER_IMAGE}
     ports:
-      - "${DOCKER_IP}::8080"
+      - "${DOCKER_IP}:8080:8080"
     volumes:
       - alfresco:/opt/alfresco/alf_data
     restart: unless-stopped

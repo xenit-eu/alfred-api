@@ -13,6 +13,8 @@ This release also drop* support for Alfresco 6.2 and adds support for 7.4.
 * [ALFREDAPI-519](https://xenitsupport.jira.com/browse/ALFREDAPI-519): Add support for Alfresco 7.4
 
 ### Changed
+* [ALFREDAPI-527](https://xenitsupport.jira.com/browse/ALFREDAPI-527):
+Alfresco containers use port 8080 now instead of ephemeral ports
 
 ### Fixed
 * [ALFREDAPI-520](https://xenitsupport.jira.com/browse/ALFREDAPI-520): Enforce encoding on bulk json responses to guarantee clean text
