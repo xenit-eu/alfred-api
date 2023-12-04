@@ -9,7 +9,8 @@ jobs:
   BuildAndPublish:
     strategy:
       matrix:
-        alfresco_version: [ 62, 70, 71, 72, 73 ]
+        alfresco_version: [ 70, 71, 72, 73, 74 ]
+      fail-fast: false
     runs-on: ubuntu-latest
     steps:
       - name: Check out

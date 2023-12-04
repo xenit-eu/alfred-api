@@ -1,6 +1,6 @@
 def integrationTestsProjectDir = project.projectDir
 allprojects {
-    // Subproject of supported Alfresco version 61/62/70/71/72
+    // Subproject of supported Alfresco versions
     def subproject_alfresco_version = project.projectDir.name == "alfresco"
             ? "70" // minimum supported version
             : project.projectDir.name
@@ -73,7 +73,7 @@ allprojects {
 }
 
 subprojects {
-    // Subproject of supported Alfresco version 61/62/70/71/72
+    // Subproject of supported Alfresco versions
     def projectApixImpl = project(":apix-impl:apix-impl-${project.projectDir.name}")
     def projectDocker = project(":apix-docker:docker-${project.projectDir.name}")
     evaluationDependsOn(projectApixImpl.path)
@@ -120,6 +120,12 @@ subprojects {
     integrationTest {
         // After the tests, the docker setup should be stopped
         finalizedBy composeDownTask
+    }
+
+    // Fix to let BND deal with multi-releases JARs
+    // So far this only applies to snakeyaml
+    integrationTestFatJar {
+        bnd('-fixupmessages': '^Classes found in the wrong directory: \\\\{META-INF/versions/.*')
     }
 }
 

@@ -1,7 +1,11 @@
 package eu.xenit.apix.alfresco.configuration;
 
+import static org.alfresco.model.ContentModel.PROP_NAME;
+import static org.alfresco.model.ContentModel.TYPE_FOLDER;
+
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import eu.xenit.apix.configuration.ConfigurationFile;
 import eu.xenit.apix.configuration.ConfigurationFileFlags;
 import eu.xenit.apix.configuration.ConfigurationService;
@@ -14,24 +18,18 @@ import eu.xenit.apix.filefolder.IFileFolderService;
 import eu.xenit.apix.node.ChildParentAssociation;
 import eu.xenit.apix.node.INodeService;
 import eu.xenit.apix.node.NodeMetadata;
-import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.rest.framework.core.exceptions.InvalidArgumentException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.SafeConstructor;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import static org.alfresco.model.ContentModel.PROP_NAME;
-import static org.alfresco.model.ContentModel.TYPE_FOLDER;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.rest.framework.core.exceptions.InvalidArgumentException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service("eu.xenit.apix.configuration.ConfigurationService")
 public class ConfigurationServiceImpl implements ConfigurationService {
@@ -84,7 +82,6 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
         logger.debug("Found {} configuration files: {}", configurationFiles.size(), configurationFiles);
 
-        Yaml yamlMapper = new Yaml(new SafeConstructor());
         ObjectMapper jsonMapper = new ObjectMapper(new JsonFactory());
 
         for (ConfigurationFile configurationFile : configurationFiles) {
@@ -115,7 +112,9 @@ public class ConfigurationServiceImpl implements ConfigurationService {
                     logger.debug("Mimetype is {}; filename is {}", mimetype, name);
                     Object parsedContent = null;
                     if (mimetype.equals("text/x-yaml") || name.endsWith(".yaml") || name.endsWith(".yml")) {
-                        parsedContent = yamlMapper.loadAs(configStream.getInputStream(), Object.class);
+                        ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
+                        yamlMapper.findAndRegisterModules();
+                        parsedContent = yamlMapper.readValue(configStream.getInputStream(), Object.class);
                     } else if (mimetype.equals("application/json") || name.endsWith(".json")) {
                         parsedContent = jsonMapper.readValue(configStream.getInputStream(), Object.class);
                     } else {

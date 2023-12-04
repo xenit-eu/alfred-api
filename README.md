@@ -72,6 +72,10 @@ However, this starts (and afterwards stops) docker containers. This includes sta
 ./gradlew -x composeUp -x composeDown :apix-integrationtests:test-61:integrationTest -Pprotocol=http -Phost=localhost -Pport=8061
 ```
 
+If you only want to run specific tests, you can specify this on the Gradle invocation with a pattern. For example:
+ ```bash
+./gradlew  :apix-integrationtests:alfresco:74:integrationTest -x composeDown --tests C*ServiceTest
+ ```
 
 #### Run integration tests under debugger
 1. Debugging settings are already added by `apix-docker/${VERSION}/debug-extension.docker-compose.yml`, including a 

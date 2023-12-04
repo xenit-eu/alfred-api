@@ -24,7 +24,7 @@ subprojects {
 }
 
 allprojects {
-    // Subproject of supported Alfresco version 62/70/71/72/73
+    // Subproject of supported Alfresco versions
     def subproject_alfresco_version = project.projectDir.name == "apix-impl"
             ? "70" : project.projectDir.name
     apply from: "$rootProject.projectDir/alfresco/${subproject_alfresco_version}/overrides.gradle"
@@ -37,14 +37,13 @@ allprojects {
             exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
             exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
         }
-        implementation 'commons-lang:commons-lang:1.0'
+        implementation group: 'commons-lang', name: 'commons-lang', version: '1.0'
+        implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+        implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.16.0'
 
         alfrescoProvided platform("org.alfresco:acs-community-packaging:${alfresco_version}")
-        alfrescoProvided("org.alfresco:alfresco-repository")
-        alfrescoProvided('org.alfresco:alfresco-remote-api')
-
-        implementation group: 'org.yaml', name: 'snakeyaml', version: '1.15'
-        implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+        alfrescoProvided "org.alfresco:alfresco-repository"
+        alfrescoProvided 'org.alfresco:alfresco-remote-api'
 
         testImplementation platform("org.alfresco:acs-community-packaging:${alfresco_version}")
         testImplementation 'org.alfresco:alfresco-repository'
