@@ -19,7 +19,7 @@ build_manual() {
     shift 2;
 
     mkdir -p "build/normalized/$productName"
-    tar c --portability -C "docs/$productName/$versionName" . | \
+    tar c --portability -C $versionName . | \
     docker run --rm -i $MARKDOWNTOPDF_IMAGE --tar \
     --template default -t markdown-simple_tables-multiline_tables-grid_tables --extract-media assets \
     --resource-path . \
@@ -49,7 +49,7 @@ build_product_website() {
     echo "===== Building website ====="
     local productName="$1"
     mkdir -p "build/website/$productName"
-    cp -r "docs/$productName/_hugo" "build/product/$productName/_hugo"
+    cp -r "_hugo" "build/product/$productName/_hugo"
     tar c --portability -C "build/product/$productName" . | \
         docker run --rm -i $MANUALS_HUGO_GENERATOR_IMAGE | \
         tar x -C "build/website/$productName"
@@ -73,11 +73,10 @@ build_javadoc() {
 build_swaggerdoc() {
     echo "===== Copying swaggerdoc ====="
     local productName="$1"
-    local swaggerdir="docs/$productName/swagger-ui"
     local outputdir="build/website/$productName/"
 
     mkdir -p $outputdir
-    cp -a $swaggerdir $outputdir
+    cp -a "swagger-ui" $outputdir
 }
 
 rm -rf build/
