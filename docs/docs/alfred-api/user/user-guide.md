@@ -95,7 +95,7 @@ parameters to the corresponding Alfred API data objects, then calls the correspo
 serializes its return value to JSON.
 
 For a full overview of the REST API, please refer to 
-[the swagger specification](https://docs.xenit.eu/alfred-api/stable-user/swagger-ui/).
+[the swagger specification](../../swagger-ui/).
 
 
 ## Search Requests

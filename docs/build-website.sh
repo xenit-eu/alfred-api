@@ -56,7 +56,6 @@ build_product_website() {
     sync
 }
 
-# Both Alfred API Javadoc and Swagger doc are built by the git submodule of the 'alfred-api' repository
 build_alfredapi_javadoc() {
     echo "===== Generating javadoc ====="
     local productName="$1"
@@ -72,10 +71,21 @@ build_alfredapi_javadoc() {
     cp -a "$alfredapidir/apix-interface/build/docs/javadoc" $outputdir
 }
 
+build_alfredapi_swaggerdoc() {
+    echo "===== Copying swaggerdoc ====="
+    local productName="$1"
+    local swaggerdir="docs/$productName/swagger-ui"
+    local outputdir="build/website/$productName/"
+
+    mkdir -p $outputdir
+    cp -a $swaggerdir $outputdir
+}
+
 rm -rf build/
 build_and_split_manual alfred-api user "user-guide.md"
 build_product_website alfred-api
 build_alfredapi_javadoc alfred-api user
+build_alfredapi_swaggerdoc alfred-api user
 
 find build/website -type f -name '*.html' -print0 | xargs -0 sed -i "/^<\!DOCTYPE html>$/a\
 \<\!-- alfred-docs@$(git describe --always --dirty) --\>"
