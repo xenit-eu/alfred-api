@@ -1,13 +1,13 @@
 # Alfred API - Changelog
 
-## 5.0.0 (unreleased)
+## 5.0.0 (2023-12-12)
 From this version onward Dynamic Extensions is replaced by [Alfresco MVC](https://github.com/dgradecak/alfresco-mvc)
 as framework to reduce maintenance efforts.
 
 To make this change clearer the Alfred API Maven group ID has been updated from `eu.xenit.apix`
 to `eu.xenit.alfred.api`.
 
-This release also drop* support for Alfresco 6.2 and adds support for 7.4.
+This release also drops support for Alfresco 6.2 and adds support for 7.4.
 
 ### Added
 * [ALFREDAPI-519](https://xenitsupport.jira.com/browse/ALFREDAPI-519): Add support for Alfresco 7.4
