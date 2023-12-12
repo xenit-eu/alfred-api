@@ -1,17 +1,18 @@
 package eu.xenit.apix.configuration;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class Configurations {
 
     private List<ConfigurationFile> files;
 
+    public Configurations() {
+    }
+
     public Configurations(List<ConfigurationFile> files) {
-        this.files = new ArrayList<ConfigurationFile>(files);
-        Collections.sort(this.files,new ConfigurationFileComparator());
+        this.files = new ArrayList<>(files);
+        this.files.sort(new ConfigurationFileComparator());
     }
 
     public List<ConfigurationFile> getFiles() {

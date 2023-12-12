@@ -1,9 +1,3 @@
-plugins {
-    id 'eu.xenit.docker-alfresco' version '5.3.1' apply false
-    id 'eu.xenit.docker-compose' version '5.3.1' apply false
-    id 'be.vbgn.ci-detect' version '0.5.0' apply false
-}
-
 subprojects {
     apply plugin: 'eu.xenit.docker-alfresco'
     apply plugin: 'eu.xenit.docker-compose'
@@ -18,14 +12,17 @@ subprojects {
     def subproject_alfresco_version = project.name.substring(project.name.length() - 2)
 
     dependencies {
-        alfrescoAmp project(path: ":apix-impl:apix-impl-${subproject_alfresco_version}", configuration: 'ampArtifact')
-        alfrescoAmp project(path: ':apix-integrationtests-model-amp', configuration: 'ampArchives')
+        alfrescoAmp project(path: ":alfresco:${subproject_alfresco_version}", configuration: 'ampArtifact')
+        alfrescoAmp project(path: ':apix-integrationtests:model-amp', configuration: 'ampArchives')
+        alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-rest:${mvc}"
+        alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-aop:${mvc}"
+        alfrescoSM files(jar)
         alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${subproject_alfresco_version}:${de_version}@amp"
     }
 
     dockerCompose {
         useComposeFiles = ['docker-compose.yml']
-        // Don't use the dev compose file on Jenkins
+        // Don't use the dev compose file during CI builds
         if (!ci.isCi()) {
             // Allow the dev compose file to be deleted
             def extraComposeFile = 'debug-extension.docker-compose.yml'
@@ -34,5 +31,4 @@ subprojects {
             }
         }
     }
-
 }

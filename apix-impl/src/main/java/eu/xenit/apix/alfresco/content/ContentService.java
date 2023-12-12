@@ -1,6 +1,5 @@
 package eu.xenit.apix.alfresco.content;
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.content.IContentService;
 import eu.xenit.apix.node.INodeService;
 import java.io.InputStream;
@@ -9,7 +8,6 @@ import org.alfresco.service.ServiceRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@OsgiService
 @Component("eu.xenit.apix.content.IContentService")
 public class ContentService implements IContentService {
 

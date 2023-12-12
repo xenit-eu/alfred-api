@@ -6,6 +6,15 @@ public class VersionOptions {
     private Boolean autoVersion;
     private Boolean autoVersionOnUpdateProps;
 
+    public VersionOptions() {
+    }
+
+    public VersionOptions(Boolean initialVersion, Boolean autoVersion, Boolean autoVersionOnUpdateProps) {
+        this.initialVersion = initialVersion;
+        this.autoVersion = autoVersion;
+        this.autoVersionOnUpdateProps = autoVersionOnUpdateProps;
+    }
+
     public Boolean getInitialVersion() {
         return initialVersion;
     }

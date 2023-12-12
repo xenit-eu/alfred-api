@@ -1,5 +1,32 @@
 # Alfred API - Changelog
 
+## 5.0.0 (2023-12-12)
+From this version onward Dynamic Extensions is replaced by [Alfresco MVC](https://github.com/dgradecak/alfresco-mvc)
+as framework to reduce maintenance efforts.
+
+To make this change clearer the Alfred API Maven group ID has been updated from `eu.xenit.apix`
+to `eu.xenit.alfred.api`.
+
+This release also drops support for Alfresco 6.2 and adds support for 7.4.
+
+### Added
+* [ALFREDAPI-519](https://xenitsupport.jira.com/browse/ALFREDAPI-519): Add support for Alfresco 7.4
+
+### Changed
+* [ALFREDAPI-527](https://xenitsupport.jira.com/browse/ALFREDAPI-527):
+Alfresco containers use port 8080 now instead of ephemeral ports 
+* [ALFREDAPI-536](https://xenitsupport.jira.com/browse/ALFREDAPI-536): Reabsorb alfred-api-docs repo into this
+
+### Fixed
+* [ALFREDAPI-520](https://xenitsupport.jira.com/browse/ALFREDAPI-520): Enforce encoding on bulk json responses to guarantee clean text
+* [ALFREDAPI-531](https://xenitsupport.jira.com/browse/ALFREDAPI-531): Fix facet qname splitting for dates
+* [ALFREDAPI-532](https://xenitsupport.jira.com/browse/ALFREDAPI-532): Fix :apix-interface:javadoc
+
+### Removed
+* [ALFREDAPI-504](https://xenitsupport.jira.com/browse/ALFREDAPI-504): Drop Dynamic Extensions in favor of Alfresco MVC
+* [ALFREDAPI-519](https://xenitsupport.jira.com/browse/ALFREDAPI-519): Remove support for Alfresco 6.2
+
+
 
 ## 4.0.1 (2023-06-13)
 This release removes swaggerui_5x from alfred-api artifact and changes generation of Snapshot qualifier to comform to maven format.
@@ -9,6 +36,7 @@ This release removes swaggerui_5x from alfred-api artifact and changes generatio
 * [ALFREDAPI-513](https://xenitsupport.jira.com/browse/ALFREDAPI-513): Remove swaggerui_5x from alfred-api artifact
 * [ALFREDAPI-514](https://xenitsupport.jira.com/browse/ALFREDAPI-514): Change generation of Snapshot qualifier to comform to maven format.
 * [ALFREDAPI-522](https://xenitsupport.jira.com/browse/ALFREDAPI-522): Change gradle repositories from artifactory.xenit to cloudsmith && artifactory.alfresco.
+* [ALFREDAPI-516](https://xenitsupport.jira.com/browse/ALFREDAPI-516): Classpath cleanup
 
 
 ## 4.0.0 (2023-01-17)

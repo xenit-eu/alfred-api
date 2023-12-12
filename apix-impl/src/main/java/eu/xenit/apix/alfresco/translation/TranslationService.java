@@ -1,6 +1,5 @@
 package eu.xenit.apix.alfresco.translation;
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.dictionary.IDictionaryService;
 import eu.xenit.apix.translation.ITranslationService;
@@ -31,11 +30,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.extensions.surf.util.I18NUtil;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 
-@Component("eu.xenit.apix.translation.ITranslationService")
-@OsgiService
+@Service("eu.xenit.apix.translation.ITranslationService")
 public class TranslationService implements ITranslationService {
 
     private static final Logger logger = LoggerFactory.getLogger(TranslationService.class);

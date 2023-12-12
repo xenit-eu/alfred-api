@@ -1,7 +1,6 @@
 package eu.xenit.apix.rest.v1.bulk;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,17 +9,15 @@ import java.util.Map;
  */
 public class BulkSubResult {
 
-    @ApiModelProperty(value = "The HTTP status code of the sub call", example = "200")
     private int statusCode;
-    @ApiModelProperty(value = "JSON result body of the sub call", dataType = "object")
-    private JsonNode body;
+    private Object body;
     private Map<String, String> headers;
 
     public BulkSubResult() {
 
     }
 
-    public BulkSubResult(int statusCode, JsonNode body, Map<String, String> headers) {
+    public BulkSubResult(int statusCode, Object body, Map<String, String> headers) {
         this.statusCode = statusCode;
         this.body = body;
         this.headers = headers;
@@ -34,7 +31,7 @@ public class BulkSubResult {
         this.statusCode = statusCode;
     }
 
-    public JsonNode getBody() {
+    public Object getBody() {
         return body;
     }
 

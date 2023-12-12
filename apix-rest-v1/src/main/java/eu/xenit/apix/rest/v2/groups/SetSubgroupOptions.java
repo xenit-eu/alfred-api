@@ -2,11 +2,9 @@ package eu.xenit.apix.rest.v2.groups;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
 
 class SetSubgroupOptions {
 
-    @ApiModelProperty(required = true)
     private String[] subgroups;
 
     @JsonCreator
@@ -14,8 +12,10 @@ class SetSubgroupOptions {
         this.subgroups = subgroups;
     }
 
+    public SetSubgroupOptions() {
+    }
+
     public String[] getSubgroups() {
         return subgroups;
     }
-
 }

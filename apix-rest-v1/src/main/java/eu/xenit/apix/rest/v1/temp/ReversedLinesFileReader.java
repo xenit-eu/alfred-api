@@ -23,6 +23,7 @@ import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.charset.UnsupportedCharsetException;
 
 
@@ -63,10 +64,10 @@ public class ReversedLinesFileReader implements Closeable {
     /**
      * Creates a ReversedLinesFileReader with the given block size and encoding.
      *
-     * @param file the file to be read
+     * @param file      the file to be read
      * @param blockSize size of the internal buffer (for ideal performance this should match with the block size of the
-     * underlying file system).
-     * @param encoding the encoding of the file
+     *                  underlying file system).
+     * @param encoding  the encoding of the file
      * @throws IOException if an I/O error occurs
      * @since 2.3
      */
@@ -94,7 +95,7 @@ public class ReversedLinesFileReader implements Closeable {
         if (maxBytesPerChar == 1f) {
             // all one byte encodings are no problem
             byteDecrement = 1;
-        } else if (charset == Charset.forName("UTF-8")) {
+        } else if (charset.equals(StandardCharsets.UTF_8)) {
             // UTF-8 works fine out of the box, for multibyte sequences a second UTF-8 byte can never be a newline byte
             // http://en.wikipedia.org/wiki/UTF-8
             byteDecrement = 1;
@@ -102,11 +103,11 @@ public class ReversedLinesFileReader implements Closeable {
             // Same as for UTF-8
             // http://www.herongyang.com/Unicode/JIS-Shift-JIS-Encoding.html
             byteDecrement = 1;
-        } else if (charset == Charset.forName("UTF-16BE") || charset == Charset.forName("UTF-16LE")) {
+        } else if (charset.equals(StandardCharsets.UTF_16BE) || charset.equals(StandardCharsets.UTF_16LE)) {
             // UTF-16 new line sequences are not allowed as second tuple of four byte sequences,
             // however byte order has to be specified
             byteDecrement = 2;
-        } else if (charset == Charset.forName("UTF-16")) {
+        } else if (charset.equals(StandardCharsets.UTF_16)) {
             throw new UnsupportedEncodingException(
                     "For UTF-16, you need to specify the byte order (use UTF-16BE or UTF-16LE)");
         } else {
@@ -122,13 +123,13 @@ public class ReversedLinesFileReader implements Closeable {
     /**
      * Creates a ReversedLinesFileReader with the given block size and encoding.
      *
-     * @param file the file to be read
+     * @param file      the file to be read
      * @param blockSize size of the internal buffer (for ideal performance this should match with the block size of the
-     * underlying file system).
-     * @param encoding the encoding of the file
-     * @throws IOException if an I/O error occurs
+     *                  underlying file system).
+     * @param encoding  the encoding of the file
+     * @throws IOException                 if an I/O error occurs
      * @throws UnsupportedCharsetException thrown instead of {@link UnsupportedEncodingException} in version 2.2 if the
-     * encoding is not supported.
+     *                                     encoding is not supported.
      */
     public ReversedLinesFileReader(final File file, final int blockSize, final String encoding) throws IOException {
         this(file, blockSize, Charsets.toCharset(encoding));
@@ -184,8 +185,8 @@ public class ReversedLinesFileReader implements Closeable {
         /**
          * ctor
          *
-         * @param no the part number
-         * @param length its length
+         * @param no                     the part number
+         * @param length                 its length
          * @param leftOverOfLastFilePart remainder
          * @throws IOException if there is a problem reading the file
          */
@@ -315,7 +316,7 @@ public class ReversedLinesFileReader implements Closeable {
          * Finds the new-line sequence and return its length.
          *
          * @param data buffer to scan
-         * @param i start offset in buffer
+         * @param i    start offset in buffer
          * @return length of newline sequence or 0 if none found
          */
         private int getNewLineMatchByteCount(byte[] data, int i) {

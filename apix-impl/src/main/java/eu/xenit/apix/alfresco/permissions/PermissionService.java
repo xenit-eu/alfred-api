@@ -1,6 +1,5 @@
 package eu.xenit.apix.alfresco.permissions;
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
@@ -27,13 +26,12 @@ import org.alfresco.service.cmr.security.AccessStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by kenneth on 10.03.16.
  */
-@Component("eu.xenit.apix.permissions.IPermissionService")
-@OsgiService
+@Service("eu.xenit.apix.permissions.IPermissionService")
 public class PermissionService implements IPermissionService {
 
     private final static Logger logger = LoggerFactory.getLogger(PermissionService.class);

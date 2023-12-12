@@ -1,0 +1,5 @@
+title: Alfred API
+params:
+  metadata:
+    hugo-config:
+      product: api

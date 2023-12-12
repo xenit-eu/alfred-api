@@ -1,0 +1,83 @@
+{
+  "query": {
+    "and": [
+      {
+        "property": {
+          "name": "{http://www.alfresco.org/model/content/1.0}creator",
+          "value": "admin"
+        }
+      },
+      {
+        "or": [
+          {
+            "property": {
+              "name": "{http://www.alfresco.org/model/content/1.0}created",
+              "range": {
+                "start": "2015-01-01T00:00:00+00:00",
+                "end": "2020-08-16T00:00:00+00:00"
+              }
+            }
+          },
+          {
+            "property": {
+              "name": "{http://www.alfresco.org/model/content/1.0}modified",
+              "range": {
+                "start": "2015-01-01T00:00:00+00:00",
+                "end": "2020-08-16T00:00:00+00:00"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "not": {
+          "aspect": "{http://www.alfresco.org/model/system/1.0}hidden"
+        }
+      },
+      {
+        "type": "{http://www.alfresco.org/model/content/1.0}document"
+      },
+      {
+        "path": "/app:company_home/app:shared/*"
+      },
+      {
+        "path": "/app:company_home/app:shared//*"
+      },
+      {
+        "path": "/app:company_home/app:shared/"
+      },
+      {
+        "parent": "workspace://SpacesStore/c4ebd508-b9e3-4c48-9e93-cdd774af8bbc"
+      },
+      {
+        "text": "xenit solutions"
+      },
+      {
+        "all": "banana"
+      }
+    ]
+  },
+  "paging": {
+    "skip": 10,
+    "limit": 25
+  },
+  "facets": {
+    "enabled": true,
+    "mincount": 10,
+    "limit": 10
+  },
+  "orderBy": [
+    {
+      "property": "{http://www.alfresco.org/model/content/1.0}modifier",
+      "order": "ascending"
+    },
+    {
+      "property": "{http://www.alfresco.org/model/content/1.0}creator",
+      "order": "ascending"
+    }
+  ],
+  "consistency": "TRANSACTIONAL" // or "EVENTUAL",
+  "workspace": { // optional. default value workspace://SpacesStore
+    "value": "workspace://SpacesStore" // or any other e.g. archive://SpacesStore"
+  }
+}

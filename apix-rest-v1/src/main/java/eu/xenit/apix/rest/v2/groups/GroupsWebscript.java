@@ -1,90 +1,78 @@
 package eu.xenit.apix.rest.v2.groups;
 
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Authentication;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.AuthenticationType;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.HttpMethod;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.RequestParam;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.UriVariable;
-import com.github.dynamicextensionsalfresco.webscripts.annotations.WebScript;
+import com.gradecak.alfresco.mvc.annotation.AlfrescoAuthentication;
+import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
+import com.gradecak.alfresco.mvc.annotation.AuthenticationType;
 import eu.xenit.apix.groups.Group;
 import eu.xenit.apix.people.IPeopleService;
 import eu.xenit.apix.people.Person;
 import eu.xenit.apix.rest.v2.ApixV2Webscript;
-import eu.xenit.apix.rest.v2.RestV2Config;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.extensions.webscripts.WebScriptResponse;
-import org.springframework.stereotype.Component;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Created by jasper on 14/03/17.
- */
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-@WebScript(baseUri = RestV2Config.BaseUrl, families = RestV2Config.Family, defaultFormat = "json",
-        description = "Retrieves group information and links users/groups to parent groups", value = "Groups")
-@Authentication(AuthenticationType.USER)
-@Component("eu.xenit.apix.rest.v2.groups.GroupsWebscript")
+
+@AlfrescoAuthentication(AuthenticationType.USER)
+@RestController
 public class GroupsWebscript extends ApixV2Webscript {
 
-    Logger logger = LoggerFactory.getLogger(GroupsWebscript.class);
-    @Autowired
-    IPeopleService personService;
+    private static final Logger logger = LoggerFactory.getLogger(GroupsWebscript.class);
+    private final IPeopleService personService;
 
-    @Uri(value = "/groups", method = HttpMethod.GET)
-    @ApiOperation(value = "Returns a list containing all groups", notes = "")
-    @ApiResponses(@ApiResponse(code = HttpStatus.SC_OK, message = "Success", response = Group[].class))
-    public void GetAllGroups(WebScriptResponse webScriptResponse) throws IOException {
-        writeJsonResponse(webScriptResponse, personService.GetGroups());
+    public GroupsWebscript(IPeopleService personService) {
+        this.personService = personService;
     }
 
-    @Uri(value = "/groups/{name}/people", method = HttpMethod.GET)
-    @ApiOperation(value = "Returns the persons within a specific group", notes = "")
-    @ApiResponses(@ApiResponse(code = HttpStatus.SC_OK, message = "Success", response = Person[].class))
-    public void GetPeopleOfGroup(@UriVariable final String name, @RequestParam(required = false) Boolean immediate,
-            WebScriptResponse webScriptResponse) throws IOException {
+    @AlfrescoTransaction(readOnly = true)
+    @GetMapping(value = "/v2/groups")
+    public ResponseEntity<List<Group>> GetAllGroups() {
+        return writeJsonResponse(personService.GetGroups());
+    }
+
+    @AlfrescoTransaction(readOnly = true)
+    @GetMapping(value = "/v2/groups/{name}/people")
+    public ResponseEntity<?> GetPeopleOfGroup(@PathVariable final String name,
+                                              @RequestParam(required = false) Boolean immediate) {
         if (immediate == null) {
             immediate = false;
         }
         List<Person> people = personService.GetUsersOfGroup(name, immediate);
         if (people == null) {
-            giveNoGroup404(webScriptResponse, name);
-            return;
+            return giveNoGroup404(name);
         }
-        writeJsonResponse(webScriptResponse, people);
+        return ResponseEntity.ok(people);
     }
 
-    @Uri(value = "/groups/{name}/groups", method = HttpMethod.GET)
-    @ApiOperation(value = "Returns the groups within a specific group", notes = "")
-    @ApiResponses(@ApiResponse(code = HttpStatus.SC_OK, message = "Success", response = Group[].class))
-    public void GetGroupsOfGroup(@UriVariable final String name, @RequestParam(required = false) Boolean immediate,
-            WebScriptResponse webScriptResponse) throws IOException {
+    @AlfrescoTransaction(readOnly = true)
+    @GetMapping(value = "/v2/groups/{name}/groups")
+    public ResponseEntity<?> GetGroupsOfGroup(@PathVariable final String name,
+                                              @RequestParam(required = false) Boolean immediate) {
         if (immediate == null) {
             immediate = false;
         }
 
         List<Group> groups = personService.GetSubgroupsInGroup(name, immediate);
         if (groups == null) {
-            giveNoGroup404(webScriptResponse, name);
-            return;
+            return giveNoGroup404(name);
         }
-        writeJsonResponse(webScriptResponse, groups);
+        return writeJsonResponse(groups);
     }
 
-    @Uri(value = "/groups/{name}/people", method = HttpMethod.PUT)
-    @ApiOperation(value = "Sets the complete list of people as direct members of this group", notes = "")
-    @ApiResponses(@ApiResponse(code = HttpStatus.SC_OK, message = "Success", response = Group[].class))
-    public void SetPeopleInGroup(@UriVariable final String name, SetUsersInGroupOptions options,
-            WebScriptResponse webScriptResponse) throws IOException {
+    @AlfrescoTransaction
+    @PutMapping(value = "/v2/groups/{name}/people")
+    public ResponseEntity<?> SetPeopleInGroup(@PathVariable final String name,
+                                              @RequestBody SetUsersInGroupOptions options) {
         // We want to replace all of the users in group {name} by a new list of users
         // We're going to avoid unlinking and re-linking the same user, because iterating over the list to check for
         // duplicates is going to be cheaper than unnecessarily invoking all of Alfresco's internal safety checking
@@ -93,8 +81,7 @@ public class GroupsWebscript extends ApixV2Webscript {
         logger.debug("Setting new list of users for {}", name);
         // error handling, if {name} isn't a group
         if (linkedUsers == null) {
-            giveNoGroup404(webScriptResponse, name);
-            return;
+            return giveNoGroup404(name);
         }
 
         List<String> oldUsers = new ArrayList<>();
@@ -104,14 +91,13 @@ public class GroupsWebscript extends ApixV2Webscript {
 
         List<String> newUsers = Arrays.asList(options.getUsers());
         replaceAuthorities(name, oldUsers, newUsers);
+        return ResponseEntity.ok().build();
     }
 
-
-    @Uri(value = "/groups/{name}/groups", method = HttpMethod.PUT)
-    @ApiOperation(value = "Sets the complete list of direct subgroups for this group", notes = "")
-    @ApiResponses(@ApiResponse(code = HttpStatus.SC_OK, message = "Success", response = Group[].class))
-    public void SetGroupsOfGroup(@UriVariable final String name, SetSubgroupOptions options,
-            WebScriptResponse webScriptResponse) throws IOException {
+    @AlfrescoTransaction
+    @PutMapping(value = "/v2/groups/{name}/groups")
+    public ResponseEntity<?> SetGroupsOfGroup(@PathVariable final String name,
+                                              @RequestBody SetSubgroupOptions options) {
         // We want to replace all of the subgroups of {name} by a new list of subgroups
         // We're going to avoid unlinking and re-linking the same group, because iterating over the list to check for
         // duplicates is going to be cheaper than unnecessarily invoking all of Alfresco's internal safety checking
@@ -120,8 +106,7 @@ public class GroupsWebscript extends ApixV2Webscript {
         logger.debug("Setting new list of subgroups for {}", name);
         // error handling, if {name} isn't a group
         if (linkedGroups == null) {
-            giveNoGroup404(webScriptResponse, name);
-            return;
+            return giveNoGroup404(name);
         }
 
         List<String> oldGroups = new ArrayList<>();
@@ -131,11 +116,12 @@ public class GroupsWebscript extends ApixV2Webscript {
 
         List<String> newGroups = Arrays.asList(options.getSubgroups());
         replaceAuthorities(name, oldGroups, newGroups);
+        return ResponseEntity.ok().build();
     }
 
-    private void giveNoGroup404(WebScriptResponse response, String name) throws IOException {
-        response.setStatus(HttpStatus.SC_NOT_FOUND); // 404
-        response.getWriter().write("Group " + name + " does not exist");
+    private ResponseEntity<String> giveNoGroup404(String name) {
+        return ResponseEntity.status(HttpStatus.SC_NOT_FOUND)
+                .body("Group " + name + " does not exist");
     }
 
     private void replaceAuthorities(String parentGroup, List<String> oldOnes, List<String> newOnes) {
