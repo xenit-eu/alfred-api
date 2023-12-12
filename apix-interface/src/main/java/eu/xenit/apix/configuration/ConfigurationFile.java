@@ -17,6 +17,17 @@ public class ConfigurationFile {
         this.metadata = metadata;
     }
 
+    public ConfigurationFile() {
+    }
+
+    public ConfigurationFile(String content, NodeRef nodeRef, NodeMetadata metadata, NodePath path, Object parsedContent) {
+        this.content = content;
+        this.nodeRef = nodeRef;
+        this.metadata = metadata;
+        this.path = path;
+        this.parsedContent = parsedContent;
+    }
+
     public NodeRef getNodeRef() {
         return nodeRef;
     }

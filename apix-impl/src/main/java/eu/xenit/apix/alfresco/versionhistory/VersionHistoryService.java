@@ -1,6 +1,5 @@
 package eu.xenit.apix.alfresco.versionhistory;
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
@@ -10,7 +9,6 @@ import eu.xenit.apix.versionhistory.VersionHistory;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collection.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -20,9 +18,7 @@ import org.alfresco.service.cmr.version.VersionType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@OsgiService
 @Service("eu.xenit.apix.versionhistory.VersionHistoryService")
-
 public class VersionHistoryService implements IVersionHistoryService {
 
     private ApixToAlfrescoConversion c;

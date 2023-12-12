@@ -1,21 +1,16 @@
 name: 'Continuous Integration'
 on:
   push:
-    branches:
-      - 'master*'
-      - 'release*'
-  pull_request:
   workflow_dispatch:
 env:
   ALFRESCO_NEXUS_USERNAME: ${{ secrets.ALFRESCO_NEXUS_USERNAME }}
   ALFRESCO_NEXUS_PASSWORD: ${{ secrets.ALFRESCO_NEXUS_PASSWORD }}
-  CLOUDSMITH_USER: ${{ secrets.CLOUDSMITH_USER }}
-  CLOUDSMITH_APIKEY: ${{ secrets.CLOUDSMITH_APIKEY }}
 jobs:
   BuildAndPublish:
     strategy:
       matrix:
-        alfresco_version: [ 62, 70, 71, 72, 73 ]
+        alfresco_version: [ 70, 71, 72, 73, 74 ]
+      fail-fast: false
     runs-on: ubuntu-latest
     steps:
       - name: Check out
@@ -31,28 +26,23 @@ jobs:
           registry: private.docker.xenit.eu
           username: ${{ secrets.CLOUDSMITH_USER }}
           password: ${{ secrets.CLOUDSMITH_APIKEY }}
+
       - name: Build interface  # Execute before integration testing to catch errors early
         uses: gradle/gradle-build-action@v2.3.0
         with:
           arguments: :apix-interface:build :apix-interface:javadoc
+
       - name: Unit test REST API
-        uses: gradle/gradle-build-action@v2.3.0
+        uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: --info :apix-rest-v1:test
       - name: Build and test
-        uses: gradle/gradle-build-action@v2.3.0
+        uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: >-
             --info
             :apix-impl:apix-impl-${{ matrix.alfresco_version }}:test
-            :apix-integrationtests:test-${{ matrix.alfresco_version }}:integrationTest
-      - name: Upload test reports
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-result
-          path: /home/runner/work/**/build/reports
-          retention-days: 2
+            :apix-integrationtests:alfresco:${{ matrix.alfresco_version }}:integrationTest
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3.7.6
         if: success() || failure()
@@ -63,8 +53,8 @@ jobs:
           detailed_summary: true
 
       - name: Publish
-        if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}
-        uses: gradle/gradle-build-action@v2.3.0
+        if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}"
+        uses: gradle/gradle-build-action@v2.4.2
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVEN_CENTRAL_GPG_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVEN_CENTRAL_GPG_PASSWORD }}
@@ -75,4 +65,4 @@ jobs:
           arguments: >-
             --info -PsigningKeyId=DF8285F0
             :apix-interface:publish
-            :apix-impl:apix-impl-${{ matrix.alfresco_version }}:publish
+            :alfresco:${{ matrix.alfresco_version }}:publish

@@ -6,16 +6,13 @@ import eu.xenit.apix.data.ContentInputStream;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.data.StoreRef;
-import io.swagger.annotations.Api;
 import java.io.InputStream;
-import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Service for operations on nodes.
  */
-@Api(value = "/metadata", produces = "application/json")
 public interface INodeService {
 
     /**
