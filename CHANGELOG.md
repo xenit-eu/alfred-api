@@ -1,6 +1,6 @@
 # Alfred API - Changelog
 
-## 5.0.0 (unreleased)
+## 5.0.0 (2023-12-12)
 From this version onward Dynamic Extensions is replaced by [Alfresco MVC](https://github.com/dgradecak/alfresco-mvc)
 as framework to reduce maintenance efforts.
 
