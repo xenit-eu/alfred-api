@@ -21,6 +21,7 @@ Alfresco containers use port 8080 now instead of ephemeral ports
 * [ALFREDAPI-520](https://xenitsupport.jira.com/browse/ALFREDAPI-520): Enforce encoding on bulk json responses to guarantee clean text
 * [ALFREDAPI-531](https://xenitsupport.jira.com/browse/ALFREDAPI-531): Fix facet qname splitting for dates
 * [ALFREDAPI-532](https://xenitsupport.jira.com/browse/ALFREDAPI-532): Fix :apix-interface:javadoc
+* [ALFREDAPI-535](https://xenitsupport.jira.com/browse/ALFREDAPI-535): Fix incomplete POMs
 
 ### Removed
 * [ALFREDAPI-504](https://xenitsupport.jira.com/browse/ALFREDAPI-504): Drop Dynamic Extensions in favor of Alfresco MVC
