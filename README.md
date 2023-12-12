@@ -2,7 +2,7 @@
 
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 ![CI status](https://github.com/xenit-eu/alfred-api/actions/workflows/ci.yml/badge.svg)
-[![Maven Central](https://img.shields.io/maven-central/v/eu.xenit.apix/apix-interface.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22eu.xenit.apix%22%20AND%20a%3A%22apix-interface%22)
+[![Maven Central](https://img.shields.io/maven-central/v/eu.xenit.alfred.api/apix-interface.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22eu.xenit.alfred.api%22%20AND%20a%3A%22apix-interface%22)
 
 Alfred API abstracts away past and future changes to the Alfresco, across major and minor versions, providing a stable
 interface to Alfresco on which client-side applications can be built.
