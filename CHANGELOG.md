@@ -1,6 +1,6 @@
 # Alfred API - Changelog
 
-## 5.0.0 (unreleased - yyyy-MM-dd)
+## 5.0.1 (unreleased - yyyy-MM-dd)
 ### Added
 
 ### Changed
