@@ -1,4 +1,8 @@
-sourceSets.main.java.srcDirs += 'src/main/java'
+apply plugin: 'java-library'
+dependencies {
+    api project(":apix-interface")
+    implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+}
 subprojects {
     def shortAlfrescoVersion = project.name.split("-")[2]
     apply from: "${rootProject.projectDir}/alfresco/${shortAlfrescoVersion}/overrides.gradle"
@@ -33,23 +37,16 @@ allprojects {
     apply plugin: 'java-library'
 
     dependencies {
-        api(project(":apix-interface")) {
-            exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
-            exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
-        }
-        implementation group: 'commons-lang', name: 'commons-lang', version: '1.0'
-        implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
-        implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.16.0'
-
         alfrescoProvided platform("org.alfresco:acs-community-packaging:${alfresco_version}")
         alfrescoProvided "org.alfresco:alfresco-repository"
         alfrescoProvided 'org.alfresco:alfresco-remote-api'
+        alfrescoProvided 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
 
         testImplementation platform("org.alfresco:acs-community-packaging:${alfresco_version}")
         testImplementation 'org.alfresco:alfresco-repository'
         testImplementation 'org.alfresco:alfresco-remote-api'
         testImplementation 'org.alfresco:alfresco-data-model'
-        testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.25.1'
+        testImplementation 'org.mockito:mockito-core'
     }
 
     task generateVersionFile(type: Task) {
