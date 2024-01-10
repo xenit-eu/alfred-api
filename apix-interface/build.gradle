@@ -25,6 +25,6 @@ publishing {
 dependencies {
     compileOnly "com.fasterxml.jackson.core:jackson-annotations:${jackson_version}"
     compileOnly "com.fasterxml.jackson.core:jackson-databind:${jackson_version}"
-    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.13.1'
 }
 
