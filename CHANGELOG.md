@@ -6,6 +6,7 @@
 ### Changed
 
 ### Fixed
+* [ALFREDAPI-537](https://xenitsupport.jira.com/browse/ALFREDAPI-537): Fix conflicts between artifacts when publishing to Sonatype
 * [ALFREDAPI-538](https://xenitsupport.jira.com/browse/ALFREDAPI-538): Fixed issue where errors related to jackson library conflicts would occurs while Alfresco is running
 
 ### Removed
