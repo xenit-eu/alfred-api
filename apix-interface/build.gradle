@@ -15,6 +15,7 @@ task javadocJar(type: Jar) {
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            artifactId 'alfred-api-interface'
             from components.java
             artifact sourcesJar
             artifact javadocJar
