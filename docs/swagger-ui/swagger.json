@@ -1,1 +1,4218 @@
-{"swagger":"2.0","info":{"description":"This is the swagger specification for Api-X REST API\n\nExamples can be found at: https://docs.xenit.eu/alfred-api","version":"4.0.0","title":"Api-X REST API","contact":{"name":"XeniT","url":"http://www.xenit.eu","email":"engineering@xenit.eu"},"license":{"name":"GNU Lesser General Public License v3","url":"https://www.gnu.org/licenses/lgpl-3.0.txt"}},"basePath":"/alfresco/s/apix","tags":[{"name":"WIP","description":"Dont use in production!"},{"name":"Bulk","description":"Perform multiple operations in a single call"},{"name":"Category","description":"Retrieves Category information"},{"name":"Configuration","description":"Retrieves configuration data files from the datadictionary"},{"name":"Dictionary","description":"Retrieves Dictionary information"},{"name":"Documentation","description":"Access API Documentation"},{"name":"General","description":"General API operations"},{"name":"Nodes","description":"Access operations on nodes"},{"name":"Search","description":"Perform search queries"},{"name":"Sites","description":"Access operations on sites"},{"name":"Translations","description":"Retrieve translations"},{"name":"VersionHistory","description":"Retrieves version history information"},{"name":"Workingcopies","description":"Access operations on working copies"},{"name":"People","description":"Retrieves person information"},{"name":"Properties","description":"Retrieves Property information"},{"name":"Groups","description":"Retrieves group information and links users/groups to parent groups"}],"schemes":["https","http"],"produces":["application/json"],"paths":{"/v1/bulk":{"post":{"tags":["Bulk"],"summary":"Performs multiple Api-X operations in a single rest call","description":"","operationId":"bulk","parameters":[{"in":"body","name":"body","required":false,"schema":{"type":"array","items":{"$ref":"#/definitions/BulkRequest"}}}],"responses":{"200":{"description":"Success","schema":{"type":"array","items":{"$ref":"#/definitions/BulkSubResult"}}}}}},"/v1/category/aspect/{qname}":{"get":{"tags":["Category"],"summary":"Return the categories available for an aspect","description":"","operationId":"getCategoriesForAspect","parameters":[{"name":"qname","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/Categories"}}}}},"/v1/comments/{space}/{store}/{guid}":{"get":{"tags":["Nodes"],"summary":"Returns the comment with the given id.","description":"","operationId":"getComment","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success"},"403":{"description":"Not Authorized"},"404":{"description":"Not Found"}}},"put":{"tags":["Nodes"],"summary":"Updates the comment with the given id.","description":"","operationId":"updateComment","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"},{"in":"body","name":"body","required":false,"schema":{"$ref":"#/definitions/Comment"}}],"responses":{"200":{"description":"Success"},"403":{"description":"Not Authorized"},"404":{"description":"Not Found"}}},"delete":{"tags":["Nodes"],"summary":"Deletes the comment with the given id.","description":"","operationId":"deleteComment","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success"},"403":{"description":"Not Authorized"},"404":{"description":"Not Found"}}}},"/v1/configuration":{"get":{"tags":["Configuration"],"summary":"Returns configuration files information and content","description":"","operationId":"getConfigurationFiles","parameters":[{"name":"fields","in":"query","description":"Comma separated field names to include.","required":true,"type":"string","default":"content,nodeRef","enum":["content","nodeRef","path","metadata","parsedContent"]},{"name":"searchDirectory","in":"query","description":"The directory to search for configuration files, relative to the data dictionary","required":true,"type":"string"},{"name":"filter.name","in":"query","description":"Regular expression that the node name should match.","required":false,"type":"string"},{"name":"callback","in":"query","description":"Javascript callback function","required":false,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/Configurations"}}}}},"/v1/dictionary/aspects":{"get":{"tags":["Dictionary"],"summary":"Return apects","description":"","operationId":"getAspects","parameters":[],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/Aspects"}}}}},"/v1/dictionary/aspects/{qname}":{"get":{"tags":["Dictionary"],"summary":"Return the definition of a aspect","description":"","operationId":"getAspectDefinition","parameters":[{"name":"qname","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/AspectDefinition"}}}}},"/v1/dictionary/namespaces":{"get":{"tags":["Dictionary"],"summary":"Returns the namespaces","description":"","operationId":"getNamespaces","parameters":[],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/Namespaces"}}}}},"/v1/dictionary/properties":{"get":{"tags":["Dictionary"],"summary":"Return properties","description":"","operationId":"getProperties","parameters":[],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/Properties"}}}}},"/v1/dictionary/properties/{qname}":{"get":{"tags":["Dictionary"],"summary":"Return the definition of a property","description":"","operationId":"getPropertyDefinition","parameters":[{"name":"qname","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/PropertyDefinition"}}}}},"/v1/dictionary/types":{"get":{"tags":["Dictionary"],"summary":"Return the definitions of types","description":"","operationId":"getSubTypeDefinitions","parameters":[{"name":"parent","in":"query","required":false,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/Types"}}}}},"/v1/dictionary/types/{qname}":{"get":{"tags":["Dictionary"],"summary":"Return the definition of a type","description":"","operationId":"getTypeDefinition","parameters":[{"name":"qname","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/TypeDefinition"}},"404":{"description":"Not Found"}}}},"/v1/docs/swagger.json":{"get":{"tags":["Documentation"],"summary":"The Swagger Spec for Alfred API","description":"","operationId":"execute","parameters":[],"responses":{"200":{"description":"Success"}}}},"/v1/docs/ui":{"get":{"tags":["Documentation"],"summary":"Shows this swagger spec in a user interface","parameters":[],"responses":{"200":{"description":"Swagger UI interface","schema":{"type":"file"}}}}},"/v1/nodes":{"post":{"tags":["Nodes"],"summary":"Creates or copies a node","description":"Example of POST body:\n\n```\nPOST /apix/v1/nodes\n{\n\"parent\" : \"workspace://SpacesStore/d5dac928-e581-4507-9be7-9a2416adc318\", \n\"name\" : \"mydocument.txt\", \n\"type\" : \"{http://www.alfresco.org/model/content/1.0}content\", \n\"properties\" : {\n      \"{namespace}property1\": [\n        \"string\"\n      ],\n      \"{namespace}property2\": [\n        \"string\"\n      ],\n      \"{namespace}property3\": [\n        \"string\"\n      ]\n}, \n\"aspectsToAdd\" : [\n      \"{namespace}aspect1\"\n], \n\"aspectsToRemove\" : [\n      \"{namespace}aspect1\"\n], \n\"copyFrom\" : \"workspace://SpacesStore/f0d15919-3841-4170-807f-b81d2ebdeb80\", \n}\n```\n\"aspectsToRemove\" is only relevant when copying a node.\n","operationId":"createNode","parameters":[{"in":"body","name":"body","required":false,"schema":{"$ref":"#/definitions/CreateNodeOptions"}}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/NodeInfo"}},"403":{"description":"Not Authorized"}}}},"/v1/nodes/nodeInfo":{"post":{"tags":["Nodes"],"summary":"Returns combined information of multiple nodes. Nodes errors or without appropriate permissions will not be included in return, and will not cause failure of the call.","description":"Example to get combined information of multiple nodes:\n\n```\nPOST /apix/v1/nodes/nodeInfo\n{\n\"retrieveMetadata\" : true, \n\"retrievePath\" : true, \n\"retrievePermissions\" : true, \n\"retrieveAssocs\" : true, \n\"retrieveChildAssocs\" : true, \n\"retrieveParentAssocs\" : true, \n\"retrieveTargetAssocs\" : true, \n\"noderefs\": [ \n  \"workspace://SpacesStore/123456789\", \n  \"workspace://SpacesStore/147258369\", \n  \"workspace://SpacesStore/478159236\" \n]}\n```\n'retrieveMetadata', 'retrievePath', 'retrievePermissions', 'retrieveAssocs', 'retrieveChildAssocs',\n'retrieveParentAssocs', 'retrieveTargetAssocs' are optional parameters.\nSet 'retrieveMetadata' to false to omit the aspects and properties from the result.\nSet 'retrievePath' to false to omit the path from the result.\nSet 'retrievePermissions' to false to omit the permissions from the result.\nSet 'retrieveAssocs' to false to omit the associations(parent associations, child associations, peer associations) from the result.\nSet 'retrieveChildAssocs' to false to omit the child associations from the result.\nSet 'retrieveParentAssocs' to false to omit the parent associations from the result.\nSet 'retrieveTargetAssocs' to false to omit the peer target associations from the result.\nSet 'retrieveSourceAssocs' to false to omit the peer source associations from the result. Note: versionstore does not support sourceAssocs. For version nodes, an empty list added to the result\n","operationId":"getAllInfoOfNodes","parameters":[],"responses":{"200":{"description":"Success","schema":{"type":"array","items":{"$ref":"#/definitions/NodeInfo"}}},"400":{"description":"Bad Request"}}}},"/v1/nodes/upload":{"post":{"tags":["Nodes"],"summary":"Creates a new node with given content","description":"","operationId":"uploadNode","consumes":["multipart/form-data"],"parameters":[{"name":"parent","in":"formData","description":"Noderef of parent for the new node","required":true,"type":"string"},{"name":"type","in":"formData","description":"QName type for the new node","required":false,"type":"string"},{"name":"file","in":"formData","required":true,"type":"file"},{"name":"metadata","in":"formData","description":"Metadata for this file","required":false,"type":"string"},{"name":"extractMetadata","in":"formData","description":"Enable metadata extraction from the content, for example for msg files","required":false,"type":"boolean"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/NodeInfo"}},"403":{"description":"Not Authorized"}}}},"/v1/nodes/{space}/{store}/{guid}":{"get":{"tags":["Nodes"],"summary":"Returns combined information of a node.\nNote: versionstore does not support sourceAssocs. For version nodes, an empty list added to the result","description":"","operationId":"getAllInfoOfNode","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/NodeInfo"}},"403":{"description":"Not Authorized"},"404":{"description":"Not Found"}}},"delete":{"tags":["Nodes"],"summary":"Delete a node","description":"","operationId":"deleteNode","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"},{"name":"permanently","in":"query","required":false,"type":"string"}],"responses":{"200":{"description":"Success"},"403":{"description":"Not Authorized"},"404":{"description":"Not Found"}}}},"/v1/nodes/{space}/{store}/{guid}/acl":{"get":{"tags":["Nodes"],"summary":"Gets the ACLs for a node.","description":"","operationId":"getAcls","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/NodePermission"}},"403":{"description":"Not Authorized"}}},"put":{"tags":["Nodes"],"summary":"Sets the ACL for a node.","description":"Example:\n\n```\n{\n   \"inheritFromParent\": false,\n   \"ownAccessList\": [\n      {\n         \"allowed\": true,\n         \"authority\": \"MYGROUP\",\n         \"permission\": \"Collaborator\"\n      }\n]}\n```","operationId":"setAcls","consumes":["application/json"],"parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"},{"in":"body","name":"body","required":false,"schema":{"$ref":"#/definitions/ChangeAclsOptions"}}],"responses":{"200":{"description":"Success"},"403":{"description":"Not Authorized"}}}},"/v1/nodes/{space}/{store}/{guid}/acl/inheritFromParent":{"post":{"tags":["Nodes"],"operationId":"setInheritParentPermissions","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"},{"in":"body","name":"body","required":false,"schema":{"$ref":"#/definitions/InheritFromParent"}}],"responses":{"403":{"description":"Not Authorized"}}}},"/v1/nodes/{space}/{store}/{guid}/ancestors":{"get":{"tags":["Nodes"],"summary":"Retrieves the ancestors of the nodes","description":"It is possible to add \"root\" as a request parameter.\nIt is the node reference up to which point ancestors will be retrieved.\nThe default root reference will be the reference of Company Home","operationId":"retrieveAncestors","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"},{"name":"root","in":"query","required":false,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/AncestorsObject"}},"403":{"description":"Not Authorized"}}}},"/v1/nodes/{space}/{store}/{guid}/associations":{"get":{"tags":["Nodes"],"summary":"Retrieve node associations.\nVersionstore does not support sourceAssocs. For version nodes, an empty list is returned for this component of the result.","description":"","operationId":"getAssociations","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/NodeAssociations"}},"403":{"description":"Not Authorized"}}},"post":{"tags":["Nodes"],"summary":"Create new association with given node as source","description":"","operationId":"createAssociation","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"},{"in":"body","name":"body","required":false,"schema":{"$ref":"#/definitions/CreateAssociationOptions"}}],"responses":{"200":{"description":"Success"},"403":{"description":"Not Authorized"}}},"delete":{"tags":["Nodes"],"summary":"Deletes an association with given node as source","description":"","operationId":"deleteAssociation","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"},{"name":"target","in":"query","required":true,"type":"string"},{"name":"type","in":"query","required":true,"type":"string"}],"responses":{"200":{"description":"Success"},"403":{"description":"Not Authorized"}}}},"/v1/nodes/{space}/{store}/{guid}/associations/children":{"get":{"tags":["Nodes"],"summary":"Retrieve node child associations","description":"","operationId":"getChildAssociations","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"type":"array","items":{"$ref":"#/definitions/ChildParentAssociation"}}},"403":{"description":"Not Authorized"}}}},"/v1/nodes/{space}/{store}/{guid}/associations/parents":{"get":{"tags":["Nodes"],"summary":"Retrieve node parent associations","description":"","operationId":"getParentAssociations","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"type":"array","items":{"$ref":"#/definitions/ChildParentAssociation"}}},"403":{"description":"Not Authorized"}}}},"/v1/nodes/{space}/{store}/{guid}/associations/targets":{"get":{"tags":["Nodes"],"summary":"Retrieve node peer associations with given node being the source","description":"","operationId":"getSourcePeerAssociations","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"type":"array","items":{"$ref":"#/definitions/NodeAssociation"}}},"403":{"description":"Not Authorized"}}}},"/v1/nodes/{space}/{store}/{guid}/comments":{"get":{"tags":["Nodes"],"summary":"Retrieves all comments for a given node","description":"","operationId":"getComments","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"},{"name":"skipcount","in":"query","required":true,"type":"string"},{"name":"pagesize","in":"query","required":true,"type":"string"}],"responses":{"200":{"description":"Success"},"403":{"description":"Not Authorized"},"404":{"description":"Not Found"}}},"post":{"tags":["Nodes"],"summary":"Appends a new comment to the given node.","description":"","operationId":"addComment","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"},{"in":"body","name":"body","required":false,"schema":{"$ref":"#/definitions/Comment"}}],"responses":{"200":{"description":"Success"},"403":{"description":"Not Authorized"},"404":{"description":"Not Found"}}}},"/v1/nodes/{space}/{store}/{guid}/content":{"get":{"tags":["Nodes"],"summary":"Downloads content file for given node","description":"","operationId":"getContent","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success"},"403":{"description":"Not Authorized"},"404":{"description":"Not Found"}}},"put":{"tags":["Nodes"],"summary":"Sets or updates the content for given node. If no file is given the content will be set to empty.","description":"","operationId":"setContent","consumes":["multipart/form-data"],"parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"},{"name":"file","in":"formData","required":false,"type":"file"}],"responses":{"200":{"description":"Success"},"403":{"description":"Not Authorized"}}},"delete":{"tags":["Nodes"],"summary":"Sets the content for given node to empty","description":"","operationId":"deleteContent","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success"},"403":{"description":"Not Authorized"}}}},"/v1/nodes/{space}/{store}/{guid}/content/previews/pdf":{"get":{"tags":["WIP"],"summary":"Downloads preview file for given node","description":"","operationId":"getPreviewPdf","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"},{"name":"file","in":"formData","required":true,"type":"file"}],"responses":{"200":{"description":"Success"}}}},"/v1/nodes/{space}/{store}/{guid}/exists":{"get":{"tags":["Nodes"],"summary":"Checks if the given node exists","description":"","operationId":"exists","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success"},"403":{"description":"Not Authorized"}}}},"/v1/nodes/{space}/{store}/{guid}/metadata":{"get":{"tags":["Nodes"],"summary":"Retrieve node metadata","description":"","operationId":"getMetadata","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/NodeMetadata"}},"403":{"description":"Not Authorized"}}},"post":{"tags":["Nodes"],"summary":"Change node metadata","description":"Example to set a node's title and add the sys:versionable aspect:\n\n```\nPOST /apix/v1/nodes/workspace/SpacesStore/b54287de-381e-44b1-b6d1-e6c9a9d632fd/metadata\n{\n  \"aspectsToAdd\": [\"{http://www.alfresco.org/model/system/1.0}temporary\"],\n  \"propertiesToSet\": {\"{http://www.alfresco.org/model/content/1.0}title\":[\"My new title\"]}\n}\n```\n\nWhen you generalize the type of a node instead of specializing, the default properties of the initial **type** that are not present in the new type are removed, however, the default aspects are not. This is the default behaviour. If you also want to remove these aspects on type generalization, add the parameter **cleanUpAspectsOnGeneralization** to the request body.\n\nExample for cleaning up aspects on type generalization:\n\n```\nPOST /apix/v1/nodes/workspace/SpacesStore/b54287de-381e-44b1-b6d1-e6c9a9d632fd/metadata\n{\n  \"type\": \"{http://www.alfresco.org/model/content/1.0}content\",\n  \"cleanUpAspectsOnGeneralization\": true\n}\n```\n\nChanging the cm:name property will also update the qname path of the node so it is in sync with it.\nThis only applies to nodes of type or subtype cm:content or cm:folder but not of type or subtype of cm:systemfolder.","operationId":"setMetadata","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"},{"in":"body","name":"body","required":false,"schema":{"$ref":"#/definitions/MetadataChanges"}}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/NodeMetadata"}},"403":{"description":"Not Authorized"}}}},"/v1/nodes/{space}/{store}/{guid}/parent":{"put":{"tags":["Nodes"],"summary":"Moves a node by changing its parent","description":"","operationId":"setParent","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"},{"in":"body","name":"body","required":false,"schema":{"$ref":"#/definitions/ChangeParentOptions"}}],"responses":{"200":{"description":"Success"},"403":{"description":"Not Authorized"}}}},"/v1/nodes/{space}/{store}/{guid}/path":{"get":{"tags":["Nodes"],"summary":"Returns path of the node","description":"","operationId":"getPath","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/NodePath"}},"403":{"description":"Not Authorized"}}}},"/v1/nodes/{space}/{store}/{guid}/permissions":{"get":{"tags":["Nodes"],"summary":"Retrieve current user's permissions for a node","description":"Returns a key-value map of permissions keys to a value of 'DENY' or 'ALLOW'. Possible keys are: Read, Write, Delete, CreateChildren, ReadPermissions, ChangePermissions, or custom permissions","operationId":"getPermissions","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"type":"object","additionalProperties":{"type":"string","enum":["ALLOW","DENY","UNDETERMINED"]}}}}}},"/v1/nodes/{space}/{store}/{guid}/permissions/authority/{authority}/permission/{permission}":{"post":{"tags":["Nodes"],"summary":"sets a user a permission for a node.","description":"","operationId":"setPermission","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"},{"name":"authority","in":"path","required":true,"type":"string"},{"name":"permission","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success"},"403":{"description":"Not Authorized"}}},"delete":{"tags":["Nodes"],"summary":"removes a user its permission for a node.","description":"","operationId":"deletePermission","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"},{"name":"authority","in":"path","required":true,"type":"string"},{"name":"permission","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success"},"403":{"description":"Not Authorized"}}}},"/v1/people":{"get":{"tags":["People"],"summary":"Returns person information given a userName","description":"","operationId":"getPersonViaUserName","parameters":[{"name":"userName","in":"query","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/Person"}}}}},"/v1/people/{space}/{store}/{guid}":{"get":{"tags":["People"],"summary":"Returns person information","description":"","operationId":"getPerson","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/Person"}}}}},"/v1/properties/{qname}":{"get":{"tags":["Properties"],"summary":"Return the definition of a property","description":"","operationId":"getPropertyDefinition","parameters":[{"name":"qname","in":"path","required":true,"type":"string"},{"name":"qnameWithSlash","in":"query","required":false,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/PropertyDefinition"}}}}},"/v1/search":{"post":{"tags":["Search"],"summary":"Performs a search for nodes","description":"# Request components\n\n## query\nObject containing subcomponents that build the requested query.\nInfo about the Search query syntax can be found here: https://docs.xenit.eu/alfred-api/user/rest-api\n### special search terms:\n- type: searches for nodes of that type (for example: \"type\" : \"cm:content\")\n- aspect: searches for nodes with that aspect (for example: \"aspect\" : \"cm:titled\")\n- noderef: searches the node with that noderef (for example: \"noderef\" : \"workspace://SpacesStore/f0d15919-3841-4170-807f-b81d2ebdeb80\")\n- parent: searches the nodes with that parent (for example: \"parent\" : \"workspace://SpacesStore/f0d15919-3841-4170-807f-b81d2ebdeb80\")\n- path: searches the nodes with that path (for example: \"path\" : \"/\")\n- category: searches the nodes with that category (for example: \"category\" : \"workspace://SpacesStore/f0d15919-3841-4170-807f-b81d2ebdeb80\")\n- text: searches the nodes with content containing that text (for example: \"text\" : \"this text\")\n- all: searches the nodes with content, cm:name, cm:creator, cm:modifier or cm:author containing the value (for example: \"all\" : \"search term\")\n- isunset: searches the nodes with where the value of the property is not set (for example: \"isunset\" : \"cm:author\")\n- isnull: searches the nodes with where the value of the property is null (for example: \"isnull\" : \"cm:author\")\n- isnotnull: searches the nodes with where the value of the property is not null (for example: \"isnotnull\" : \"cm:author\")\n- exists: searches the nodes that have the property (for example: \"exists\" : \"cm:author\")\n\n## paging\n`Optional`\n\nOptions to skip over results starting from the top of the result and to limit the total number of results.\n\n## facets\n`Optional`\n\nOptions to enable, limit the total amount, minimum number of hits and customize input of facets.\n\n<b>Note:</b> facets with 0 hits are not returned in the result\n\n## orderBy\n`Optional`\n\nOptions to select the property to order by and the direction of sorting.\n\n## consistency\n`Optional`\n\nOption to request specific consistency\n\n## locale\n`Optional`\n\nOptions to request specific locale and encoding options\n\n## workspace\n`Optional`\n\nOptions to change the target alfresco workspace\n\n## highlight\n`5.2 and up`\n\n`Optional`\n\nOptions to change the highlight configuration.\nMinimal requirement is the `fields` array, which takes object containing at least the `field` property. Each list element specifies a property on which higlighting needs to be applied. When no fields are specified, the call defaults to `cm:content` as field.\nFull documentation can be found on the alfresco [documentation](https://docs.alfresco.com/5.2/concepts/search-api-highlight.html) page.\n\n# Examples\n\nSearch for the first 10 nodes in the `cm:content` namespace:\n```json\n{\n  \"query\": {\"type\":\"{http://www.alfresco.org/model/content/1.0}content\"},\n  \"paging\": {\n    \"limit\": 10,\n    \"skip\": 0\n  },\n  \"facets\": {\n    \"enabled\": false\n  }\n}\n```\n\nSearch for all nodes with the term 'budget' in the `cm:content` property (fulltext), and show two highlighted hits with delimiter \\<highlight>\\</highlight>:\n```json\n{\n    \"query\": {\n        \"property\": {\n            \"exact\": false,\n            \"name\": \"cm:content\",\n            \"value\": \"budget\"\n        }\n    },\n    \"highlight\":{\n        \"prefix\":\"<highlight>\",\n        \"postfix\":\"</highlight>\",\n        \"snippetCount\":2,\n\t\t\"fields\":[{\"field\":\"cm:content\"}]\n    }\n}\n```","operationId":"execute","parameters":[{"in":"body","name":"body","required":false,"schema":{"$ref":"#/definitions/SearchQuery"}}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/SearchQueryResult"}},"400":{"description":"Failure"}}}},"/v1/sites/mySites":{"get":{"tags":["Sites"],"summary":"Retrieves information about the available sites of the current user","description":"Returns a list of sites. For each site the node reference, short name, title, description,\nsite visibility and list of site components (document libray, links, data lists, wiki,\ndiscussions) are returned.\n\nThere are no mandatory request parameters. However, there are optional ones:\nSet 'retrieveMetadata' to true to return the aspects and properties of the sites.\nSet 'retrievePath' to true to return the path of the sites.\nSet 'retrievePermissions' to true to return the permissions of the sites.\nSet 'retrieveChildAssocs' to true to return the child associations of the sites.\nSet 'retrieveParentAssocs' to true to return the parent associations of the sites.\nSet 'retrieveTargetAssocs' to true to return the target peer associations of the sites.\nSet 'retrieveSourceAssocs' to true to return the source peer associations of the sites.\n","operationId":"getMySites","parameters":[{"name":"retrieveMetadata","in":"query","required":false,"type":"string"},{"name":"retrievePath","in":"query","required":false,"type":"string"},{"name":"retrievePermissions","in":"query","required":false,"type":"string"},{"name":"retrieveChildAssocs","in":"query","required":false,"type":"string"},{"name":"retrieveParentAssocs","in":"query","required":false,"type":"string"},{"name":"retrieveTargetAssocs","in":"query","required":false,"type":"string"},{"name":"retrieveSourceAssocs","in":"query","required":false,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"type":"array","items":{"$ref":"#/definitions/SiteInfo"}}}}}},"/v1/translations/{locale}":{"get":{"tags":["Translations"],"summary":"Get all available translations for given locale","description":"","operationId":"getTranslations","parameters":[{"name":"locale","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/Translations"}}}}},"/v1/translations/{locale}/checksum":{"get":{"tags":["Translations"],"summary":"Retrieve a checksum of all translations for given locale","description":"","operationId":"getChecksum","parameters":[{"name":"locale","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/TranslationChecksum"}}}}},"/v1/version":{"get":{"tags":["General"],"summary":"Access the version information for Api-X","description":"","operationId":"getApixVersion","parameters":[],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/VersionDescription"}}}}},"/v1/versionhistory/{space}/{store}/{guid}":{"put":{"tags":["VersionHistory"],"summary":"Enables versioning for this node, creating an initial version","description":"","operationId":"setVersionHistory","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"},{"in":"body","name":"body","required":false,"schema":{"$ref":"#/definitions/VersionOptions"}}],"responses":{"200":{"description":"Success"}}},"delete":{"tags":["VersionHistory"],"summary":"Permanently emoves version history","description":"","operationId":"deleteVersionHistory","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success"}}}},"/v1/versionhistory/{space}/{store}/{guid}/head":{"get":{"tags":["VersionHistory"],"summary":"Returns the head (newest) version","description":"","operationId":"getVersionHistoryHead","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/Version"}}}}},"/v1/versionhistory/{space}/{store}/{guid}/root":{"get":{"tags":["VersionHistory"],"summary":"Returns the root (oldest) version","description":"","operationId":"getVersionHistoryRoot","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/Version"}}}}},"/v1/versionhistory/{space}/{store}/{guid}/versions":{"get":{"tags":["VersionHistory"],"summary":"Returns list of chronological version information for give node","description":"","operationId":"getVersionHistory","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/VersionHistory"}}}}},"/v1/versionhistory/{space}/{store}/{guid}/versions/{label}":{"delete":{"tags":["VersionHistory"],"summary":"Permanently remove version with given label","description":"","operationId":"deleteVersion","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"},{"name":"label","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success"}}}},"/v1/versionhistory/{space}/{store}/{guid}/versions/{label}/revert":{"post":{"tags":["VersionHistory"],"summary":"(Shallow) Revert the node to version with given label","description":"","operationId":"revertVersionHistory","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"},{"name":"label","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success"}}}},"/v1/workingcopies":{"post":{"tags":["Workingcopies"],"summary":"Checks out a new working copy for given node","description":"","operationId":"createWorkingcopy","parameters":[{"in":"body","name":"body","required":false,"schema":{"$ref":"#/definitions/CheckoutBody"}}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/NoderefResult"}}}}},"/v1/workingcopies/{space}/{store}/{guid}":{"delete":{"tags":["Workingcopies"],"summary":"Cancels and removes a working copy","description":"Returns the noderef of the original node","operationId":"cancelWorkingcopy","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/NoderefResult"}},"404":{"description":"Not found"}}}},"/v1/workingcopies/{space}/{store}/{guid}/checkin":{"post":{"tags":["Workingcopies"],"summary":"Checks in given working copy and removes it","description":"Returns the noderef of the original node","operationId":"checkinWorkingcopy","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"},{"in":"body","name":"body","required":false,"schema":{"$ref":"#/definitions/CheckinBody"}}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/NoderefResult"}},"404":{"description":"Not found"}}}},"/v1/workingcopies/{space}/{store}/{guid}/original":{"get":{"tags":["Workingcopies"],"summary":"Returns the original node for given working copy","description":"","operationId":"getWorkingCopySource","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/NoderefResult"}},"404":{"description":"Not Found"}}}},"/v2/groups":{"get":{"tags":["Groups"],"summary":"Returns a list containing all groups","description":"","operationId":"GetAllGroups","parameters":[],"responses":{"200":{"description":"Success","schema":{"type":"array","items":{"$ref":"#/definitions/Group"}}}}}},"/v2/groups/{name}/groups":{"get":{"tags":["Groups"],"summary":"Returns the groups within a specific group","description":"","operationId":"GetGroupsOfGroup","parameters":[{"name":"name","in":"path","required":true,"type":"string"},{"name":"immediate","in":"query","required":false,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"type":"array","items":{"$ref":"#/definitions/Group"}}}}},"put":{"tags":["Groups"],"summary":"Sets the complete list of direct subgroups for this group","description":"","operationId":"SetGroupsOfGroup","parameters":[{"name":"name","in":"path","required":true,"type":"string"},{"in":"body","name":"body","required":false,"schema":{"$ref":"#/definitions/SetSubgroupOptions"}}],"responses":{"200":{"description":"Success","schema":{"type":"array","items":{"$ref":"#/definitions/Group"}}}}}},"/v2/groups/{name}/people":{"get":{"tags":["Groups"],"summary":"Returns the persons within a specific group","description":"","operationId":"GetPeopleOfGroup","parameters":[{"name":"name","in":"path","required":true,"type":"string"},{"name":"immediate","in":"query","required":false,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"type":"array","items":{"$ref":"#/definitions/Person"}}}}},"put":{"tags":["Groups"],"summary":"Sets the complete list of people as direct members of this group","description":"","operationId":"SetPeopleInGroup","parameters":[{"name":"name","in":"path","required":true,"type":"string"},{"in":"body","name":"body","required":false,"schema":{"$ref":"#/definitions/SetUsersInGroupOptions"}}],"responses":{"200":{"description":"Success","schema":{"type":"array","items":{"$ref":"#/definitions/Group"}}}}}},"/v2/nodes":{"post":{"tags":["Nodes"],"summary":"Creates or copies a node","description":"","operationId":"createNode","parameters":[{"in":"body","name":"body","required":false,"schema":{"$ref":"#/definitions/CreateNodeOptions"}}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/NodeInfo"}}}}},"/v2/nodes/nodeInfo":{"post":{"tags":["Nodes"],"summary":"Returns combined information of multiple nodes","description":"Example to get combined information of multiple nodes:\n\n```\nPOST /apix/v1/nodes/nodeInfo\n{\n\"retrieveMetadata\" : true, \n\"retrievePath\" : true, \n\"retrievePermissions\" : true, \n\"retrieveAssocs\" : true, \n\"retrieveChildAssocs\" : true, \n\"retrieveParentAssocs\" : true, \n\"retrieveTargetAssocs\" : true, \n\"noderefs\": [ \n  \"workspace://SpacesStore/123456789\", \n  \"workspace://SpacesStore/147258369\", \n  \"workspace://SpacesStore/478159236\" \n]}\n```\n'retrieveMetadata', 'retrievePath', 'retrievePermissions', 'retrieveAssocs', 'retrieveChildAssocs',\n'retrieveParentAssocs', 'retrieveTargetAssocs' are optional parameters.\nSet 'retrieveMetadata' to false to omit the aspects and properties from the result.\nSet 'retrievePath' to false to omit the path from the result.\nSet 'retrievePermissions' to false to omit the permissions from the result.\nSet 'retrieveAssocs' to false to omit the associations (parent associations, child associations, peer associations) from the result.\nSet 'retrieveChildAssocs' to false to omit the child associations from the result.\nSet 'retrieveParentAssocs' to false to omit the parent associations from the result.\nSet 'retrieveTargetAssocs' to false to omit the peer target associations from the result.\nSet 'retrieveSourceAssocs' to false to omit the peer source associations from the result. Note: versionstore does not support sourceAssocs. For version nodes, an empty list added to the result\n","operationId":"getAllInfos","parameters":[],"responses":{"200":{"description":"Success","schema":{"type":"array","items":{"$ref":"#/definitions/NodeInfo"}}}}}},"/v2/nodes/{space}/{store}/{guid}":{"get":{"tags":["Nodes"],"summary":"Returns combined information of a node.\nNote: versionstore does not support sourceAssocs. For version nodes, an empty list added to the result","description":"","operationId":"getAllInfo","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/NodeInfo"}}}}},"/v2/nodes/{space}/{store}/{guid}/permissions":{"get":{"tags":["Nodes"],"summary":"Retrieve current user's permissions for a node","description":"Returns a key-value map of permissions keys to a value of 'DENY' or 'ALLOW'. Possible keys are: Read, Write, Delete, CreateChildren, ReadPermissions, ChangePermissions, or custom permissions","operationId":"getPermissions","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"type":"object","additionalProperties":{"type":"string","enum":["ALLOW","DENY","UNDETERMINED"]}}}}}},"/v2/people":{"get":{"tags":["People"],"summary":"Returns all people","description":"","operationId":"getAllPeople","parameters":[],"responses":{"200":{"description":"Success","schema":{"type":"array","items":{"$ref":"#/definitions/Person"}}}}}},"/v2/people/-me-":{"get":{"tags":["People"],"summary":"Returns current user information","description":"","operationId":"getPersonCurrentUser","parameters":[],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/Person"}}}}},"/v2/people/containergroups/{name}":{"get":{"tags":["People"],"summary":"Returns container groups of person","description":"","operationId":"getContainerGroupsOf","parameters":[{"name":"name","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"type":"array","items":{"type":"string"}}}}}},"/v2/people/id/{space}/{store}/{guid}":{"get":{"tags":["People"],"summary":"Returns person information","description":"","operationId":"getPerson","parameters":[{"name":"space","in":"path","required":true,"type":"string"},{"name":"store","in":"path","required":true,"type":"string"},{"name":"guid","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/Person"}}}}},"/v2/people/{name}":{"get":{"tags":["People"],"summary":"Returns person information","description":"","operationId":"getPersonWithName","parameters":[{"name":"name","in":"path","required":true,"type":"string"}],"responses":{"200":{"description":"Success","schema":{"$ref":"#/definitions/Person"}}}}}},"definitions":{"Locale":{"type":"object","properties":{"displayName":{"type":"string"},"script":{"type":"string"},"country":{"type":"string"},"variant":{"type":"string"},"extensionKeys":{"type":"array","uniqueItems":true,"items":{"type":"string"}},"unicodeLocaleAttributes":{"type":"array","uniqueItems":true,"items":{"type":"string"}},"unicodeLocaleKeys":{"type":"array","uniqueItems":true,"items":{"type":"string"}},"iso3Language":{"type":"string"},"iso3Country":{"type":"string"},"displayLanguage":{"type":"string"},"displayScript":{"type":"string"},"displayCountry":{"type":"string"},"displayVariant":{"type":"string"},"language":{"type":"string"}}},"Namespaces":{"type":"object","properties":{"namespaces":{"type":"object","additionalProperties":{"$ref":"#/definitions/Namespace"}}}},"Types":{"type":"object","properties":{"types":{"type":"array","items":{"$ref":"#/definitions/TypeDefinition"}}}},"NodeAssociation":{"type":"object","properties":{"source":{"$ref":"#/definitions/NodeRef"},"target":{"$ref":"#/definitions/NodeRef"},"type":{"$ref":"#/definitions/QName"}}},"MetadataChanges":{"type":"object","properties":{"type":{"$ref":"#/definitions/QName"},"aspectsToAdd":{"type":"array","items":{"$ref":"#/definitions/QName"}},"aspectsToRemove":{"type":"array","items":{"$ref":"#/definitions/QName"}},"propertiesToSet":{"type":"object","additionalProperties":{"type":"array","items":{"type":"string"}}}}},"HighlightFieldOption":{"type":"object","properties":{"field":{"type":"string"},"snippetCount":{"type":"integer","format":"int32"},"fragmentSize":{"type":"integer","format":"int32"},"mergeContinuous":{"type":"boolean","default":false},"prefix":{"type":"string"},"suffix":{"type":"string"}}},"Access":{"type":"object","properties":{"allowed":{"type":"boolean","default":false},"authority":{"type":"string"},"permission":{"type":"string"}}},"SearchQueryResult":{"type":"object","properties":{"noderefs":{"type":"array","items":{"type":"string"}},"facets":{"type":"array","items":{"$ref":"#/definitions/FacetSearchResult"}},"totalResultCount":{"type":"integer","format":"int64"},"highlights":{"$ref":"#/definitions/Highlights"}}},"VersionOptions":{"type":"object","properties":{"initialVersion":{"type":"boolean","default":false},"autoVersion":{"type":"boolean","default":false},"autoVersionOnUpdateProps":{"type":"boolean","default":false}}},"Version":{"type":"object","properties":{"modifier":{"type":"string"},"modifiedDate":{"type":"string","format":"date-time"},"label":{"type":"string"},"description":{"type":"string"},"type":{"type":"string","enum":["MAJOR","MINOR","UNKNOWN"]},"nodeRef":{"$ref":"#/definitions/NodeRef"}}},"CheckinBody":{"type":"object","properties":{"comment":{"type":"string","readOnly":true},"majorVersion":{"type":"boolean","readOnly":true,"default":false}}},"PropertyIndexOptions":{"type":"object","properties":{"stored":{"type":"boolean","default":false},"tokenised":{"type":"string","enum":["TRUE","FALSE","BOTH"]},"facetable":{"type":"string","enum":["TRUE","FALSE","DEFAULT"]}}},"ISite":{"type":"object","properties":{"public":{"type":"boolean","default":false},"title":{"type":"string"},"description":{"type":"string"},"shortName":{"type":"string"},"nodeRef":{"$ref":"#/definitions/NodeRef"},"components":{"type":"object","additionalProperties":{"$ref":"#/definitions/NodeRef"}}}},"CreateAssociationOptions":{"type":"object","required":["target"],"properties":{"target":{"$ref":"#/definitions/NodeRef"},"type":{"description":"Defaults to cm:content","$ref":"#/definitions/QName"}}},"StoreRef":{"type":"object","properties":{"id":{"type":"string"},"protocol":{"type":"string"}}},"SiteInfo":{"type":"object","properties":{"site":{"$ref":"#/definitions/ISite"},"nodeInfo":{"$ref":"#/definitions/NodeInfo"}}},"Categories":{"type":"object","properties":{"categories":{"type":"array","items":{"$ref":"#/definitions/Category"}}}},"PropertyConstraintDefinition":{"type":"object","properties":{"constraintType":{"type":"string"},"parameters":{"type":"object","additionalProperties":{"type":"object"}}}},"ChildParentAssociation":{"type":"object","properties":{"source":{"$ref":"#/definitions/NodeRef"},"target":{"$ref":"#/definitions/NodeRef"},"type":{"$ref":"#/definitions/QName"},"primary":{"type":"boolean","default":false}}},"VersionHistory":{"type":"object","properties":{"versionHistory":{"type":"array","items":{"$ref":"#/definitions/Version"}}}},"NodePath":{"type":"object","properties":{"displayPath":{"type":"string"},"qnamePath":{"type":"string"}}},"Namespace":{"type":"object","properties":{"URI":{"type":"string"},"prefixes":{"type":"array","items":{"type":"string"}}}},"NoderefResult":{"type":"object","properties":{"noderef":{"$ref":"#/definitions/NodeRef"}}},"HighlightOptions":{"type":"object","properties":{"prefix":{"type":"string"},"postfix":{"type":"string"},"snippetCount":{"type":"integer","format":"int32"},"fragmentSize":{"type":"integer","format":"int32"},"maxAnalyzedCharacters":{"type":"integer","format":"int32"},"mergeContiguous":{"type":"boolean","default":false},"usePhraseHighlighter":{"type":"boolean","default":false},"fields":{"type":"array","items":{"$ref":"#/definitions/HighlightFieldOption"}}}},"SearchSyntaxNode":{"type":"object"},"AncestorsObject":{"type":"object","properties":{"node":{"$ref":"#/definitions/NodeRef"},"ancestors":{"type":"array","items":{"$ref":"#/definitions/NodeRef"}}}},"TranslationValue":{"type":"object","properties":{"qname":{"$ref":"#/definitions/QName"},"title":{"type":"string"},"description":{"type":"string"}}},"NodeInfo":{"type":"object","properties":{"noderef":{"$ref":"#/definitions/NodeRef"},"metadata":{"$ref":"#/definitions/NodeMetadata"},"permissions":{"type":"object","additionalProperties":{"type":"string","enum":["ALLOW","DENY","UNDETERMINED"]}},"associations":{"$ref":"#/definitions/NodeAssociations"},"path":{"$ref":"#/definitions/NodePath"}}},"PropertyTranslationValue":{"type":"object","properties":{"qname":{"$ref":"#/definitions/QName"},"title":{"type":"string"},"description":{"type":"string"},"values":{"type":"object","additionalProperties":{"type":"string"}}}},"ConfigurationFile":{"type":"object","properties":{"content":{"type":"string"},"nodeRef":{"$ref":"#/definitions/NodeRef"},"metadata":{"$ref":"#/definitions/NodeMetadata"},"path":{"$ref":"#/definitions/NodePath"},"parsedContent":{"type":"object"}}},"Translations":{"type":"object","properties":{"types":{"type":"array","items":{"$ref":"#/definitions/TranslationValue"}},"aspects":{"type":"array","items":{"$ref":"#/definitions/TranslationValue"}},"association":{"type":"array","items":{"$ref":"#/definitions/TranslationValue"}},"properties":{"type":"array","items":{"$ref":"#/definitions/PropertyTranslationValue"}}}},"Person":{"type":"object","properties":{"nodeRef":{"$ref":"#/definitions/NodeRef"},"userName":{"type":"string"},"firstName":{"type":"string"},"lastName":{"type":"string"},"emailAddress":{"type":"string"},"groups":{"type":"array","items":{"type":"string"}}}},"Group":{"type":"object","properties":{"nodeRef":{"$ref":"#/definitions/NodeRef"},"identifier":{"type":"string"},"displayName":{"type":"string"}}},"Highlights":{"type":"object","properties":{"noderefs":{"type":"object","additionalProperties":{"type":"array","items":{"$ref":"#/definitions/HighlightResult"}}}}},"Category":{"type":"object","properties":{"noderef":{"type":"string"},"name":{"type":"string"},"qnamePath":{"type":"string"},"subcategories":{"type":"array","items":{"$ref":"#/definitions/Category"}}}},"TranslationChecksum":{"type":"object","properties":{"checksum":{"type":"integer","format":"int64"}}},"Properties":{"type":"object","properties":{"properties":{"type":"array","items":{"$ref":"#/definitions/PropertyDefinition"}}}},"RangeValue":{"type":"object","properties":{"start":{"type":"string"},"end":{"type":"string"}}},"TypeDefinition":{"type":"object","properties":{"name":{"$ref":"#/definitions/QName"},"parent":{"$ref":"#/definitions/QName"},"title":{"type":"string"},"description":{"type":"string"},"properties":{"type":"array","items":{"$ref":"#/definitions/QName"}},"mandatoryAspects":{"type":"array","items":{"$ref":"#/definitions/QName"}}}},"InheritFromParent":{"type":"object","required":["inheritFromParent"],"properties":{"inheritFromParent":{"type":"boolean","default":false}}},"NodeRef":{"type":"string","example":"workspace://SpacesStore/987-978-79-797-797-978"},"CreateNodeOptions":{"type":"object","required":["parent"],"properties":{"parent":{"type":"string","readOnly":true},"name":{"type":"string","readOnly":true},"type":{"type":"string","readOnly":true},"properties":{"type":"object","readOnly":true,"additionalProperties":{"type":"array","items":{"type":"string"}}},"aspectsToAdd":{"type":"array","readOnly":true,"items":{"$ref":"#/definitions/QName"}},"aspectsToRemove":{"type":"array","readOnly":true,"items":{"$ref":"#/definitions/QName"}},"copyFrom":{"type":"string","readOnly":true}}},"FacetValue":{"type":"object","properties":{"value":{"type":"string"},"range":{"$ref":"#/definitions/RangeValue"},"label":{"type":"string"},"count":{"type":"integer","format":"int32"}}},"NodeAssociations":{"type":"object","properties":{"children":{"type":"array","items":{"$ref":"#/definitions/ChildParentAssociation"}},"parents":{"type":"array","items":{"$ref":"#/definitions/ChildParentAssociation"}},"targets":{"type":"array","items":{"$ref":"#/definitions/NodeAssociation"}},"sources":{"type":"array","items":{"$ref":"#/definitions/NodeAssociation"}}}},"ChangeParentOptions":{"type":"object","required":["parent"],"properties":{"parent":{"type":"string","readOnly":true}}},"CheckoutBody":{"type":"object","required":["original"],"properties":{"original":{"readOnly":true,"$ref":"#/definitions/NodeRef"},"destinationFolder":{"description":"Optional, if not specified uses the original node's folder. If current user does not have permissions for this folder, the working copy is created in the user's home folder","readOnly":true,"$ref":"#/definitions/NodeRef"}}},"Configurations":{"type":"object","properties":{"files":{"type":"array","items":{"$ref":"#/definitions/ConfigurationFile"}}}},"SetUsersInGroupOptions":{"type":"object","required":["users"],"properties":{"users":{"type":"array","readOnly":true,"items":{"type":"string"}}}},"OrderBy":{"type":"object","properties":{"property":{"$ref":"#/definitions/QName"},"order":{"type":"string","enum":["DESCENDING","ASCENDING"]}}},"SearchQuery":{"type":"object","required":["query"],"properties":{"query":{"$ref":"#/definitions/SearchSyntaxNode"},"paging":{"$ref":"#/definitions/PagingOptions"},"facets":{"$ref":"#/definitions/FacetOptions"},"orderBy":{"type":"array","items":{"$ref":"#/definitions/OrderBy"}},"consistency":{"type":"string","enum":["EVENTUAL","TRANSACTIONAL","TRANSACTIONAL_IF_POSSIBLE"]},"locale":{"$ref":"#/definitions/Locale"},"workspace":{"$ref":"#/definitions/StoreRef"},"highlight":{"$ref":"#/definitions/HighlightOptions"}}},"Comment":{"type":"object","properties":{"id":{"$ref":"#/definitions/NodeRef"},"title":{"type":"string"},"content":{"type":"string"},"createdAt":{"type":"string"},"createdBy":{"type":"string"},"modifiedAt":{"type":"string"},"modifiedBy":{"type":"string"},"editable":{"type":"boolean","default":false},"deletable":{"type":"boolean","default":false}}},"HighlightResult":{"type":"object","properties":{"field":{"type":"string"},"snippets":{"type":"array","items":{"type":"string"}}}},"VersionDescription":{"type":"object","properties":{"version":{"type":"string"},"description":{"type":"string"},"major":{"type":"integer","format":"int32"},"minor":{"type":"integer","format":"int32"},"patch":{"type":"integer","format":"int32"}}},"QName":{"type":"string","example":"{http://www.alfresco.org/model/content/1.0}content"},"AspectDefinition":{"type":"object","properties":{"name":{"$ref":"#/definitions/QName"},"parent":{"$ref":"#/definitions/QName"},"title":{"type":"string"},"description":{"type":"string"},"properties":{"type":"array","items":{"$ref":"#/definitions/QName"}},"mandatoryAspects":{"type":"array","items":{"$ref":"#/definitions/QName"}}}},"NodePermission":{"type":"object","properties":{"inheritFromParent":{"type":"boolean","default":false},"ownAccessList":{"type":"array","uniqueItems":true,"items":{"$ref":"#/definitions/Access"}},"inheritedAccessList":{"type":"array","uniqueItems":true,"items":{"$ref":"#/definitions/Access"}}}},"PropertyDefinition":{"type":"object","properties":{"name":{"$ref":"#/definitions/QName"},"container":{"$ref":"#/definitions/QName"},"title":{"type":"string"},"description":{"type":"string"},"defaultValue":{"type":"string"},"dataType":{"$ref":"#/definitions/QName"},"multiValued":{"type":"boolean","default":false},"mandatory":{"type":"boolean","default":false},"enforced":{"type":"boolean","default":false},"isProtected":{"type":"boolean","default":false},"indexed":{"$ref":"#/definitions/PropertyIndexOptions"},"constraints":{"type":"array","items":{"$ref":"#/definitions/PropertyConstraintDefinition"}}}},"FacetOptions":{"type":"object","properties":{"enabled":{"type":"boolean","default":false},"limit":{"type":"integer","format":"int32","description":"Limits the number of values returned per facet"},"mincount":{"type":"integer","format":"int32","description":"Return only facet values with count >= mincount"},"custom":{"type":"array","items":{"type":"string"}}}},"NodeMetadata":{"type":"object","properties":{"id":{"$ref":"#/definitions/NodeRef"},"type":{"$ref":"#/definitions/QName"},"baseType":{"$ref":"#/definitions/QName"},"transactionId":{"type":"integer","format":"int64"},"properties":{"type":"object","additionalProperties":{"type":"array","items":{"type":"string"}}},"aspects":{"type":"array","items":{"$ref":"#/definitions/QName"}}}},"PagingOptions":{"type":"object","properties":{"limit":{"type":"integer","format":"int32"},"skip":{"type":"integer","format":"int32"}}},"BulkRequest":{"type":"object","required":["method","url"],"properties":{"method":{"type":"string","enum":["get","put","post","delete"]},"url":{"type":"string","example":"/version?alf_ticket=TICKET_4654..."},"body":{"type":"object"}}},"Aspects":{"type":"object","properties":{"aspects":{"type":"array","items":{"$ref":"#/definitions/AspectDefinition"}}}},"ChangeAclsOptions":{"type":"object","properties":{"inheritFromParent":{"type":"boolean","default":false},"ownAccessList":{"type":"array","uniqueItems":true,"items":{"$ref":"#/definitions/Access"}}}},"SetSubgroupOptions":{"type":"object","required":["subgroups"],"properties":{"subgroups":{"type":"array","readOnly":true,"items":{"type":"string"}}}},"FacetSearchResult":{"type":"object","properties":{"name":{"type":"string"},"values":{"type":"array","items":{"$ref":"#/definitions/FacetValue"}}}},"BulkSubResult":{"type":"object","properties":{"statusCode":{"type":"integer","format":"int32","example":200,"description":"The HTTP status code of the sub call"},"body":{"type":"object","description":"JSON result body of the sub call"},"headers":{"type":"object","additionalProperties":{"type":"string"}}}}}}
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is the swagger specification for Api-X REST API\n\nExamples can be found at: https://docs.xenit.eu/alfred-api",
+    "version": "4.0.0",
+    "title": "Api-X REST API",
+    "contact": {
+      "name": "XeniT",
+      "url": "http://www.xenit.eu",
+      "email": "engineering@xenit.eu"
+    },
+    "license": {
+      "name": "GNU Lesser General Public License v3",
+      "url": "https://www.gnu.org/licenses/lgpl-3.0.txt"
+    }
+  },
+  "basePath": "/alfresco/s/apix",
+  "tags": [
+    {
+      "name": "WIP",
+      "description": "Dont use in production!"
+    },
+    {
+      "name": "Bulk",
+      "description": "Perform multiple operations in a single call"
+    },
+    {
+      "name": "Category",
+      "description": "Retrieves Category information"
+    },
+    {
+      "name": "Configuration",
+      "description": "Retrieves configuration data files from the datadictionary"
+    },
+    {
+      "name": "Dictionary",
+      "description": "Retrieves Dictionary information"
+    },
+    {
+      "name": "Documentation",
+      "description": "Access API Documentation"
+    },
+    {
+      "name": "General",
+      "description": "General API operations"
+    },
+    {
+      "name": "Nodes",
+      "description": "Access operations on nodes"
+    },
+    {
+      "name": "Search",
+      "description": "Perform search queries"
+    },
+    {
+      "name": "Sites",
+      "description": "Access operations on sites"
+    },
+    {
+      "name": "Translations",
+      "description": "Retrieve translations"
+    },
+    {
+      "name": "VersionHistory",
+      "description": "Retrieves version history information"
+    },
+    {
+      "name": "Workingcopies",
+      "description": "Access operations on working copies"
+    },
+    {
+      "name": "People",
+      "description": "Retrieves person information"
+    },
+    {
+      "name": "Properties",
+      "description": "Retrieves Property information"
+    },
+    {
+      "name": "Groups",
+      "description": "Retrieves group information and links users/groups to parent groups"
+    }
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/bulk": {
+      "post": {
+        "tags": [
+          "Bulk"
+        ],
+        "summary": "Performs multiple Api-X operations in a single rest call",
+        "description": "",
+        "operationId": "bulk",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/BulkRequest"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/BulkSubResult"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/category/aspect/{qname}": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Return the categories available for an aspect",
+        "description": "",
+        "operationId": "getCategoriesForAspect",
+        "parameters": [
+          {
+            "name": "qname",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Categories"
+            }
+          }
+        }
+      }
+    },
+    "/v1/comments/{space}/{store}/{guid}": {
+      "get": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Returns the comment with the given id.",
+        "description": "",
+        "operationId": "getComment",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Not Authorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Updates the comment with the given id.",
+        "description": "",
+        "operationId": "updateComment",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/Comment"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Not Authorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Deletes the comment with the given id.",
+        "description": "",
+        "operationId": "deleteComment",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Not Authorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/v1/configuration": {
+      "get": {
+        "tags": [
+          "Configuration"
+        ],
+        "summary": "Returns configuration files information and content",
+        "description": "",
+        "operationId": "getConfigurationFiles",
+        "parameters": [
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "Comma separated field names to include.",
+            "required": true,
+            "type": "string",
+            "default": "content,nodeRef",
+            "enum": [
+              "content",
+              "nodeRef",
+              "path",
+              "metadata",
+              "parsedContent"
+            ]
+          },
+          {
+            "name": "searchDirectory",
+            "in": "query",
+            "description": "The directory to search for configuration files, relative to the data dictionary",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "filter.name",
+            "in": "query",
+            "description": "Regular expression that the node name should match.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "callback",
+            "in": "query",
+            "description": "Javascript callback function",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Configurations"
+            }
+          }
+        }
+      }
+    },
+    "/v1/dictionary/aspects": {
+      "get": {
+        "tags": [
+          "Dictionary"
+        ],
+        "summary": "Return apects",
+        "description": "",
+        "operationId": "getAspects",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Aspects"
+            }
+          }
+        }
+      }
+    },
+    "/v1/dictionary/aspects/{qname}": {
+      "get": {
+        "tags": [
+          "Dictionary"
+        ],
+        "summary": "Return the definition of a aspect",
+        "description": "",
+        "operationId": "getAspectDefinition",
+        "parameters": [
+          {
+            "name": "qname",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/AspectDefinition"
+            }
+          }
+        }
+      }
+    },
+    "/v1/dictionary/namespaces": {
+      "get": {
+        "tags": [
+          "Dictionary"
+        ],
+        "summary": "Returns the namespaces",
+        "description": "",
+        "operationId": "getNamespaces",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Namespaces"
+            }
+          }
+        }
+      }
+    },
+    "/v1/dictionary/properties": {
+      "get": {
+        "tags": [
+          "Dictionary"
+        ],
+        "summary": "Return properties",
+        "description": "",
+        "operationId": "getProperties",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Properties"
+            }
+          }
+        }
+      }
+    },
+    "/v1/dictionary/properties/{qname}": {
+      "get": {
+        "tags": [
+          "Dictionary"
+        ],
+        "summary": "Return the definition of a property",
+        "description": "",
+        "operationId": "getPropertyDefinition",
+        "parameters": [
+          {
+            "name": "qname",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/PropertyDefinition"
+            }
+          }
+        }
+      }
+    },
+    "/v1/dictionary/types": {
+      "get": {
+        "tags": [
+          "Dictionary"
+        ],
+        "summary": "Return the definitions of types",
+        "description": "",
+        "operationId": "getSubTypeDefinitions",
+        "parameters": [
+          {
+            "name": "parent",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Types"
+            }
+          }
+        }
+      }
+    },
+    "/v1/dictionary/types/{qname}": {
+      "get": {
+        "tags": [
+          "Dictionary"
+        ],
+        "summary": "Return the definition of a type",
+        "description": "",
+        "operationId": "getTypeDefinition",
+        "parameters": [
+          {
+            "name": "qname",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/TypeDefinition"
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/v1/docs/swagger.json": {
+      "get": {
+        "tags": [
+          "Documentation"
+        ],
+        "summary": "The Swagger Spec for Alfred API",
+        "description": "",
+        "operationId": "execute",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v1/docs/ui": {
+      "get": {
+        "tags": [
+          "Documentation"
+        ],
+        "summary": "Shows this swagger spec in a user interface",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Swagger UI interface",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
+    "/v1/nodes": {
+      "post": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Creates or copies a node",
+        "description": "Example of POST body:\n\n```\nPOST /apix/v1/nodes\n{\n\"parent\" : \"workspace://SpacesStore/d5dac928-e581-4507-9be7-9a2416adc318\", \n\"name\" : \"mydocument.txt\", \n\"type\" : \"{http://www.alfresco.org/model/content/1.0}content\", \n\"properties\" : {\n      \"{namespace}property1\": [\n        \"string\"\n      ],\n      \"{namespace}property2\": [\n        \"string\"\n      ],\n      \"{namespace}property3\": [\n        \"string\"\n      ]\n}, \n\"aspectsToAdd\" : [\n      \"{namespace}aspect1\"\n], \n\"aspectsToRemove\" : [\n      \"{namespace}aspect1\"\n], \n\"copyFrom\" : \"workspace://SpacesStore/f0d15919-3841-4170-807f-b81d2ebdeb80\", \n}\n```\n\"aspectsToRemove\" is only relevant when copying a node.\n",
+        "operationId": "createNode",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CreateNodeOptions"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NodeInfo"
+            }
+          },
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      }
+    },
+    "/v1/nodes/nodeInfo": {
+      "post": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Returns combined information of multiple nodes. Nodes errors or without appropriate permissions will not be included in return, and will not cause failure of the call.",
+        "description": "Example to get combined information of multiple nodes:\n\n```\nPOST /apix/v1/nodes/nodeInfo\n{\n\"retrieveMetadata\" : true, \n\"retrievePath\" : true, \n\"retrievePermissions\" : true, \n\"retrieveAssocs\" : true, \n\"retrieveChildAssocs\" : true, \n\"retrieveParentAssocs\" : true, \n\"retrieveTargetAssocs\" : true, \n\"noderefs\": [ \n  \"workspace://SpacesStore/123456789\", \n  \"workspace://SpacesStore/147258369\", \n  \"workspace://SpacesStore/478159236\" \n]}\n```\n'retrieveMetadata', 'retrievePath', 'retrievePermissions', 'retrieveAssocs', 'retrieveChildAssocs',\n'retrieveParentAssocs', 'retrieveTargetAssocs' are optional parameters.\nSet 'retrieveMetadata' to false to omit the aspects and properties from the result.\nSet 'retrievePath' to false to omit the path from the result.\nSet 'retrievePermissions' to false to omit the permissions from the result.\nSet 'retrieveAssocs' to false to omit the associations(parent associations, child associations, peer associations) from the result.\nSet 'retrieveChildAssocs' to false to omit the child associations from the result.\nSet 'retrieveParentAssocs' to false to omit the parent associations from the result.\nSet 'retrieveTargetAssocs' to false to omit the peer target associations from the result.\nSet 'retrieveSourceAssocs' to false to omit the peer source associations from the result. Note: versionstore does not support sourceAssocs. For version nodes, an empty list added to the result\n",
+        "operationId": "getAllInfoOfNodes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/NodeInfo"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/v1/nodes/upload": {
+      "post": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Creates a new node with given content",
+        "description": "",
+        "operationId": "uploadNode",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "parent",
+            "in": "formData",
+            "description": "Noderef of parent for the new node",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "formData",
+            "description": "QName type for the new node",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "file",
+            "in": "formData",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "name": "metadata",
+            "in": "formData",
+            "description": "Metadata for this file",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "extractMetadata",
+            "in": "formData",
+            "description": "Enable metadata extraction from the content, for example for msg files",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NodeInfo"
+            }
+          },
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      }
+    },
+    "/v1/nodes/{space}/{store}/{guid}": {
+      "get": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Returns combined information of a node.\nNote: versionstore does not support sourceAssocs. For version nodes, an empty list added to the result",
+        "description": "",
+        "operationId": "getAllInfoOfNode",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NodeInfo"
+            }
+          },
+          "403": {
+            "description": "Not Authorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Delete a node",
+        "description": "",
+        "operationId": "deleteNode",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "permanently",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Not Authorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/v1/nodes/{space}/{store}/{guid}/acl": {
+      "get": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Gets the ACLs for a node.",
+        "description": "",
+        "operationId": "getAcls",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NodePermission"
+            }
+          },
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Sets the ACL for a node.",
+        "description": "Example:\n\n```\n{\n   \"inheritFromParent\": false,\n   \"ownAccessList\": [\n      {\n         \"allowed\": true,\n         \"authority\": \"MYGROUP\",\n         \"permission\": \"Collaborator\"\n      }\n]}\n```",
+        "operationId": "setAcls",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ChangeAclsOptions"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      }
+    },
+    "/v1/nodes/{space}/{store}/{guid}/acl/inheritFromParent": {
+      "post": {
+        "tags": [
+          "Nodes"
+        ],
+        "operationId": "setInheritParentPermissions",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/InheritFromParent"
+            }
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      }
+    },
+    "/v1/nodes/{space}/{store}/{guid}/ancestors": {
+      "get": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Retrieves the ancestors of the nodes",
+        "description": "It is possible to add \"root\" as a request parameter.\nIt is the node reference up to which point ancestors will be retrieved.\nThe default root reference will be the reference of Company Home",
+        "operationId": "retrieveAncestors",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "root",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/AncestorsObject"
+            }
+          },
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      }
+    },
+    "/v1/nodes/{space}/{store}/{guid}/associations": {
+      "get": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Retrieve node associations.\nVersionstore does not support sourceAssocs. For version nodes, an empty list is returned for this component of the result.",
+        "description": "",
+        "operationId": "getAssociations",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NodeAssociations"
+            }
+          },
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Create new association with given node as source",
+        "description": "",
+        "operationId": "createAssociation",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CreateAssociationOptions"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Deletes an association with given node as source",
+        "description": "",
+        "operationId": "deleteAssociation",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "target",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      }
+    },
+    "/v1/nodes/{space}/{store}/{guid}/associations/children": {
+      "get": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Retrieve node child associations",
+        "description": "",
+        "operationId": "getChildAssociations",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ChildParentAssociation"
+              }
+            }
+          },
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      }
+    },
+    "/v1/nodes/{space}/{store}/{guid}/associations/parents": {
+      "get": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Retrieve node parent associations",
+        "description": "",
+        "operationId": "getParentAssociations",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ChildParentAssociation"
+              }
+            }
+          },
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      }
+    },
+    "/v1/nodes/{space}/{store}/{guid}/associations/targets": {
+      "get": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Retrieve node peer associations with given node being the source",
+        "description": "",
+        "operationId": "getSourcePeerAssociations",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/NodeAssociation"
+              }
+            }
+          },
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      }
+    },
+    "/v1/nodes/{space}/{store}/{guid}/comments": {
+      "get": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Retrieves all comments for a given node",
+        "description": "",
+        "operationId": "getComments",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "skipcount",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "pagesize",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Not Authorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Appends a new comment to the given node.",
+        "description": "",
+        "operationId": "addComment",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/Comment"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Not Authorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/v1/nodes/{space}/{store}/{guid}/content": {
+      "get": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Downloads content file for given node",
+        "description": "",
+        "operationId": "getContent",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Not Authorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Sets or updates the content for given node. If no file is given the content will be set to empty.",
+        "description": "",
+        "operationId": "setContent",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Sets the content for given node to empty",
+        "description": "",
+        "operationId": "deleteContent",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      }
+    },
+    "/v1/nodes/{space}/{store}/{guid}/content/previews/pdf": {
+      "get": {
+        "tags": [
+          "WIP"
+        ],
+        "summary": "Downloads preview file for given node",
+        "description": "",
+        "operationId": "getPreviewPdf",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "file",
+            "in": "formData",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v1/nodes/{space}/{store}/{guid}/exists": {
+      "get": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Checks if the given node exists",
+        "description": "",
+        "operationId": "exists",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      }
+    },
+    "/v1/nodes/{space}/{store}/{guid}/metadata": {
+      "get": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Retrieve node metadata",
+        "description": "",
+        "operationId": "getMetadata",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NodeMetadata"
+            }
+          },
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Change node metadata",
+        "description": "Example to set a node's title and add the sys:versionable aspect:\n\n```\nPOST /apix/v1/nodes/workspace/SpacesStore/b54287de-381e-44b1-b6d1-e6c9a9d632fd/metadata\n{\n  \"aspectsToAdd\": [\"{http://www.alfresco.org/model/system/1.0}temporary\"],\n  \"propertiesToSet\": {\"{http://www.alfresco.org/model/content/1.0}title\":[\"My new title\"]}\n}\n```\n\nWhen you generalize the type of a node instead of specializing, the default properties of the initial **type** that are not present in the new type are removed, however, the default aspects are not. This is the default behaviour. If you also want to remove these aspects on type generalization, add the parameter **cleanUpAspectsOnGeneralization** to the request body.\n\nExample for cleaning up aspects on type generalization:\n\n```\nPOST /apix/v1/nodes/workspace/SpacesStore/b54287de-381e-44b1-b6d1-e6c9a9d632fd/metadata\n{\n  \"type\": \"{http://www.alfresco.org/model/content/1.0}content\",\n  \"cleanUpAspectsOnGeneralization\": true\n}\n```\n\nChanging the cm:name property will also update the qname path of the node so it is in sync with it.\nThis only applies to nodes of type or subtype cm:content or cm:folder but not of type or subtype of cm:systemfolder.",
+        "operationId": "setMetadata",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/MetadataChanges"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NodeMetadata"
+            }
+          },
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      }
+    },
+    "/v1/nodes/{space}/{store}/{guid}/parent": {
+      "put": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Moves a node by changing its parent",
+        "description": "",
+        "operationId": "setParent",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ChangeParentOptions"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      }
+    },
+    "/v1/nodes/{space}/{store}/{guid}/path": {
+      "get": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Returns path of the node",
+        "description": "",
+        "operationId": "getPath",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NodePath"
+            }
+          },
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      }
+    },
+    "/v1/nodes/{space}/{store}/{guid}/permissions": {
+      "get": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Retrieve current user's permissions for a node",
+        "description": "Returns a key-value map of permissions keys to a value of 'DENY' or 'ALLOW'. Possible keys are: Read, Write, Delete, CreateChildren, ReadPermissions, ChangePermissions, or custom permissions",
+        "operationId": "getPermissions",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "enum": [
+                  "ALLOW",
+                  "DENY",
+                  "UNDETERMINED"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/nodes/{space}/{store}/{guid}/permissions/authority/{authority}/permission/{permission}": {
+      "post": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "sets a user a permission for a node.",
+        "description": "",
+        "operationId": "setPermission",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authority",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "permission",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "removes a user its permission for a node.",
+        "description": "",
+        "operationId": "deletePermission",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authority",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "permission",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      }
+    },
+    "/v1/people": {
+      "get": {
+        "tags": [
+          "People"
+        ],
+        "summary": "Returns person information given a userName",
+        "description": "",
+        "operationId": "getPersonViaUserName",
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Person"
+            }
+          }
+        }
+      }
+    },
+    "/v1/people/{space}/{store}/{guid}": {
+      "get": {
+        "tags": [
+          "People"
+        ],
+        "summary": "Returns person information",
+        "description": "",
+        "operationId": "getPerson",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Person"
+            }
+          }
+        }
+      }
+    },
+    "/v1/properties/{qname}": {
+      "get": {
+        "tags": [
+          "Properties"
+        ],
+        "summary": "Return the definition of a property",
+        "description": "",
+        "operationId": "getPropertyDefinition",
+        "parameters": [
+          {
+            "name": "qname",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "qnameWithSlash",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/PropertyDefinition"
+            }
+          }
+        }
+      }
+    },
+    "/v1/search": {
+      "post": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Performs a search for nodes",
+        "description": "# Request components\n\n## query\nObject containing subcomponents that build the requested query.\nInfo about the Search query syntax can be found here: https://docs.xenit.eu/alfred-api/user/rest-api\n### special search terms:\n- type: searches for nodes of that type (for example: \"type\" : \"cm:content\")\n- aspect: searches for nodes with that aspect (for example: \"aspect\" : \"cm:titled\")\n- noderef: searches the node with that noderef (for example: \"noderef\" : \"workspace://SpacesStore/f0d15919-3841-4170-807f-b81d2ebdeb80\")\n- parent: searches the nodes with that parent (for example: \"parent\" : \"workspace://SpacesStore/f0d15919-3841-4170-807f-b81d2ebdeb80\")\n- path: searches the nodes with that path (for example: \"path\" : \"/\")\n- category: searches the nodes with that category (for example: \"category\" : \"workspace://SpacesStore/f0d15919-3841-4170-807f-b81d2ebdeb80\")\n- text: searches the nodes with content containing that text (for example: \"text\" : \"this text\")\n- all: searches the nodes with content, cm:name, cm:creator, cm:modifier or cm:author containing the value (for example: \"all\" : \"search term\")\n- isunset: searches the nodes with where the value of the property is not set (for example: \"isunset\" : \"cm:author\")\n- isnull: searches the nodes with where the value of the property is null (for example: \"isnull\" : \"cm:author\")\n- isnotnull: searches the nodes with where the value of the property is not null (for example: \"isnotnull\" : \"cm:author\")\n- exists: searches the nodes that have the property (for example: \"exists\" : \"cm:author\")\n\n## paging\n`Optional`\n\nOptions to skip over results starting from the top of the result and to limit the total number of results.\n\n## facets\n`Optional`\n\nOptions to enable, limit the total amount, minimum number of hits and customize input of facets.\n\n<b>Note:</b> facets with 0 hits are not returned in the result\n\n## orderBy\n`Optional`\n\nOptions to select the property to order by and the direction of sorting.\n\n## consistency\n`Optional`\n\nOption to request specific consistency\n\n## locale\n`Optional`\n\nOptions to request specific locale and encoding options\n\n## workspace\n`Optional`\n\nOptions to change the target alfresco workspace\n\n## highlight\n`5.2 and up`\n\n`Optional`\n\nOptions to change the highlight configuration.\nMinimal requirement is the `fields` array, which takes object containing at least the `field` property. Each list element specifies a property on which higlighting needs to be applied. When no fields are specified, the call defaults to `cm:content` as field.\nFull documentation can be found on the alfresco [documentation](https://docs.alfresco.com/5.2/concepts/search-api-highlight.html) page.\n\n# Examples\n\nSearch for the first 10 nodes in the `cm:content` namespace:\n```json\n{\n  \"query\": {\"type\":\"{http://www.alfresco.org/model/content/1.0}content\"},\n  \"paging\": {\n    \"limit\": 10,\n    \"skip\": 0\n  },\n  \"facets\": {\n    \"enabled\": false\n  }\n}\n```\n\nSearch for all nodes with the term 'budget' in the `cm:content` property (fulltext), and show two highlighted hits with delimiter \\<highlight>\\</highlight>:\n```json\n{\n    \"query\": {\n        \"property\": {\n            \"exact\": false,\n            \"name\": \"cm:content\",\n            \"value\": \"budget\"\n        }\n    },\n    \"highlight\":{\n        \"prefix\":\"<highlight>\",\n        \"postfix\":\"</highlight>\",\n        \"snippetCount\":2,\n\t\t\"fields\":[{\"field\":\"cm:content\"}]\n    }\n}\n```",
+        "operationId": "execute",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/SearchQuery"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/SearchQueryResult"
+            }
+          },
+          "400": {
+            "description": "Failure"
+          }
+        }
+      }
+    },
+    "/v1/sites/mySites": {
+      "get": {
+        "tags": [
+          "Sites"
+        ],
+        "summary": "Retrieves information about the available sites of the current user",
+        "description": "Returns a list of sites. For each site the node reference, short name, title, description,\nsite visibility and list of site components (document libray, links, data lists, wiki,\ndiscussions) are returned.\n\nThere are no mandatory request parameters. However, there are optional ones:\nSet 'retrieveMetadata' to true to return the aspects and properties of the sites.\nSet 'retrievePath' to true to return the path of the sites.\nSet 'retrievePermissions' to true to return the permissions of the sites.\nSet 'retrieveChildAssocs' to true to return the child associations of the sites.\nSet 'retrieveParentAssocs' to true to return the parent associations of the sites.\nSet 'retrieveTargetAssocs' to true to return the target peer associations of the sites.\nSet 'retrieveSourceAssocs' to true to return the source peer associations of the sites.\n",
+        "operationId": "getMySites",
+        "parameters": [
+          {
+            "name": "retrieveMetadata",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "retrievePath",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "retrievePermissions",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "retrieveChildAssocs",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "retrieveParentAssocs",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "retrieveTargetAssocs",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "retrieveSourceAssocs",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SiteInfo"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/translations/{locale}": {
+      "get": {
+        "tags": [
+          "Translations"
+        ],
+        "summary": "Get all available translations for given locale",
+        "description": "",
+        "operationId": "getTranslations",
+        "parameters": [
+          {
+            "name": "locale",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Translations"
+            }
+          }
+        }
+      }
+    },
+    "/v1/translations/{locale}/checksum": {
+      "get": {
+        "tags": [
+          "Translations"
+        ],
+        "summary": "Retrieve a checksum of all translations for given locale",
+        "description": "",
+        "operationId": "getChecksum",
+        "parameters": [
+          {
+            "name": "locale",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/TranslationChecksum"
+            }
+          }
+        }
+      }
+    },
+    "/v1/version": {
+      "get": {
+        "tags": [
+          "General"
+        ],
+        "summary": "Access the version information for Api-X",
+        "description": "",
+        "operationId": "getApixVersion",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/VersionDescription"
+            }
+          }
+        }
+      }
+    },
+    "/v1/versionhistory/{space}/{store}/{guid}": {
+      "put": {
+        "tags": [
+          "VersionHistory"
+        ],
+        "summary": "Enables versioning for this node, creating an initial version",
+        "description": "",
+        "operationId": "setVersionHistory",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/VersionOptions"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "VersionHistory"
+        ],
+        "summary": "Permanently emoves version history",
+        "description": "",
+        "operationId": "deleteVersionHistory",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v1/versionhistory/{space}/{store}/{guid}/head": {
+      "get": {
+        "tags": [
+          "VersionHistory"
+        ],
+        "summary": "Returns the head (newest) version",
+        "description": "",
+        "operationId": "getVersionHistoryHead",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Version"
+            }
+          }
+        }
+      }
+    },
+    "/v1/versionhistory/{space}/{store}/{guid}/root": {
+      "get": {
+        "tags": [
+          "VersionHistory"
+        ],
+        "summary": "Returns the root (oldest) version",
+        "description": "",
+        "operationId": "getVersionHistoryRoot",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Version"
+            }
+          }
+        }
+      }
+    },
+    "/v1/versionhistory/{space}/{store}/{guid}/versions": {
+      "get": {
+        "tags": [
+          "VersionHistory"
+        ],
+        "summary": "Returns list of chronological version information for give node",
+        "description": "",
+        "operationId": "getVersionHistory",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/VersionHistory"
+            }
+          }
+        }
+      }
+    },
+    "/v1/versionhistory/{space}/{store}/{guid}/versions/{label}": {
+      "delete": {
+        "tags": [
+          "VersionHistory"
+        ],
+        "summary": "Permanently remove version with given label",
+        "description": "",
+        "operationId": "deleteVersion",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "label",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v1/versionhistory/{space}/{store}/{guid}/versions/{label}/revert": {
+      "post": {
+        "tags": [
+          "VersionHistory"
+        ],
+        "summary": "(Shallow) Revert the node to version with given label",
+        "description": "",
+        "operationId": "revertVersionHistory",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "label",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v1/workingcopies": {
+      "post": {
+        "tags": [
+          "Workingcopies"
+        ],
+        "summary": "Checks out a new working copy for given node",
+        "description": "",
+        "operationId": "createWorkingcopy",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CheckoutBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NoderefResult"
+            }
+          }
+        }
+      }
+    },
+    "/v1/workingcopies/{space}/{store}/{guid}": {
+      "delete": {
+        "tags": [
+          "Workingcopies"
+        ],
+        "summary": "Cancels and removes a working copy",
+        "description": "Returns the noderef of the original node",
+        "operationId": "cancelWorkingcopy",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NoderefResult"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/v1/workingcopies/{space}/{store}/{guid}/checkin": {
+      "post": {
+        "tags": [
+          "Workingcopies"
+        ],
+        "summary": "Checks in given working copy and removes it",
+        "description": "Returns the noderef of the original node",
+        "operationId": "checkinWorkingcopy",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CheckinBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NoderefResult"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/v1/workingcopies/{space}/{store}/{guid}/original": {
+      "get": {
+        "tags": [
+          "Workingcopies"
+        ],
+        "summary": "Returns the original node for given working copy",
+        "description": "",
+        "operationId": "getWorkingCopySource",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NoderefResult"
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/v2/groups": {
+      "get": {
+        "tags": [
+          "Groups"
+        ],
+        "summary": "Returns a list containing all groups",
+        "description": "",
+        "operationId": "GetAllGroups",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Group"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/groups/{name}/groups": {
+      "get": {
+        "tags": [
+          "Groups"
+        ],
+        "summary": "Returns the groups within a specific group",
+        "description": "",
+        "operationId": "GetGroupsOfGroup",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "immediate",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Group"
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Groups"
+        ],
+        "summary": "Sets the complete list of direct subgroups for this group",
+        "description": "",
+        "operationId": "SetGroupsOfGroup",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/SetSubgroupOptions"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Group"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/groups/{name}/people": {
+      "get": {
+        "tags": [
+          "Groups"
+        ],
+        "summary": "Returns the persons within a specific group",
+        "description": "",
+        "operationId": "GetPeopleOfGroup",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "immediate",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Person"
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Groups"
+        ],
+        "summary": "Sets the complete list of people as direct members of this group",
+        "description": "",
+        "operationId": "SetPeopleInGroup",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/SetUsersInGroupOptions"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Group"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/nodes": {
+      "post": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Creates or copies a node",
+        "description": "",
+        "operationId": "createNode",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CreateNodeOptions"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NodeInfo"
+            }
+          }
+        }
+      }
+    },
+    "/v2/nodes/nodeInfo": {
+      "post": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Returns combined information of multiple nodes",
+        "description": "Example to get combined information of multiple nodes:\n\n```\nPOST /apix/v1/nodes/nodeInfo\n{\n\"retrieveMetadata\" : true, \n\"retrievePath\" : true, \n\"retrievePermissions\" : true, \n\"retrieveAssocs\" : true, \n\"retrieveChildAssocs\" : true, \n\"retrieveParentAssocs\" : true, \n\"retrieveTargetAssocs\" : true, \n\"noderefs\": [ \n  \"workspace://SpacesStore/123456789\", \n  \"workspace://SpacesStore/147258369\", \n  \"workspace://SpacesStore/478159236\" \n]}\n```\n'retrieveMetadata', 'retrievePath', 'retrievePermissions', 'retrieveAssocs', 'retrieveChildAssocs',\n'retrieveParentAssocs', 'retrieveTargetAssocs' are optional parameters.\nSet 'retrieveMetadata' to false to omit the aspects and properties from the result.\nSet 'retrievePath' to false to omit the path from the result.\nSet 'retrievePermissions' to false to omit the permissions from the result.\nSet 'retrieveAssocs' to false to omit the associations (parent associations, child associations, peer associations) from the result.\nSet 'retrieveChildAssocs' to false to omit the child associations from the result.\nSet 'retrieveParentAssocs' to false to omit the parent associations from the result.\nSet 'retrieveTargetAssocs' to false to omit the peer target associations from the result.\nSet 'retrieveSourceAssocs' to false to omit the peer source associations from the result. Note: versionstore does not support sourceAssocs. For version nodes, an empty list added to the result\n",
+        "operationId": "getAllInfos",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/NodeInfo"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/nodes/{space}/{store}/{guid}": {
+      "get": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Returns combined information of a node.\nNote: versionstore does not support sourceAssocs. For version nodes, an empty list added to the result",
+        "description": "",
+        "operationId": "getAllInfo",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/NodeInfo"
+            }
+          }
+        }
+      }
+    },
+    "/v2/nodes/{space}/{store}/{guid}/permissions": {
+      "get": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Retrieve current user's permissions for a node",
+        "description": "Returns a key-value map of permissions keys to a value of 'DENY' or 'ALLOW'. Possible keys are: Read, Write, Delete, CreateChildren, ReadPermissions, ChangePermissions, or custom permissions",
+        "operationId": "getPermissions",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "enum": [
+                  "ALLOW",
+                  "DENY",
+                  "UNDETERMINED"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/people": {
+      "get": {
+        "tags": [
+          "People"
+        ],
+        "summary": "Returns all people",
+        "description": "",
+        "operationId": "getAllPeople",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Person"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/people/-me-": {
+      "get": {
+        "tags": [
+          "People"
+        ],
+        "summary": "Returns current user information",
+        "description": "",
+        "operationId": "getPersonCurrentUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Person"
+            }
+          }
+        }
+      }
+    },
+    "/v2/people/containergroups/{name}": {
+      "get": {
+        "tags": [
+          "People"
+        ],
+        "summary": "Returns container groups of person",
+        "description": "",
+        "operationId": "getContainerGroupsOf",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/people/id/{space}/{store}/{guid}": {
+      "get": {
+        "tags": [
+          "People"
+        ],
+        "summary": "Returns person information",
+        "description": "",
+        "operationId": "getPerson",
+        "parameters": [
+          {
+            "name": "space",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "store",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Person"
+            }
+          }
+        }
+      }
+    },
+    "/v2/people/{name}": {
+      "get": {
+        "tags": [
+          "People"
+        ],
+        "summary": "Returns person information",
+        "description": "",
+        "operationId": "getPersonWithName",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Person"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Locale": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "script": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "variant": {
+          "type": "string"
+        },
+        "extensionKeys": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "unicodeLocaleAttributes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "unicodeLocaleKeys": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "iso3Language": {
+          "type": "string"
+        },
+        "iso3Country": {
+          "type": "string"
+        },
+        "displayLanguage": {
+          "type": "string"
+        },
+        "displayScript": {
+          "type": "string"
+        },
+        "displayCountry": {
+          "type": "string"
+        },
+        "displayVariant": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        }
+      }
+    },
+    "Namespaces": {
+      "type": "object",
+      "properties": {
+        "namespaces": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/Namespace"
+          }
+        }
+      }
+    },
+    "Types": {
+      "type": "object",
+      "properties": {
+        "types": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TypeDefinition"
+          }
+        }
+      }
+    },
+    "NodeAssociation": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "$ref": "#/definitions/NodeRef"
+        },
+        "target": {
+          "$ref": "#/definitions/NodeRef"
+        },
+        "type": {
+          "$ref": "#/definitions/QName"
+        }
+      }
+    },
+    "MetadataChanges": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/QName"
+        },
+        "aspectsToAdd": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QName"
+          }
+        },
+        "aspectsToRemove": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QName"
+          }
+        },
+        "propertiesToSet": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "HighlightFieldOption": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "snippetCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "fragmentSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "mergeContinuous": {
+          "type": "boolean",
+          "default": false
+        },
+        "prefix": {
+          "type": "string"
+        },
+        "suffix": {
+          "type": "string"
+        }
+      }
+    },
+    "Access": {
+      "type": "object",
+      "properties": {
+        "allowed": {
+          "type": "boolean",
+          "default": false
+        },
+        "authority": {
+          "type": "string"
+        },
+        "permission": {
+          "type": "string"
+        }
+      }
+    },
+    "SearchQueryResult": {
+      "type": "object",
+      "properties": {
+        "noderefs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "facets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FacetSearchResult"
+          }
+        },
+        "totalResultCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "highlights": {
+          "$ref": "#/definitions/Highlights"
+        }
+      }
+    },
+    "VersionOptions": {
+      "type": "object",
+      "properties": {
+        "initialVersion": {
+          "type": "boolean",
+          "default": false
+        },
+        "autoVersion": {
+          "type": "boolean",
+          "default": false
+        },
+        "autoVersionOnUpdateProps": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "Version": {
+      "type": "object",
+      "properties": {
+        "modifier": {
+          "type": "string"
+        },
+        "modifiedDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "label": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "MAJOR",
+            "MINOR",
+            "UNKNOWN"
+          ]
+        },
+        "nodeRef": {
+          "$ref": "#/definitions/NodeRef"
+        }
+      }
+    },
+    "CheckinBody": {
+      "type": "object",
+      "properties": {
+        "comment": {
+          "type": "string",
+          "readOnly": true
+        },
+        "majorVersion": {
+          "type": "boolean",
+          "readOnly": true,
+          "default": false
+        }
+      }
+    },
+    "PropertyIndexOptions": {
+      "type": "object",
+      "properties": {
+        "stored": {
+          "type": "boolean",
+          "default": false
+        },
+        "tokenised": {
+          "type": "string",
+          "enum": [
+            "TRUE",
+            "FALSE",
+            "BOTH"
+          ]
+        },
+        "facetable": {
+          "type": "string",
+          "enum": [
+            "TRUE",
+            "FALSE",
+            "DEFAULT"
+          ]
+        }
+      }
+    },
+    "ISite": {
+      "type": "object",
+      "properties": {
+        "public": {
+          "type": "boolean",
+          "default": false
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "shortName": {
+          "type": "string"
+        },
+        "nodeRef": {
+          "$ref": "#/definitions/NodeRef"
+        },
+        "components": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/NodeRef"
+          }
+        }
+      }
+    },
+    "CreateAssociationOptions": {
+      "type": "object",
+      "required": [
+        "target"
+      ],
+      "properties": {
+        "target": {
+          "$ref": "#/definitions/NodeRef"
+        },
+        "type": {
+          "description": "Defaults to cm:content",
+          "$ref": "#/definitions/QName"
+        }
+      }
+    },
+    "StoreRef": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "protocol": {
+          "type": "string"
+        }
+      }
+    },
+    "SiteInfo": {
+      "type": "object",
+      "properties": {
+        "site": {
+          "$ref": "#/definitions/ISite"
+        },
+        "nodeInfo": {
+          "$ref": "#/definitions/NodeInfo"
+        }
+      }
+    },
+    "Categories": {
+      "type": "object",
+      "properties": {
+        "categories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Category"
+          }
+        }
+      }
+    },
+    "PropertyConstraintDefinition": {
+      "type": "object",
+      "properties": {
+        "constraintType": {
+          "type": "string"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "ChildParentAssociation": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "$ref": "#/definitions/NodeRef"
+        },
+        "target": {
+          "$ref": "#/definitions/NodeRef"
+        },
+        "type": {
+          "$ref": "#/definitions/QName"
+        },
+        "primary": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "VersionHistory": {
+      "type": "object",
+      "properties": {
+        "versionHistory": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Version"
+          }
+        }
+      }
+    },
+    "NodePath": {
+      "type": "object",
+      "properties": {
+        "displayPath": {
+          "type": "string"
+        },
+        "qnamePath": {
+          "type": "string"
+        }
+      }
+    },
+    "Namespace": {
+      "type": "object",
+      "properties": {
+        "URI": {
+          "type": "string"
+        },
+        "prefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "NoderefResult": {
+      "type": "object",
+      "properties": {
+        "noderef": {
+          "$ref": "#/definitions/NodeRef"
+        }
+      }
+    },
+    "HighlightOptions": {
+      "type": "object",
+      "properties": {
+        "prefix": {
+          "type": "string"
+        },
+        "postfix": {
+          "type": "string"
+        },
+        "snippetCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "fragmentSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "maxAnalyzedCharacters": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "mergeContiguous": {
+          "type": "boolean",
+          "default": false
+        },
+        "usePhraseHighlighter": {
+          "type": "boolean",
+          "default": false
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/HighlightFieldOption"
+          }
+        }
+      }
+    },
+    "SearchSyntaxNode": {
+      "type": "object"
+    },
+    "AncestorsObject": {
+      "type": "object",
+      "properties": {
+        "node": {
+          "$ref": "#/definitions/NodeRef"
+        },
+        "ancestors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/NodeRef"
+          }
+        }
+      }
+    },
+    "TranslationValue": {
+      "type": "object",
+      "properties": {
+        "qname": {
+          "$ref": "#/definitions/QName"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "NodeInfo": {
+      "type": "object",
+      "properties": {
+        "noderef": {
+          "$ref": "#/definitions/NodeRef"
+        },
+        "metadata": {
+          "$ref": "#/definitions/NodeMetadata"
+        },
+        "permissions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "enum": [
+              "ALLOW",
+              "DENY",
+              "UNDETERMINED"
+            ]
+          }
+        },
+        "associations": {
+          "$ref": "#/definitions/NodeAssociations"
+        },
+        "path": {
+          "$ref": "#/definitions/NodePath"
+        }
+      }
+    },
+    "PropertyTranslationValue": {
+      "type": "object",
+      "properties": {
+        "qname": {
+          "$ref": "#/definitions/QName"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "values": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ConfigurationFile": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string"
+        },
+        "nodeRef": {
+          "$ref": "#/definitions/NodeRef"
+        },
+        "metadata": {
+          "$ref": "#/definitions/NodeMetadata"
+        },
+        "path": {
+          "$ref": "#/definitions/NodePath"
+        },
+        "parsedContent": {
+          "type": "object"
+        }
+      }
+    },
+    "Translations": {
+      "type": "object",
+      "properties": {
+        "types": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TranslationValue"
+          }
+        },
+        "aspects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TranslationValue"
+          }
+        },
+        "association": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TranslationValue"
+          }
+        },
+        "properties": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PropertyTranslationValue"
+          }
+        }
+      }
+    },
+    "Person": {
+      "type": "object",
+      "properties": {
+        "nodeRef": {
+          "$ref": "#/definitions/NodeRef"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "emailAddress": {
+          "type": "string"
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "Group": {
+      "type": "object",
+      "properties": {
+        "nodeRef": {
+          "$ref": "#/definitions/NodeRef"
+        },
+        "identifier": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        }
+      }
+    },
+    "Highlights": {
+      "type": "object",
+      "properties": {
+        "noderefs": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/HighlightResult"
+            }
+          }
+        }
+      }
+    },
+    "Category": {
+      "type": "object",
+      "properties": {
+        "noderef": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "qnamePath": {
+          "type": "string"
+        },
+        "subcategories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Category"
+          }
+        }
+      }
+    },
+    "TranslationChecksum": {
+      "type": "object",
+      "properties": {
+        "checksum": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "Properties": {
+      "type": "object",
+      "properties": {
+        "properties": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PropertyDefinition"
+          }
+        }
+      }
+    },
+    "RangeValue": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "string"
+        },
+        "end": {
+          "type": "string"
+        }
+      }
+    },
+    "TypeDefinition": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/QName"
+        },
+        "parent": {
+          "$ref": "#/definitions/QName"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "properties": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QName"
+          }
+        },
+        "mandatoryAspects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QName"
+          }
+        }
+      }
+    },
+    "InheritFromParent": {
+      "type": "object",
+      "required": [
+        "inheritFromParent"
+      ],
+      "properties": {
+        "inheritFromParent": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "NodeRef": {
+      "type": "string",
+      "example": "workspace://SpacesStore/987-978-79-797-797-978"
+    },
+    "CreateNodeOptions": {
+      "type": "object",
+      "required": [
+        "parent"
+      ],
+      "properties": {
+        "parent": {
+          "type": "string",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "readOnly": true
+        },
+        "type": {
+          "type": "string",
+          "readOnly": true
+        },
+        "properties": {
+          "type": "object",
+          "readOnly": true,
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "aspectsToAdd": {
+          "type": "array",
+          "readOnly": true,
+          "items": {
+            "$ref": "#/definitions/QName"
+          }
+        },
+        "aspectsToRemove": {
+          "type": "array",
+          "readOnly": true,
+          "items": {
+            "$ref": "#/definitions/QName"
+          }
+        },
+        "copyFrom": {
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
+    "FacetValue": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        },
+        "range": {
+          "$ref": "#/definitions/RangeValue"
+        },
+        "label": {
+          "type": "string"
+        },
+        "count": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "NodeAssociations": {
+      "type": "object",
+      "properties": {
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ChildParentAssociation"
+          }
+        },
+        "parents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ChildParentAssociation"
+          }
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/NodeAssociation"
+          }
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/NodeAssociation"
+          }
+        }
+      }
+    },
+    "ChangeParentOptions": {
+      "type": "object",
+      "required": [
+        "parent"
+      ],
+      "properties": {
+        "parent": {
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
+    "CheckoutBody": {
+      "type": "object",
+      "required": [
+        "original"
+      ],
+      "properties": {
+        "original": {
+          "readOnly": true,
+          "$ref": "#/definitions/NodeRef"
+        },
+        "destinationFolder": {
+          "description": "Optional, if not specified uses the original node's folder. If current user does not have permissions for this folder, the working copy is created in the user's home folder",
+          "readOnly": true,
+          "$ref": "#/definitions/NodeRef"
+        }
+      }
+    },
+    "Configurations": {
+      "type": "object",
+      "properties": {
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ConfigurationFile"
+          }
+        }
+      }
+    },
+    "SetUsersInGroupOptions": {
+      "type": "object",
+      "required": [
+        "users"
+      ],
+      "properties": {
+        "users": {
+          "type": "array",
+          "readOnly": true,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "OrderBy": {
+      "type": "object",
+      "properties": {
+        "property": {
+          "$ref": "#/definitions/QName"
+        },
+        "order": {
+          "type": "string",
+          "enum": [
+            "DESCENDING",
+            "ASCENDING"
+          ]
+        }
+      }
+    },
+    "SearchQuery": {
+      "type": "object",
+      "required": [
+        "query"
+      ],
+      "properties": {
+        "query": {
+          "$ref": "#/definitions/SearchSyntaxNode"
+        },
+        "paging": {
+          "$ref": "#/definitions/PagingOptions"
+        },
+        "facets": {
+          "$ref": "#/definitions/FacetOptions"
+        },
+        "orderBy": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OrderBy"
+          }
+        },
+        "consistency": {
+          "type": "string",
+          "enum": [
+            "EVENTUAL",
+            "TRANSACTIONAL",
+            "TRANSACTIONAL_IF_POSSIBLE"
+          ]
+        },
+        "locale": {
+          "$ref": "#/definitions/Locale"
+        },
+        "workspace": {
+          "$ref": "#/definitions/StoreRef"
+        },
+        "highlight": {
+          "$ref": "#/definitions/HighlightOptions"
+        }
+      }
+    },
+    "Comment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/NodeRef"
+        },
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "modifiedAt": {
+          "type": "string"
+        },
+        "modifiedBy": {
+          "type": "string"
+        },
+        "editable": {
+          "type": "boolean",
+          "default": false
+        },
+        "deletable": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "HighlightResult": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "snippets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "VersionDescription": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "major": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "minor": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "patch": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "QName": {
+      "type": "string",
+      "example": "{http://www.alfresco.org/model/content/1.0}content"
+    },
+    "AspectDefinition": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/QName"
+        },
+        "parent": {
+          "$ref": "#/definitions/QName"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "properties": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QName"
+          }
+        },
+        "mandatoryAspects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QName"
+          }
+        }
+      }
+    },
+    "NodePermission": {
+      "type": "object",
+      "properties": {
+        "inheritFromParent": {
+          "type": "boolean",
+          "default": false
+        },
+        "ownAccessList": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/Access"
+          }
+        },
+        "inheritedAccessList": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/Access"
+          }
+        }
+      }
+    },
+    "PropertyDefinition": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/QName"
+        },
+        "container": {
+          "$ref": "#/definitions/QName"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "defaultValue": {
+          "type": "string"
+        },
+        "dataType": {
+          "$ref": "#/definitions/QName"
+        },
+        "multiValued": {
+          "type": "boolean",
+          "default": false
+        },
+        "mandatory": {
+          "type": "boolean",
+          "default": false
+        },
+        "enforced": {
+          "type": "boolean",
+          "default": false
+        },
+        "isProtected": {
+          "type": "boolean",
+          "default": false
+        },
+        "indexed": {
+          "$ref": "#/definitions/PropertyIndexOptions"
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PropertyConstraintDefinition"
+          }
+        }
+      }
+    },
+    "FacetOptions": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Limits the number of values returned per facet"
+        },
+        "mincount": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Return only facet values with count >= mincount"
+        },
+        "custom": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "NodeMetadata": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/NodeRef"
+        },
+        "type": {
+          "$ref": "#/definitions/QName"
+        },
+        "baseType": {
+          "$ref": "#/definitions/QName"
+        },
+        "transactionId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "aspects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QName"
+          }
+        }
+      }
+    },
+    "PagingOptions": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "skip": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "BulkRequest": {
+      "type": "object",
+      "required": [
+        "method",
+        "url"
+      ],
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": [
+            "get",
+            "put",
+            "post",
+            "delete"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "example": "/version?alf_ticket=TICKET_4654..."
+        },
+        "body": {
+          "type": "object"
+        }
+      }
+    },
+    "Aspects": {
+      "type": "object",
+      "properties": {
+        "aspects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AspectDefinition"
+          }
+        }
+      }
+    },
+    "ChangeAclsOptions": {
+      "type": "object",
+      "properties": {
+        "inheritFromParent": {
+          "type": "boolean",
+          "default": false
+        },
+        "ownAccessList": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/Access"
+          }
+        }
+      }
+    },
+    "SetSubgroupOptions": {
+      "type": "object",
+      "required": [
+        "subgroups"
+      ],
+      "properties": {
+        "subgroups": {
+          "type": "array",
+          "readOnly": true,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "FacetSearchResult": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FacetValue"
+          }
+        }
+      }
+    },
+    "BulkSubResult": {
+      "type": "object",
+      "properties": {
+        "statusCode": {
+          "type": "integer",
+          "format": "int32",
+          "example": 200,
+          "description": "The HTTP status code of the sub call"
+        },
+        "body": {
+          "type": "object",
+          "description": "JSON result body of the sub call"
+        },
+        "headers": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
