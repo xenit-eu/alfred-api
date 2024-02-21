@@ -12,6 +12,7 @@ The artifact name of `apix-interface` has been changed to `alfred-api-interface`
 * [ALFREDAPI-537](https://xenitsupport.jira.com/browse/ALFREDAPI-537): Fix conflicts between artifacts when publishing to Sonatype
 * [ALFREDAPI-538](https://xenitsupport.jira.com/browse/ALFREDAPI-538): Fixed issue where errors related to jackson library conflicts would occurs while Alfresco is running
 * [ALFREDAPI-540](https://xenitsupport.jira.com/browse/ALFREDAPI-540): Realign interface artifact name
+* [ALFREDAPI-541](https://xenitsupport.jira.com/browse/ALFREDAPI-541): Clarify dependency installation instructions
 
 ### Removed
 

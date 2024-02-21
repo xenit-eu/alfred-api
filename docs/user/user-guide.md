@@ -742,9 +742,38 @@ Currently Alfred API supports the following Alfresco versions:
 * 7.3
 * 7.4
 
-Note that previous versions of Alfred API needed
+Alfred API depends on the [Alfresco MVC framework](https://github.com/dgradecak/alfresco-mvc) version `8.0.0`.
+Installation depends on the tools that you use to build and install, but below are examples of a few common ways.
+Further details can be found on its [README](https://github.com/dgradecak/alfresco-mvc/blob/master/README.md).
+
+(Note that previous versions of Alfred API needed
 [Dynamic Extensions For Alfresco](https://github.com/xenit-eu/dynamic-extensions-for-alfresco).
-Since version 5.0.0, however, Dynamic Extensions is no longer needed.
+Since version 5.0.0, however, Dynamic Extensions is no longer needed.)
+
+
+### Install with Gradle
+
+An example when using Gradle and the
+[Alfresco Docker Gradle plugin](https://github.com/xenit-eu/alfresco-docker-gradle-plugin/blob/master/docs/02-plugin-docker-alfresco.md)
+is:
+```groovy
+alfrescoSM group: 'com.gradecak.alfresco-mvc', name: 'alfresco-mvc-rest', version: '8.0.0'
+alfrescoSM group: 'com.gradecak.alfresco-mvc', name: 'alfresco-mvc-aop', version: '8.0.0'
+alfrescoAmp group: 'eu.xenit.alfred.api', name: 'alfred-api-74', version: '5.0.0'
+```
+Note above example also installs Alfred API as AMP.
+
+### Install manually
+
+If you install your Alfresco manually, you can download the JARs directly from
+[Maven Central](https://search.maven.org/search?q=g:com.gradecak.alfresco-mvc)
+and place them on your Tomcat's classpath.
+
+```bash
+cp alfresco-mvc-aop-8.0.0.jar /usr/local/tomcat/shared/lib/
+cp alfresco-mvc-rest-8.0.0.jar /usr/local/tomcat/shared/lib/
+```
+
 
 ## Artifacts
 ### Prebuilt
