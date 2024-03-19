@@ -1,6 +1,6 @@
 # Alfred API - Changelog
 
-## 5.0.1 (unreleased - yyyy-MM-dd)
+## 5.0.1 (2024-03-19)
 
 The artifact name of `apix-interface` has been changed to `alfred-api-interface`.
 
