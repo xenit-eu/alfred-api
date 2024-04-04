@@ -1,8 +1,14 @@
 # Alfred API - Changelog
 
 
-## 4.1.0 (unreleased)
+## 4.1.1 (unreleased)
 
+### Added
+### Changed
+### Fixed
+* [ALFREDAPI-547](https://xenitsupport.jira.com/browse/ALFREDAPI-547): Implemented use of maxFilters in facet configuration
+
+## 4.1.0 (unreleased)
 
 ### Added
 ### Changed
