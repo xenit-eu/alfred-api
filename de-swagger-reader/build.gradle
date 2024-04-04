@@ -3,6 +3,8 @@ description = 'Xenit Dynamic-extensions Swagger Reader'
 
 apply plugin: 'osgi'
 
+configurations.testImplementation.extendsFrom configurations.compileOnly
+
 dependencies {
     compile group: 'commons-io', name: 'commons-io', version: '2.0.1'
     compile(group: 'io.swagger', name: 'swagger-core', version: swagger_version) {
@@ -15,4 +17,5 @@ dependencies {
     }
     compileOnly(group: 'org.springframework', name: 'spring-core', version: '3.2.10.RELEASE')
     compileOnly(group: 'org.springframework.extensions.surf', name: 'spring-webscripts', version: '5.0.d')
+    testCompile group: 'junit', name: 'junit', version: '4.12'
 }
