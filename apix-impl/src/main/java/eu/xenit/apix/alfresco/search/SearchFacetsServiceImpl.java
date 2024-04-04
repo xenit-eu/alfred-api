@@ -111,7 +111,7 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
             if (facetQName == null) {
                 logger.error("Facet with id ({}) has a facetQName of null. "
                         + "This configured facet does not correctly link to a property in the document model."
-                        + "\n Facet field config: {}", field.getFilterID(), field.toString());
+                        + "\n Facet field config: {}", field.getFilterID(), field);
                 continue;
             }
 
@@ -170,11 +170,9 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
                 } else {
                     fieldFacet = new SearchParameters.FieldFacet(fieldId);
                 }
-//TODO: set limit
-//                if (facetLimit != null)
-//                    fieldFacet.setLimit(facetLimit);
-//                if (facetMinCount != null)
-//                    fieldFacet.setMinCount(facetMinCount);
+
+                fieldFacet.setMinCount(field.getHitThreshold());
+                fieldFacet.setLimitOrNull(field.getMaxFilters());
 
                 sp.addFieldFacet(fieldFacet);
             }
