@@ -2,8 +2,8 @@ package eu.xenit.apix.rest.v1.tests.temp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.xenit.apix.rest.v1.tests.RestV1BaseTest;
+import eu.xenit.apix.search.FacetSearchResult;
 import eu.xenit.apix.search.SearchQueryResult;
-import java.io.IOException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -14,6 +14,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 
 /**
@@ -52,6 +54,10 @@ public class V1SearchWebscriptTest extends RestV1BaseTest {
         logger.debug(String.valueOf(result));
         logger.debug(String.valueOf(result.getTotalResultCount()));
         Assert.assertFalse(result.getFacets().isEmpty());
+        for (FacetSearchResult facet : result.getFacets()) {
+            Assert.assertFalse(facet.getValues().isEmpty());
+            Assert.assertTrue(facet.getValues().size() <= 5);
+        }
         Assert.assertFalse(result.getNoderefs().isEmpty());
         Assert.assertFalse(result.getTotalResultCount() == 0L);
     }
