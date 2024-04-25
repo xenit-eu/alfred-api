@@ -1,21 +1,11 @@
 # Alfred API - Changelog
 
 
-## 4.1.1 (unreleased)
+## 4.1.1 (2024-04-25)
 
-### Added
-### Changed
 ### Fixed
 * [ALFREDAPI-547](https://xenitsupport.jira.com/browse/ALFREDAPI-547): Implemented use of maxFilters in facet configuration
-
-## 4.1.0 (unreleased)
-
-### Added
-### Changed
-### Fixed
-* [ALFREDAPI-546](https://xenitsupport.jira.com/browse/ALFREDAPI-546): Fix facet qname splitting for dates (cfr. [ALFREDAPI-531])
-
-### Removed
+* [ALFREDAPI-546](https://xenitsupport.jira.com/browse/ALFREDAPI-546): Facet qname splitting for dates (cfr. [ALFREDAPI-546](https://xenitsupport.jira.com/browse/ALFREDAPI-546))
 
 
 ## 4.0.1 (2023-06-13)
