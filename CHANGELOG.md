@@ -1,5 +1,17 @@
 # Alfred API - Changelog
 
+**Announcement**
+
+Alfred API v4 and older are currently in End of Life.  
+We are moving away from the [Dynamic Extensions](https://github.com/xenit-eu/dynamic-extensions-for-alfresco) platform towards [Alfresco MVC](https://github.com/dgradecak/alfresco-mvc) platform to reduce our maintenance efforts.  
+Please follow the [installation gude](https://docs.xenit.eu/alfred-api/user/installation/) to upgrade to Alfred API v5+.
+
+## 4.1.1 (2024-04-25)
+
+### Fixed
+* [ALFREDAPI-547](https://xenitsupport.jira.com/browse/ALFREDAPI-547): Implemented use of maxFilters in facet configuration
+* [ALFREDAPI-546](https://xenitsupport.jira.com/browse/ALFREDAPI-546): Facet qname splitting for dates (cfr. [ALFREDAPI-546](https://xenitsupport.jira.com/browse/ALFREDAPI-546))
+
 
 ## 4.0.1 (2023-06-13)
 This release removes swaggerui_5x from alfred-api artifact and changes generation of Snapshot qualifier to comform to maven format.

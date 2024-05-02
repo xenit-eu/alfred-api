@@ -47,12 +47,12 @@ import org.springframework.stereotype.Component;
 public class SearchFacetsServiceImpl implements SearchFacetsService {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchFacetsServiceImpl.class);
-    private FacetLabelDisplayHandlerRegistry facetLabelDisplayHandlerRegistry;
-    private SolrFacetHelper solrFacetHelper;
-    private DictionaryService dictionaryService;
-    private NodeService nodeService;
-    private SolrFacetService facetService;
-    private ITranslationService translationService;
+    private final FacetLabelDisplayHandlerRegistry facetLabelDisplayHandlerRegistry;
+    private final SolrFacetHelper solrFacetHelper;
+    private final DictionaryService dictionaryService;
+    private final NodeService nodeService;
+    private final SolrFacetService facetService;
+    private final ITranslationService translationService;
 
     // This file might give inspection error due to being 5.x specific.
     // Intellij can't handle this file being reused in different libs.
@@ -111,7 +111,7 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
             if (facetQName == null) {
                 logger.error("Facet with id ({}) has a facetQName of null. "
                         + "This configured facet does not correctly link to a property in the document model."
-                        + "\n Facet field config: {}", field.getFilterID(), field.toString());
+                        + "\n Facet field config: {}", field.getFilterID(), field);
                 continue;
             }
 
@@ -170,11 +170,9 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
                 } else {
                     fieldFacet = new SearchParameters.FieldFacet(fieldId);
                 }
-//TODO: set limit
-//                if (facetLimit != null)
-//                    fieldFacet.setLimit(facetLimit);
-//                if (facetMinCount != null)
-//                    fieldFacet.setMinCount(facetMinCount);
+
+                fieldFacet.setMinCount(field.getHitThreshold());
+                fieldFacet.setLimitOrNull(field.getMaxFilters());
 
                 sp.addFieldFacet(fieldFacet);
             }
@@ -248,8 +246,8 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
             // facetTokenName => @{http://www.alfresco.org/model/content/1.0}created
             // qName => {http://www.alfresco.org/model/content/1.0}created
             // 7 => {!afts}
-            key = key.substring(7);
-            String facetTokenName = key.substring(0, key.lastIndexOf(':'));
+            key = key.replace("{!afts}","");
+            String facetTokenName = key.substring(0, key.indexOf(":["));
             String qName = facetTokenToQname(facetTokenName);
 
             // Retrieve the previous facet queries
@@ -260,7 +258,7 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
 
             // Get the handler for this qName
             FacetLabelDisplayHandler handler = facetLabelDisplayHandlerRegistry.getDisplayHandler(facetTokenName);
-            String val = key.substring(key.indexOf('}') + key.substring(key.indexOf('}')).indexOf(':') + 1);
+            String val = key.substring(key.indexOf(":[") + 1);
             FacetLabel facetLabel = (handler == null) ? new FacetLabel(val, val, -1) : handler.getDisplayLabel(key);
 
             // See if we have a nice textual version of this label

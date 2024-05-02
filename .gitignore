@@ -8,7 +8,7 @@ out/
 **/.project
 **/.classpath
 **/.settings/
-
+.vscode/
 
 # EDITOR
 npm-debug.log
