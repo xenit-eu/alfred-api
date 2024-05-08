@@ -247,25 +247,28 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
             // qName => {http://www.alfresco.org/model/content/1.0}created
             // 7 => {!afts}
             key = key.replace("{!afts}","");
-            String facetTokenName = key.substring(0, key.indexOf(":["));
-            String qName = facetTokenToQname(facetTokenName);
+            int indexOfColonBracket = key.indexOf(":[");
+            if (indexOfColonBracket == key.lastIndexOf(':')) {
+                String facetTokenName = key.substring(0, indexOfColonBracket);
+                String qName = facetTokenToQname(facetTokenName);
 
-            // Retrieve the previous facet queries
-            List<ScriptFacetResult> fqs = result.get(qName);
-            if (fqs == null) {
-                fqs = new ArrayList<>();
+                // Retrieve the previous facet queries
+                List<ScriptFacetResult> fqs = result.get(qName);
+                if (fqs == null) {
+                    fqs = new ArrayList<>();
+                }
+
+                // Get the handler for this qName
+                FacetLabelDisplayHandler handler = facetLabelDisplayHandlerRegistry.getDisplayHandler(facetTokenName);
+                String val = key.substring(indexOfColonBracket + 1);
+                FacetLabel facetLabel = (handler == null) ? new FacetLabel(val, val, -1) : handler.getDisplayLabel(key);
+
+                // See if we have a nice textual version of this label
+                String label = this.translationService.getMessageTranslation(facetLabel.getLabel());
+
+                fqs.add(new ScriptFacetResult(facetLabel.getValue(), label, facetLabel.getLabelIndex(), entry.getValue()));
+                result.put(qName, fqs);
             }
-
-            // Get the handler for this qName
-            FacetLabelDisplayHandler handler = facetLabelDisplayHandlerRegistry.getDisplayHandler(facetTokenName);
-            String val = key.substring(key.indexOf(":[") + 1);
-            FacetLabel facetLabel = (handler == null) ? new FacetLabel(val, val, -1) : handler.getDisplayLabel(key);
-
-            // See if we have a nice textual version of this label
-            String label = this.translationService.getMessageTranslation(facetLabel.getLabel());
-
-            fqs.add(new ScriptFacetResult(facetLabel.getValue(), label, facetLabel.getLabelIndex(), entry.getValue()));
-            result.put(qName, fqs);
         }
         return result;
     }

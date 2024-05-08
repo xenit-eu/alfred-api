@@ -168,15 +168,16 @@ public class SearchFacetServiceUnitTest {
         modifiedValues.add(modifiedFacetValue);
         modifiedResult.setValues(modifiedValues);
         expectedResult.add(modifiedResult);
-        FacetSearchResult createdResult = new FacetSearchResult();
-        createdResult.setName("{http://www.alfresco.org/model/content/1.0}created");
-        List<FacetValue> createdValues = new ArrayList<>();
-        FacetValue createdFacetValue = new FacetValue();
-        createdFacetValue.setValue("[2020-08-31T07:00:00.000Z TO 2023-09-02T10:01:00.000Z]");
-        createdFacetValue.setCount(1);
-        createdValues.add(createdFacetValue);
-        createdResult.setValues(createdValues);
-        expectedResult.add(createdResult);
+// ALFREDAPI-544 or ALFREDAPI-549 remove facetresult in case of pure datetime range
+//        FacetSearchResult createdResult = new FacetSearchResult();
+//        createdResult.setName("{http://www.alfresco.org/model/content/1.0}created");
+//        List<FacetValue> createdValues = new ArrayList<>();
+//        FacetValue createdFacetValue = new FacetValue();
+//        createdFacetValue.setValue("[2020-08-31T07:00:00.000Z TO 2023-09-02T10:01:00.000Z]");
+//        createdFacetValue.setCount(1);
+//        createdValues.add(createdFacetValue);
+//        createdResult.setValues(createdValues);
+//        expectedResult.add(createdResult);
         return expectedResult;
     }
 
