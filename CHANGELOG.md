@@ -6,6 +6,11 @@ Alfred API v4 and older are currently in End of Life.
 We are moving away from the [Dynamic Extensions](https://github.com/xenit-eu/dynamic-extensions-for-alfresco) platform towards [Alfresco MVC](https://github.com/dgradecak/alfresco-mvc) platform to reduce our maintenance efforts.  
 Please follow the [installation gude](https://docs.xenit.eu/alfred-api/user/installation/) to upgrade to Alfred API v5+.
 
+## 4.1.2 (2024-05-08)
+
+### Fixed
+* [ALFREDAPI-549](https://xenitsupport.jira.com/browse/ALFREDAPI-549): drop pure datetime range from facet results 
+
 ## 4.1.1 (2024-04-25)
 
 ### Fixed
