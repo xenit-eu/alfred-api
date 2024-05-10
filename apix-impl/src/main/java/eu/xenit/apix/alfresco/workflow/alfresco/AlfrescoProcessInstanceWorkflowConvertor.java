@@ -9,27 +9,21 @@ import eu.xenit.apix.workflow.model.WorkflowOrTaskChanges;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
-import javax.annotation.Resource;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.workflow.WorkflowModel;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.workflow.WorkflowDefinition;
 import org.alfresco.service.cmr.workflow.WorkflowInstance;
-import org.alfresco.service.cmr.workflow.WorkflowPath;
-import org.alfresco.service.cmr.workflow.WorkflowService;
 import org.alfresco.service.cmr.workflow.WorkflowTask;
 import org.alfresco.service.namespace.QName;
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-import javax.transaction.NotSupportedException;
 
 @Component("eu.xenit.apix.alfresco.workflow.alfresco.AlfrescoProcessInstanceWorkflowConvertor")
 public class AlfrescoProcessInstanceWorkflowConvertor extends AbstractApixAlfrescoWorkflowConvertor {
@@ -38,7 +32,7 @@ public class AlfrescoProcessInstanceWorkflowConvertor extends AbstractApixAlfres
     private static final Random random = new Random();
     @Autowired
     protected PersonService personService;
-    @Resource(name = "eu.xenit.apix.alfresco.workflow.alfresco.AlfrescoWorkflowTaskWorkflowConvertor")
+    @Qualifier("eu.xenit.apix.alfresco.workflow.alfresco.AlfrescoWorkflowTaskWorkflowConvertor")
     protected AbstractApixWorkflowConvertor taskConvertor;
 
     public <T> String getId(T instance) {

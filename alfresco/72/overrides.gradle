@@ -2,6 +2,6 @@ description = "Xenit Alfred API implementation Alfresco 7.2"
 
 ext {
     alfresco_version = "7.2.1"
-    alfresco_min_version = alfresco_version.substring(0, 3) + ".0"
-    alfresco_max_version = alfresco_version.substring(0, 3) + ".99"
+    alfresco_min_version = alfresco_version.substring(0, getSecondDotPosition(alfresco_version)) + ".0"
+    alfresco_max_version = alfresco_version.substring(0, getSecondDotPosition(alfresco_version)) + ".99"
 }

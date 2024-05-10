@@ -9,13 +9,14 @@ subprojects {
     }
 
     // Isolate the version number ("docker-52" -> "52"). We should find a cleaner way
-    def subproject_alfresco_version = project.name.substring(project.name.length() - 2)
+    // todo: should now work for v 231 & 232
+    def subproject_alfresco_version = project.name.substring(project.name.length() - getTotalNumbersAfterDash(project.name))
 
     dependencies {
         alfrescoAmp project(path: ":alfresco:${subproject_alfresco_version}", configuration: 'ampArtifact')
         alfrescoAmp project(path: ':apix-integrationtests:model-amp', configuration: 'ampArchives')
-        alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-rest:${mvc}"
-        alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-aop:${mvc}"
+        alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-rest:${mvc}" // todo change for 231 232
+        alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-aop:${mvc}"// todo change for 231 232
         alfrescoSM files(jar)
         alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${subproject_alfresco_version}:${de_version}@amp"
     }
@@ -31,4 +32,8 @@ subprojects {
             }
         }
     }
+}
+
+def getTotalNumbersAfterDash(String version) {
+    return version.split("-")[1].length()
 }

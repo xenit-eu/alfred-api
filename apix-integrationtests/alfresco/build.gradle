@@ -36,7 +36,7 @@ allprojects {
     }
 
     dependencies {
-        alfrescoProvided(project(":apix-rest-v1")) { transitive = false }
+        alfrescoProvided(project(":apix-rest-v1")) { transitive = false } // todo Has to be changed for Alfresco V231 & V232
         alfrescoProvided(project(":apix-interface")) { transitive = false }
 
         // Add services used to the integration test fatjar, since we can't access the ones deployed in Alfresco
@@ -59,8 +59,9 @@ allprojects {
         //  - nobody knows where it came from
         // Ergo, kill it with fire.
         // The proper way is a fix of alfresco-remote-testrunner, but until then we use this workaround.
-        integrationTestImplementationLocal "commons-lang:commons-lang:1.0"
-
+        integrationTestImplementationLocal "commons-lang:commons-lang:1.0" // todo from 2005!!! change to commons-lang3!?
+//        integrationTestImplementationLocal "org.apache.commons:commons-lang3:3.14.0"
+//        implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.14.0' //todo: change commons to v3?
         alfrescoProvided platform("org.alfresco:acs-community-packaging:${alfresco_version}")
         alfrescoProvided("org.alfresco:alfresco-repository")
         alfrescoProvided('org.alfresco:alfresco-remote-api')

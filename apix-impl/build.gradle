@@ -1,7 +1,9 @@
 apply plugin: 'java-library'
 dependencies {
     api project(":apix-interface")
+    // todo change this implementation!
     implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+//    implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.0.2' // for JAKARTA!
 }
 subprojects {
     def shortAlfrescoVersion = project.name.split("-")[2]

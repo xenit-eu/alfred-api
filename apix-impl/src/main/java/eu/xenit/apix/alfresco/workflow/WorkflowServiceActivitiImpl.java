@@ -22,7 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.PostConstruct;
+// To be changed!
+import org.springframework.beans.factory.InitializingBean;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.workflow.WorkflowPath;
@@ -33,8 +34,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+
 @Service
-public class WorkflowServiceActivitiImpl implements IWorkflowService {
+public class WorkflowServiceActivitiImpl implements IWorkflowService, InitializingBean {
 
     private final Logger logger = LoggerFactory.getLogger(WorkflowServiceActivitiImpl.class);
 
@@ -59,7 +61,12 @@ public class WorkflowServiceActivitiImpl implements IWorkflowService {
     @Qualifier("WorkflowService")
     private WorkflowService workflowService;
 
-    @PostConstruct
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        init();
+    }
+
     public void init() {
         this.apixWfProcQueryConverter = this.activitiQueryConverterFactory.getProcessQueryConverter();
         this.apixWfTaskQueryConverter = this.activitiQueryConverterFactory.getTasksQueryConverter();

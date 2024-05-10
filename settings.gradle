@@ -2,7 +2,9 @@ rootProject.name = 'apix'
 
 include ':apix-interface'
 include ':apix-impl'
-include ':apix-rest-v1'
+include ':apix-rest-v1' // has to be changed for 231 &232
+//include ':apix-rest-v1:core'
+//include ':apix-rest-v1:apix-rest-7x'
 include ':alfresco'
 include ':apix-docker'
 include ':apix-integrationtests'

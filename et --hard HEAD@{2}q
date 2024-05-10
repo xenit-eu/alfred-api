@@ -1,0 +1,42 @@
+[33mf4b339e[m[33m ([m[1;36mHEAD -> [m[1;32mALFREDAPI-521_release[m[33m)[m HEAD@{0}: rebase (finish): returning to refs/heads/ALFREDAPI-521_release
+[33mf4b339e[m[33m ([m[1;36mHEAD -> [m[1;32mALFREDAPI-521_release[m[33m)[m HEAD@{1}: rebase (start): checkout c2c5226
+[33mf4b339e[m[33m ([m[1;36mHEAD -> [m[1;32mALFREDAPI-521_release[m[33m)[m HEAD@{2}: checkout: moving from master to ALFREDAPI-521_release
+[33m54b9035[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;31morigin/ALFREDAPI-520[m[33m, [m[1;32mmaster[m[33m)[m HEAD@{3}: checkout: moving from ALFREDAPI-521_release to master
+[33mf4b339e[m[33m ([m[1;36mHEAD -> [m[1;32mALFREDAPI-521_release[m[33m)[m HEAD@{4}: rebase (finish): returning to refs/heads/ALFREDAPI-521_release
+[33mf4b339e[m[33m ([m[1;36mHEAD -> [m[1;32mALFREDAPI-521_release[m[33m)[m HEAD@{5}: rebase (squash): ALFREDAPI-521_release [Update] ci build to publish test reports
+[33m2f09236[m HEAD@{6}: rebase (squash): # This is a combination of 16 commits.
+[33ma171c56[m HEAD@{7}: rebase (squash): # This is a combination of 15 commits.
+[33mc2de20c[m HEAD@{8}: rebase (squash): # This is a combination of 14 commits.
+[33m9bd6824[m HEAD@{9}: rebase (squash): # This is a combination of 13 commits.
+[33m1106a7f[m HEAD@{10}: rebase (squash): # This is a combination of 12 commits.
+[33mc69fa3f[m HEAD@{11}: rebase (squash): # This is a combination of 11 commits.
+[33mee9396d[m HEAD@{12}: rebase (squash): # This is a combination of 10 commits.
+[33m7314339[m HEAD@{13}: rebase (squash): # This is a combination of 9 commits.
+[33ma7c0bd7[m HEAD@{14}: rebase (squash): # This is a combination of 8 commits.
+[33mf1dc05f[m HEAD@{15}: rebase (squash): # This is a combination of 7 commits.
+[33m27facd2[m HEAD@{16}: rebase (squash): # This is a combination of 6 commits.
+[33me0901fd[m HEAD@{17}: rebase (squash): # This is a combination of 5 commits.
+[33m97b88f2[m HEAD@{18}: rebase (squash): # This is a combination of 4 commits.
+[33m40aeb1a[m HEAD@{19}: rebase (squash): # This is a combination of 3 commits.
+[33m2f6c125[m HEAD@{20}: rebase (squash): # This is a combination of 2 commits.
+[33mb3a2c00[m HEAD@{21}: rebase (start): checkout c2c5226
+[33m05e07f9[m[33m ([m[1;31morigin/ALFREDAPI-521_release[m[33m)[m HEAD@{22}: commit: ALFREDAPI-521_release [Test] revert alfresco_version to include all builds
+[33m2bb422e[m HEAD@{23}: commit: ALFREDAPI-521_release [Test] Update path to include integration test
+[33mc467a22[m HEAD@{24}: commit: ALFREDAPI-521_release [Delete] junit.reporter
+[33m792488d[m HEAD@{25}: commit: ALFREDAPI-521_release [Update] ci Publish Test Report - new path to include integration test results
+[33mf77920c[m HEAD@{26}: commit: ALFREDAPI-521_release [Test] test reports
+[33m9693c92[m HEAD@{27}: commit: ALFREDAPI-521_release [Test] issue ci solved
+[33m2160679[m HEAD@{28}: commit: ALFREDAPI-521_release [Test] Junit in gradle
+[33m2ecb3b8[m HEAD@{29}: commit: ALFREDAPI-521_release [Test]
+[33m34539b1[m HEAD@{30}: commit: ALFREDAPI-521_release [Test] adding mikepenz/action-junit-report@v3
+[33me50eb99[m HEAD@{31}: commit: ALFREDAPI-521_release [Test] change testImplementation 'org.junit.jupiter:junit-jupiter for gradle plugin og junit.reporter
+[33ma3c6fa5[m HEAD@{32}: commit: ALFREDAPI-521_release [Test] update upload test task ci
+[33m47f8ee0[m HEAD@{33}: commit: ALFREDAPI-521_release [Test] import junit-jupiter:5.7.1
+[33me547b08[m HEAD@{34}: commit: ALFREDAPI-521_release [Test] JUnit Report Action
+[33m26f982b[m HEAD@{35}: commit: ALFREDAPI-521_release [Test] add package.json
+[33m902306d[m HEAD@{36}: commit: ALFREDAPI-521_release [Test] updating ci to java-junit
+[33m3191393[m HEAD@{37}: commit: ALFREDAPI-521_release [Test] running test report after ci build with java-junit
+[33mb3a2c00[m HEAD@{38}: commit: ALFREDAPI-521_release [Add] test-reporter in ci build
+[33mc2c5226[m HEAD@{39}: commit: ALFREDAPI-521_release [Update] ci BRANCH_NAME
+[33m54b9035[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;31morigin/ALFREDAPI-520[m[33m, [m[1;32mmaster[m[33m)[m HEAD@{40}: checkout: moving from master to ALFREDAPI-521_release
+[33m54b9035[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;31morigin/ALFREDAPI-520[m[33m, [m[1;32mmaster[m[33m)[m HEAD@{41}: clone: from github.com:xenit-eu/alfred-api.git
