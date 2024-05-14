@@ -9,6 +9,9 @@ import eu.xenit.apix.translation.ITranslationService;
 import org.alfresco.repo.dictionary.constraint.ListOfValuesConstraint;
 import org.alfresco.repo.search.impl.solr.facet.SolrFacetHelper;
 import org.alfresco.repo.search.impl.solr.facet.SolrFacetService;
+import org.alfresco.repo.search.impl.solr.facet.handler.AbstractFacetLabelDisplayHandler;
+import org.alfresco.repo.search.impl.solr.facet.handler.ContentSizeBucketsDisplayHandler;
+import org.alfresco.repo.search.impl.solr.facet.handler.DateBucketsDisplayHandler;
 import org.alfresco.repo.search.impl.solr.facet.handler.FacetLabelDisplayHandlerRegistry;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.dictionary.ConstraintDefinition;
@@ -22,17 +25,22 @@ import org.alfresco.service.cmr.search.SearchParameters.FieldFacet;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.Pair;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class SearchFacetServiceUnitTest {
@@ -43,15 +51,16 @@ public class SearchFacetServiceUnitTest {
     FacetOptions facetOptionsMock;
     ResultSet resultSetMock;
     SearchParameters searchParametersMock;
+    ITranslationService translationServiceMock;
 
     public void initMocks() {
         ServiceRegistry serviceRegistryMock = mock(ServiceRegistry.class);
 
         SolrFacetHelper solrFacetHelperMock = mock(SolrFacetHelper.class);
+        translationServiceMock = mock(ITranslationService.class);
 
         FacetLabelDisplayHandlerRegistry facetLabelDisplayHandlerRegistryStub =
-                new FacetLabelDisplayHandlerRegistry();
-
+                initFacetLabelDisplayHandler(serviceRegistryMock);
         DataTypeDefinition textDataTypeDef = mock(DataTypeDefinition.class);
         when(textDataTypeDef.getName()).thenReturn(DataTypeDefinition.TEXT);
 
@@ -94,8 +103,7 @@ public class SearchFacetServiceUnitTest {
         when(serviceRegistryMock.getDictionaryService()).thenReturn(dictionaryServiceMock);
         when(serviceRegistryMock.getSolrFacetHelper()).thenReturn(solrFacetHelperMock);
         when(serviceRegistryMock.getFacetLabelDisplayHandlerRegistry()).thenReturn(facetLabelDisplayHandlerRegistryStub);
-        searchFacetsService = new SearchFacetsServiceImpl(serviceRegistryMock, mock(SolrFacetService.class), mock(
-                ITranslationService.class));
+        searchFacetsService = new SearchFacetsServiceImpl(serviceRegistryMock, mock(SolrFacetService.class), translationServiceMock);
 
         facetOptionsMock = mock(FacetOptions.class);
         when(facetOptionsMock.isEnabled()).thenReturn(true);
@@ -126,7 +134,42 @@ public class SearchFacetServiceUnitTest {
         when(fieldFacetMock_B.getField()).thenReturn("@{http://test.apix.xenit.eu/model/content}documentStatus");
         fieldFacets.add(fieldFacetMock_B);
         when(searchParametersMock.getFieldFacets()).thenReturn(fieldFacets);
+        when(translationServiceMock.getMessageTranslation("faceted-search.size.0-10KB.label")).thenReturn("0 to 10KB");
+        when(translationServiceMock.getMessageTranslation("faceted-search.date.one-year.label")).thenReturn("This year");
     }
+
+    private FacetLabelDisplayHandlerRegistry initFacetLabelDisplayHandler(ServiceRegistry serviceRegistry) {
+        FacetLabelDisplayHandlerRegistry facetLabelDisplayHandlerRegistry = new FacetLabelDisplayHandlerRegistry();
+        List<AbstractFacetLabelDisplayHandler> displayHandlers = new ArrayList<>();
+        displayHandlers.add(new ContentSizeBucketsDisplayHandler(
+                Set.of("@{http://www.alfresco.org/model/content/1.0}content.size"),
+                new LinkedHashMap<>(Map.of(
+                        "[0 TO 10240]", "faceted-search.size.0-10KB.label",
+                        "[10240 TO 102400]", "faceted-search.size.10-100KB.label",
+                        "[102400 TO 1048576]", "faceted-search.size.100KB-1MB.label",
+                        "[1048576 TO 16777216]", "faceted-search.size.1-16MB.label",
+                        "[16777216 TO 134217728]", "faceted-search.size.16-128MB.label",
+                        "[134217728 TO MAX]", "faceted-search.size.over128.label"
+                )))
+        );
+        displayHandlers.add(new DateBucketsDisplayHandler(
+                Set.of("@{http://www.alfresco.org/model/content/1.0}created",
+                        "@{http://www.alfresco.org/model/content/1.0}modified"),
+                new LinkedHashMap<>(Map.of(
+                        "[NOW/DAY-1DAY TO NOW/DAY+1DAY]", "faceted-search.date.one-day.label",
+                        "[NOW/DAY-7DAYS TO NOW/DAY+1DAY]", "faceted-search.date.one-week.label",
+                        "[NOW/DAY-1MONTH TO NOW/DAY+1DAY]", "faceted-search.date.one-month.label",
+                        "[NOW/DAY-6MONTHS TO NOW/DAY+1DAY]", "faceted-search.date.six-months.label",
+                        "[NOW/DAY-1YEAR TO NOW/DAY+1DAY]", "faceted-search.date.one-year.label"
+                ))));
+        displayHandlers.forEach(displayHandler -> {
+            displayHandler.setRegistry(facetLabelDisplayHandlerRegistry);
+            displayHandler.setServiceRegistry(serviceRegistry);
+            displayHandler.register();
+        });
+        return facetLabelDisplayHandlerRegistry;
+    }
+
 
     public List<FacetSearchResult> initExpectedResult_for_assertThat_getFacetResults_returnIncludes_translationsForListOfValueConstraints() {
         List<FacetSearchResult> expectedResult = new ArrayList<>();
@@ -154,7 +197,8 @@ public class SearchFacetServiceUnitTest {
         contentResult.setName("{http://www.alfresco.org/model/content/1.0}content.size");
         List<FacetValue> contentValues = new ArrayList<>();
         FacetValue contentFacetValue = new FacetValue();
-        contentFacetValue.setValue("[0 TO 10240]");
+        contentFacetValue.setValue("0\"..\"10240");
+        contentFacetValue.setLabel("0 to 10KB");
         contentFacetValue.setCount(1);
         contentValues.add(contentFacetValue);
         contentResult.setValues(contentValues);
@@ -163,20 +207,12 @@ public class SearchFacetServiceUnitTest {
         modifiedResult.setName("{http://www.alfresco.org/model/content/1.0}modified");
         List<FacetValue> modifiedValues = new ArrayList<>();
         FacetValue modifiedFacetValue = new FacetValue();
-        modifiedFacetValue.setValue("[NOW/DAY-1YEAR TO NOW/DAY+1DAY]");
+        modifiedFacetValue.setValue("NOW/DAY-1YEAR\"..\"NOW/DAY+1DAY");
         modifiedFacetValue.setCount(2);
+        modifiedFacetValue.setLabel("This year");
         modifiedValues.add(modifiedFacetValue);
         modifiedResult.setValues(modifiedValues);
         expectedResult.add(modifiedResult);
-        FacetSearchResult createdResult = new FacetSearchResult();
-        createdResult.setName("{http://www.alfresco.org/model/content/1.0}created");
-        List<FacetValue> createdValues = new ArrayList<>();
-        FacetValue createdFacetValue = new FacetValue();
-        createdFacetValue.setValue("[2020-08-31T07:00:00.000Z TO 2023-09-02T10:01:00.000Z]");
-        createdFacetValue.setCount(1);
-        createdValues.add(createdFacetValue);
-        createdResult.setValues(createdValues);
-        expectedResult.add(createdResult);
         return expectedResult;
     }
 
@@ -187,6 +223,7 @@ public class SearchFacetServiceUnitTest {
         List<FacetSearchResult> result = searchFacetsService.getFacetResults(facetOptionsMock, resultSetMock,
                 searchParametersMock);
         assertEquals(expectedResult, result);
+        verify(translationServiceMock, times(2)).getMessageTranslation(Mockito.anyString());
     }
 
 }

@@ -248,7 +248,7 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
             // facetTokenName => @{http://www.alfresco.org/model/content/1.0}created
             // qName => {http://www.alfresco.org/model/content/1.0}created
             // 7 => {!afts}
-            key = key.replace("{!afts}","");
+            key = key.replace("{!afts}", "");
             String facetTokenName = key.substring(0, key.indexOf(":["));
             String qName = facetTokenToQname(facetTokenName);
 
@@ -260,13 +260,20 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
 
             // Get the handler for this qName
             FacetLabelDisplayHandler handler = facetLabelDisplayHandlerRegistry.getDisplayHandler(facetTokenName);
-            String val = key.substring( key.indexOf(":[") + 1);
+            String val = key.substring(key.indexOf(":[") + 1);
             FacetLabel facetLabel = (handler == null) ? new FacetLabel(val, val, -1) : handler.getDisplayLabel(key);
-
+            //facetHandler failed to find a valid facetLabel and returns key as label so skipping facet (bug with date range search)
+            if (facetLabel.getLabel().equals(key)) {
+                continue;
+            }
             // See if we have a nice textual version of this label
             String label = this.translationService.getMessageTranslation(facetLabel.getLabel());
-
-            fqs.add(new ScriptFacetResult(facetLabel.getValue(), label, facetLabel.getLabelIndex(), entry.getValue()));
+            fqs.add(
+                    new ScriptFacetResult(facetLabel.getValue(),
+                            label,
+                            facetLabel.getLabelIndex(),
+                            entry.getValue())
+            );
             result.put(qName, fqs);
         }
         return result;
