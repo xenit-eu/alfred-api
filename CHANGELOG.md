@@ -1,5 +1,17 @@
 # Alfred API - Changelog
 
+## 5.0.2 (unreleased)
+
+### Added
+
+### Changed
+
+### Fixed
+* [ALFREDAPI-544](https://xenitsupport.jira.com/browse/ALFREDAPI-544): fix Date range search by dropping unprocessed facet labels
+
+### Removed
+
+
 ## 5.0.1 (2024-03-19)
 
 The artifact name of `apix-interface` has been changed to `alfred-api-interface`.
