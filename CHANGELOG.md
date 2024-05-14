@@ -1,32 +1,19 @@
 # Alfred API - Changelog
 
-## 5.0.2 (unreleased)
-
-### Added
-
-### Changed
+## 5.0.2 (2024-05-14)
 
 ### Fixed
 * [ALFREDAPI-544](https://xenitsupport.jira.com/browse/ALFREDAPI-544): fix Date range search by dropping unprocessed facet labels
 
-### Removed
-
-
 ## 5.0.1 (2024-03-19)
 
 The artifact name of `apix-interface` has been changed to `alfred-api-interface`.
-
-### Added
-
-### Changed
 
 ### Fixed
 * [ALFREDAPI-537](https://xenitsupport.jira.com/browse/ALFREDAPI-537): Fix conflicts between artifacts when publishing to Sonatype
 * [ALFREDAPI-538](https://xenitsupport.jira.com/browse/ALFREDAPI-538): Fixed issue where errors related to jackson library conflicts would occurs while Alfresco is running
 * [ALFREDAPI-540](https://xenitsupport.jira.com/browse/ALFREDAPI-540): Realign interface artifact name
 * [ALFREDAPI-541](https://xenitsupport.jira.com/browse/ALFREDAPI-541): Clarify dependency installation instructions
-
-### Removed
 
 
 ## 5.0.0 (2023-12-12)
