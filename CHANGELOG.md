@@ -5,6 +5,7 @@
 The artifact name of `apix-interface` has been changed to `alfred-api-interface`.
 
 ### Added
+* [ALFREDAPI-548](https://xenitsupport.jira.com/browse/ALFREDAPI-548): Add Alfresco V23.1 & V23.2 support
 
 ### Changed
 
