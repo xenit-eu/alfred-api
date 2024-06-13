@@ -44,7 +44,7 @@ jobs:
   apix-impl:
     strategy:
       matrix:
-        alfresco_version: [ 70, 71, 72, 73, 74 ]
+        alfresco_version: [ 70, 71, 72, 73, 74, 231, 232 ]
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
