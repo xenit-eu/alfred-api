@@ -16,7 +16,7 @@ def static getVersionQualifier(String branch_name) {
 }
 
 ext {
-    versionWithoutQualifier = '5.0.2'
+    versionWithoutQualifier = '5.0.3'
 
     de_version = '3.1.0' // Only used for integration testing
     mvc = '8.0.0'

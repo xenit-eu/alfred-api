@@ -1,5 +1,12 @@
 # Alfred API - Changelog
 
+## 5.0.3 (2024-06-14)
+
+### Fixed
+
+* [ALFREDAPI-554](https://xenitsupport.jira.com/browse/ALFREDAPI-554): expose `apix-impl`
+beans in main application context (to be used by other AMPs)
+
 ## 5.0.2 (2024-05-14)
 
 ### Fixed
