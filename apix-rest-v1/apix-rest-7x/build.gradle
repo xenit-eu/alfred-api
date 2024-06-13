@@ -4,10 +4,9 @@ plugins {
     id 'eu.xenit.alfresco' version '1.1.0'
 }
 
-description = 'Xenit Alfred API Rest v1'
-
+description = 'Xenit Alfred API Rest v1 Alfresco V7.X'
 apply from: "$rootProject.projectDir/alfresco/70/overrides.gradle"
-//apply from: "$rootProject.projectDir/alfresco/231/overrides.gradle"
+apply from: "$rootProject.projectDir/apix-rest-v1/apix-rest-7x/overrides.gradle"
 
 sourceSets {
     main {
@@ -22,6 +21,7 @@ sourceSets {
         }
     }
 }
+
 dependencies {
     implementation platform("org.alfresco:acs-community-packaging:${alfresco_version}")
 
@@ -33,7 +33,6 @@ dependencies {
     alfrescoProvided "com.gradecak.alfresco-mvc:alfresco-mvc-rest:${mvc}"
     alfrescoProvided "com.gradecak.alfresco-mvc:alfresco-mvc-aop:${mvc}"
     alfrescoProvided "javax.servlet:javax.servlet-api:4.0.1"
-//    alfrescoProvided "jakarta.servlet:jakarta.servlet-api:6.0.0"
 
     testImplementation (project(':apix-interface')) {transitive = false}
     testImplementation project(':apix-impl')

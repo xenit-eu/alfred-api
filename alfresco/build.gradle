@@ -33,7 +33,12 @@ subprojects {
     dependencies {
         implementation(project(":apix-impl"))
         implementation(project(":apix-impl:apix-impl-${project.name}"))
-        implementation(project(":apix-rest-v1")) // has to be changed for alfresco 231 & 232
+
+        if(alfresco_version.contains("7.")){
+            implementation(project(":apix-rest-v1:apix-rest-7x"))
+        } else {
+            implementation(project(":apix-rest-v1:apix-rest-2x"))
+        }
     }
 
     publishing {
