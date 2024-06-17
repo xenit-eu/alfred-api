@@ -10,4 +10,6 @@
             </list>
         </property>
     </bean>
+
+    <bean class="eu.xenit.apix.SpringConfiguration"/>
 </beans>
