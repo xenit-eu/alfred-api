@@ -15,14 +15,18 @@ subprojects {
 
     // Isolate the version number ("docker-52" -> "52"). We should find a cleaner way
     def subproject_alfresco_version = project.name.substring(project.name.length() - getTotalNumbersAfterDash(project.name))
-
+    println("subproject_alfresco_version -  ${subproject_alfresco_version}" )
     dependencies {
         alfrescoAmp project(path: ":alfresco:${subproject_alfresco_version}", configuration: 'ampArtifact')
         alfrescoAmp project(path: ':apix-integrationtests:model-amp', configuration: 'ampArchives')
         alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-rest:${mvc}"
         alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-aop:${mvc}"
         alfrescoSM files(jar)
-        alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${subproject_alfresco_version}:${de_version}@amp"
+
+        // only supported untill Alfresco V7.4
+        if (subproject_alfresco_version.contains("7")) {
+            alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${subproject_alfresco_version}:${de_version}@amp"
+        }
     }
 
     dockerCompose {

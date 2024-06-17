@@ -7,14 +7,9 @@ include ':apix-docker'
 include ':apix-integrationtests'
 include ':apix-integrationtests:model-amp'
 
-for (String version : ['7.0', '7.1', '7.2', '7.3', '7.4', '23.1', '23.2']) {
+for (String version : ['7.0', '7.1', '7.2', '7.3', '7.4']) {
     def shortVersion = version.replaceAll('\\.', '')
-    if(shortVersion.toInteger() < 75){
-        include ':apix-rest-v1:apix-rest-7x'
-    } else {
-        include ':apix-rest-v1:apix-rest-2x'
-    }
-
+    include ':apix-rest:alfresco-7.x'
     include ":apix-impl:apix-impl-$shortVersion"
     include ":alfresco:$shortVersion"
     include ":apix-docker:docker-$shortVersion"
@@ -24,3 +19,16 @@ for (String version : ['7.0', '7.1', '7.2', '7.3', '7.4', '23.1', '23.2']) {
     project(":apix-docker:docker-$shortVersion").projectDir = "$rootDir/apix-docker/$shortVersion" as File
     project(":alfresco:$shortVersion").projectDir = "$rootDir/alfresco/$shortVersion" as File
 }
+
+//for (String version : ['23.1', '23.2']){
+//    def shortVersion = version.replaceAll('\\.', '')
+//    include ':apix-rest:alfresco-2x'
+//    include ":apix-impl:apix-impl-$shortVersion"
+//    include ":alfresco:$shortVersion"
+//    include ":apix-docker:docker-$shortVersion"
+//    include ":apix-integrationtests:alfresco:$shortVersion"
+//
+//    project(":apix-impl:apix-impl-$shortVersion").projectDir = "$rootDir/apix-impl/$shortVersion" as File
+//    project(":apix-docker:docker-$shortVersion").projectDir = "$rootDir/apix-docker/$shortVersion" as File
+//    project(":alfresco:$shortVersion").projectDir = "$rootDir/alfresco/$shortVersion" as File
+//}

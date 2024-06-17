@@ -34,10 +34,10 @@ subprojects {
         implementation(project(":apix-impl"))
         implementation(project(":apix-impl:apix-impl-${project.name}"))
 
-        if(alfresco_version.contains("7.")){
-            implementation(project(":apix-rest-v1:apix-rest-7x"))
+        if(alfresco_version.contains("7")){
+            implementation(project(":apix-rest:alfresco-7.x"))
         } else {
-            implementation(project(":apix-rest-v1:apix-rest-2x"))
+            implementation(project(":apix-rest:alfresco-2x"))
         }
     }
 

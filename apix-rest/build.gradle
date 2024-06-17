@@ -1,0 +1,74 @@
+//subprojects {
+//    def subprojectName = it.name
+//    apply plugin:'idea'
+//    apply plugin:'java-library'
+//    apply plugin:'eu.xenit.alfresco'
+//
+//    if (new File("${project.projectDir}/overload.gradle").exists()) {
+//        apply from: "${project.projectDir}/overload.gradle"
+//    }
+//
+//    if (subprojectName.contains("java-11")) {
+//        description = 'Xenit Alfred API Rest on Alfresco V7.X'
+//        apply from: "$rootProject.projectDir/alfresco/70/overrides.gradle"
+//        apply from: "$rootProject.projectDir/apix-rest/java-11/overload.gradle"
+//
+//        dependencies {
+//            alfrescoProvided "javax.servlet:javax.servlet-api:4.0.1"
+//            testImplementation 'org.springframework:spring-core'
+//            testImplementation 'org.springframework:spring-test'
+//        }
+//
+//    }
+//    else{
+//        description = 'Xenit Alfred API Rest on Alfresco V23.X'
+//        apply from: "$rootProject.projectDir/alfresco/231/overrides.gradle"
+//
+//        dependencies {
+//            alfrescoProvided "jakarta.servlet:jakarta.servlet-api:6.0.0"
+//            alfrescoProvided 'org.springframework:spring-core:6.0.14'
+//            testImplementation 'org.springframework:spring-core:6.0.14'
+//            testImplementation 'org.springframework:spring-test:6.0.14'
+//        }
+//    }
+//
+//    if (subprojectName.contains('java')) {
+//        sourceSets {
+//            main {
+//                java {
+//                    srcDir file("$project.parent.projectDir/core/src/main/java")
+//                    srcDir file("$project.projectDir/src/main/java")
+//                }
+//            }
+//            test {
+//                java {
+//                    srcDir file("$project.parent.projectDir/src/test/java")
+//                }
+//            }
+//        }
+//    }
+//    dependencies {
+//        implementation platform("org.alfresco:acs-community-packaging:${alfresco_version}")
+//
+//        // Alfresco dependency should be removed in the future
+//        alfrescoProvided("org.alfresco:alfresco-repository")
+//        alfrescoProvided project(':apix-interface')
+//        alfrescoProvided('org.alfresco:alfresco-remote-api')
+//
+//        alfrescoProvided "com.gradecak.alfresco-mvc:alfresco-mvc-rest:${mvc}"
+//        alfrescoProvided "com.gradecak.alfresco-mvc:alfresco-mvc-aop:${mvc}"
+////        // depending on java 11 / 17
+////        alfrescoProvided "jakarta.servlet:jakarta.servlet-api:6.0.0"
+////            alfrescoProvided "javax.servlet:javax.servlet-api:4.0.1"
+//
+//
+//        testImplementation (project(':apix-interface')) {transitive = false}
+//        testImplementation project(':apix-impl')
+//        testImplementation platform("org.alfresco:acs-community-packaging:${alfresco_version}")
+//
+//        testImplementation "org.alfresco.surf:spring-webscripts"
+//        testImplementation 'org.alfresco:alfresco-repository'
+//        testImplementation 'org.alfresco:alfresco-remote-api'
+//        testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.25.1'
+//    }
+//}

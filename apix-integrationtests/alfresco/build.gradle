@@ -34,10 +34,11 @@ allprojects {
             exclude(group: 'commons-lang', module: 'commons-lang')
         }
     }
+    println("project_alfresco_version.contains(\"7\") - ${subproject_alfresco_version}")
 
     dependencies {
         if(subproject_alfresco_version.contains("7")){
-            alfrescoProvided(project(":apix-rest-v1:apix-rest-7x")) { transitive = false }
+            alfrescoProvided(project(":apix-rest:alfresco-7.x")) { transitive = false }
             // Below is a temporary fix to circumvent using commons-lang 1.0.0 JAR. This jar
             //  - is injected by alfresco-remote-testrunner
             //  - is not on Maven Central (only 1.0) is
@@ -46,10 +47,13 @@ allprojects {
             // Ergo, kill it with fire.
             // The proper way is a fix of alfresco-remote-testrunner, but until then we use this workaround.
             integrationTestImplementationLocal "commons-lang:commons-lang:1.0"
+//            testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.25.1'
         }
         else{
-            alfrescoProvided(project(":apix-rest-v1:apix-rest-2x")) { transitive = false }
+            alfrescoProvided(project(":apix-rest:alfresco-2x")) { transitive = false }
+//            integrationTestImplementationLocal "commons-lang:commons-lang:1.0"//?
             integrationTestImplementationLocal "org.apache.commons:commons-lang3:3.14.0"
+            testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.0.0'
         }
         alfrescoProvided(project(":apix-interface")) { transitive = false }
 

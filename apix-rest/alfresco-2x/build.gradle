@@ -1,0 +1,66 @@
+plugins {
+    id 'java-library'
+    id 'idea'
+    id 'eu.xenit.alfresco' version '1.1.0'
+}
+
+description = 'Xenit Alfred API Rest on Alfresco V23.X'
+apply from: "$rootProject.projectDir/alfresco/231/overrides.gradle"
+
+
+sourceSets {
+    main {
+        java {
+            srcDir '/src/main/java'
+            srcDir '../core/src/main/java'
+        }
+    }
+    test {
+        java {
+            srcDir '../core/src/test/java'
+        }
+    }
+}
+
+dependencies {
+    implementation platform("org.alfresco:acs-community-packaging:${alfresco_version}")
+
+    // Alfresco dependency should be removed in the future
+    alfrescoProvided("org.alfresco:alfresco-repository")
+    alfrescoProvided project(':apix-interface')
+    alfrescoProvided('org.alfresco:alfresco-remote-api')
+
+    alfrescoProvided "com.gradecak.alfresco-mvc:alfresco-mvc-rest:${mvc}" // V9 -- correct
+    alfrescoProvided "com.gradecak.alfresco-mvc:alfresco-mvc-aop:${mvc}" // V9
+    alfrescoProvided "jakarta.servlet:jakarta.servlet-api:6.0.0" // upgraded from v4.x => v6?
+//TEST - TODO implementation
+//    implementation 'org.springframework:spring-core:6.0.14'
+//    implementation 'org.springframework:spring-orm:6.0.14'
+//    implementation 'org.springframework:spring-context-support:6.0.14'
+//    implementation 'org.springframework:spring-context:6.0.14'
+//    implementation 'org.springframework:spring-web:6.0.14'
+//    implementation 'org.springframework.security:spring-security-crypto:6.1.4'
+//    implementation 'org.springframework.security:spring-security-oauth2-client:6.1.4'
+//    implementation 'org.springframework.security:spring-security-oauth2-jose:6.1.4'
+//    implementation 'org.springframework.security:spring-security-oauth2-resource-server:6.1.4'
+//    org.springframework:spring-core:5.0.3.RELEASE
+//    org.springframework:spring-beans:4.3.20.RELEASE org.springframework:spring-webmvc:6.0.9
+//    org.springframework:spring-aop:6.0.11
+//    org.springframework:spring-expression:6.0.11
+//    org.springframework:spring-tx:6.0.11
+//    org.springframework:spring-jms:6.0.11
+//    org.springframework:spring-beans:4.3.20.RELEASE
+//    org.springframework:spring-core:6.0.9
+
+    testImplementation (project(':apix-interface')) {transitive = false}
+    testImplementation project(':apix-impl')
+    testImplementation platform("org.alfresco:acs-community-packaging:${alfresco_version}")
+    testImplementation 'org.springframework:spring-core:6.0.14'
+    testImplementation 'org.springframework:spring-test:6.0.14'
+    testImplementation "org.alfresco.surf:spring-webscripts"
+    testImplementation 'org.alfresco:alfresco-repository'
+    testImplementation 'org.alfresco:alfresco-remote-api'
+    testImplementation 'org.alfresco:alfresco-remote-api'
+    // mockito core here is set for bytecode Java 11?
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.0.0' // needs to be upgraded?
+}
