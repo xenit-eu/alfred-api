@@ -2,14 +2,14 @@ def integrationTestsProjectDir = project.projectDir
 allprojects {
     // Subproject of supported Alfresco versions
     def subproject_alfresco_version = project.projectDir.name == "alfresco"
-            ? "70" // minimum supported version
+            ? "231" // minimum supported version
             : project.projectDir.name
 
-    // Following needs to apply to shared (./src) project and version-specific (e.g. ./70) projects.
+    // Following needs to apply to shared (./src) project and version-specific (e.g. ./231) projects.
     apply plugin: 'idea'
     apply plugin: 'java-library'
-    apply plugin: 'eu.xenit.de'
-    apply plugin: 'eu.xenit.alfresco-remote-testrunner'
+//    apply plugin: 'eu.xenit.de'
+//    apply plugin: 'eu.xenit.alfresco-remote-testrunner'
     apply plugin: 'eu.xenit.alfresco'
     apply from: "${rootProject.projectDir}/alfresco/${subproject_alfresco_version}/overrides.gradle"
 
@@ -39,27 +39,18 @@ allprojects {
         alfrescoProvided(project(":apix-rest-v1")) { transitive = false }
         alfrescoProvided(project(":apix-interface")) { transitive = false }
 
-        // Add services used to the integration test fatjar, since we can't access the ones deployed in Alfresco
-        integrationTestImplementationRemote (project(":apix-impl:apix-impl-${subproject_alfresco_version}")) {
-            // Already includes apix-interface, we need to exclude it to avoid Linkage errors from
-            // having 2 of the same classes on the classpath
-            // (1 in Alfresco from apix-impl AMP + 1 in DE from the integration tests fat jar)
-            exclude(group: "eu.xenit.alfred.api", module: "apix-interface")
-        }
-
-        integrationTestImplementationRemote("org.apache.httpcomponents:fluent-hc:${http_version}") {
-            exclude group: 'commons-logging'
-            exclude group: 'org.apache.httpcomponents', module: 'httpcore'
-        }
-
-        // Below is a temporary fix to circumvent using commons-lang 1.0.0 JAR. This jar
-        //  - is injected by alfresco-remote-testrunner
-        //  - is not on Maven Central (only 1.0) is
-        //  - nobody what it used for exactly
-        //  - nobody knows where it came from
-        // Ergo, kill it with fire.
-        // The proper way is a fix of alfresco-remote-testrunner, but until then we use this workaround.
-        integrationTestImplementationLocal "commons-lang:commons-lang:1.0"
+//        // Add services used to the integration test fatjar, since we can't access the ones deployed in Alfresco
+//        integrationTestImplementationRemote (project(":apix-impl:apix-impl-${subproject_alfresco_version}")) {
+//            // Already includes apix-interface, we need to exclude it to avoid Linkage errors from
+//            // having 2 of the same classes on the classpath
+//            // (1 in Alfresco from apix-impl AMP + 1 in DE from the integration tests fat jar)
+//            exclude(group: "eu.xenit.alfred.api", module: "apix-interface")
+//        }
+//
+//        integrationTestImplementationRemote("org.apache.httpcomponents:fluent-hc:${http_version}") {
+//            exclude group: 'commons-logging'
+//            exclude group: 'org.apache.httpcomponents', module: 'httpcore'
+//        }
 
         alfrescoProvided platform("org.alfresco:acs-community-packaging:${alfresco_version}")
         alfrescoProvided("org.alfresco:alfresco-repository")
@@ -67,8 +58,15 @@ allprojects {
         alfrescoProvided('org.alfresco:alfresco-data-model')
         alfrescoProvided group: 'org.osgi', name: 'org.osgi.core', version: '4.3.1'
 
+//        testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.25.1'
+        testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.0.0'
+        // JUnit 5 dependencies
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
+        testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.1'
+        // Hamcrest dependencies
+        testImplementation 'org.hamcrest:hamcrest:2.2'
         testImplementation project.sourceSets.integrationTest.output
-        testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.25.1'
     }
 }
 
@@ -81,51 +79,52 @@ subprojects {
     def assembleTask = projectApixImpl.tasks.getByName("assemble")
     def composeUpTask = projectDocker.tasks.getByName("composeUp")
     def composeDownTask = projectDocker.tasks.getByName("composeDown")
+//Part of alfresco-remote-testrunner
+//    alfrescoIntegrationTest {
+//        integrationTestPackages = ["eu.xenit.apix"]
+//    }
 
-    alfrescoIntegrationTest {
-        integrationTestPackages = ["eu.xenit.apix"]
-    }
-
-    alfrescoDynamicExtensions {
-        repository {
-            endpoint {
-                protocol = project.hasProperty('protocol') ? project.protocol : 'http'
-                host = project.hasProperty('host') ? project.host : 'localhost'
-                port = project.hasProperty('port') ? project.port : 8080
-            }
-        }
-    }
+//    alfrescoDynamicExtensions {
+//        repository {
+//            endpoint {
+//                protocol = project.hasProperty('protocol') ? project.protocol : 'http'
+//                host = project.hasProperty('host') ? project.host : 'localhost'
+//                port = project.hasProperty('port') ? project.port : 8080
+//            }
+//        }
+//    }
 
     jar.enabled = false // empty jar
-    installBundle.enabled = false  // no need to install an empty jar
-
-    installIntegrationTestingBundle {
-        dependsOn assembleTask
-        dependsOn composeUpTask
-        doFirst {
-            def serviceInfo = composeUpTask.servicesInfos.get("alfresco-core")
-            if (serviceInfo != null) {
-                alfrescoDynamicExtensions {
-                    repository {
-                        endpoint {
-                            host = serviceInfo.getHost()
-                            port = serviceInfo.ports[8080]
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    integrationTest {
-        // After the tests, the docker setup should be stopped
-        finalizedBy composeDownTask
-    }
+//    installBundle.enabled = false  // no need to install an empty jar
+//* The `installIntegrationTestingBundle` task installs the Alfresco Remote Testrunner DE bundle that is supplied by the `integrationTestingBundle` configuration.
+//    installIntegrationTestingBundle {
+//        dependsOn assembleTask
+//        dependsOn composeUpTask
+//        doFirst {
+//            def serviceInfo = composeUpTask.servicesInfos.get("alfresco-core")
+//            if (serviceInfo != null) {
+//                alfrescoDynamicExtensions {
+//                    repository {
+//                        endpoint {
+//                            host = serviceInfo.getHost()
+//                            port = serviceInfo.ports[8080]
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//The `integrationTest` task is automatically configured with the Alfresco Repository URL and credentials, as configured in `alfrescoDynamicExtensions.repository`.
+//    integrationTest {
+//        // After the tests, the docker setup should be stopped
+//        finalizedBy composeDownTask
+//    }
 
     // Fix to let BND deal with multi-releases JARs
     // So far this only applies to snakeyaml
-    integrationTestFatJar {
-        bnd('-fixupmessages': '^Classes found in the wrong directory: \\\\{META-INF/versions/.*')
-    }
+//    * The `integrationTestFatJar` task creates a fat jar containing both the integration tests and their runtime dependencies as supplied by the `integrationTestImplementationRemote` configuration.
+//    integrationTestFatJar {
+//        bnd('-fixupmessages': '^Classes found in the wrong directory: \\\\{META-INF/versions/.*')
+//    }
 }
 

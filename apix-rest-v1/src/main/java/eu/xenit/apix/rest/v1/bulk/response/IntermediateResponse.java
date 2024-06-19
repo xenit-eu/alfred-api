@@ -8,9 +8,9 @@ import org.springframework.util.LinkedCaseInsensitiveMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.WebUtils;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -382,13 +382,11 @@ public class IntermediateResponse implements HttpServletResponse {
         return encodeURL(url);
     }
 
-    @Override
     @Deprecated
     public String encodeUrl(String url) {
         return encodeURL(url);
     }
 
-    @Override
     @Deprecated
     public String encodeRedirectUrl(String url) {
         return encodeRedirectURL(url);
@@ -543,7 +541,6 @@ public class IntermediateResponse implements HttpServletResponse {
         }
     }
 
-    @Override
     @Deprecated
     public void setStatus(int status, String errorMessage) {
         if (!this.isCommitted()) {

@@ -18,7 +18,7 @@ subprojects {
                     it.put("module.id", "alfred-api-${project.name}")
                     it.put("module.title", "alfred-api-${project.name}")
                     it.put("module.description",
-                            "Xenit Alfred API implementation Alfresco ${alfresco_version.substring(0, 3)}")
+                            "Xenit Alfred API implementation Alfresco ${alfresco_version.substring(0, getSecondDotPosition(alfresco_version))}")
                     it.put("module.version", project.version)
                     it.put("module.repo.version.min", project.alfresco_min_version)
                     if(project.hasProperty("alfresco_max_version")

@@ -1,8 +1,7 @@
 package eu.xenit.apix.data;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Created by Michiel Huygen on 16/06/2016.

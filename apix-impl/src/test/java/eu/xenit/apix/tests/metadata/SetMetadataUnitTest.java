@@ -27,8 +27,8 @@ import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.QName;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
 public class SetMetadataUnitTest {
@@ -50,7 +50,7 @@ public class SetMetadataUnitTest {
     private ServiceRegistry serviceRegistryMock;
     private NodeService nodeServiceAlfrescoMock;
 
-    @Before
+    @BeforeEach
     public void init() {
         //Initialization of serviceRegistry and apixAlfrescoConverter
         serviceRegistryMock = mock(ServiceRegistry.class);

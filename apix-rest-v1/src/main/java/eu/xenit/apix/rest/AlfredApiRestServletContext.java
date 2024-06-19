@@ -36,6 +36,9 @@ import eu.xenit.apix.rest.v2.groups.GroupsWebscript;
 import eu.xenit.apix.rest.v2.nodes.NodesWebscriptV2;
 import eu.xenit.apix.rest.v2.people.PeopleWebscript;
 import eu.xenit.apix.search.json.SearchNodeJsonParser;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.List;
 import org.alfresco.rest.framework.jacksonextensions.RestJsonModule;
 import org.alfresco.service.namespace.NamespaceService;
 import org.springframework.context.annotation.Bean;
@@ -44,12 +47,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+//import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+//StandardServletMultipartResolver
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableWebMvc
@@ -117,22 +118,33 @@ public class AlfredApiRestServletContext extends DefaultAlfrescoMvcServletContex
         return om;
     }
 
+    @Bean
+    public StandardServletMultipartResolver multipartResolver() {
+        return new StandardServletMultipartResolver();
+    }
+
     @Override
     protected MultipartResolver createMultipartResolver() {
-        CommonsMultipartResolver resolver = new CommonsMultipartResolver() {
-            @Override
-            public boolean isMultipart(HttpServletRequest request) {
-                String method = request.getMethod().toLowerCase();
-                //By default, only POST is allowed. Since this is an 'update' we should accept PUT.
-                if (!Arrays.asList("put", "post").contains(method)) {
-                    return false;
-                }
-                String contentType = request.getContentType();
-                return (contentType != null && contentType.toLowerCase().startsWith("multipart/"));
-            }
-        };
-        resolver.setMaxUploadSize(-1);
-        resolver.setDefaultEncoding("utf-8");
+        StandardServletMultipartResolver resolver = multipartResolver();
         return resolver;
     }
+
+//    @Override
+//    protected MultipartResolver createMultipartResolver() {
+//        CommonsMultipartResolver resolver = new CommonsMultipartResolver() {
+//            @Override
+//            public boolean isMultipart(HttpServletRequest request) {
+//                String method = request.getMethod().toLowerCase();
+//                //By default, only POST is allowed. Since this is an 'update' we should accept PUT.
+//                if (!Arrays.asList("put", "post").contains(method)) {
+//                    return false;
+//                }
+//                String contentType = request.getContentType();
+//                return (contentType != null && contentType.toLowerCase().startsWith("multipart/"));
+//            }
+//        };
+//        resolver.setMaxUploadSize(-1);
+//        resolver.setDefaultEncoding("utf-8");
+//        return resolver;
+//    }
 }

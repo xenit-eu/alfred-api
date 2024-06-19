@@ -1,14 +1,13 @@
 package eu.xenit.apix.rest.v1.bulk.response;
 
+import jakarta.servlet.http.Cookie;
+import java.time.DateTimeException;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-
-import javax.servlet.http.Cookie;
-import java.time.DateTimeException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 
 
 public class IntermediateCookie extends Cookie {
