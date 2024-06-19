@@ -11,10 +11,9 @@ import eu.xenit.apix.alfresco.metadata.NodeService;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.node.INodeService;
 import eu.xenit.apix.rest.v1.nodes.NodesWebscript1;
-
 import java.io.IOException;
 import java.io.InputStream;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.web.multipart.MultipartFile;
 
 public class NodesWebscript1Test {

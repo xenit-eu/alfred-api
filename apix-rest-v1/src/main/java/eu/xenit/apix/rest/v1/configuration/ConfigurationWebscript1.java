@@ -11,6 +11,10 @@ import eu.xenit.apix.configuration.ConfigurationFileFlags;
 import eu.xenit.apix.configuration.ConfigurationService;
 import eu.xenit.apix.configuration.Configurations;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
+import jakarta.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -22,11 +26,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 @AlfrescoAuthentication(AuthenticationType.USER)
 @RestController

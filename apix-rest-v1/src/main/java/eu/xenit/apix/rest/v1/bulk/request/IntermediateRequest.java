@@ -1,9 +1,8 @@
 package eu.xenit.apix.rest.v1.bulk.request;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.servlet.WebScriptServletRequest;
-
-import javax.servlet.http.HttpServletRequest;
 
 public class IntermediateRequest extends WebScriptServletRequest {
     public static final String MATCH = "apix/";

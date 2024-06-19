@@ -4,9 +4,8 @@ import eu.xenit.apix.search.QueryBuilder;
 import eu.xenit.apix.search.nodes.SearchSyntaxNode;
 import eu.xenit.apix.search.visitors.ISearchSyntaxVisitor;
 import org.alfresco.repo.search.impl.solr.facet.SolrFacetHelper;
-import org.junit.Assert;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class FtsFilterQueryNodeVisitorTest {
         String expectedResult = "@{http://www.alfresco.org/model/content/1.0}created:[NOW/DAY-1DAY TO NOW/DAY+1DAY]";
 
         // As soon as this assertion starts failing, Alfresco fixed this bug
-        Assert.assertNotEquals(expectedResult, buggyResult);
+        Assertions.assertNotEquals(expectedResult, buggyResult);
     }
 
     @Test
@@ -48,8 +47,8 @@ public class FtsFilterQueryNodeVisitorTest {
 
         List<String> filterQueries = querySyntaxTree.accept(visitor);
 
-        Assert.assertSame(1, filterQueries.size());
-        Assert.assertEquals("@{http://www.alfresco.org/model/content/1.0}created:[NOW/DAY-1DAY TO NOW/DAY+1DAY]",
+        Assertions.assertSame(1, filterQueries.size());
+        Assertions.assertEquals("@{http://www.alfresco.org/model/content/1.0}created:[NOW/DAY-1DAY TO NOW/DAY+1DAY]",
                 filterQueries.get(0));
     }
 
@@ -70,8 +69,8 @@ public class FtsFilterQueryNodeVisitorTest {
 
         List<String> filterQueries = querySyntaxTree.accept(visitor);
 
-        Assert.assertSame(1, filterQueries.size());
-        Assert.assertEquals("@{http://www.alfresco.org/model/content/1.0}created:[NOW/DAY-1DAY TO NOW/DAY+1DAY]",
+        Assertions.assertSame(1, filterQueries.size());
+        Assertions.assertEquals("@{http://www.alfresco.org/model/content/1.0}created:[NOW/DAY-1DAY TO NOW/DAY+1DAY]",
                 filterQueries.get(0));
     }
 
@@ -98,10 +97,10 @@ public class FtsFilterQueryNodeVisitorTest {
 
         List<String> filterQueries = search.accept(visitor);
 
-        Assert.assertSame(2, filterQueries.size());
-        Assert.assertEquals("@{http://www.alfresco.org/model/content/1.0}created:[NOW/DAY-1DAY TO NOW/DAY+1DAY]",
+        Assertions.assertSame(2, filterQueries.size());
+        Assertions.assertEquals("@{http://www.alfresco.org/model/content/1.0}created:[NOW/DAY-1DAY TO NOW/DAY+1DAY]",
                 filterQueries.get(0));
-        Assert.assertEquals(
+        Assertions.assertEquals(
                 "@{http://www.alfresco.org/model/content/1.0}created:[NOW/DAY-1MONTH-1DAY TO NOW/DAY-1MONTH+1DAY]",
                 filterQueries.get(1));
     }

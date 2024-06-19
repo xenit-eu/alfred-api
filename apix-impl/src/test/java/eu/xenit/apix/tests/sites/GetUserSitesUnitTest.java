@@ -11,7 +11,6 @@ import eu.xenit.apix.sites.ISite;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -19,9 +18,8 @@ import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.cmr.site.SiteVisibility;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 public class GetUserSitesUnitTest {
@@ -170,13 +168,13 @@ public class GetUserSitesUnitTest {
 
         String user = "testUser";
         List<ISite> testUserSites = apixSiteService.getUserSites(user);
-        Assert.assertNotEquals(null, testSite1);
-        Assert.assertNotEquals(null, testSite2);
-        Assert.assertNotEquals(null, testSite3);
-        Assert.assertEquals(3, testUserSites.size());
-        Assert.assertEquals(testSite1.getShortName(), testUserSites.get(0).getShortName());
-        Assert.assertEquals(testSite2.getShortName(), testUserSites.get(1).getShortName());
-        Assert.assertEquals(testSite3.getShortName(), testUserSites.get(2).getShortName());
+        Assertions.assertNotEquals(null, testSite1);
+        Assertions.assertNotEquals(null, testSite2);
+        Assertions.assertNotEquals(null, testSite3);
+        Assertions.assertEquals(3, testUserSites.size());
+        Assertions.assertEquals(testSite1.getShortName(), testUserSites.get(0).getShortName());
+        Assertions.assertEquals(testSite2.getShortName(), testUserSites.get(1).getShortName());
+        Assertions.assertEquals(testSite3.getShortName(), testUserSites.get(2).getShortName());
         verify(alfrescoSiteService, times(1)).listSites(eq(user));
         verifyGetContainer(alfrescoSiteService, testSite1);
         verifyGetContainer(alfrescoSiteService, testSite2);
@@ -191,14 +189,14 @@ public class GetUserSitesUnitTest {
 
         String user = "testUser";
         List<ISite> testUserSites = apixSiteService.getUserSites(user);
-        Assert.assertNotEquals(null, testSite1);
-        Assert.assertEquals(1, testUserSites.size());
-        Assert.assertEquals(testSite1.getShortName(), testUserSites.get(0).getShortName());
+        Assertions.assertNotEquals(null, testSite1);
+        Assertions.assertEquals(1, testUserSites.size());
+        Assertions.assertEquals(testSite1.getShortName(), testUserSites.get(0).getShortName());
         Map<String, eu.xenit.apix.data.NodeRef> components = testUserSites.get(0).getComponents();
-        Assert.assertEquals(2, components.size());
-        Assert.assertTrue(components.containsKey(DOCUMENT_LIBRARY_COMPONENT));
-        Assert.assertTrue(components.containsKey(LINKS_COMPONENT));
-        Assert.assertFalse(components.containsKey(DATA_LISTS_COMPONENT));
+        Assertions.assertEquals(2, components.size());
+        Assertions.assertTrue(components.containsKey(DOCUMENT_LIBRARY_COMPONENT));
+        Assertions.assertTrue(components.containsKey(LINKS_COMPONENT));
+        Assertions.assertFalse(components.containsKey(DATA_LISTS_COMPONENT));
     }
 
     private void verifyGetContainer(SiteService alfrescoSiteService, SiteInfo testSite) {
