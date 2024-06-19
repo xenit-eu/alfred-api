@@ -5,10 +5,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.InvalidNodeRefException;
 import org.alfresco.service.cmr.repository.NodeService;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class AncestorsFromNonExistingNodeUnitTest extends AncestorsBaseUnitTest {
 
@@ -29,13 +31,16 @@ public class AncestorsFromNonExistingNodeUnitTest extends AncestorsBaseUnitTest 
         return nodeServiceMock;
     }
 
-    @Test(expected = InvalidNodeRefException.class)
+    @Test
     public void getAncestorsOfNodeTest() {
-        eu.xenit.apix.alfresco.metadata.NodeService apixNodeService = new eu.xenit.apix.alfresco.metadata.NodeService(
-                serviceRegistry, apixAlfrescoConverter);
-        eu.xenit.apix.data.NodeRef rootRef = new eu.xenit.apix.data.NodeRef(testNode3.toString());
-        eu.xenit.apix.data.NodeRef testNode = new eu.xenit.apix.data.NodeRef(testNode1.toString());
+        Assertions.assertThrows(InvalidNodeRefException.class,
+()->{
+            eu.xenit.apix.alfresco.metadata.NodeService apixNodeService = new eu.xenit.apix.alfresco.metadata.NodeService(
+                    serviceRegistry, apixAlfrescoConverter);
+            eu.xenit.apix.data.NodeRef rootRef = new eu.xenit.apix.data.NodeRef(testNode3.toString());
+            eu.xenit.apix.data.NodeRef testNode = new eu.xenit.apix.data.NodeRef(testNode1.toString());
 
-        apixNodeService.getAncestors(testNode, rootRef);
+            apixNodeService.getAncestors(testNode, rootRef);
+        }, "Expected an InvalidNodeRefException to be thrown");
     }
 }

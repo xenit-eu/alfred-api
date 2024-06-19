@@ -10,7 +10,7 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.AccessStatus;
 import org.alfresco.service.cmr.security.PermissionService;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 public abstract class AncestorsBaseUnitTest {
 
@@ -21,7 +21,7 @@ public abstract class AncestorsBaseUnitTest {
     protected NodeRef testNode2 = new NodeRef("workspapce://SpacesStore/d1ef44c4-5bd3-457a-9b08-abd23d588bcf");
     protected NodeRef testNode3 = new NodeRef("workspapce://SpacesStore/d1ef44c4-5bd3-457a-9b08-abd23d588bd0");
 
-    @Before
+    @BeforeEach
     public void init() {
         //Initializing service mocks
         serviceRegistry = mock(ServiceRegistry.class);

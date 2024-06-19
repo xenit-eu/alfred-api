@@ -1,12 +1,11 @@
 package eu.xenit.apix.search.nodes;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 public class PropertySearchNodeTest {
 
     @Test
@@ -32,14 +31,14 @@ public class PropertySearchNodeTest {
     public void escapeName_dbid() {
         String unescaped = "sys:node-dbid";
         String escaped = PropertySearchNode.escapeName(unescaped);
-        assertEquals("dbid not properly escaped", "sys:node\\-dbid", escaped);
+        assertEquals("sys:node\\-dbid", escaped, "dbid not properly escaped");
     }
 
     @Test
     public void unescapeName_dbid() {
         String escaped = "sys:node\\-dbid";
         String unescaped = PropertySearchNode.unescapeName(escaped);
-        assertEquals("dbid not properly unescaped", "sys:node-dbid", unescaped);
+        assertEquals("sys:node-dbid", unescaped, "dbid not properly unescaped");
     }
 
     @Test
@@ -49,7 +48,7 @@ public class PropertySearchNodeTest {
                 .map(PropertySearchNode::escapeName)
                 .map(PropertySearchNode::unescapeName)
                 .collect(Collectors.toList());
-        assertEquals("Round-trip of escaping and unescaping did not yield initial values", strings, collect);
+        assertEquals(strings, collect, "Round-trip of escaping and unescaping did not yield initial values");
 
     }
 
