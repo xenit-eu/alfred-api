@@ -5,7 +5,7 @@ import eu.xenit.apix.rest.v1.tests.RestV1BaseTest;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+//import org.alfresco.rad.test.AlfrescoTestRunner;
 @RunWith(AlfrescoTestRunner.class)
 public abstract class StagingBaseTest extends RestV1BaseTest {
 
