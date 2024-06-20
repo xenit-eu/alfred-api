@@ -2,7 +2,6 @@ subprojects {
     apply plugin: 'eu.xenit.docker-alfresco'
     apply plugin: 'eu.xenit.docker-compose'
     apply plugin: 'be.vbgn.ci-detect'
-    apply from: "${project.projectDir}/overrides.gradle"
 
     dockerAlfresco {
         // leanImage speeds up build (see https://bitbucket.org/xenit/xenit-gradle-plugins/src/master/README.md)
@@ -13,7 +12,7 @@ subprojects {
     def subproject_alfresco_version = project.name.substring(project.name.length() - getTotalNumbersAfterDash(project.name))
     dependencies {
         alfrescoAmp project(path: ":alfresco:${subproject_alfresco_version}", configuration: 'ampArtifact')
-//        alfrescoAmp project(path: ':apix-integrationtests:model-amp', configuration: 'ampArchives')
+//        alfrescoAmp project(path: ':apix-integrationtests:model-amp', configuration: 'ampArchives') // TODO - integration tests!
         alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-rest:${mvc}"
         alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-aop:${mvc}"
         alfrescoSM files(jar)
