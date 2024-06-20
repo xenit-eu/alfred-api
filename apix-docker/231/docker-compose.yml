@@ -23,7 +23,9 @@ services:
       - ALFRESCO_HOST=alfresco-core
 
   postgresql:
-    image: docker.io/xenit/postgres
+    image: postgres:15
+    ports:
+      - 5433:5432
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:
