@@ -15,9 +15,6 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

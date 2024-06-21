@@ -3,7 +3,7 @@ package eu.xenit.apix.util;
 import java.util.Properties;
 import java.util.function.Supplier;
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
+//import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import org.alfresco.repo.management.subsystems.SwitchableApplicationContextFactory;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -14,8 +14,10 @@ import org.springframework.stereotype.Service;
 /**
  * This class should only be used by the integration tests.
  */
-@Service
-@OsgiService
+@Service // annotating a service with `@Component` or `@Service` is all we need to do to inject them into other components using `@Autowired`.
+// TODO - Check use case of OsgiService
+// Commented out, if you get error not found bean
+// @OsgiService
 public class SolrTestHelperImpl implements SolrTestHelper {
     private static final Logger logger = LoggerFactory.getLogger(SolrTestHelperImpl.class);
 

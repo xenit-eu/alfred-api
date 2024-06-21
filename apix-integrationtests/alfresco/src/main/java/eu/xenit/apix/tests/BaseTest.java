@@ -1,9 +1,9 @@
 package eu.xenit.apix.tests;
 
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
+import org.alfresco.rad.test.AlfrescoTestRunner;
 import eu.xenit.apix.util.SolrTestHelper;
-import eu.xenit.testing.integrationtesting.runner.AlfrescoTestRunner;
-import eu.xenit.testing.integrationtesting.runner.UseSpringContextOfBundle;
+//import eu.xenit.testing.integrationtesting.runner.UseSpringContextOfBundle;
 import java.util.Properties;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.model.Repository;
@@ -26,7 +26,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 
 @RunWith(AlfrescoTestRunner.class)
-@UseSpringContextOfBundle(filter = ApixImplBundleFilter.class)
+//TODO - check if the apic-impl:apix-.. lib needs to be imported like this.
+// UseSpringContextOfBundle got commented out
+// * `@UseSpringContextOfBundle`: Runs tests with the application context of a different bundle. By default, tests will be run in the context of the test bundle.
+//@UseSpringContextOfBundle(filter = ApixImplBundleFilter.class)
 public abstract class BaseTest {
 
     //Apix Test model contstants

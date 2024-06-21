@@ -5,9 +5,9 @@ import static org.junit.Assert.assertEquals;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.xenit.apix.tests.ApixImplBundleFilter;
-import eu.xenit.testing.integrationtesting.runner.AlfrescoTestRunner;
-import eu.xenit.testing.integrationtesting.runner.UseSpringContextOfBundle;
+//import eu.xenit.apix.tests.ApixImplBundleFilter;
+import org.alfresco.rad.test.AlfrescoTestRunner;
+//import eu.xenit.testing.integrationtesting.runner.UseSpringContextOfBundle;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -52,7 +52,9 @@ import org.springframework.extensions.surf.util.URLEncoder;
  * Created by kenneth on 14.03.16.
  */
 @RunWith(AlfrescoTestRunner.class)
-@UseSpringContextOfBundle(filter = ApixImplBundleFilter.class)
+//TODO - check if the apic-impl:apix-.. lib needs to be imported like this.
+// UseSpringContextOfBundle got commented out
+//@UseSpringContextOfBundle(filter = ApixImplBundleFilter.class)
 public abstract class RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(RestV1BaseTest.class);

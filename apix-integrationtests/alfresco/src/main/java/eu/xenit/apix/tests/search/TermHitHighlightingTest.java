@@ -2,7 +2,6 @@ package eu.xenit.apix.tests.search;
 
 import static org.junit.Assert.assertEquals;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.xenit.apix.alfresco.search.SearchService;
 import eu.xenit.apix.node.INodeService;
 import eu.xenit.apix.search.Highlights.HighlightResult;
@@ -13,7 +12,6 @@ import eu.xenit.apix.search.nodes.SearchSyntaxNode;
 import eu.xenit.apix.tests.BaseTest;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
@@ -25,8 +23,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 

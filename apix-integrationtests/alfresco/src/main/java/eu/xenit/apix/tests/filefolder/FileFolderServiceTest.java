@@ -1,6 +1,6 @@
 package eu.xenit.apix.tests.filefolder;
 
-import com.github.dynamicextensionsalfresco.webscripts.annotations.Before;
+//import com.github.dynamicextensionsalfresco.webscripts.annotations.Before; // TODO switch to before of junit,
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.filefolder.IFileFolderService;
 import eu.xenit.apix.tests.BaseTest;
@@ -16,6 +16,7 @@ import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.SearchService;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +65,8 @@ public class FileFolderServiceTest extends BaseTest {
 
     @Autowired
     private Repository repository;
-
+    // TODO - validate behaviour is the same as with
+    // com.github.dynamicextensionsalfresco.webscripts.annotations.Before;
     @Before
     public void Setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();

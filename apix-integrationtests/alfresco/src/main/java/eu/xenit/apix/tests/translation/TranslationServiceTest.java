@@ -6,6 +6,9 @@ import eu.xenit.apix.translation.ITranslationService;
 import eu.xenit.apix.translation.PropertyTranslationValue;
 import eu.xenit.apix.translation.TranslationValue;
 import eu.xenit.apix.translation.Translations;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,11 +16,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.extensions.surf.util.I18NUtil;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by Stan on 25-Mar-16.
