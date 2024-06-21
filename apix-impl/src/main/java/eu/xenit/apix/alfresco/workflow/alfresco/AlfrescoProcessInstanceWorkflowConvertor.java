@@ -6,7 +6,6 @@ import eu.xenit.apix.workflow.model.ITaskOrWorkflow;
 import eu.xenit.apix.workflow.model.Task;
 import eu.xenit.apix.workflow.model.Workflow;
 import eu.xenit.apix.workflow.model.WorkflowOrTaskChanges;
-import jakarta.annotation.Resource;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +22,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component("eu.xenit.apix.alfresco.workflow.alfresco.AlfrescoProcessInstanceWorkflowConvertor")
@@ -32,7 +32,7 @@ public class AlfrescoProcessInstanceWorkflowConvertor extends AbstractApixAlfres
     private static final Random random = new Random();
     @Autowired
     protected PersonService personService;
-    @Resource(name = "eu.xenit.apix.alfresco.workflow.alfresco.AlfrescoWorkflowTaskWorkflowConvertor")
+    @Qualifier("eu.xenit.apix.alfresco.workflow.alfresco.AlfrescoWorkflowTaskWorkflowConvertor")
     protected AbstractApixWorkflowConvertor taskConvertor;
 
     public <T> String getId(T instance) {

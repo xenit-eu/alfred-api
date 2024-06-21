@@ -1,6 +1,6 @@
 package eu.xenit.apix.util;
 
-import com.github.dynamicextensionsalfresco.osgi.OsgiService;
+//import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import org.alfresco.service.descriptor.DescriptorService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 @Service
-@OsgiService
+// TODO - Check use case of OsgiService
+// Commented out, if you get error not found bean
+//@OsgiService
 public class AlfrescoServerInfo {
     // Part of Alfresco Private API
     private final DescriptorService descriptorService;

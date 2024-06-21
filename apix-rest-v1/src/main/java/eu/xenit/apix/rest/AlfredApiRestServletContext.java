@@ -122,7 +122,7 @@ public class AlfredApiRestServletContext extends DefaultAlfrescoMvcServletContex
     public StandardServletMultipartResolver multipartResolver() {
         return new StandardServletMultipartResolver();
     }
-
+// TODO - Verify this works
     @Override
     protected MultipartResolver createMultipartResolver() {
         StandardServletMultipartResolver resolver = multipartResolver();

@@ -1,7 +1,7 @@
 package eu.xenit.apix.rest.v2.tests;
 
 import eu.xenit.apix.rest.v1.tests.RestV1BaseTest;
-import eu.xenit.testing.integrationtesting.runner.AlfrescoTestRunner;
+import org.alfresco.rad.test.AlfrescoTestRunner;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

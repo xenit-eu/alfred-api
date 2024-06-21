@@ -5,33 +5,36 @@ allprojects {
             ? "231" // minimum supported version
             : project.projectDir.name
 
-    // Following needs to apply to shared (./src) project and version-specific (e.g. ./231) projects.
+    // Following needs to apply to shared (./src) project and version-specific (e.g. ./70) projects.
     apply plugin: 'idea'
     apply plugin: 'java-library'
     apply plugin: 'eu.xenit.alfresco'
     apply from: "${rootProject.projectDir}/alfresco/${subproject_alfresco_version}/overrides.gradle"
-    // Setting integration test source
+
     sourceSets {
         main.java.srcDirs = []
         main.resources.srcDirs = []
-        integrationTest.java.srcDirs = ["${integrationTestsProjectDir}/src/main/java"]
-        integrationTest.resources.srcDirs = ["${integrationTestsProjectDir}/src/main/resources"]
+        integrationTest {
+            java.srcDirs = ["${integrationTestsProjectDir}/src/main/java"]
+            resources.srcDirs = ["${integrationTestsProjectDir}/src/main/resources"]
+            compileClasspath += sourceSets.main.output + configurations.testRuntimeClasspath
+            runtimeClasspath += sourceSets.main.output + configurations.testRuntimeClasspath
+        }
     }
 
-//    configurations {
-//        implementation {
-//            // Fixes IDE source highlighting
-//            extendsFrom integrationTestImplementation
-//        }
-//        testImplementation {
-//            extendsFrom integrationTestImplementation
-//        }
-//        integrationTestImplementationLocal {
-//            // Removes weird dependency lodged inside the remote testing tools
-//            // https://github.com/xenit-eu/alfresco-remote-testrunner/blob/564df30f25dab78f6a7aad02f3ba01fcf9a38b13/alfresco-remote-testrunner-gradle-plugin/src/main/java/eu/xenit/testing/integrationtesting/gradle/internal/IntegrationTestConfigurations.java#L84
-//            exclude(group: 'commons-lang', module: 'commons-lang')
-//        }
-//    }
+    configurations {
+        integrationTestImplementation.extendsFrom testImplementation
+        integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
+    }
+
+    task integrationTest(type: Test) {
+        description = 'Runs the integration tests.'
+        group = 'verification'
+        testClassesDirs = sourceSets.integrationTest.output.classesDirs
+        classpath = sourceSets.integrationTest.runtimeClasspath
+        shouldRunAfter test
+    }
+    check.dependsOn integrationTest
 
     dependencies {
         alfrescoProvided(project(":apix-rest-v1")) { transitive = false }
@@ -41,36 +44,52 @@ allprojects {
         alfrescoProvided("org.alfresco:alfresco-repository")
         alfrescoProvided('org.alfresco:alfresco-remote-api')
         alfrescoProvided('org.alfresco:alfresco-data-model')
-        alfrescoProvided group: 'org.osgi', name: 'org.osgi.core', version: '4.3.1'
-
-
+//        alfrescoProvided group: 'org.osgi', name: 'org.osgi.core', version: '4.3.1'
+        alfrescoProvided group: 'org.alfresco.maven', name: 'alfresco-rad', version: '4.8.0' // imports org.alfresco.rad.test.AlfrescoTestRunner;
+////        testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.25.1'
         testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.0.0'
-//        implementation group: 'org.mockito', name: 'mockito-core', version: '5.0.0'
-        // JUnit 5 dependencies
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
-        testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.1'
-
-        testImplementation project.sourceSets.integrationTest.output
-
+//        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
+//        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
+//        testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.1'
+        testImplementation("org.apache.httpcomponents:fluent-hc:${http_version}") {
+            exclude group: 'commons-logging'
+            exclude group: 'org.apache.httpcomponents', module: 'httpcore'
+        }
+//        // Add services used to the integration test fatjar, since we can't access the ones deployed in Alfresco
+        testImplementation (project(":apix-impl:apix-impl-${subproject_alfresco_version}")) {
+            // Already includes apix-interface, we need to exclude it to avoid Linkage errors from
+            // having 2 of the same classes on the classpath
+            // (1 in Alfresco from apix-impl AMP + 1 in DE from the integration tests fat jar)
+            exclude(group: "eu.xenit.alfred.api", module: "apix-interface")
+        }
+//        testImplementation project.sourceSets.integrationTest.output
     }
-
-//    test {
-//        useJUnitPlatform()
-//    }
 }
 
 subprojects {
+    apply plugin: 'eu.xenit.docker-compose'
+
+    // Subproject of supported Alfresco versions
+    def subproject_alfresco_version = project.projectDir.name == "alfresco"
+            ? "231" // minimum supported version
+            : project.projectDir.name
+
     // Subproject of supported Alfresco versions
     def projectApixImpl = project(":apix-impl:apix-impl-${project.projectDir.name}")
-    def projectDocker = project(":apix-docker:docker-${project.projectDir.name}")
+    def projectDocker = project(":apix-docker:docker-${project.projectDir.name}") // contains the docker-build
     evaluationDependsOn(projectApixImpl.path)
     evaluationDependsOn(projectDocker.path)
     def assembleTask = projectApixImpl.tasks.getByName("assemble")
     def composeUpTask = projectDocker.tasks.getByName("composeUp")
     def composeDownTask = projectDocker.tasks.getByName("composeDown")
 
+    // Only the integration tests actually need the Docker containers to run. However, they're currently part of the regular test suite.
+    integrationTest {
+        // All defined in apix-docker build. Model-amp is installed.
+        dependsOn assembleTask
+        dependsOn composeUpTask
+        finalizedBy composeDownTask
+    }
 
-    jar.enabled = false // empty jar
+
 }
-
