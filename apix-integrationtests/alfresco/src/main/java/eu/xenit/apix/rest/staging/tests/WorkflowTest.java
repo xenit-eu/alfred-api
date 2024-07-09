@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import eu.xenit.apix.server.ApplicationContextProvider;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,20 +37,25 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 public class WorkflowTest extends StagingBaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(WorkflowTest.class);
     private final List<WorkflowPath> wfPaths = new ArrayList<>();
-    @Autowired
+    private ApplicationContext testApplicationContext;
     private ServiceRegistry serviceRegistry;
     private WorkflowService workflowService;
     private AuthorityService authorityService;
 
     @Before
     public void setup() {
+        this.initialiseBeans(); // Setup the RestV1BaseTest Beans
         this.cleanUp();
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        this.testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        this.serviceRegistry = (ServiceRegistry) testApplicationContext.getBean(ServiceRegistry.class);
+
 
         this.workflowService = this.serviceRegistry.getWorkflowService();
         this.authorityService = this.serviceRegistry.getAuthorityService();
@@ -63,6 +69,7 @@ public class WorkflowTest extends StagingBaseTest {
                         return null;
                     }
                 }, false, true);
+        logger.error("End of setup()");
     }
 
     private WorkflowPath createWorkflow() {

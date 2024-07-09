@@ -1,10 +1,15 @@
 package eu.xenit.apix.tests;
 
+import com.github.ruediste.remoteJUnit.client.RemoteTestRunner;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
-import org.alfresco.rad.test.AlfrescoTestRunner;
-import eu.xenit.apix.util.SolrTestHelper;
-//import eu.xenit.testing.integrationtesting.runner.UseSpringContextOfBundle;
-import java.util.Properties;
+import eu.xenit.apix.server.ApplicationContextProvider;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.model.Repository;
 import org.alfresco.service.ServiceRegistry;
@@ -15,21 +20,20 @@ import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.SearchService;
+import org.alfresco.service.cmr.security.PersonService;
+import org.alfresco.service.namespace.QName;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 
 
-@RunWith(AlfrescoTestRunner.class)
+@RunWith(RemoteTestRunner.class)
 //TODO - check if the apic-impl:apix-.. lib needs to be imported like this.
 // UseSpringContextOfBundle got commented out
 // * `@UseSpringContextOfBundle`: Runs tests with the application context of a different bundle. By default, tests will be run in the context of the test bundle.
 //@UseSpringContextOfBundle(filter = ApixImplBundleFilter.class)
+// Potential solution, add the HElper classes into the runtimeClassPath so we can actually call upon them for when we start the integration tests
 public abstract class BaseTest {
 
     //Apix Test model contstants
@@ -42,17 +46,19 @@ public abstract class BaseTest {
     private static final Logger logger = LoggerFactory.getLogger(BaseTest.class);
     private static final String mainTestFolderName = "ApixMainTestFolder";
 
-    @Autowired
     protected ApixToAlfrescoConversion c;
-    @Autowired
     protected ServiceRegistry serviceRegistry;
-    @Autowired
     protected Repository repository;
-    @Autowired
-    @Qualifier("global-properties")
-    Properties globalProperties;
-    @Autowired
-    protected SolrTestHelper solrHelper;
+    private ApplicationContext testApplicationContext;
+
+    protected void initialiseBeans () {
+        logger.error("TO DELETE - initialiseBeans BaseTest");
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        serviceRegistry = testApplicationContext.getBean(ServiceRegistry.class);
+        c =  testApplicationContext.getBean(ApixToAlfrescoConversion.class);
+        repository = testApplicationContext.getBean(Repository.class);
+    }
 
     protected NodeRef getNodeAtPath(String path) {
         if("/app:company_home".equals(path)) {
@@ -94,14 +100,25 @@ public abstract class BaseTest {
     protected FileInfo createTestNode(NodeRef parentRef, String name) {
         FileFolderService fileFolderService = serviceRegistry.getFileFolderService();
         NodeService alfrescoNodeService = serviceRegistry.getNodeService();
-
         FileInfo testNode = fileFolderService.create(parentRef, name, ContentModel.TYPE_CONTENT);
+        logger.error("newFile {}" , testNode);
+
         alfrescoNodeService.addAspect(testNode.getNodeRef(), ContentModel.ASPECT_TEMPORARY, null);
         alfrescoNodeService.addAspect(testNode.getNodeRef(), ContentModel.ASPECT_VERSIONABLE, null);
         return testNode;
     }
 
     protected boolean removeTestNode(NodeRef nodeRef) {
+        NodeService alfrescoNodeService = serviceRegistry.getNodeService();
+        boolean success = false;
+        if (alfrescoNodeService.exists(nodeRef)) {
+            alfrescoNodeService.deleteNode(nodeRef);
+            success = true;
+        }
+        return success;
+    }
+
+    protected boolean removeTestPersonNode(NodeRef nodeRef) {
         NodeService alfrescoNodeService = serviceRegistry.getNodeService();
         boolean success = false;
         if (alfrescoNodeService.exists(nodeRef)) {

@@ -1,5 +1,6 @@
 package eu.xenit.apix.util;
 
+
 public interface SolrTestHelper {
 
     boolean areTransactionsSynced();

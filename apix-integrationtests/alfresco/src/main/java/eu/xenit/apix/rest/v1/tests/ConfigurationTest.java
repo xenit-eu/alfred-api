@@ -1,11 +1,15 @@
 package eu.xenit.apix.rest.v1.tests;
 
+import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
+import eu.xenit.apix.comments.ICommentService;
 import eu.xenit.apix.content.IContentService;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.filefolder.IFileFolderService;
 import eu.xenit.apix.node.INodeService;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.forum.CommentService;
 import org.alfresco.repo.node.archive.NodeArchiveService;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
@@ -28,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 
 import java.io.ByteArrayInputStream;
@@ -46,35 +51,25 @@ public class ConfigurationTest extends RestV1BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(ConfigurationTest.class);
 
-    @Autowired
-    @Qualifier("FileFolderService")
-    FileFolderService fileFolderService;
+//    @Autowired
+//    @Qualifier("FileFolderService")
+//    FileFolderService fileFolderService;
 
-    @Autowired
     INodeService nodeService;
 
-    @Autowired
     IContentService contentService;
 
-    @Autowired
     IFileFolderService apixFileFolderService;
 
-    @Autowired
     ServiceRegistry serviceRegistry;
 
-    @Autowired
-    @Qualifier("TransactionService")
     TransactionService transactionService;
 
-    @Autowired
-    @Qualifier("AuthenticationService")
     AuthenticationService authenticationService;
 
-    @Autowired
     NodeArchiveService nodeArchiveService;
-
-    @Autowired
     PermissionService permissionService;
+    ApplicationContext testApplicationContext;
 
     private NodeRef jsonNodeRef;
     private NodeRef yamlNodeRef;
@@ -84,8 +79,20 @@ public class ConfigurationTest extends RestV1BaseTest {
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-
+        // Setup the RestV1BaseTest Beans
+        initialiseBeans();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        serviceRegistry = (ServiceRegistry) testApplicationContext.getBean(ServiceRegistry.class);
+        transactionService = (TransactionService) testApplicationContext.getBean(TransactionService.class); //    @Qualifier("TransactionService")
+        permissionService = serviceRegistry.getPermissionService();
+        nodeArchiveService = (NodeArchiveService) testApplicationContext.getBean(NodeArchiveService.class);
+        authenticationService = (AuthenticationService) testApplicationContext.getBean("AuthenticationService",AuthenticationService.class);
         TransactionService transactionService = serviceRegistry.getTransactionService();
+        // Apix beans
+        apixFileFolderService = (IFileFolderService) testApplicationContext.getBean(IFileFolderService.class);
+        contentService = (IContentService) testApplicationContext.getBean(IContentService.class);
+        nodeService = (eu.xenit.apix.alfresco.metadata.NodeService) testApplicationContext.getBean(eu.xenit.apix.alfresco.metadata.NodeService.class); // fetches APIX nodeService
 
         RetryingTransactionHelper.RetryingTransactionCallback<Object> txnWork = () -> {
             NodeRef dataDictionary = apixFileFolderService.getDataDictionary();

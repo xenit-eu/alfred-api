@@ -2,22 +2,28 @@ package eu.xenit.apix.rest.v1.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import org.alfresco.repo.dictionary.DictionaryDAO;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.M2Type;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.namespace.NamespaceService;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.fluent.Request;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,34 +31,65 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.context.ApplicationContext;
 
 public class DictionaryTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(DictionaryTest.class);
+    // Credentials
+    private String username = "admin";
+    private String password = "admin";
+    private String encodedAuth;
+    private DictionaryDAO dictionaryDAO;
+    private ApplicationContext testApplicationContext;
 
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        // Setup the RestV1BaseTest Beans
+        initialiseBeans();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        dictionaryDAO = testApplicationContext.getBean(DictionaryDAO.class);
+
+        // Set up the basic authentication header
+        String auth = username + ":" + password;
+        encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
     }
 
     @Test
-    public void testNamespacesGet() throws IOException, JSONException {
+    public void testNamespacesGet() throws IOException, JSONException, InterruptedException {
 
         String url = makeAlfrescoBaseurlAdmin() + "/apix/v1/dictionary/namespaces";
-        HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
-        logger.debug(EntityUtils.toString(httpResponse.getEntity()));
-        assertEquals(200, httpResponse.getStatusLine().getStatusCode());
-        JSONObject jsonObject = new JSONObject(EntityUtils.toString(httpResponse.getEntity()));
-        JSONObject namespaces = jsonObject.getJSONObject("namespaces");
-        logger.error(namespaces.toString());
-        String cmNamespace = "http://www.alfresco.org/model/content/1.0";
-        JSONObject cm = namespaces.getJSONObject(cmNamespace);
-        JSONArray prefixes = cm.getJSONArray("prefixes");
-        assertEquals("cm", prefixes.getString(0));
-        String name = cm.getString("URI");
-        assertEquals(cmNamespace, name);
+        try {
+            // Create the HttpClient
+            HttpClient client = HttpClient.newHttpClient();
+            // Create the HttpRequest with the GET method
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Authorization", "Basic " + encodedAuth)
+                    .header("Content-Type", "application/json")
+                    .GET()
+                    .build();
+
+            // Send the request and get the response
+            HttpResponse httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
+            assertEquals(200, httpResponse.statusCode());
+            // Parse the response body into a JSONObject
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree( httpResponse.body().toString());
+            JsonNode namespaces = jsonNode.get("namespaces");
+            String cmNamespace = "http://www.alfresco.org/model/content/1.0";
+            JsonNode cm = namespaces.get(cmNamespace);
+            logger.error("JsonNode cm {}", cm);
+            JsonNode prefixes = cm.get("prefixes");
+            assertEquals("cm", prefixes.get(0).asText());
+            JsonNode name = cm.get("URI");
+            assertEquals(cmNamespace, name.asText());
+        } catch (JSONException e) {
+            fail("Failed to parse JSON response: " + e.getMessage());
+            return;
+        }
     }
 
     private void executeDictionaryTypeTest(String dictionaryType, String shortName, String longName,
@@ -64,25 +101,70 @@ public class DictionaryTest extends RestV1BaseTest {
         String uri = baseUrl + URLEncoder.encode(shortName,
                     String.valueOf(Charset.defaultCharset())
             );
-        HttpResponse httpResponse = Request.Get(uri).execute().returnResponse();
-        logger.debug(EntityUtils.toString(httpResponse.getEntity()));
-        assertEquals(uri, 200, httpResponse.getStatusLine().getStatusCode());
-        JSONObject jsonObject = new JSONObject(EntityUtils.toString(httpResponse.getEntity()));
+        HttpResponse<String> httpResponseQnameLookup = null;
+        try {
+            // Create the HttpClient
+            HttpClient client = HttpClient.newHttpClient();
+            // Create the HttpRequest with the GET method
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(uri))
+                    .header("Authorization", "Basic " + encodedAuth)
+                    .header("Content-Type", "application/json")
+                    .GET()
+                    .build();
+
+            // Send the request and get the response
+            httpResponseQnameLookup = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        }catch (Exception e) {
+            logger.error("{}", e);
+        }
+        assertEquals(uri, 200, httpResponseQnameLookup.statusCode());
+        JSONObject jsonObject = new JSONObject(httpResponseQnameLookup.body());
         assertEquals(longName, jsonObject.getString("name"));
         if (mandatoryAspect != null) {
             assertMandatoryAspects(jsonObject, mandatoryAspect);
         }
 
-        // full qname lookup
-        String sanitizedLongQName = URLEncoder.encode(longName,
-                        String.valueOf(Charset.defaultCharset()))
-                        .replaceAll("%2F", "/");
-        httpResponse = Request.Get(baseUrl + sanitizedLongQName).execute().returnResponse();
-        logger.debug(EntityUtils.toString(httpResponse.getEntity()));
-        assertEquals(sanitizedLongQName, 200, httpResponse.getStatusLine().getStatusCode());
-        jsonObject = new JSONObject(EntityUtils.toString(httpResponse.getEntity()));
-        assertEquals(longName, jsonObject.getString("name"));
+        JSONObject jsonObjectFinal = getRequest(baseUrl , longName);
+        // Execute the request
+        assertNotNull(jsonObjectFinal);
+        assertEquals(longName, jsonObjectFinal.getString("name"));
 
+    }
+
+    public JSONObject getRequest(String baseUrl, String longName){
+        HttpResponse<String> response = null;
+        try {
+            // Full qualified name to be looked up
+            String encodedLongName = URI.create(
+                    baseUrl + java.net.URLEncoder.encode(longName, java.nio.charset.StandardCharsets.UTF_8.toString())
+                            .replaceAll("%2F", "/")
+            ).toString();
+
+            // Create the HttpClient
+            HttpClient client = HttpClient.newHttpClient();
+
+            // Create the HttpRequest with the GET method
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(encodedLongName))
+                    .header("Authorization", "Basic " + encodedAuth)
+                    .header("Content-Type", "application/json")
+                    .GET()
+                    .build();
+
+            // Send the request and get the response
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+                return null;
+            }
+            JSONObject jsonObjectFinal = new JSONObject(response.body());
+            return jsonObjectFinal;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     @Test
@@ -99,32 +181,53 @@ public class DictionaryTest extends RestV1BaseTest {
     @Test
     public void testTypesGet() throws IOException, JSONException {
         String baseUrl = makeAlfrescoBaseurlAdmin() + "/apix/v1/dictionary/types";
+        try {
+            // Create the HttpClient
+            HttpClient client = HttpClient.newHttpClient();
+            // Create the HttpRequest with the GET method
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(baseUrl))
+                    .header("Authorization", "Basic " + encodedAuth)
+                    .header("Content-Type", "application/json")
+                    .GET()
+                    .build();
 
-        HttpResponse httpResponse = Request.Get(baseUrl).execute().returnResponse();
-        logger.debug(EntityUtils.toString(httpResponse.getEntity()));
-        assertEquals(200, httpResponse.getStatusLine().getStatusCode());
-        JSONObject jsonObject = new JSONObject(EntityUtils.toString(httpResponse.getEntity()));
-        JSONArray jsonTypes = jsonObject.getJSONArray("types");
-        List<String> typeNames = new ArrayList<>(jsonTypes.length());
-        for (int i = 0; i < jsonTypes.length(); i++) {
-            JSONObject typeDef = jsonTypes.getJSONObject(i);
-            typeNames.add(typeDef.getString("name"));
-        }
-        assertTrue(typeNames.contains("{http://www.alfresco.org/model/system/1.0}base"));
-        assertTrue(typeNames.contains("{http://www.alfresco.org/model/content/1.0}content"));
+            HttpResponse httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
+            assertEquals(200, httpResponse.statusCode());
+            // Parse the response body into a JSONObject
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree( httpResponse.body().toString());
+            JsonNode jsonTypes = jsonNode.get("types");
+            List<String> typeNames = new ArrayList<>(jsonTypes.size());
+            for (int i = 0; i < jsonTypes.size(); i++) {
+                JsonNode typeDef = jsonTypes.get(i);
+                typeNames.add(typeDef.get("name").asText());
+            }
+            assertTrue(typeNames.contains("{http://www.alfresco.org/model/system/1.0}base"));
+            assertTrue(typeNames.contains("{http://www.alfresco.org/model/content/1.0}content"));
 
-        httpResponse = Request.Get(baseUrl + "?parent=cm:content").execute().returnResponse();
-        logger.debug(EntityUtils.toString(httpResponse.getEntity()));
-        assertEquals(200, httpResponse.getStatusLine().getStatusCode());
-        jsonObject = new JSONObject(EntityUtils.toString(httpResponse.getEntity()));
-        jsonTypes = jsonObject.getJSONArray("types");
-        typeNames = new ArrayList<>(jsonTypes.length());
-        for (int i = 0; i < jsonTypes.length(); i++) {
-            JSONObject typeDef = jsonTypes.getJSONObject(i);
-            typeNames.add(typeDef.getString("name"));
+            // Second test
+            request = HttpRequest.newBuilder()
+                    .uri(URI.create(baseUrl + "?parent=cm:content"))
+                    .header("Authorization", "Basic " + encodedAuth)
+                    .header("Content-Type", "application/json")
+                    .GET()
+                    .build();
+
+            HttpResponse httpResponseContent = client.send(request, HttpResponse.BodyHandlers.ofString());
+            assertEquals(200, httpResponseContent.statusCode());
+            JsonNode jsonResponseContent = objectMapper.readTree( httpResponseContent.body().toString());
+            jsonTypes = jsonResponseContent.get("types");
+            typeNames = new ArrayList<>(jsonTypes.size());
+            for (int i = 0; i < jsonTypes.size(); i++) {
+                JsonNode typeDef = jsonTypes.get(i);
+                typeNames.add(typeDef.get("name").asText());
+            }
+            assertFalse(typeNames.contains("{http://www.alfresco.org/model/system/1.0}base"));
+            assertTrue(typeNames.contains("{http://www.alfresco.org/model/content/1.0}content"));
+        } catch (JSONException | InterruptedException e) {
+            fail("Failed to parse JSON response: " + e.getMessage());
         }
-        assertFalse(typeNames.contains("{http://www.alfresco.org/model/system/1.0}base"));
-        assertTrue(typeNames.contains("{http://www.alfresco.org/model/content/1.0}content"));
     }
 
     @Test
@@ -133,9 +236,6 @@ public class DictionaryTest extends RestV1BaseTest {
                 "{http://www.alfresco.org/model/content/1.0}complianceable",
                 "{http://www.alfresco.org/model/content/1.0}auditable");
     }
-
-    @Autowired
-    private DictionaryDAO dictionaryDAO;
 
     @Test
     public void testNamespaceWithDot() throws IOException, JSONException {
@@ -157,9 +257,25 @@ public class DictionaryTest extends RestV1BaseTest {
     @Test
     public void missingDocumentType_status_404() throws IOException {
         String baseUrl = makeAlfrescoBaseurlAdmin() + "/apix/v1/dictionary/types/";
-        HttpResponse httpResponse = Request.Get(baseUrl + "cm:foobar").execute().returnResponse();
+        try {
+            // Create the HttpClient
+            HttpClient client = HttpClient.newHttpClient();
+            // Create the HttpRequest with the GET method
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(baseUrl + "cm:foobar"))
+                    .header("Authorization", "Basic " + encodedAuth)
+                    .header("Content-Type", "application/json")
+                    .GET()
+                    .build();
 
-        assertEquals(404, httpResponse.getStatusLine().getStatusCode());
+            // Send the request and get the response
+            HttpResponse httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
+            assertEquals(404, httpResponse.statusCode());
+        } catch (JSONException e) {
+            fail("Failed to parse JSON response: " + e.getMessage());
+        } catch (InterruptedException e) {
+            fail("Failed to parse HttpRequest: " + e.getMessage());
+        }
     }
 
     public void assertMandatoryAspects(JSONObject jsonObject, String expectedMandatoryAspect) {

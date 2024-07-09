@@ -1,5 +1,6 @@
 package eu.xenit.apix.tests.workflow;
 
+import eu.xenit.apix.server.ApplicationContextProvider;
 import eu.xenit.apix.tests.BaseTest;
 import eu.xenit.apix.workflow.IWorkflowService;
 import eu.xenit.apix.workflow.model.Task;
@@ -9,6 +10,13 @@ import eu.xenit.apix.workflow.search.Paging;
 import eu.xenit.apix.workflow.search.Sorting;
 import eu.xenit.apix.workflow.search.TaskOrWorkflowSearchResult;
 import eu.xenit.apix.workflow.search.TaskSearchQuery;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
@@ -16,17 +24,22 @@ import org.alfresco.repo.workflow.WorkflowModel;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.cmr.security.*;
-import org.alfresco.service.cmr.workflow.*;
+import org.alfresco.service.cmr.security.AuthorityService;
+import org.alfresco.service.cmr.security.AuthorityType;
+import org.alfresco.service.cmr.security.MutableAuthenticationService;
+import org.alfresco.service.cmr.security.PersonService;
+import org.alfresco.service.cmr.workflow.WorkflowDefinition;
+import org.alfresco.service.cmr.workflow.WorkflowInstance;
+import org.alfresco.service.cmr.workflow.WorkflowPath;
+import org.alfresco.service.cmr.workflow.WorkflowService;
+import org.alfresco.service.cmr.workflow.WorkflowTask;
+import org.alfresco.service.cmr.workflow.WorkflowTransition;
 import org.alfresco.service.namespace.QName;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
-import java.io.Serializable;
-import java.util.*;
+import org.springframework.context.ApplicationContext;
 
 
 public abstract class WorkflowServiceBaseTest extends BaseTest {
@@ -48,17 +61,29 @@ public abstract class WorkflowServiceBaseTest extends BaseTest {
     protected final Map<String, Map<String, String>> taskTransitionRegistry = new HashMap<>();
     protected final Map<String, String> tasks = new HashMap<>();
     private final List<FileInfo> tempFiles = new ArrayList<>();
-    @Autowired
+
+    private ApplicationContext testApplicationContext;
     protected ServiceRegistry serviceRegistry;
-    @Autowired
-    @Qualifier("eu.xenit.apix.workflow.IWorkflowService")
+//    @Qualifier("eu.xenit.apix.workflow.IWorkflowService")
     protected IWorkflowService apixWorkflowService;
+
     protected RetryingTransactionHelper transactionHelper;
     protected MutableAuthenticationService authenticationService;
     protected NodeRef companyHomeNodeRef = null;
     private PersonService personService;
     private WorkflowService workflowService;
     private AuthorityService authorityService;
+
+    @Before
+    public void initialiseBeansWorkflowServiceBaseTest() {
+        logger.error("TO DELETE - initialiseBeansWorkflowServiceBaseTest");
+        // initialiseBeans BaseTest
+        initialiseBeans();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        serviceRegistry = testApplicationContext.getBean(ServiceRegistry.class);
+        apixWorkflowService = testApplicationContext.getBean("eu.xenit.apix.workflow.IWorkflowService",IWorkflowService.class);
+    }
 
     protected void SetupLocal() {
         AuthenticationUtil.setFullyAuthenticatedUser(USER_ADMIN);
@@ -588,7 +613,10 @@ public abstract class WorkflowServiceBaseTest extends BaseTest {
 
 
     protected boolean hasAccessToWorkflowInstance(WorkflowPath workflow) {
+        logger.error("hasAccessToWorkflowInstance workflowpath {}" , workflow.getInstance().getId());
         final String workflowID = workflow.getInstance().getId();
+        logger.error("hasAccessToWorkflowInstance transactionHelper {}" , this.transactionHelper);
+
         WorkflowInstance alfrescoWorkflow = this.transactionHelper
                 .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<WorkflowInstance>() {
                     @Override
@@ -603,6 +631,9 @@ public abstract class WorkflowServiceBaseTest extends BaseTest {
         if (!workflowID.equals(alfrescoWorkflow.getId())) {
             return false;
         }
+        logger.error("hasAccessToWorkflowInstance got untill here {}");
+        logger.error("hasAccessToWorkflowInstance apixWorkflowService {}", apixWorkflowService);
+        logger.error("hasAccessToWorkflowInstance transactionHelper {}", transactionHelper);
 
         Workflow resultWf = this.transactionHelper
                 .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Workflow>() {
@@ -611,8 +642,11 @@ public abstract class WorkflowServiceBaseTest extends BaseTest {
                         return apixWorkflowService.getWorkflowInfo(workflowID);
                     }
                 }, false, true);
+
+        logger.error("hasAccessToWorkflowInstance resultWf {}" , resultWf);
+
         boolean hasAccessToWorkflowInstance = resultWf != null && workflowID.equals(resultWf.getId());
-        logger.debug("hasAccessToWorkflowInstance: " + hasAccessToWorkflowInstance);
+        logger.error("hasAccessToWorkflowInstance: " + hasAccessToWorkflowInstance);
         return hasAccessToWorkflowInstance;
     }
 

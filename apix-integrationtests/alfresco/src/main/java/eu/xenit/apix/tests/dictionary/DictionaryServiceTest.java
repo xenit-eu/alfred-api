@@ -3,13 +3,14 @@ package eu.xenit.apix.tests.dictionary;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.dictionary.IDictionaryService;
 import eu.xenit.apix.dictionary.aspects.AspectDefinition;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import eu.xenit.apix.tests.BaseTest;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.ServiceRegistry;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 
 /**
@@ -17,17 +18,19 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class DictionaryServiceTest extends BaseTest {
 
-    @Autowired
+    private ApplicationContext testApplicationContext;
     private IDictionaryService service;
-    //@Autowired
-
-    @Autowired
     private ServiceRegistry serviceRegistry;
 
     @Before
     public void Setup() {
         AuthenticationUtil.setFullyAuthenticatedUser("admin");
-
+        // initialiseBeans BaseTest
+        initialiseBeans();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        service = testApplicationContext.getBean(IDictionaryService.class);
+        serviceRegistry = testApplicationContext.getBean(ServiceRegistry.class);
     }
 
 

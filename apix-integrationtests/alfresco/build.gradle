@@ -9,6 +9,7 @@ allprojects {
     apply plugin: 'idea'
     apply plugin: 'java-library'
     apply plugin: 'eu.xenit.alfresco'
+    apply plugin: 'eu.xenit.docker-alfresco'
     apply from: "${rootProject.projectDir}/alfresco/${subproject_alfresco_version}/overrides.gradle"
 
     sourceSets {
@@ -44,13 +45,7 @@ allprojects {
         alfrescoProvided("org.alfresco:alfresco-repository")
         alfrescoProvided('org.alfresco:alfresco-remote-api')
         alfrescoProvided('org.alfresco:alfresco-data-model')
-//        alfrescoProvided group: 'org.osgi', name: 'org.osgi.core', version: '4.3.1'
-        alfrescoProvided group: 'org.alfresco.maven', name: 'alfresco-rad', version: '4.8.0' // imports org.alfresco.rad.test.AlfrescoTestRunner;
-////        testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.25.1'
         testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.0.0'
-//        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
-//        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
-//        testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.1'
         testImplementation("org.apache.httpcomponents:fluent-hc:${http_version}") {
             exclude group: 'commons-logging'
             exclude group: 'org.apache.httpcomponents', module: 'httpcore'
@@ -63,9 +58,12 @@ allprojects {
             exclude(group: "eu.xenit.alfred.api", module: "apix-interface")
         }
 //        testImplementation project.sourceSets.integrationTest.output
+
+        // Read in the integration-test-server static ApplicationContext + Helperclasses
+        implementation project(path: ":apix-integrationtests-server") // Read in the alfresco integration-test-server
     }
 }
-
+// Custom JAR task to include only the specified package
 subprojects {
     apply plugin: 'eu.xenit.docker-compose'
 

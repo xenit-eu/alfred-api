@@ -1,17 +1,29 @@
 package eu.xenit.apix.tests.metadata;
 
+import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.alfresco.metadata.AlfrescoPropertyConvertor;
+import eu.xenit.apix.filefolder.IFileFolderService;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import eu.xenit.apix.tests.BaseTest;
 import java.util.Arrays;
 import java.util.List;
+import org.alfresco.repo.model.Repository;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.Pair;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 
 public class AlfrescoPropertyConvertorTest extends BaseTest {
 
+    @Before
+    public void Setup() {
+        // initialiseBeans BaseTest
+        initialiseBeans();
+    }
     @Test
     public void testPropertyConvertOnRegisteredConstraint() throws Exception {
         // See bug https://xenitsupport.jira.com/browse/ALFREDAPI-299

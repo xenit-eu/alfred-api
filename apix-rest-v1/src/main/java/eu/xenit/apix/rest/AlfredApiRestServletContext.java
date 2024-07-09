@@ -41,14 +41,14 @@ import java.util.Arrays;
 import java.util.List;
 import org.alfresco.rest.framework.jacksonextensions.RestJsonModule;
 import org.alfresco.service.namespace.NamespaceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.multipart.MultipartResolver;
-//import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-//StandardServletMultipartResolver
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -88,6 +88,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class AlfredApiRestServletContext extends DefaultAlfrescoMvcServletContextConfiguration {
 
 
+    private static final Logger log = LoggerFactory.getLogger(AlfredApiRestServletContext.class);
+
     public AlfredApiRestServletContext(RestJsonModule alfrescoRestJsonModule, NamespaceService namespaceService) {
         super(alfrescoRestJsonModule, namespaceService);
     }
@@ -118,14 +120,33 @@ public class AlfredApiRestServletContext extends DefaultAlfrescoMvcServletContex
         return om;
     }
 
-    @Bean
-    public StandardServletMultipartResolver multipartResolver() {
-        return new StandardServletMultipartResolver();
-    }
+//    @Bean
+//    public StandardServletMultipartResolver multipartResolver() {
+//        return new StandardServletMultipartResolver();
+//    }
+
 // TODO - Verify this works
     @Override
     protected MultipartResolver createMultipartResolver() {
-        StandardServletMultipartResolver resolver = multipartResolver();
+        log.error("AlfredApiRestServletContext.java called, is alternative implementation");
+        StandardServletMultipartResolver resolver = new StandardServletMultipartResolver(){
+            @Override
+            public boolean isMultipart(HttpServletRequest request) {
+                String method = request.getMethod().toLowerCase();
+                //By default, only POST is allowed. Since this is an 'update' we should accept PUT.
+                if (!Arrays.asList("put", "post").contains(method)) {
+                    return false;
+                }
+                String contentType = request.getContentType();
+                System.out.println("createMultipartResolver - isMultipart : " + request.getContentType());
+                return (contentType != null && contentType.toLowerCase().startsWith("multipart/"));
+            }
+        };
+//        resolver.setDefaultEncoding("UTF-8");
+//        The StandardServletMultipartResolver in Spring uses the default encoding specified by the Servlet API, which
+//        is typically UTF-8 for the body of the multipart request. However, it is essential to explicitly set the encoding
+//        to ensure consistency across different environments.
+//        resolver.setDefaultEncoding("utf-8");
         return resolver;
     }
 

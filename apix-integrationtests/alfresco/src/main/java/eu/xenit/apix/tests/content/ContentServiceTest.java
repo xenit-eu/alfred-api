@@ -5,7 +5,9 @@ import static org.junit.Assert.assertTrue;
 
 import eu.xenit.apix.content.IContentService;
 import eu.xenit.apix.node.INodeService;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import eu.xenit.apix.tests.BaseTest;
+import eu.xenit.apix.util.SolrTestHelperImpl;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,25 +24,46 @@ import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 
 public class ContentServiceTest extends BaseTest {
-
     private final static Logger logger = LoggerFactory.getLogger(ContentServiceTest.class);
-    @Autowired
-    INodeService nodeService;
-    @Autowired
-    IContentService contentService;
-    @Autowired
-    ServiceRegistry serviceRegistry;
 
+    private ApplicationContext testApplicationContext;
+    INodeService nodeService;
+    IContentService contentService;
+    ServiceRegistry serviceRegistry;
+    SolrTestHelperImpl solrHelper;
     //Test variables
     private NodeRef testNode;
     private FileInfo mainTestFolder;
+
+    @Before
+    public void setupContentServiceTest() {
+        AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        // initialiseBeans BaseTest
+        initialiseBeans();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        serviceRegistry = testApplicationContext.getBean(ServiceRegistry.class);
+        contentService = testApplicationContext.getBean(IContentService.class);
+        nodeService= testApplicationContext.getBean(INodeService.class);
+        solrHelper = testApplicationContext.getBean(SolrTestHelperImpl.class);
+        this.cleanUp();
+        try {
+            solrHelper.waitForTransactionSync();
+        } catch (InterruptedException e) {
+            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+        }
+        AuthenticationUtil.setFullyAuthenticatedUser("admin");
+        NodeRef companyHomeNodeRef = this.getNodeAtPath("/app:company_home");
+        mainTestFolder = this.createMainTestFolder(companyHomeNodeRef);
+    }
 
     public static NodeRef createContentNodeRefS(NodeRef parent, String name, String text,
             ServiceRegistry serviceRegistry) {
@@ -68,17 +91,6 @@ public class ContentServiceTest extends BaseTest {
         return node;
     }
 
-    public void Setup() {
-        this.cleanUp();
-        try {
-            solrHelper.waitForTransactionSync();
-        } catch (InterruptedException e) {
-            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
-        }
-        AuthenticationUtil.setFullyAuthenticatedUser("admin");
-        NodeRef companyHomeNodeRef = this.getNodeAtPath("/app:company_home");
-        mainTestFolder = this.createMainTestFolder(companyHomeNodeRef);
-    }
 
     public NodeRef createContentNode(NodeRef parent, String name, String text) {
         return createContentNodeRefS(parent, name, text, this.serviceRegistry);
@@ -86,7 +98,6 @@ public class ContentServiceTest extends BaseTest {
 
     @Test
     public void TestContentUrlExists() {
-        Setup();
         NodeService alfNodeService = serviceRegistry.getNodeService();
         testNode = createContentNode(mainTestFolder.getNodeRef(), "testnode", "my content");
         ContentData d = (ContentData) alfNodeService.getProperty(testNode, ContentModel.PROP_CONTENT);

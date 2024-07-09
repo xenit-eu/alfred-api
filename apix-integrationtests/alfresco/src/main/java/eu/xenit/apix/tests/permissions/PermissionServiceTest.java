@@ -1,13 +1,22 @@
 package eu.xenit.apix.tests.permissions;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.permissions.IPermissionService;
 import eu.xenit.apix.permissions.NodePermission;
 import eu.xenit.apix.permissions.NodePermission.Access;
 import eu.xenit.apix.permissions.PermissionValue;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import eu.xenit.apix.tests.BaseTest;
+import eu.xenit.apix.util.SolrTestHelperImpl;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -23,13 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
-import java.util.Map;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import org.springframework.context.ApplicationContext;
 
 
 
@@ -41,36 +44,33 @@ public class PermissionServiceTest extends BaseTest {
   private final static Logger logger = LoggerFactory.getLogger(PermissionServiceTest.class);
   private static final String ADMIN_USER_NAME = "admin";
 
-  @Autowired
+  private ApplicationContext testApplicationContext;
   private ApixToAlfrescoConversion c;
-
-  @Autowired
   private IPermissionService service;
-
-  @Autowired
-  @Qualifier("PermissionService")
   private PermissionService permissionService;
-
-  @Autowired
-  @Qualifier("SearchService")
   private SearchService searchService;
-
-  @Autowired
-  @Qualifier("NodeService")
+  private ServiceRegistry serviceRegistry;
   private NodeService alfrescoNodeService;
 
-  // Low level nodeservice bypasses permissionchecks
-  @Autowired
-  @Qualifier("nodeService")
   private NodeService llAlfrescoNodeService;
-
-  @Autowired
-  @Qualifier("FileFolderService")
   private FileFolderService fileFolderService;
-
+  private SolrTestHelperImpl solrHelper;
   @Before
   public void Setup() {
     AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+    // initialiseBeans BaseTest
+    initialiseBeans();
+    // initialise the local beans
+    testApplicationContext = ApplicationContextProvider.getApplicationContext();
+    serviceRegistry = (ServiceRegistry) testApplicationContext.getBean(ServiceRegistry.class);
+    c =  (ApixToAlfrescoConversion) testApplicationContext.getBean(ApixToAlfrescoConversion.class);
+    service = (IPermissionService) testApplicationContext.getBean(IPermissionService.class);
+    permissionService = serviceRegistry.getPermissionService();
+    searchService = serviceRegistry.getSearchService();
+    fileFolderService = serviceRegistry.getFileFolderService();
+    alfrescoNodeService = serviceRegistry.getNodeService();
+    llAlfrescoNodeService = (NodeService) testApplicationContext.getBean("nodeService",NodeService.class);
+    solrHelper = testApplicationContext.getBean(SolrTestHelperImpl.class);
   }
 
   public NodeRef getNodeAtPath(String path) {

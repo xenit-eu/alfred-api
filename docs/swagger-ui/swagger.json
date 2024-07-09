@@ -645,6 +645,41 @@
         }
       }
     },
+    "/v1/nodes/simpleuploadtest": {
+      "post": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Creates a new node with given content - just a simple test",
+        "description": "",
+        "operationId": "uploadNode TEST",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "guid",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "file",
+            "in": "formData",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Not Authorized"
+          }
+        }
+      }
+    },
     "/v1/nodes/{space}/{store}/{guid}": {
       "get": {
         "tags": [

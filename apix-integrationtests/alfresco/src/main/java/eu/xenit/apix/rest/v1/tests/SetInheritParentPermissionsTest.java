@@ -6,9 +6,11 @@ import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.permissions.IPermissionService;
 import eu.xenit.apix.rest.v2.tests.AllNodeInfoTest;
 import eu.xenit.apix.rest.v2.tests.RestV2BaseTest;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import java.io.IOException;
 import java.util.HashMap;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.transaction.TransactionService;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -26,19 +28,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 
 public class SetInheritParentPermissionsTest extends RestV2BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(AllNodeInfoTest.class);
-    @Autowired
-    IPermissionService permissionService;
-    @Autowired
-    @Qualifier("TransactionService")
+
+    private ApplicationContext testApplicationContext;
     TransactionService transactionService;
+    // Apix beans
+    IPermissionService permissionService;
+
 
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        // Setup the RestV1BaseTest Beans
+        initialiseBeans();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        transactionService = (TransactionService) testApplicationContext.getBean(TransactionService.class);
+        permissionService = (IPermissionService) testApplicationContext.getBean(IPermissionService.class);
     }
 
     @Test

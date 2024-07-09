@@ -21,6 +21,12 @@ import eu.xenit.apix.permissions.NodePermission;
 import eu.xenit.apix.permissions.PermissionValue;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
 import eu.xenit.apix.rest.v1.nodes.ChangeAclsOptions.Access;
+import jakarta.servlet.annotation.MultipartConfig;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
@@ -28,6 +34,7 @@ import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.InvalidNodeRefException;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.apache.http.HttpStatus;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
@@ -44,15 +51,10 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 
 @AlfrescoTransaction
 @RestController
+@MultipartConfig(fileSizeThreshold = 20971520) // 20MB
 public class NodesWebscript1 extends ApixV1Webscript {
 
     private static final Logger logger = LoggerFactory.getLogger(NodesWebscript1.class);
@@ -491,6 +493,8 @@ public class NodesWebscript1 extends ApixV1Webscript {
     @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/content")
     public ResponseEntity<?> getContent(@PathVariable String space, @PathVariable String store, @PathVariable String guid) {
+        logger.error("/v1/nodes/{space}/{store}/{guid}/content GET called");
+
         final NodeRef nodeRef = this.createNodeRef(space, store, guid);
         ContentInputStream contentInputStream = nodeService.getContent(nodeRef);
         if (contentInputStream == null) {
@@ -504,6 +508,9 @@ public class NodesWebscript1 extends ApixV1Webscript {
     @PutMapping(value = "/v1/nodes/{space}/{store}/{guid}/content")
     public ResponseEntity<Void> setContent(@PathVariable String space, @PathVariable String store,
                                            @PathVariable String guid, @RequestPart final MultipartFile file) {
+        logger.error("/v1/nodes/{space}/{store}/{guid}/content PUT called");
+        logger.error("space {} store {} guid{} file {}", space, store, guid, file );
+
         final NodeRef finalDestination = this.createNodeRef(space, store, guid);
         RetryingTransactionHelper transactionHelper = serviceRegistry.getRetryingTransactionHelper();
         transactionHelper.doInTransaction(() -> {
@@ -537,6 +544,25 @@ public class NodesWebscript1 extends ApixV1Webscript {
                         this.createNodeRef(space, store, guid)
                 )
         );
+    }
+
+    @AlfrescoTransaction
+    @PostMapping(value = "/v1/nodes/simpleuploadtest")
+    public ResponseEntity<Object> simpleuploadtest(
+            @RequestParam String guid,
+            @RequestPart final MultipartFile file)  throws IOException {
+        if (guid == null) {
+            guid = "test empty string";
+        }
+
+        if (file == null) {
+            guid = "test empty string";
+            logger.error("file is null {}", file);
+        } else {
+            logger.error("file {} is {} bytes long", file.getName() ,file.getBytes());
+        }
+        logger.error("simple POST req --- guid = {}", guid);
+        return ResponseEntity.ok().build();
     }
 
     @AlfrescoTransaction

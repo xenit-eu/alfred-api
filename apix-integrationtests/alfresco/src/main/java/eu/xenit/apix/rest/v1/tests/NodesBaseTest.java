@@ -15,10 +15,12 @@ import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.rest.v1.nodes.CreateNodeOptions;
 import eu.xenit.apix.rest.v1.nodes.NodeInfo;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.alfresco.model.ContentModel;
+import org.alfresco.service.ServiceRegistry;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -29,14 +31,19 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 public abstract class NodesBaseTest extends RestV1BaseTest {
 
-    @Autowired
     NodeService nodeService;
-
-    @Autowired
     ApixToAlfrescoConversion c;
+    private ApplicationContext testApplicationContext;
+
+    protected void initializeBeansNodesBaseTest(){
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        nodeService = (eu.xenit.apix.alfresco.metadata.NodeService) testApplicationContext.getBean(eu.xenit.apix.alfresco.metadata.NodeService.class);
+        c =  (ApixToAlfrescoConversion) testApplicationContext.getBean(ApixToAlfrescoConversion.class);
+    }
 
     protected String getSimpleNodesUrl() {
         return makeAlfrescoBaseurlAdmin() + "/apix/" + getVersion() + "/nodes";

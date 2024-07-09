@@ -1,8 +1,9 @@
 package eu.xenit.apix.tests.transaction;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import eu.xenit.apix.filefolder.IFileFolderService;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import eu.xenit.apix.tests.BaseTest;
 import eu.xenit.apix.transaction.ITransactionService;
 import java.util.concurrent.Callable;
@@ -10,17 +11,28 @@ import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 public class TransactionServiceTest extends BaseTest {
 
-    @Autowired
+    private ApplicationContext testApplicationContext;
     public Repository repository;
-    @Autowired
     ITransactionService service;
-    @Autowired
     IFileFolderService ffservice;
+
+    @Before
+    public void SetupTransactionServiceTest() {
+        AuthenticationUtil.setFullyAuthenticatedUser("admin");
+        // initialiseBeans BaseTest
+        initialiseBeans();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        repository = testApplicationContext.getBean(Repository.class);
+        service = testApplicationContext.getBean(ITransactionService.class);
+        ffservice = testApplicationContext.getBean(IFileFolderService.class);
+    }
 
     public FileInfo Setup() {
         this.cleanUp();

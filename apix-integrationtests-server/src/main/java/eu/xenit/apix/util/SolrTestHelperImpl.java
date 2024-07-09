@@ -2,22 +2,20 @@ package eu.xenit.apix.util;
 
 import java.util.Properties;
 import java.util.function.Supplier;
-
-//import com.github.dynamicextensionsalfresco.osgi.OsgiService;
 import org.alfresco.repo.management.subsystems.SwitchableApplicationContextFactory;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
+import eu.xenit.apix.util.AlfrescoServerInfo;
 /**
  * This class should only be used by the integration tests.
  */
-@Service // annotating a service with `@Component` or `@Service` is all we need to do to inject them into other components using `@Autowired`.
-// TODO - Check use case of OsgiService
-// Commented out, if you get error not found bean
-// @OsgiService
+
+@Service
+// This is a Helperclass for the integrationTests but have to be loaded on the runtimeclasspath!
+// This is due to the applicationContext not being able to load via osgi anymore
 public class SolrTestHelperImpl implements SolrTestHelper {
     private static final Logger logger = LoggerFactory.getLogger(SolrTestHelperImpl.class);
 
@@ -37,8 +35,7 @@ public class SolrTestHelperImpl implements SolrTestHelper {
     public SolrTestHelperImpl(
             @Qualifier("global-properties") Properties globalProperties,
             @Qualifier("Search") SwitchableApplicationContextFactory searchSubSystem,
-
-            AlfrescoServerInfo alfrescoServerInfoParam) {
+            AlfrescoServerInfo alfrescoServerInfoParam) { // @Qualifier("defaultDataSource") ??
         String subsystem = globalProperties.getProperty("index.subsystem.name");
         String solrBaseUrl = subsystem.equals("solr4") ? "/solr4" : "/solr";
         alfrescoServerInfo = alfrescoServerInfoParam;

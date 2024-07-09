@@ -3,15 +3,22 @@ package eu.xenit.apix.tests.properties;
 
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.QName;
+import eu.xenit.apix.permissions.IPermissionService;
 import eu.xenit.apix.properties.IPropertyService;
 import eu.xenit.apix.properties.PropertyDefinition;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import eu.xenit.apix.tests.BaseTest;
 import org.alfresco.repo.i18n.MessageService;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.service.ServiceRegistry;
+import org.alfresco.service.cmr.repository.NodeService;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Created by Jasperhilven on 24-Jan-17.
@@ -19,12 +26,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class PropertyServiceTest extends BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(PropertyServiceTest.class);
-    @Autowired
+    private ApplicationContext testApplicationContext;
+    private ServiceRegistry serviceRegistry;
+
     private IPropertyService propertyService;
-    @Autowired
     private ApixToAlfrescoConversion c;
-    @Autowired
     private MessageService messageService;
+
+    @Before
+    public void Setup() {
+        // initialiseBeans BaseTest
+        initialiseBeans();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        serviceRegistry = (ServiceRegistry) testApplicationContext.getBean(ServiceRegistry.class);
+        c =  (ApixToAlfrescoConversion) testApplicationContext.getBean(ApixToAlfrescoConversion.class);
+        propertyService = (IPropertyService) testApplicationContext.getBean(IPropertyService.class);
+        messageService = serviceRegistry.getMessageService();
+    }
 
     @Test
     public void TestGetNamePropertyLong() {

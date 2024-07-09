@@ -5,11 +5,14 @@ import static org.junit.Assert.assertEquals;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.node.ChildParentAssociation;
 import eu.xenit.apix.node.INodeService;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import org.alfresco.repo.node.archive.NodeArchiveService;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
+import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.transaction.TransactionService;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPut;
@@ -23,7 +26,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Created by kenneth on 17.03.16.
@@ -32,16 +35,20 @@ public class MoveNodeTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(MoveNodeTest.class);
 
-    @Autowired
+    private ApplicationContext testApplicationContext;
     INodeService nodeService;
-
-    @Autowired
-    @Qualifier("TransactionService")
     TransactionService transactionService;
 
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        // Setup the RestV1BaseTest Beans
+        initialiseBeans();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        serviceRegistry = (ServiceRegistry) testApplicationContext.getBean(ServiceRegistry.class);
+        nodeService = (INodeService) testApplicationContext.getBean(INodeService.class);
+        transactionService = (TransactionService) testApplicationContext.getBean(TransactionService.class);
     }
 
     @Test

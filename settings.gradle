@@ -6,6 +6,7 @@ include ':apix-rest-v1'
 include ':alfresco'
 include ':apix-docker'
 include ':apix-integrationtests'
+include ':apix-integrationtests-server'
 include ':apix-integrationtests:model-amp'
 include ':docs'
 

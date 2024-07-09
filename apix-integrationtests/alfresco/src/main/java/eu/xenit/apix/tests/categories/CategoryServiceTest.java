@@ -4,20 +4,18 @@ import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.categories.Category;
 import eu.xenit.apix.categories.ICategoryService;
 import eu.xenit.apix.data.QName;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import eu.xenit.apix.tests.BaseTest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.service.ServiceRegistry;
-import org.alfresco.service.cmr.repository.NodeRef;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Created by Michiel Huygen on 27/11/2015.
@@ -26,27 +24,23 @@ public class CategoryServiceTest extends BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(CategoryServiceTest.class);
     private static final String ADMIN_USER_NAME = "admin";
-    @Autowired
+
+    private ApplicationContext testApplicationContext;
     private ApixToAlfrescoConversion c;
     private QName generalClassifiableQName;
-    @Autowired
     private ICategoryService categoryService;
-
-    @Autowired
-    private ServiceRegistry serviceRegistry;
-    private Set<NodeRef> roots;
-
-    public void setServiceRegistry(ServiceRegistry serviceRegistry) {
-        this.serviceRegistry = serviceRegistry;
-    }
 
     @Before
     public void Setup() {
         AuthenticationUtil.setFullyAuthenticatedUser(ADMIN_USER_NAME);
-        generalClassifiableQName = c.apix(ContentModel.ASPECT_GEN_CLASSIFIABLE);
-        //service = new NodeService(serviceRegistry);
-        //roots = serviceRegistry.getNodeService().getAllRootNodes(new StoreRef("workspace", "SpacesStore"));
+        // initialiseBeans BaseTest
+        initialiseBeans();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        categoryService = testApplicationContext.getBean(ICategoryService.class);
+        c = testApplicationContext.getBean(ApixToAlfrescoConversion.class);
 
+        generalClassifiableQName = c.apix(ContentModel.ASPECT_GEN_CLASSIFIABLE);
     }
 
     /**

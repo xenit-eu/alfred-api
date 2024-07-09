@@ -3,7 +3,6 @@ package eu.xenit.apix.tests.metadata;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -15,6 +14,7 @@ import eu.xenit.apix.node.INodeService;
 import eu.xenit.apix.node.MetadataChanges;
 import eu.xenit.apix.node.NodeAssociation;
 import eu.xenit.apix.node.NodeMetadata;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import eu.xenit.apix.tests.BaseTest;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -55,34 +55,24 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 
-
+// TODO - 1/22 tests failed
 public class NodeServiceTest extends BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(NodeServiceTest.class);
     private static final String TEXT_MIMETYPE = "text/plain";
     StoreRef alfStoreRef = new StoreRef("workspace", "SpacesStore");
     eu.xenit.apix.data.StoreRef apixStoreRef = new eu.xenit.apix.data.StoreRef("workspace", "SpacesStore");
-    @Autowired
+
+    private ApplicationContext testApplicationContext;
     private ApixToAlfrescoConversion c;
-    @Autowired
     private INodeService service;
-    @Autowired
     private ServiceRegistry serviceRegistry;
-    @Autowired
     private ContentService contentService;
-    @Autowired
-    @Qualifier("NodeService")
     private NodeService alfrescoNodeService;
-    @Autowired
-    @Qualifier("VersionService")
     private VersionService versionService;
-    @Autowired
-    @Qualifier("CopyService")
     private CopyService copyService;
-    @Autowired
     private Repository repository;
     private Set<NodeRef> roots;
     private ICategoryService categoryService;
@@ -90,6 +80,18 @@ public class NodeServiceTest extends BaseTest {
     @Before
     public void Setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        // initialiseBeans BaseTest
+        initialiseBeans();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        serviceRegistry = testApplicationContext.getBean(ServiceRegistry.class);
+        c = testApplicationContext.getBean(ApixToAlfrescoConversion.class);
+        service = testApplicationContext.getBean(INodeService.class);
+        alfrescoNodeService = serviceRegistry.getNodeService();
+        contentService = serviceRegistry.getContentService();
+        versionService = serviceRegistry.getVersionService();
+        repository = testApplicationContext.getBean(Repository.class);
+        copyService = serviceRegistry.getCopyService();
         roots = serviceRegistry.getNodeService().getAllRootNodes(alfStoreRef);
     }
 
@@ -239,7 +241,7 @@ public class NodeServiceTest extends BaseTest {
             assertEquals(testNodeRef.toString(), assoc.getSourceRef().toString());
             assertEquals(testNodeRef2.toString(), assoc.getTargetRef().toString());
 
-            service.createAssociation(testNodeRef, testNodeRef2, c.apix(ContentModel.ASSOC_AVATAR));
+            service.createAssociation(testNodeRef, testNodeRef2, c.apix(ContentModel.ASSOC_ATTACHMENTS));
 
             service.removeAssociation(testNodeRef, testNodeRef2, c.apix(ContentModel.ASSOC_ORIGINAL));
 
@@ -248,11 +250,11 @@ public class NodeServiceTest extends BaseTest {
             assertFalse(assocs.isEmpty());
             assertEquals(1, assocs.size());
             assoc = assocs.get(0);
-            assertEquals(ContentModel.ASSOC_AVATAR.toString(), assoc.getTypeQName().toString());
+            assertEquals(ContentModel.ASSOC_ATTACHMENTS.toString(), assoc.getTypeQName().toString());
             assertEquals(testNodeRef.toString(), assoc.getSourceRef().toString());
             assertEquals(testNodeRef2.toString(), assoc.getTargetRef().toString());
 
-            service.createAssociation(testNodeRef, testNodeRef3, c.apix(ContentModel.ASSOC_AVATAR));
+            service.createAssociation(testNodeRef, testNodeRef3, c.apix(ContentModel.ASSOC_ORIGINAL));
 
             assocs = this.alfrescoNodeService.getTargetAssocs(testNode.getNodeRef(), RegexQNamePattern.MATCH_ALL);
             assertEquals(2, assocs.size());
@@ -679,12 +681,14 @@ public class NodeServiceTest extends BaseTest {
                     .checkout(c.apix(testNode.getNodeRef()), c.apix(mainTestFolder.getNodeRef()));
             assertTrue(this.alfrescoNodeService.hasAspect(c.alfresco(workingCopy), ContentModel.ASPECT_WORKING_COPY));
             VersionHistory initialVersionHistory = this.versionService.getVersionHistory(testNode.getNodeRef());
-            assertNull(initialVersionHistory);
+            // Alfresco versionHistory seems to have different default behaviour, with a new node having the 1st history element present.
+            assertNotNull(initialVersionHistory);
             String versionComment = "this is a comment";
             eu.xenit.apix.data.NodeRef original = this.service.checkin(workingCopy, versionComment, false);
             VersionHistory finalVersionHistory = this.versionService.getVersionHistory(testNode.getNodeRef());
             logger.debug("Final version history: " + finalVersionHistory.getHeadVersion().getVersionLabel());
-            assertEquals(finalVersionHistory.getHeadVersion().getVersionLabel(), "0.1");
+            // new Documents start now at 1.0, so we expect 1.1 with a MINOR version buff
+            assertEquals("1.1", finalVersionHistory.getHeadVersion().getVersionLabel());
             assertEquals(finalVersionHistory.getHeadVersion().getDescription(), versionComment);
             assertEquals(finalVersionHistory.getHeadVersion().getVersionType(), VersionType.MINOR);
         } finally {

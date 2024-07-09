@@ -1,25 +1,29 @@
 package eu.xenit.apix.tests.people;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.people.IPeopleService;
 import eu.xenit.apix.people.Person;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import eu.xenit.apix.tests.BaseTest;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
+import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.namespace.QName;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Created by Jasperhilven on 24-Oct-16.
@@ -28,14 +32,26 @@ public class PeopleServiceTest extends BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(PeopleServiceTest.class);
 
-    @Autowired
+    private ApplicationContext testApplicationContext;
+    private ServiceRegistry serviceRegistry;
     private IPeopleService peopleService;
-    @Autowired
     private ApixToAlfrescoConversion c;
-    @Autowired
     private PersonService alfrescoPersonService;
-    @Autowired
     private NodeService nodeService;
+
+    @Before
+    public void Setup() {
+        AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        // initialiseBeans BaseTest
+        initialiseBeans();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        serviceRegistry = (ServiceRegistry) testApplicationContext.getBean(ServiceRegistry.class);
+        c =  (ApixToAlfrescoConversion) testApplicationContext.getBean(ApixToAlfrescoConversion.class);
+        peopleService = (IPeopleService) testApplicationContext.getBean(IPeopleService.class);
+        nodeService = serviceRegistry.getNodeService();
+        alfrescoPersonService = serviceRegistry.getPersonService();
+    }
 
     @Test
     public void TestGetPerson() {

@@ -5,9 +5,8 @@ import static org.junit.Assert.assertEquals;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-//import eu.xenit.apix.tests.ApixImplBundleFilter;
-import org.alfresco.rad.test.AlfrescoTestRunner;
-//import eu.xenit.testing.integrationtesting.runner.UseSpringContextOfBundle;
+import com.github.ruediste.remoteJUnit.client.RemoteTestRunner;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -44,17 +43,13 @@ import org.apache.http.util.EntityUtils;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 import org.springframework.extensions.surf.util.URLEncoder;
 
 /**
  * Created by kenneth on 14.03.16.
  */
-@RunWith(AlfrescoTestRunner.class)
-//TODO - check if the apic-impl:apix-.. lib needs to be imported like this.
-// UseSpringContextOfBundle got commented out
-//@UseSpringContextOfBundle(filter = ApixImplBundleFilter.class)
+@RunWith(RemoteTestRunner.class)
 public abstract class RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(RestV1BaseTest.class);
@@ -73,18 +68,26 @@ public abstract class RestV1BaseTest {
     public static final String USERWITHOUTRIGHTS_EMAIL =
             USERWITHOUTRIGHTS + "@" + USERWITHOUTRIGHTS + ".com";
 
-    @Autowired
+    protected ApplicationContext applicationContext;
     protected ServiceRegistry serviceRegistry;
-
-    @Autowired
     protected Repository repository;
-
-    @Autowired
-    @Qualifier("AuthenticationService")
     protected AuthenticationService authenticationService;
-
-    @Autowired
     SysAdminParams sysAdminParams;
+
+
+    protected void initialiseBeans(){
+        logger.error("initialiseBeans of RestV1BaseTest started");
+        applicationContext = ApplicationContextProvider.getApplicationContext();
+        if (applicationContext == null) {
+            logger.error("ApplicationContext is null, tried to import from static method. ");
+        }else{
+            serviceRegistry = (ServiceRegistry) applicationContext.getBean(ServiceRegistry.class);
+            authenticationService = (AuthenticationService) serviceRegistry.getAuthenticationService();
+            repository = (Repository) applicationContext.getBean(Repository.class);
+            sysAdminParams = serviceRegistry.getSysAdminParams();
+        }
+    }
+
 
     // This is a method so it can be overrided in v2
     // It's not static like the string because you can't override static methods :(
@@ -209,9 +212,12 @@ public abstract class RestV1BaseTest {
     }
 
     protected HashMap<String, eu.xenit.apix.data.NodeRef> init(final String testName) {
+        this.initialiseBeans();
         final HashMap<String, eu.xenit.apix.data.NodeRef> initializedNodeRefs = new HashMap<>();
-        TransactionService transactionService = serviceRegistry.getTransactionService();
+        logger.error("init() restV1Started");
 
+        TransactionService transactionService = serviceRegistry.getTransactionService();
+        logger.error("init()  transactionService = {}" , transactionService);
         this.removeMainTestFolder();
 
         RetryingTransactionHelper.RetryingTransactionCallback<Object> txnWork = () -> {
@@ -254,10 +260,12 @@ public abstract class RestV1BaseTest {
 
             createUser(USERWITHOUTRIGHTS, USERWITHOUTRIGHTS, USERWITHOUTRIGHTS,
                     USERWITHOUTRIGHTS_EMAIL);
+            logger.error("RestV1BaseTest will return init() = null");
             return null;
         };
 
         transactionService.getRetryingTransactionHelper().doInTransaction(txnWork, false, true);
+        logger.error("RestV1BaseTest will return initializedNodeRefs {}", initializedNodeRefs);
         return initializedNodeRefs;
     }
 
@@ -352,7 +360,7 @@ public abstract class RestV1BaseTest {
                     NodeRef nodeRef = getMainTestFolder();
                     removeTestNode(nodeRef);
                 } catch (RuntimeException ex) {
-                    logger.debug("Did not need to remove mainTestFolder because it did not exist");
+                    logger.error("Did not need to remove mainTestFolder because it did not exist");
                     //ex.printStackTrace();
                 }
                 return null;
