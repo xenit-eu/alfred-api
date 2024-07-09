@@ -12,9 +12,13 @@ subprojects {
     def subproject_alfresco_version = project.name.substring(project.name.length() - getTotalNumbersAfterDash(project.name))
     dependencies {
         alfrescoAmp project(path: ":alfresco:${subproject_alfresco_version}", configuration: 'ampArtifact') // Read in the alfresco V 23.x in with alfred-api amps
+        alfrescoAmp project(path: ":apix-integrationtests-server", configuration: 'amp') // Read in the alfresco integration-test-server
         alfrescoAmp project(path: ':apix-integrationtests:model-amp', configuration: 'ampArchives') // Read the model in for running the integration tests.
         alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-rest:${mvc}"
         alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-aop:${mvc}"
+        // import the new JUnit remote server for adding class-beans (Helperclasses)
+//        implementation project(path: ':apix-integrationtests-server')
+//        implementation project(path: ':apix-integrationtests:alfresco')
         alfrescoSM files(jar)
     }
 

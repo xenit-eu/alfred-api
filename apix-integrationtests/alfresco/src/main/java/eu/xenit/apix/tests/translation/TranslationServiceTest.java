@@ -1,7 +1,10 @@
 package eu.xenit.apix.tests.translation;
 
 import eu.xenit.apix.data.QName;
+import eu.xenit.apix.filefolder.IFileFolderService;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import eu.xenit.apix.tests.BaseTest;
+import eu.xenit.apix.transaction.ITransactionService;
 import eu.xenit.apix.translation.ITranslationService;
 import eu.xenit.apix.translation.PropertyTranslationValue;
 import eu.xenit.apix.translation.TranslationValue;
@@ -9,6 +12,7 @@ import eu.xenit.apix.translation.Translations;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,6 +20,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Created by Stan on 25-Mar-16.
@@ -25,14 +30,17 @@ public class TranslationServiceTest extends BaseTest {
     private final static Logger logger = LoggerFactory.getLogger(TranslationServiceTest.class);
 
     private static String facet_bucket_month_label = "faceted-search.date.one-month.label";
-
-    @Autowired
+    private ApplicationContext testApplicationContext;
     private ITranslationService service;
 
     @Before
     public void Setup() {
         AuthenticationUtil.setFullyAuthenticatedUser("admin");
-
+        // initialiseBeans BaseTest
+        initialiseBeans();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        service = (ITranslationService) testApplicationContext.getBean(ITranslationService.class);
     }
 
     /**

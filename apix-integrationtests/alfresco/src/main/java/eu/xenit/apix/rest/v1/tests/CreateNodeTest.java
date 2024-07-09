@@ -4,6 +4,7 @@ import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
 
+import eu.xenit.apix.server.ApplicationContextProvider;
 import java.util.HashMap;
 import eu.xenit.apix.rest.v1.nodes.CreateNodeOptions;
 import org.alfresco.model.ContentModel;
@@ -16,22 +17,29 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 
 public class CreateNodeTest extends NodesBaseTest {
 
     private NodeRef mainTestFolder;
     private NodeRef parentTestFolder;
 
-    @Autowired
-    @Qualifier("TransactionService")
+    private ApplicationContext testApplicationContext;
     TransactionService transactionService;
-
-    @Autowired
     private ApixToAlfrescoConversion c;
 
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        // Setup the RestV1BaseTest Beans
+        initialiseBeans();
+        // Setup the NodesBaseTest Beans
+        initializeBeansNodesBaseTest();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        transactionService = (TransactionService) testApplicationContext.getBean(TransactionService.class);
+        c =  (ApixToAlfrescoConversion) testApplicationContext.getBean(ApixToAlfrescoConversion.class);
+
         final HashMap<String, NodeRef> initializedNodeRefs = init();
         mainTestFolder = c.apix(getMainTestFolder());
         parentTestFolder = initializedNodeRefs.get(RestV1BaseTest.TESTFOLDER_NAME);

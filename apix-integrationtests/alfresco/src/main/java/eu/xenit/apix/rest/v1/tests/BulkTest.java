@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.node.ChildParentAssociation;
 import eu.xenit.apix.node.INodeService;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -34,24 +35,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Created by kenneth on 18.03.16.
  */
+// TODO !! all fail
 public abstract class BulkTest extends RestV1BaseTest {
 
     public static final String AUTHENTICATION_IN_URL = "alf_ticket=";
     private final static Logger logger = LoggerFactory.getLogger(BulkTest.class);
-    @Autowired
     INodeService nodeService;
 
     NodeService alfrescoNodeService;
-
     TransactionService transactionService;
-
-    @Autowired
     ServiceRegistry serviceRegistry;
+    ApplicationContext testApplicationContext;
 
     private String jsonObjectGetStringFromInt(JSONObject targetObject, String key) {
         return String.valueOf(targetObject.getInt(key));
@@ -59,10 +58,15 @@ public abstract class BulkTest extends RestV1BaseTest {
 
     @Before
     public void setup() {
-        alfrescoNodeService = serviceRegistry.getNodeService();
-        transactionService = serviceRegistry.getTransactionService();
-
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        // Setup the RestV1BaseTest Beans
+        initialiseBeans();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        serviceRegistry = (ServiceRegistry) testApplicationContext.getBean(ServiceRegistry.class);
+        alfrescoNodeService = serviceRegistry.getNodeService();
+        transactionService = (TransactionService) testApplicationContext.getBean(TransactionService.class);
+        nodeService = (eu.xenit.apix.alfresco.metadata.NodeService) testApplicationContext.getBean(eu.xenit.apix.alfresco.metadata.NodeService.class); // fetches APIX nodeService
     }
 
     @Test

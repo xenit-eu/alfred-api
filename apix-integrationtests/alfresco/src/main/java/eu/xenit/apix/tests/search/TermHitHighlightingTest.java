@@ -9,7 +9,9 @@ import eu.xenit.apix.search.QueryBuilder;
 import eu.xenit.apix.search.SearchQuery;
 import eu.xenit.apix.search.SearchQuery.HighlightOptions;
 import eu.xenit.apix.search.nodes.SearchSyntaxNode;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import eu.xenit.apix.tests.BaseTest;
+import eu.xenit.apix.util.SolrTestHelperImpl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -18,23 +20,23 @@ import java.util.List;
 import java.util.Map;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
+import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 
-
+// did not fix this with upgrade V23.x ... gets ignored
 @Ignore("Disabled for GHA build")
 public class TermHitHighlightingTest extends BaseTest {
-
-    @Autowired
+    private ApplicationContext testApplicationContext;
     INodeService nodeService;
-    @Autowired
     SearchService searchService;
-    @Autowired
     RetryingTransactionHelper retryingTransactionHelper;
+    private SolrTestHelperImpl solrHelper;
     private static final String FURIES_TXT = ""
             + "The furies are at home\nin the mirror; it is their address.\nEven the clearest water,\nif deep enough can drown.\n"
             + "\nNever think to surprise them.\nYour face approaching ever\nso friendly is the white flag\nthey ignore. There is no truce\n"
@@ -42,6 +44,15 @@ public class TermHitHighlightingTest extends BaseTest {
 
     @Before
     public void createHighlightTestTxt() throws InterruptedException {
+        // initialiseBeans BaseTest
+        initialiseBeans();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        serviceRegistry = testApplicationContext.getBean(ServiceRegistry.class);
+        nodeService = testApplicationContext.getBean(INodeService.class);
+        retryingTransactionHelper = testApplicationContext.getBean(RetryingTransactionHelper.class);
+        solrHelper = testApplicationContext.getBean(SolrTestHelperImpl.class);
+
         super.cleanUp();
         retryingTransactionHelper.doInTransaction(() -> {
             File txtFile = super.createTextFileWithContent("Furies.txt", FURIES_TXT);

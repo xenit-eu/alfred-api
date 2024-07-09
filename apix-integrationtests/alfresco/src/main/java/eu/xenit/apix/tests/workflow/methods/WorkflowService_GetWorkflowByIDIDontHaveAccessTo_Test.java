@@ -40,7 +40,7 @@ public class WorkflowService_GetWorkflowByIDIDontHaveAccessTo_Test extends Workf
         if (workflow == null) {
             Assert.fail("Could not find pre-configured workflow for this test.");
         }
-
+// hasAccessToWorkflowInstance doesnt fail?? still believe we get null
         assertFalse(hasAccessToWorkflowInstance(workflow));
     }
 }

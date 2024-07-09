@@ -8,6 +8,7 @@ import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.comments.Comment;
 import eu.xenit.apix.comments.Conversation;
 import eu.xenit.apix.comments.ICommentService;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import eu.xenit.apix.tests.BaseTest;
 import java.io.Serializable;
 import java.util.Map;
@@ -21,7 +22,7 @@ import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.QName;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 public class CommentServiceTest extends BaseTest {
 
@@ -29,18 +30,23 @@ public class CommentServiceTest extends BaseTest {
     private static final String commentContent = "Test Comment";
     private static FileInfo testDocumentNode;
 
-    @Autowired
+    private ApplicationContext testApplicationContext;
     private ICommentService commentService;
-    @Autowired
     private ApixToAlfrescoConversion apixConversion;
-    @Autowired
     private ServiceRegistry serviceRegistry;
-    @Autowired
     private CommentService alfrescoCommentService;
 
     @Before
     public void setupComments() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        // initialiseBeans BaseTest
+        initialiseBeans();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        serviceRegistry = testApplicationContext.getBean(ServiceRegistry.class);
+        commentService = testApplicationContext.getBean(ICommentService.class);
+        apixConversion= testApplicationContext.getBean(ApixToAlfrescoConversion.class);
+        alfrescoCommentService = testApplicationContext.getBean("CommentService",CommentService.class);
         cleanUp();
         NodeRef companyHomeRef = repository.getCompanyHome();
         FileInfo mainTestFolder = createMainTestFolder(companyHomeRef);

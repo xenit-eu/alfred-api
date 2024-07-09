@@ -1,6 +1,7 @@
 package eu.xenit.apix.rest.v1.tests;
 
 import eu.xenit.apix.data.NodeRef;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import java.util.HashMap;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.node.archive.NodeArchiveService;
@@ -31,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.IOException;
+import org.springframework.context.ApplicationContext;
 
 import static org.junit.Assert.*;
 
@@ -41,31 +43,28 @@ public class MetadataTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(MetadataTest.class);
 
-    @Autowired
-    @Qualifier("FileFolderService")
+    private ApplicationContext testApplicationContext;
+
     FileFolderService fileFolderService;
-
-    @Autowired
-    @Qualifier("NodeService")
-    NodeService nodeService;
-
-    @Autowired
     ServiceRegistry serviceRegistry;
-
-    @Autowired
-    @Qualifier("TransactionService")
+    NodeService nodeService;
     TransactionService transactionService;
-
-    @Autowired
-    @Qualifier("AuthenticationService")
     AuthenticationService authenticationService;
-
-    @Autowired
     NodeArchiveService nodeArchiveService;
 
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        // Setup the RestV1BaseTest Beans
+        initialiseBeans();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        serviceRegistry = (ServiceRegistry) testApplicationContext.getBean(ServiceRegistry.class);
+        nodeService = serviceRegistry.getNodeService();
+        authenticationService = serviceRegistry.getAuthenticationService();
+        fileFolderService = serviceRegistry.getFileFolderService();
+        transactionService = (TransactionService) testApplicationContext.getBean(TransactionService.class);
+        nodeArchiveService = (NodeArchiveService) testApplicationContext.getBean(NodeArchiveService.class);
     }
 
     @Test

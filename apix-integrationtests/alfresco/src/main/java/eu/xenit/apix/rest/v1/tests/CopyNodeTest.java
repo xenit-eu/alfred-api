@@ -6,6 +6,7 @@ import eu.xenit.apix.data.QName;
 import eu.xenit.apix.node.INodeService;
 import eu.xenit.apix.rest.v1.nodes.CreateNodeOptions;
 
+import eu.xenit.apix.server.ApplicationContextProvider;
 import java.util.HashMap;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -16,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 
 public class CopyNodeTest extends NodesBaseTest {
 
@@ -23,19 +25,24 @@ public class CopyNodeTest extends NodesBaseTest {
     private NodeRef copyFromFile;
     private NodeRef copyFromFolder;
 
-    @Autowired
     INodeService nodeService;
-
-    @Autowired
-    @Qualifier("TransactionService")
     TransactionService transactionService;
-
-    @Autowired
     private ApixToAlfrescoConversion c;
+    private ApplicationContext testApplicationContext;
 
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        // Setup the RestV1BaseTest Beans
+        initialiseBeans();
+        // Setup the NodesBaseTest Beans
+        initializeBeansNodesBaseTest();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        nodeService = (eu.xenit.apix.alfresco.metadata.NodeService) testApplicationContext.getBean(eu.xenit.apix.alfresco.metadata.NodeService.class);
+        transactionService = (TransactionService) testApplicationContext.getBean(TransactionService.class);
+        c =  (ApixToAlfrescoConversion) testApplicationContext.getBean(ApixToAlfrescoConversion.class);
+
         final HashMap<String, NodeRef> initializedNodeRefs = init();
         mainTestFolder = c.apix(getMainTestFolder());
         copyFromFile = initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME);

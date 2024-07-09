@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.people.Person;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
+import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
@@ -26,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Created by Jasperhilven on 25-Oct-16.
@@ -33,17 +36,23 @@ import org.springframework.beans.factory.annotation.Qualifier;
 public class PeopleTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(VersionHistoryTest.class);
-    @Autowired
-    @Qualifier("TransactionService")
+
+    private ApplicationContext testApplicationContext;
     TransactionService transactionService;
-    @Autowired
     private PersonService alfrescoPersonService;
-    @Autowired
     private ApixToAlfrescoConversion c;
 
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        // Setup the RestV1BaseTest Beans
+        initialiseBeans();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        serviceRegistry = (ServiceRegistry) testApplicationContext.getBean(ServiceRegistry.class);
+        transactionService = serviceRegistry.getTransactionService();
+        alfrescoPersonService = serviceRegistry.getPersonService();
+        c =  (ApixToAlfrescoConversion) testApplicationContext.getBean(ApixToAlfrescoConversion.class);
     }
 
     @Test

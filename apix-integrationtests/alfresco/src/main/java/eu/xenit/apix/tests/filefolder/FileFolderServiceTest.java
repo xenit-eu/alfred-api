@@ -1,9 +1,17 @@
 package eu.xenit.apix.tests.filefolder;
 
 //import com.github.dynamicextensionsalfresco.webscripts.annotations.Before; // TODO switch to before of junit,
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.filefolder.IFileFolderService;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import eu.xenit.apix.tests.BaseTest;
+import eu.xenit.apix.util.SolrTestHelperImpl;
 import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.ServiceRegistry;
@@ -20,10 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
-import static org.junit.Assert.*;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Created by kenneth on 11.03.16.
@@ -39,37 +44,34 @@ public class FileFolderServiceTest extends BaseTest {
     StoreRef alfStoreRef = new StoreRef("workspace", "SpacesStore");
     eu.xenit.apix.data.StoreRef apixStoreRef = new eu.xenit.apix.data.StoreRef("workspace", "SpacesStore");
 
-    @Autowired
+    private ApplicationContext testApplicationContext;
     private ServiceRegistry serviceRegistry;
-
-    @Autowired
     private ApixToAlfrescoConversion c;
 
-    @Autowired
     private IFileFolderService service;
-
-    @Autowired
-    @Qualifier("FileFolderService")
     private FileFolderService fileFolderService;
-
-    @Autowired
-    @Qualifier("SearchService")
     private SearchService searchService;
-
-    @Autowired
-    @Qualifier("NodeService")
     private NodeService alfrescoNodeService;
-
-    @Autowired
     private ContentService contentService;
-
-    @Autowired
     private Repository repository;
-    // TODO - validate behaviour is the same as with
-    // com.github.dynamicextensionsalfresco.webscripts.annotations.Before;
+    private SolrTestHelperImpl solrHelper;
+
     @Before
     public void Setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        // initialiseBeans BaseTest
+        initialiseBeans();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        serviceRegistry = testApplicationContext.getBean(ServiceRegistry.class);
+        c = testApplicationContext.getBean(ApixToAlfrescoConversion.class);
+        service = testApplicationContext.getBean(IFileFolderService.class);
+        fileFolderService = serviceRegistry.getFileFolderService();
+        searchService = serviceRegistry.getSearchService();
+        alfrescoNodeService = serviceRegistry.getNodeService();
+        contentService = serviceRegistry.getContentService();
+        repository = testApplicationContext.getBean(Repository.class);
+        solrHelper = testApplicationContext.getBean(SolrTestHelperImpl.class);
     }
 
     public NodeRef getNodeAtPath(String path) {

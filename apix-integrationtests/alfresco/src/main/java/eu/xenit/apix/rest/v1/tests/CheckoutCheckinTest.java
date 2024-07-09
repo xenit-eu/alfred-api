@@ -1,51 +1,49 @@
 package eu.xenit.apix.rest.v1.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.rest.v1.workingcopies.NoderefResult;
+import eu.xenit.apix.server.ApplicationContextProvider;
+import java.io.IOException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
+import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.transaction.TransactionService;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.fluent.Request;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Created by kenneth on 31.03.16.
  */
 public class CheckoutCheckinTest extends RestV1BaseTest {
+    private ApplicationContext testApplicationContext;
 
-    @Autowired
     NodeService nodeService;
 
-    @Autowired
     TransactionService transactionService;
-
-    @Autowired
     ApixToAlfrescoConversion c;
     private NodeRef originalNoderef;
+    ServiceRegistry serviceRegistry;
 
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        // Setup the RestV1BaseTest Beans
+        initialiseBeans();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        serviceRegistry = (ServiceRegistry) testApplicationContext.getBean(ServiceRegistry.class);
+        c =  (ApixToAlfrescoConversion) testApplicationContext.getBean(ApixToAlfrescoConversion.class);
+        transactionService = (TransactionService) testApplicationContext.getBean(TransactionService.class);
+        nodeService = serviceRegistry.getNodeService();
         originalNoderef = init().get(RestV1BaseTest.TESTFILE_NAME);
     }
 

@@ -10,12 +10,13 @@ import eu.xenit.apix.search.SearchQuery;
 import eu.xenit.apix.search.SearchQueryConsistency;
 import eu.xenit.apix.search.SearchQueryResult;
 import eu.xenit.apix.search.nodes.SearchSyntaxNode;
+import eu.xenit.apix.server.ApplicationContextProvider;
 import eu.xenit.apix.tests.BaseTest;
+import eu.xenit.apix.util.SolrTestHelperImpl;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -35,7 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 public abstract class SearchServiceTest extends BaseTest {
 
@@ -46,25 +47,33 @@ public abstract class SearchServiceTest extends BaseTest {
     private static final Logger logger = LoggerFactory.getLogger(SearchServiceTest.class);
     private static final String ADMIN_USER_NAME = "admin";
     public static final String DESCRIPTION_SET_OF_1001 = "descriptionSetOf1001";
-    @Autowired
+    private ApplicationContext testApplicationContext;
     ISearchService searchService;
-    @Autowired
     NodeService nodeService;
-    @Autowired
     private ServiceRegistry serviceRegistry;
-    @Autowired
     TransactionService transactionService;
-    @Autowired
     Repository repository;
-
-    @Autowired
     NamespacePrefixResolver namespacePrefixResolver;
+    SolrTestHelperImpl solrHelper;
 
+    public void SetupSearchServiceTest() {
+        AuthenticationUtil.setFullyAuthenticatedUser(ADMIN_USER_NAME);
+        // initialiseBeans BaseTest
+        initialiseBeans();
+        // initialise the local beans
+        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+        searchService = testApplicationContext.getBean(ISearchService.class);
+        serviceRegistry = testApplicationContext.getBean(ServiceRegistry.class);
+        nodeService = serviceRegistry.getNodeService();
+        transactionService = testApplicationContext.getBean(TransactionService.class);
+        repository = testApplicationContext.getBean(Repository.class);
+        namespacePrefixResolver = testApplicationContext.getBean("namespaceService",NamespacePrefixResolver.class);
+        solrHelper = testApplicationContext.getBean(SolrTestHelperImpl.class);
+    }
     @Before
     public void Setup() {
-        AuthenticationUtil.setFullyAuthenticatedUser(ADMIN_USER_NAME);
+        SetupSearchServiceTest();
     }
-
     @After
     public void tearDown() {
         cleanUp();
