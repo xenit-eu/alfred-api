@@ -16,11 +16,6 @@ import org.junit.Before;
 import org.junit.Test;
 // TODO - solve webscript issue
 public class PeopleTest extends RestV2BaseTest {
-    @Before
-    public void setup() {
-        // Setup the RestV1BaseTest Beans
-        initialiseBeans();
-    }
     @Test
     public void testGetSelf() throws IOException {
         final String userName = "-me-";

@@ -5,12 +5,10 @@ import static org.junit.Assert.assertFalse;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.alfresco.metadata.NodeService;
 import eu.xenit.apix.comments.Comment;
 import eu.xenit.apix.comments.ICommentService;
 import eu.xenit.apix.data.NodeRef;
-import eu.xenit.apix.server.ApplicationContextProvider;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -35,7 +33,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 
 public class CommentsTest extends RestV1BaseTest {
     private static final Logger log = LoggerFactory.getLogger(CommentsTest.class);
@@ -48,27 +45,19 @@ public class CommentsTest extends RestV1BaseTest {
     private static final String PAGESIZE = "pagesize";
 
     private CommentService alfrescoCommentService;
-
     private ICommentService commentService;
-
-    private ApixToAlfrescoConversion apixConverter;
-
     private NodeService nodeService;
-    private RetryingTransactionHelper transactionHelper;
-    private ApplicationContext testApplicationContext;
+
+    public CommentsTest(){
+        // initialise the local beans
+        nodeService = (eu.xenit.apix.alfresco.metadata.NodeService) testApplicationContext.getBean(eu.xenit.apix.alfresco.metadata.NodeService.class);
+        commentService= (ICommentService) testApplicationContext.getBean(ICommentService.class);
+        alfrescoCommentService = (CommentService) testApplicationContext.getBean("commentService", CommentService.class);
+    }
 
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-        // Setup the RestV1BaseTest Beans
-        initialiseBeans();
-        // initialise the local beans
-        testApplicationContext = ApplicationContextProvider.getApplicationContext();
-        nodeService = (eu.xenit.apix.alfresco.metadata.NodeService) testApplicationContext.getBean(eu.xenit.apix.alfresco.metadata.NodeService.class);
-        transactionHelper = (RetryingTransactionHelper) testApplicationContext.getBean("retryingTransactionHelper", RetryingTransactionHelper.class); // this returns null?
-        apixConverter = (ApixToAlfrescoConversion) testApplicationContext.getBean(ApixToAlfrescoConversion.class);
-        commentService= (ICommentService) testApplicationContext.getBean(ICommentService.class);
-        alfrescoCommentService = (CommentService) testApplicationContext.getBean("commentService", CommentService.class);
     }
 
     @Override
@@ -83,7 +72,7 @@ public class CommentsTest extends RestV1BaseTest {
             Comment comment = commentService.addNewComment(initializedNodeRefs.get(TESTFILE_NAME), commentContent);
             initializedNodeRefs.put(COMMENTNODE1, comment.getId());
             org.alfresco.service.cmr.repository.NodeRef alfrescoCommentNode2 = alfrescoCommentService
-                    .createComment(apixConverter.alfresco(initializedNodeRefs.get(NOUSERRIGHTS_FILE_NAME)), commentTitle,
+                    .createComment(c.alfresco(initializedNodeRefs.get(NOUSERRIGHTS_FILE_NAME)), commentTitle,
                             commentContent, false);
             initializedNodeRefs.put(COMMENTNODE_NORIGHTS, new NodeRef(alfrescoCommentNode2.toString()));
             return initializedNodeRefs;

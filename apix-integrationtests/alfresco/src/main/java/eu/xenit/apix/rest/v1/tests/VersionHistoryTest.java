@@ -1,20 +1,21 @@
 package eu.xenit.apix.rest.v1.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.NodeRef;
-import eu.xenit.apix.permissions.IPermissionService;
-import eu.xenit.apix.server.ApplicationContextProvider;
 import eu.xenit.apix.versionhistory.Version;
 import eu.xenit.apix.versionhistory.VersionHistory;
+import java.io.IOException;
+import java.util.HashMap;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.version.VersionBaseModel;
-import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.version.VersionService;
-import org.alfresco.service.transaction.TransactionService;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
@@ -30,43 +31,26 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
-import java.io.IOException;
-import java.util.HashMap;
-import org.springframework.context.ApplicationContext;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 
 public class VersionHistoryTest extends RestV1BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(VersionHistoryTest.class);
 
-    private ApplicationContext testApplicationContext;
-    private ServiceRegistry serviceRegistry;
-    TransactionService transactionService;
     NodeService nodeService;
     DictionaryService dictionaryService;
     private org.alfresco.service.cmr.version.VersionService alfrizcoVersionHistoryService;
-    private ApixToAlfrescoConversion c;
+
+    public VersionHistoryTest(){
+        // initialise the local beans
+        nodeService = serviceRegistry.getNodeService();
+        dictionaryService = serviceRegistry.getDictionaryService();
+        alfrizcoVersionHistoryService = serviceRegistry.getVersionService();
+    }
 
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-        // Setup the RestV1BaseTest Beans
-        initialiseBeans();
-        // initialise the local beans
-        testApplicationContext = ApplicationContextProvider.getApplicationContext();
-        serviceRegistry = (ServiceRegistry) testApplicationContext.getBean(ServiceRegistry.class);
-        transactionService = (TransactionService) testApplicationContext.getBean(TransactionService.class);
-        nodeService = serviceRegistry.getNodeService();
-        dictionaryService = serviceRegistry.getDictionaryService();
-        alfrizcoVersionHistoryService = serviceRegistry.getVersionService();
-        c =  (ApixToAlfrescoConversion) testApplicationContext.getBean(ApixToAlfrescoConversion.class);
     }
 
     // Holy

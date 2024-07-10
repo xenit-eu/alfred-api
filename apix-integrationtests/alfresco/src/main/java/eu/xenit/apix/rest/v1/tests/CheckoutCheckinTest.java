@@ -3,48 +3,34 @@ package eu.xenit.apix.rest.v1.tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.rest.v1.workingcopies.NoderefResult;
-import eu.xenit.apix.server.ApplicationContextProvider;
 import java.io.IOException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
-import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.NodeService;
-import org.alfresco.service.transaction.TransactionService;
 import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.context.ApplicationContext;
 
 /**
  * Created by kenneth on 31.03.16.
  */
 public class CheckoutCheckinTest extends RestV1BaseTest {
-    private ApplicationContext testApplicationContext;
-
-    NodeService nodeService;
-
-    TransactionService transactionService;
-    ApixToAlfrescoConversion c;
+    private NodeService nodeService;
     private NodeRef originalNoderef;
-    ServiceRegistry serviceRegistry;
+
+    public CheckoutCheckinTest(){
+        // initialise the local beans
+        nodeService = serviceRegistry.getNodeService();
+        originalNoderef = init().get(RestV1BaseTest.TESTFILE_NAME);
+    }
 
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-        // Setup the RestV1BaseTest Beans
-        initialiseBeans();
-        // initialise the local beans
-        testApplicationContext = ApplicationContextProvider.getApplicationContext();
-        serviceRegistry = (ServiceRegistry) testApplicationContext.getBean(ServiceRegistry.class);
-        c =  (ApixToAlfrescoConversion) testApplicationContext.getBean(ApixToAlfrescoConversion.class);
-        transactionService = (TransactionService) testApplicationContext.getBean(TransactionService.class);
-        nodeService = serviceRegistry.getNodeService();
-        originalNoderef = init().get(RestV1BaseTest.TESTFILE_NAME);
     }
 
     @Test

@@ -1,16 +1,18 @@
 package eu.xenit.apix.rest.v1.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import eu.xenit.apix.data.NodeRef;
-import eu.xenit.apix.server.ApplicationContextProvider;
+import java.io.IOException;
 import java.util.HashMap;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.node.archive.NodeArchiveService;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.repo.transaction.RetryingTransactionHelper;
-import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.repository.NodeService;
-import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.transaction.TransactionService;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
@@ -28,13 +30,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
-import java.io.IOException;
-import org.springframework.context.ApplicationContext;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by kenneth on 14.03.16.
@@ -43,28 +38,22 @@ public class MetadataTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(MetadataTest.class);
 
-    private ApplicationContext testApplicationContext;
-
     FileFolderService fileFolderService;
-    ServiceRegistry serviceRegistry;
     NodeService nodeService;
     TransactionService transactionService;
-    AuthenticationService authenticationService;
     NodeArchiveService nodeArchiveService;
+
+    public MetadataTest(){
+        // initialise the local beans
+        nodeService = serviceRegistry.getNodeService();
+        fileFolderService = serviceRegistry.getFileFolderService();
+        transactionService = testApplicationContext.getBean(TransactionService.class);
+        nodeArchiveService = testApplicationContext.getBean(NodeArchiveService.class);
+    }
 
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-        // Setup the RestV1BaseTest Beans
-        initialiseBeans();
-        // initialise the local beans
-        testApplicationContext = ApplicationContextProvider.getApplicationContext();
-        serviceRegistry = (ServiceRegistry) testApplicationContext.getBean(ServiceRegistry.class);
-        nodeService = serviceRegistry.getNodeService();
-        authenticationService = serviceRegistry.getAuthenticationService();
-        fileFolderService = serviceRegistry.getFileFolderService();
-        transactionService = (TransactionService) testApplicationContext.getBean(TransactionService.class);
-        nodeArchiveService = (NodeArchiveService) testApplicationContext.getBean(NodeArchiveService.class);
     }
 
     @Test

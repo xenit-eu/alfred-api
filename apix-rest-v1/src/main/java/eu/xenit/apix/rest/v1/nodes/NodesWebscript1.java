@@ -38,6 +38,7 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -45,7 +46,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,7 +58,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 @AlfrescoTransaction
 @RestController
-@MultipartConfig(fileSizeThreshold = 20971520) // 20MB
+//@RequestMapping("/v1")
+//@MultipartConfig(fileSizeThreshold = 20971520) // 20MB
 public class NodesWebscript1 extends ApixV1Webscript {
 
     private static final Logger logger = LoggerFactory.getLogger(NodesWebscript1.class);
@@ -546,23 +551,36 @@ public class NodesWebscript1 extends ApixV1Webscript {
         );
     }
 
-    @AlfrescoTransaction
-    @PostMapping(value = "/v1/nodes/simpleuploadtest")
-    public ResponseEntity<Object> simpleuploadtest(
-            @RequestParam String guid,
-            @RequestPart final MultipartFile file)  throws IOException {
-        if (guid == null) {
-            guid = "test empty string";
-        }
+//    @AlfrescoTransaction
+////    @PostMapping(value = "/v1/nodes/simpleuploadtest", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE} )
+//    @RequestMapping(value = "/v1/nodes/simpleuploadtest", method = RequestMethod.POST, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}
+//            , produces = MediaType.TEXT_PLAIN_VALUE)
+//    public ResponseEntity<Object> testUpload1(
+//            @RequestParam("file") final MultipartFile file)  {
+////        if (guid == null) {
+////            guid = "test empty string";
+////        }
+////        logger.error("simpleuploadtest POST req --- guid = {}", guid);
+//
+//        if (file == null) {
+//            logger.error("file is null");
+//        } else {
+//            logger.error("file {} is {} bytes long", file.getName() ,file);
+//        }
+//
+//        return ResponseEntity.ok("File uploaded successfully ...");
+//    }
 
-        if (file == null) {
-            guid = "test empty string";
-            logger.error("file is null {}", file);
-        } else {
-            logger.error("file {} is {} bytes long", file.getName() ,file.getBytes());
-        }
-        logger.error("simple POST req --- guid = {}", guid);
-        return ResponseEntity.ok().build();
+    @AlfrescoTransaction
+    @RequestMapping(
+            value = "/v1/nodes/simpleuploadtest",
+            method = RequestMethod.POST,
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE}
+    )
+    public ResponseEntity<String> simpleuploadtest(
+            @RequestPart(value = "file") final MultipartFile file) {
+        System.out.println("Uploaded File Name = " + file.getName());
+        return ResponseEntity.ok("File uploaded successfully ...");
     }
 
     @AlfrescoTransaction

@@ -4,16 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import eu.xenit.apix.data.NodeRef;
-import eu.xenit.apix.node.INodeService;
-import eu.xenit.apix.server.ApplicationContextProvider;
 import java.io.IOException;
 import java.util.HashMap;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.namespace.NamespaceService;
-import org.alfresco.service.transaction.TransactionService;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.util.EntityUtils;
@@ -22,9 +18,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
 
 /**
  * Created by kenneth on 16.03.16.
@@ -33,22 +26,20 @@ public class PathTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(PathTest.class);
 
-    private ApplicationContext testApplicationContext;
-    NodeService nodeService;
-    PermissionService permissionService;
-    NamespaceService namespaceService;
+    private NodeService nodeService;
+    private PermissionService permissionService;
+    private NamespaceService namespaceService;
+
+    public PathTest(){
+        // initialise the local beans
+        nodeService = serviceRegistry.getNodeService();
+        permissionService = serviceRegistry.getPermissionService();
+        namespaceService = serviceRegistry.getNamespaceService();
+    }
 
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-        // Setup the RestV1BaseTest Beans
-        initialiseBeans();
-        // initialise the local beans
-        testApplicationContext = ApplicationContextProvider.getApplicationContext();
-        serviceRegistry = (ServiceRegistry) testApplicationContext.getBean(ServiceRegistry.class);
-        nodeService = serviceRegistry.getNodeService();
-        permissionService = serviceRegistry.getPermissionService();
-        namespaceService = serviceRegistry.getNamespaceService();
     }
 
     @Test

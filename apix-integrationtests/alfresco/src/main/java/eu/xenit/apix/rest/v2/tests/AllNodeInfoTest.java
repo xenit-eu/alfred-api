@@ -28,14 +28,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class AllNodeInfoTest extends RestV2BaseTest {
-    // TODO fix tests / webscript?
     private final static Logger logger = LoggerFactory.getLogger(AllNodeInfoTest.class);
 
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-        // Setup the RestV1BaseTest Beans
-        initialiseBeans();
     }
 
     @Test

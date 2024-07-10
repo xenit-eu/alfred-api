@@ -34,7 +34,6 @@ public class AllNodeInfoTest extends RestV1BaseTest {
 
     @Before
     public void setup() {
-        this.initialiseBeans(); // Setup the RestV1BaseTest Beans
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
     }
 

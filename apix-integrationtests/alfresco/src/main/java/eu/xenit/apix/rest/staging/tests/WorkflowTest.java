@@ -43,22 +43,18 @@ public class WorkflowTest extends StagingBaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(WorkflowTest.class);
     private final List<WorkflowPath> wfPaths = new ArrayList<>();
-    private ApplicationContext testApplicationContext;
-    private ServiceRegistry serviceRegistry;
     private WorkflowService workflowService;
     private AuthorityService authorityService;
 
+    public WorkflowTest(){
+        workflowService = this.serviceRegistry.getWorkflowService();
+        authorityService = this.serviceRegistry.getAuthorityService();
+    }
+
     @Before
     public void setup() {
-        this.initialiseBeans(); // Setup the RestV1BaseTest Beans
         this.cleanUp();
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-        this.testApplicationContext = ApplicationContextProvider.getApplicationContext();
-        this.serviceRegistry = (ServiceRegistry) testApplicationContext.getBean(ServiceRegistry.class);
-
-
-        this.workflowService = this.serviceRegistry.getWorkflowService();
-        this.authorityService = this.serviceRegistry.getAuthorityService();
 
         this.serviceRegistry.getRetryingTransactionHelper()
                 .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {

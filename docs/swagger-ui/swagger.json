@@ -662,12 +662,6 @@
             "in": "formData",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "file",
-            "in": "formData",
-            "required": true,
-            "type": "file"
           }
         ],
         "responses": {

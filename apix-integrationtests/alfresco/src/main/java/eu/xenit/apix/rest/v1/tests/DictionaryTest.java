@@ -8,7 +8,6 @@ import static org.junit.Assert.fail;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.xenit.apix.server.ApplicationContextProvider;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -31,7 +30,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 
 public class DictionaryTest extends RestV1BaseTest {
 
@@ -41,17 +39,15 @@ public class DictionaryTest extends RestV1BaseTest {
     private String password = "admin";
     private String encodedAuth;
     private DictionaryDAO dictionaryDAO;
-    private ApplicationContext testApplicationContext;
+
+    public DictionaryTest(){
+        // initialise the local beans
+        dictionaryDAO = testApplicationContext.getBean(DictionaryDAO.class);
+    }
 
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-        // Setup the RestV1BaseTest Beans
-        initialiseBeans();
-        // initialise the local beans
-        testApplicationContext = ApplicationContextProvider.getApplicationContext();
-        dictionaryDAO = testApplicationContext.getBean(DictionaryDAO.class);
-
         // Set up the basic authentication header
         String auth = username + ":" + password;
         encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());

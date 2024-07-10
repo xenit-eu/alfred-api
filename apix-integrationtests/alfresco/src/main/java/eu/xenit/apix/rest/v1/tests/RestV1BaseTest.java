@@ -5,8 +5,7 @@ import static org.junit.Assert.assertEquals;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.ruediste.remoteJUnit.client.RemoteTestRunner;
-import eu.xenit.apix.server.ApplicationContextProvider;
+import eu.xenit.apix.BaseApplicationContextTest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,17 +13,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.admin.SysAdminParams;
-import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
-import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.coci.CheckOutCheckInService;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
-import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
@@ -40,17 +35,14 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 import org.springframework.extensions.surf.util.URLEncoder;
 
 /**
  * Created by kenneth on 14.03.16.
  */
-@RunWith(RemoteTestRunner.class)
-public abstract class RestV1BaseTest {
+public abstract class RestV1BaseTest extends BaseApplicationContextTest {
 
     private final static Logger logger = LoggerFactory.getLogger(RestV1BaseTest.class);
     private final static String VERSION = "v1";
@@ -67,27 +59,6 @@ public abstract class RestV1BaseTest {
     public static final String USERWITHOUTRIGHTS = "red";
     public static final String USERWITHOUTRIGHTS_EMAIL =
             USERWITHOUTRIGHTS + "@" + USERWITHOUTRIGHTS + ".com";
-
-    protected ApplicationContext applicationContext;
-    protected ServiceRegistry serviceRegistry;
-    protected Repository repository;
-    protected AuthenticationService authenticationService;
-    SysAdminParams sysAdminParams;
-
-
-    protected void initialiseBeans(){
-        logger.error("initialiseBeans of RestV1BaseTest started");
-        applicationContext = ApplicationContextProvider.getApplicationContext();
-        if (applicationContext == null) {
-            logger.error("ApplicationContext is null, tried to import from static method. ");
-        }else{
-            serviceRegistry = (ServiceRegistry) applicationContext.getBean(ServiceRegistry.class);
-            authenticationService = (AuthenticationService) serviceRegistry.getAuthenticationService();
-            repository = (Repository) applicationContext.getBean(Repository.class);
-            sysAdminParams = serviceRegistry.getSysAdminParams();
-        }
-    }
-
 
     // This is a method so it can be overrided in v2
     // It's not static like the string because you can't override static methods :(
@@ -212,7 +183,6 @@ public abstract class RestV1BaseTest {
     }
 
     protected HashMap<String, eu.xenit.apix.data.NodeRef> init(final String testName) {
-        this.initialiseBeans();
         final HashMap<String, eu.xenit.apix.data.NodeRef> initializedNodeRefs = new HashMap<>();
         logger.error("init() restV1Started");
 
