@@ -1,0 +1,49 @@
+import java.text.SimpleDateFormat
+
+plugins {
+    id "base"
+    id "org.hidetake.ssh" version "2.11.2"
+}
+
+def date = new Date()
+def format = new SimpleDateFormat("yyyy-MM-dd")
+
+tasks.register("buildWebsiteScript", Exec) {
+    setGroup "documentation"
+    commandLine 'chmod', '+x', './build-website.sh'
+    commandLine 'bash', './build-website.sh'
+}
+assemble.dependsOn buildWebsiteScript
+
+remotes {
+    a2hosting {
+        host = project.findProperty("webHostAddress")
+        port = project.hasProperty("webHostPort") ? (project.getProperty("webHostPort") as Integer) : 22
+        user = project.findProperty("webHostUser")
+        def keyFileLocation = project.hasProperty("webHostSshKey") ? project.getProperty("webHostSshKey") : "No Key"
+        identity = file(keyFileLocation)
+    }
+}
+
+ssh.settings {
+    knownHosts = allowAnyHosts
+}
+
+tasks.register("deployWebsiteToWebHost") {
+    setGroup "publishing"
+    dependsOn buildWebsiteScript
+    doLast {
+        ssh.run {
+            session(remotes.a2hosting) {
+                def remoteHomeDir = execute 'pwd'
+                def today = format.format(date)
+                put from: file("${layout.buildDirectory.get()}/website-alfred-api_${today}.tar.gz"), into: "${remoteHomeDir}/docs.xenit.eu/"
+                execute "mv ${remoteHomeDir}/docs.xenit.eu/alfred-api ${remoteHomeDir}/docs.xenit.eu/alfred-api_${today}_back"
+                execute "mkdir -p ${remoteHomeDir}/docs.xenit.eu/back/"
+                execute "tar vxzf ${remoteHomeDir}/docs.xenit.eu/website-alfred-api_${today}.tar.gz -C ${remoteHomeDir}/docs.xenit.eu/back/"
+                execute "tar vczf ${remoteHomeDir}/docs.xenit.eu/alfred-api_${today}_back.tar.gz -C ${remoteHomeDir}/docs.xenit.eu alfred-api_${today}_back"
+                remove "${remoteHomeDir}/docs.xenit.eu/alfred-api_${today}_back"
+            }
+        }
+    }
+}
