@@ -1,18 +1,19 @@
 package eu.xenit.apix.rest.v2.tests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.people.Person;
-import eu.xenit.apix.server.ApplicationContextProvider;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
-import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.AuthorityType;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.namespace.QName;
-import org.alfresco.service.transaction.TransactionService;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
@@ -26,16 +27,6 @@ import org.apache.http.util.EntityUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import org.springframework.context.ApplicationContext;
-// TODO - solve webscript issues
 public class GroupTest extends RestV2BaseTest {
 
     private final String[] userNames = {"GroupTestUser", "GroupTestUser2", "GroupTestUser3"};
@@ -46,27 +37,19 @@ public class GroupTest extends RestV2BaseTest {
     private final String groupName = "GroupTestGroup";
     private final String groupIdentifier = "GROUP_" + groupName;
 
-    private ApplicationContext testApplicationContext;
-    private ServiceRegistry serviceRegistry;
-    TransactionService transactionService;
     private PersonService alfrescoPersonService;
     private AuthorityService alfrescoAuthorityService;
-    private ApixToAlfrescoConversion c;
+
+    public GroupTest(){
+        alfrescoPersonService = serviceRegistry.getPersonService();
+        alfrescoAuthorityService = serviceRegistry.getAuthorityService();
+    }
 
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-        // Setup the RestV1BaseTest Beans
-        initialiseBeans();
-        testApplicationContext = ApplicationContextProvider.getApplicationContext();
-        serviceRegistry = (ServiceRegistry) testApplicationContext.getBean(ServiceRegistry.class);
-        transactionService = (TransactionService) testApplicationContext.getBean(TransactionService.class);
-        alfrescoPersonService = serviceRegistry.getPersonService();
-        alfrescoAuthorityService = serviceRegistry.getAuthorityService();
-        c =  (ApixToAlfrescoConversion) testApplicationContext.getBean(ApixToAlfrescoConversion.class);
 
         // Create 3 dummy users
-
         final List<HashMap<QName, Serializable>> propList = new ArrayList<HashMap<QName, Serializable>>();
 
         final GroupTest self = this;

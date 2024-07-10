@@ -50,17 +50,16 @@ allprojects {
             exclude group: 'commons-logging'
             exclude group: 'org.apache.httpcomponents', module: 'httpcore'
         }
-//        // Add services used to the integration test fatjar, since we can't access the ones deployed in Alfresco
+        // Add services used to the integration test fatjar, since we can't access the ones deployed in Alfresco
         testImplementation (project(":apix-impl:apix-impl-${subproject_alfresco_version}")) {
             // Already includes apix-interface, we need to exclude it to avoid Linkage errors from
             // having 2 of the same classes on the classpath
             // (1 in Alfresco from apix-impl AMP + 1 in DE from the integration tests fat jar)
             exclude(group: "eu.xenit.alfred.api", module: "apix-interface")
         }
-//        testImplementation project.sourceSets.integrationTest.output
-
         // Read in the integration-test-server static ApplicationContext + Helperclasses
         implementation project(path: ":apix-integrationtests-server") // Read in the alfresco integration-test-server
+        //        testImplementation project.sourceSets.integrationTest.output
     }
 }
 // Custom JAR task to include only the specified package

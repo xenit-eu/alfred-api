@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
-// Runs inside the Alfresco container, See docker logs.
 @RunWith(RemoteTestRunner.class)
 public class AlfrescoApplicationContextIT {
     private static final Logger logger = LoggerFactory.getLogger(AlfrescoApplicationContextIT.class);

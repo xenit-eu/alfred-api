@@ -23,8 +23,6 @@ public class VersionTest extends RestV1BaseTest {
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-        // Setup the RestV1BaseTest Beans
-        initialiseBeans();
     }
 
     @Test

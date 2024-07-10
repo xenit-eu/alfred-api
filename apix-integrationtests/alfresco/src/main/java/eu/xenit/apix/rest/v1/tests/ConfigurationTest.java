@@ -1,20 +1,22 @@
 package eu.xenit.apix.rest.v1.tests;
 
-import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
-import eu.xenit.apix.comments.ICommentService;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+
 import eu.xenit.apix.content.IContentService;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.filefolder.IFileFolderService;
 import eu.xenit.apix.node.INodeService;
-import eu.xenit.apix.server.ApplicationContextProvider;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.URLEncoder;
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.forum.CommentService;
 import org.alfresco.repo.node.archive.NodeArchiveService;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
-import org.alfresco.service.ServiceRegistry;
-import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.transaction.TransactionService;
@@ -30,19 +32,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.net.URLEncoder;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
 /**
  * Created by kenneth on 14.03.16.
@@ -55,44 +45,31 @@ public class ConfigurationTest extends RestV1BaseTest {
 //    @Qualifier("FileFolderService")
 //    FileFolderService fileFolderService;
 
-    INodeService nodeService;
-
-    IContentService contentService;
-
-    IFileFolderService apixFileFolderService;
-
-    ServiceRegistry serviceRegistry;
-
-    TransactionService transactionService;
-
-    AuthenticationService authenticationService;
-
-    NodeArchiveService nodeArchiveService;
-    PermissionService permissionService;
-    ApplicationContext testApplicationContext;
+    private INodeService nodeService;
+    private IContentService contentService;
+    private IFileFolderService apixFileFolderService;
+    private NodeArchiveService nodeArchiveService;
+    private PermissionService permissionService;
 
     private NodeRef jsonNodeRef;
     private NodeRef yamlNodeRef;
     private NodeRef otherNodeRef;
     private NodeRef yamlsubNodeRef;
 
-    @Before
-    public void setup() {
-        AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-        // Setup the RestV1BaseTest Beans
-        initialiseBeans();
+    public ConfigurationTest(){
         // initialise the local beans
-        testApplicationContext = ApplicationContextProvider.getApplicationContext();
-        serviceRegistry = (ServiceRegistry) testApplicationContext.getBean(ServiceRegistry.class);
-        transactionService = (TransactionService) testApplicationContext.getBean(TransactionService.class); //    @Qualifier("TransactionService")
         permissionService = serviceRegistry.getPermissionService();
         nodeArchiveService = (NodeArchiveService) testApplicationContext.getBean(NodeArchiveService.class);
         authenticationService = (AuthenticationService) testApplicationContext.getBean("AuthenticationService",AuthenticationService.class);
-        TransactionService transactionService = serviceRegistry.getTransactionService();
         // Apix beans
         apixFileFolderService = (IFileFolderService) testApplicationContext.getBean(IFileFolderService.class);
         contentService = (IContentService) testApplicationContext.getBean(IContentService.class);
         nodeService = (eu.xenit.apix.alfresco.metadata.NodeService) testApplicationContext.getBean(eu.xenit.apix.alfresco.metadata.NodeService.class); // fetches APIX nodeService
+    }
+
+    @Before
+    public void setup() {
+        AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
 
         RetryingTransactionHelper.RetryingTransactionCallback<Object> txnWork = () -> {
             NodeRef dataDictionary = apixFileFolderService.getDataDictionary();

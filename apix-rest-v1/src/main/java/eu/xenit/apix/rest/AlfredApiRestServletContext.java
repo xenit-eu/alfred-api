@@ -120,12 +120,8 @@ public class AlfredApiRestServletContext extends DefaultAlfrescoMvcServletContex
         return om;
     }
 
-//    @Bean
-//    public StandardServletMultipartResolver multipartResolver() {
-//        return new StandardServletMultipartResolver();
-//    }
-
-// TODO - Verify this works
+//// TODO - Verify this works
+    // Print outs say that it returns true for incomming post/put requests so works?
     @Override
     protected MultipartResolver createMultipartResolver() {
         log.error("AlfredApiRestServletContext.java called, is alternative implementation");
@@ -142,30 +138,6 @@ public class AlfredApiRestServletContext extends DefaultAlfrescoMvcServletContex
                 return (contentType != null && contentType.toLowerCase().startsWith("multipart/"));
             }
         };
-//        resolver.setDefaultEncoding("UTF-8");
-//        The StandardServletMultipartResolver in Spring uses the default encoding specified by the Servlet API, which
-//        is typically UTF-8 for the body of the multipart request. However, it is essential to explicitly set the encoding
-//        to ensure consistency across different environments.
-//        resolver.setDefaultEncoding("utf-8");
         return resolver;
     }
-
-//    @Override
-//    protected MultipartResolver createMultipartResolver() {
-//        CommonsMultipartResolver resolver = new CommonsMultipartResolver() {
-//            @Override
-//            public boolean isMultipart(HttpServletRequest request) {
-//                String method = request.getMethod().toLowerCase();
-//                //By default, only POST is allowed. Since this is an 'update' we should accept PUT.
-//                if (!Arrays.asList("put", "post").contains(method)) {
-//                    return false;
-//                }
-//                String contentType = request.getContentType();
-//                return (contentType != null && contentType.toLowerCase().startsWith("multipart/"));
-//            }
-//        };
-//        resolver.setMaxUploadSize(-1);
-//        resolver.setDefaultEncoding("utf-8");
-//        return resolver;
-//    }
 }

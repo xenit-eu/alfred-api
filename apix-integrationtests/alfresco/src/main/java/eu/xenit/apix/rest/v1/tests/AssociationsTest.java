@@ -2,18 +2,14 @@ package eu.xenit.apix.rest.v1.tests;
 
 import static org.junit.Assert.assertEquals;
 
-import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.NodeRef;
-import eu.xenit.apix.server.ApplicationContextProvider;
 import java.io.IOException;
 import java.util.HashMap;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
-import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.RegexQNamePattern;
-import org.alfresco.service.transaction.TransactionService;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.util.EntityUtils;
@@ -22,9 +18,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
 
 /**
  * Created by kenneth on 17.03.16.
@@ -33,22 +26,16 @@ public class AssociationsTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(AssociationsTest.class);
 
-    NodeService nodeService;
-    TransactionService transactionService;
-    ApixToAlfrescoConversion c;
-    private ApplicationContext testApplicationContext;
-    private ServiceRegistry serviceRegistry;
+    private NodeService nodeService;
+
+    public AssociationsTest(){
+        // initialise the local beans
+        nodeService = serviceRegistry.getNodeService();
+    }
 
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-        initialiseBeans(); // Setup the RestV1BaseTest Beans
-        // initialise the local beans
-        testApplicationContext = ApplicationContextProvider.getApplicationContext();
-        serviceRegistry = (ServiceRegistry) testApplicationContext.getBean(ServiceRegistry.class);
-        nodeService = serviceRegistry.getNodeService();
-        c =  (ApixToAlfrescoConversion) testApplicationContext.getBean(ApixToAlfrescoConversion.class);
-        transactionService = (TransactionService) testApplicationContext.getBean(TransactionService.class);
     }
 
     @Test

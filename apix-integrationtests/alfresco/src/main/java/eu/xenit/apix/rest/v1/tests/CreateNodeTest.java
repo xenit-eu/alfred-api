@@ -24,21 +24,10 @@ public class CreateNodeTest extends NodesBaseTest {
     private NodeRef mainTestFolder;
     private NodeRef parentTestFolder;
 
-    private ApplicationContext testApplicationContext;
-    TransactionService transactionService;
-    private ApixToAlfrescoConversion c;
 
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-        // Setup the RestV1BaseTest Beans
-        initialiseBeans();
-        // Setup the NodesBaseTest Beans
-        initializeBeansNodesBaseTest();
-        // initialise the local beans
-        testApplicationContext = ApplicationContextProvider.getApplicationContext();
-        transactionService = (TransactionService) testApplicationContext.getBean(TransactionService.class);
-        c =  (ApixToAlfrescoConversion) testApplicationContext.getBean(ApixToAlfrescoConversion.class);
 
         final HashMap<String, NodeRef> initializedNodeRefs = init();
         mainTestFolder = c.apix(getMainTestFolder());

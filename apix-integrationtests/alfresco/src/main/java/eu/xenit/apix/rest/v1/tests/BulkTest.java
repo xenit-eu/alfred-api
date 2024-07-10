@@ -10,16 +10,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.node.ChildParentAssociation;
 import eu.xenit.apix.node.INodeService;
-import eu.xenit.apix.server.ApplicationContextProvider;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
-import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.NodeService;
-import org.alfresco.service.transaction.TransactionService;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
@@ -35,7 +32,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 
 /**
  * Created by kenneth on 18.03.16.
@@ -45,12 +41,14 @@ public abstract class BulkTest extends RestV1BaseTest {
 
     public static final String AUTHENTICATION_IN_URL = "alf_ticket=";
     private final static Logger logger = LoggerFactory.getLogger(BulkTest.class);
-    INodeService nodeService;
+    private INodeService nodeService;
+    private NodeService alfrescoNodeService;
 
-    NodeService alfrescoNodeService;
-    TransactionService transactionService;
-    ServiceRegistry serviceRegistry;
-    ApplicationContext testApplicationContext;
+    public BulkTest(){
+        // initialise the local beans
+        alfrescoNodeService = serviceRegistry.getNodeService();
+        nodeService = (eu.xenit.apix.alfresco.metadata.NodeService) testApplicationContext.getBean(eu.xenit.apix.alfresco.metadata.NodeService.class); // fetches APIX nodeService
+    }
 
     private String jsonObjectGetStringFromInt(JSONObject targetObject, String key) {
         return String.valueOf(targetObject.getInt(key));
@@ -59,14 +57,6 @@ public abstract class BulkTest extends RestV1BaseTest {
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-        // Setup the RestV1BaseTest Beans
-        initialiseBeans();
-        // initialise the local beans
-        testApplicationContext = ApplicationContextProvider.getApplicationContext();
-        serviceRegistry = (ServiceRegistry) testApplicationContext.getBean(ServiceRegistry.class);
-        alfrescoNodeService = serviceRegistry.getNodeService();
-        transactionService = (TransactionService) testApplicationContext.getBean(TransactionService.class);
-        nodeService = (eu.xenit.apix.alfresco.metadata.NodeService) testApplicationContext.getBean(eu.xenit.apix.alfresco.metadata.NodeService.class); // fetches APIX nodeService
     }
 
     @Test

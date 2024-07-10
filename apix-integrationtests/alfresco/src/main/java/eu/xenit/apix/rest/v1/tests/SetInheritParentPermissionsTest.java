@@ -33,22 +33,15 @@ import org.springframework.context.ApplicationContext;
 public class SetInheritParentPermissionsTest extends RestV2BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(AllNodeInfoTest.class);
+    protected IPermissionService permissionService;
 
-    private ApplicationContext testApplicationContext;
-    TransactionService transactionService;
-    // Apix beans
-    IPermissionService permissionService;
-
+    public SetInheritParentPermissionsTest(){
+        permissionService = (IPermissionService) testApplicationContext.getBean(IPermissionService.class);
+    }
 
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-        // Setup the RestV1BaseTest Beans
-        initialiseBeans();
-        // initialise the local beans
-        testApplicationContext = ApplicationContextProvider.getApplicationContext();
-        transactionService = (TransactionService) testApplicationContext.getBean(TransactionService.class);
-        permissionService = (IPermissionService) testApplicationContext.getBean(IPermissionService.class);
     }
 
     @Test

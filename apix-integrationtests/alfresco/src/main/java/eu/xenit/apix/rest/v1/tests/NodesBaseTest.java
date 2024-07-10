@@ -9,18 +9,14 @@ import static org.junit.Assert.assertTrue;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.alfresco.metadata.NodeService;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
 import eu.xenit.apix.rest.v1.nodes.CreateNodeOptions;
 import eu.xenit.apix.rest.v1.nodes.NodeInfo;
-import eu.xenit.apix.server.ApplicationContextProvider;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.alfresco.model.ContentModel;
-import org.alfresco.service.ServiceRegistry;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -30,19 +26,16 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class NodesBaseTest extends RestV1BaseTest {
+    private static final Logger logger = LoggerFactory.getLogger(NodesBaseTest.class);
 
-    NodeService nodeService;
-    ApixToAlfrescoConversion c;
-    private ApplicationContext testApplicationContext;
+    protected NodeService nodeService;
 
-    protected void initializeBeansNodesBaseTest(){
-        testApplicationContext = ApplicationContextProvider.getApplicationContext();
+    public NodesBaseTest(){
         nodeService = (eu.xenit.apix.alfresco.metadata.NodeService) testApplicationContext.getBean(eu.xenit.apix.alfresco.metadata.NodeService.class);
-        c =  (ApixToAlfrescoConversion) testApplicationContext.getBean(ApixToAlfrescoConversion.class);
     }
 
     protected String getSimpleNodesUrl() {

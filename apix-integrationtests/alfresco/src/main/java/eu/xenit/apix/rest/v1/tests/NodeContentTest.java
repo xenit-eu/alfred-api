@@ -2,16 +2,10 @@ package eu.xenit.apix.rest.v1.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.xenit.apix.data.ContentInputStream;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.node.INodeService;
-
-import eu.xenit.apix.server.ApplicationContextProvider;
-import eu.xenit.apix.tests.metadata.NodeServiceTest;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -25,8 +19,6 @@ import java.nio.charset.Charset;
 import java.util.Base64;
 import java.util.HashMap;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.service.ServiceRegistry;
-import org.alfresco.service.transaction.TransactionService;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -37,34 +29,65 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
+
 // TODO - fails 2 tests
 public class NodeContentTest extends RestV1BaseTest {
     private final static Logger logger = LoggerFactory.getLogger(NodeContentTest.class);
-    private ApplicationContext testApplicationContext;
-    private ServiceRegistry serviceRegistry;
-    INodeService nodeService;
-    TransactionService transactionService;
+    private INodeService nodeService;
 
+    public NodeContentTest(){
+        // initialise the local beans
+        nodeService = (INodeService) testApplicationContext.getBean(INodeService.class);
+    }
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-        // Setup the RestV1BaseTest Beans
-        initialiseBeans();
-        // initialise the local beans
-        testApplicationContext = ApplicationContextProvider.getApplicationContext();
-        serviceRegistry = (ServiceRegistry) testApplicationContext.getBean(ServiceRegistry.class);
-        nodeService = (INodeService) testApplicationContext.getBean(INodeService.class);
-        transactionService = serviceRegistry.getTransactionService();
     }
+
+    @Test
+    public void testStupidTest() {
+        final HashMap<String, NodeRef> initializedNodeRefs = init();
+
+        // Create the HttpClient
+        final HttpClient client = HttpClient.newHttpClient();
+        String url = makeNodesUrl(
+                initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME),
+                "/content", "admin", "admin");
+        String finalUrl = "http://admin:admin@localhost:8080/alfresco/s/apix/v1/nodes/simpleuploadtest";
+        int returnedStatusCode = transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    // Set up the basic authentication header
+                    String auth = "admin" + ":" + "admin";
+                    String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
+                    HttpEntity httpBody = MultipartEntityBuilder.create()
+                            .addBinaryBody("file", createTestFile())
+                            .build();
+                    // Convert HttpEntity to byte array
+                    byte[] entityBytes = EntityUtils.toByteArray(httpBody);
+                    // Create the HttpRequest with the GET method
+                    logger.error("Content-Type {}", httpBody.getContentType().getValue());
+                    logger.error("entityBytes {}", HttpRequest.BodyPublishers.ofByteArray(entityBytes));
+                    logger.error("url {}", finalUrl);
+                    HttpRequest request = HttpRequest.newBuilder()
+                            .uri(URI.create(finalUrl))
+                            .header("Authorization", "Basic " + encodedAuth)
+                            .header("Content-Type", httpBody.getContentType().getValue())
+                            .POST(HttpRequest.BodyPublishers.ofByteArray(entityBytes))
+                            .build();
+                    HttpResponse httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
+                    return httpResponse.statusCode();
+                }, false, true);
+        logger.error("returnedStatusCode {}", returnedStatusCode);
+
+        assertEquals(200, returnedStatusCode);
+    }
+
+
 
     @Test
     public void testSetNodeContent() {
