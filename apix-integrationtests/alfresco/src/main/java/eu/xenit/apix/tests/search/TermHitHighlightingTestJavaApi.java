@@ -25,7 +25,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-// did not fix this with upgrade V23.x ... gets ignored
 @Ignore("Disabled for GHA build")
 public class TermHitHighlightingTestJavaApi extends JavaApiBaseTest {
     INodeService nodeService;

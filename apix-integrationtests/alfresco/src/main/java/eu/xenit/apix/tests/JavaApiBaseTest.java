@@ -51,6 +51,7 @@ public abstract class JavaApiBaseTest extends BaseApplicationContextTest {
 
     protected NodeRef getMainTestFolder() {
         NodeService nodeService = serviceRegistry.getNodeService();
+        logger.error("repository.getCompanyHome() {} , getMainTestFolder {}",repository.getCompanyHome(), nodeService.getChildByName(repository.getCompanyHome(), ContentModel.ASSOC_CONTAINS, mainTestFolderName));
         return nodeService.getChildByName(repository.getCompanyHome(), ContentModel.ASSOC_CONTAINS, mainTestFolderName);
     }
 
@@ -71,7 +72,6 @@ public abstract class JavaApiBaseTest extends BaseApplicationContextTest {
         FileFolderService fileFolderService = serviceRegistry.getFileFolderService();
         NodeService alfrescoNodeService = serviceRegistry.getNodeService();
         FileInfo testNode = fileFolderService.create(parentRef, name, ContentModel.TYPE_CONTENT);
-
         alfrescoNodeService.addAspect(testNode.getNodeRef(), ContentModel.ASPECT_TEMPORARY, null);
         alfrescoNodeService.addAspect(testNode.getNodeRef(), ContentModel.ASPECT_VERSIONABLE, null);
         return testNode;

@@ -32,7 +32,7 @@ public class AlfrescoProcessInstanceWorkflowConvertor extends AbstractApixAlfres
     private static final Random random = new Random();
     @Autowired
     protected PersonService personService;
-    @Autowired // missing?
+    @Autowired
     @Qualifier("eu.xenit.apix.alfresco.workflow.alfresco.AlfrescoWorkflowTaskWorkflowConvertor")
     protected AbstractApixWorkflowConvertor taskConvertor;
 
@@ -60,11 +60,9 @@ public class AlfrescoProcessInstanceWorkflowConvertor extends AbstractApixAlfres
         if (instance == null) {
             return null;
         } else {
-            logger.error("instance.getId() {} , this.taskConvertor {}     startTask {}", instance.getId(), this.taskConvertor, startTask);
             Workflow ret = new Workflow();
             ret.setId(instance.getId());
             Task startTaskApix = (Task) this.taskConvertor.apply(startTask);
-            logger.error("startTaskApix {}, id {}" , startTaskApix.getProperties(), startTaskApix.getId());
             Map<String, Serializable> props = startTaskApix.getProperties();
             PutOnMapIfNotNull(props, "{http://www.alfresco.org/model/bpm/1.0}active", instance.isActive());
             PutOnMapIfNotNull(props, "{http://www.alfresco.org/model/bpm/1.0}context", instance.getContext());

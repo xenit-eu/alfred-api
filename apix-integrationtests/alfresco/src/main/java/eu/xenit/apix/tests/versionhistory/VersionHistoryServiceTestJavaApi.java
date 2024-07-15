@@ -48,8 +48,7 @@ public class VersionHistoryServiceTestJavaApi extends JavaApiBaseTest {
     @Test
     public void TestGetVersionHistory() {
         Map<String, Serializable> versionProperties = new HashMap<>();
-        logger.error("versionHistoryService {}", versionHistoryService);
-        logger.error("beforeVersioning {}", versionHistoryService.GetVersionHistory(c.apix(testNode)));
+
         //No version in the beginning
         VersionHistory beforeVersioning = versionHistoryService.GetVersionHistory(c.apix(testNode));
         assertEquals(beforeVersioning.getVersionHistory().size(), 1); // changed from null to 1.
@@ -80,7 +79,6 @@ public class VersionHistoryServiceTestJavaApi extends JavaApiBaseTest {
         assertEquals(Version.VersionType.MAJOR, secondVersion.getType());
     }
 
-    // Fails with System is in RO-mode but we have uploaded the license manually...
     @Test
     public void TestCreateVersion() {
         Map<String, Serializable> versionProperties = new HashMap<>();

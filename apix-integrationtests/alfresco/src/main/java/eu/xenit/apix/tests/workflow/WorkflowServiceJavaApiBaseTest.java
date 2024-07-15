@@ -233,7 +233,6 @@ public abstract class WorkflowServiceJavaApiBaseTest extends JavaApiBaseTest {
     }
 
     protected void setupServices() {
-//        this.transactionHelper = this.serviceRegistry.getRetryingTransactionHelper();
         this.workflowService = this.serviceRegistry.getWorkflowService();
         this.authorityService = this.serviceRegistry.getAuthorityService();
         this.authenticationService = this.serviceRegistry.getAuthenticationService();
@@ -600,10 +599,7 @@ public abstract class WorkflowServiceJavaApiBaseTest extends JavaApiBaseTest {
 
 
     protected boolean hasAccessToWorkflowInstance(WorkflowPath workflow) {
-        logger.error("hasAccessToWorkflowInstance workflowpath {}" , workflow.getInstance().getId());
         final String workflowID = workflow.getInstance().getId();
-        logger.error("hasAccessToWorkflowInstance transactionHelper {}" , this.transactionHelper);
-
         WorkflowInstance alfrescoWorkflow = this.transactionHelper
                 .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<WorkflowInstance>() {
                     @Override
@@ -618,9 +614,6 @@ public abstract class WorkflowServiceJavaApiBaseTest extends JavaApiBaseTest {
         if (!workflowID.equals(alfrescoWorkflow.getId())) {
             return false;
         }
-        logger.error("hasAccessToWorkflowInstance got untill here {}");
-        logger.error("hasAccessToWorkflowInstance apixWorkflowService {}", apixWorkflowService);
-        logger.error("hasAccessToWorkflowInstance transactionHelper {}", transactionHelper);
 
         Workflow resultWf = this.transactionHelper
                 .doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Workflow>() {
@@ -629,11 +622,8 @@ public abstract class WorkflowServiceJavaApiBaseTest extends JavaApiBaseTest {
                         return apixWorkflowService.getWorkflowInfo(workflowID);
                     }
                 }, false, true);
-
-        logger.error("hasAccessToWorkflowInstance resultWf {}" , resultWf);
-
         boolean hasAccessToWorkflowInstance = resultWf != null && workflowID.equals(resultWf.getId());
-        logger.error("hasAccessToWorkflowInstance: " + hasAccessToWorkflowInstance);
+        logger.debug("hasAccessToWorkflowInstance: " + hasAccessToWorkflowInstance);
         return hasAccessToWorkflowInstance;
     }
 

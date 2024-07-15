@@ -16,7 +16,7 @@ public class AlfrescoServerInfo {
 
     // Part of Alfresco Private API
     private final DescriptorService descriptorService;
-    @Qualifier("defaultDataSource") // defaultDataSource or dataSource??
+    @Qualifier("defaultDataSource")
     private final DataSource dataSource;
 
     public AlfrescoServerInfo(@Qualifier("descriptorComponent") DescriptorService descriptorServiceParam,
@@ -31,7 +31,7 @@ public class AlfrescoServerInfo {
 
     /**
      * Tried using SearchTrackingComponent and NodeDAO to getMaxTxnId, but they are not as consistent and quick as
-     * getting it from alf_node table.
+     * as getting it from alf_node table.
      */
     public long getAlfTransactionIdDAO() {
         try (Connection connection = dataSource.getConnection()) {

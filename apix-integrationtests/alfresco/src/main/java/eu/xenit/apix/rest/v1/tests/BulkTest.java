@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by kenneth on 18.03.16.
  */
-// TODO !! all fail
 public abstract class BulkTest extends RestV1BaseTest {
 
     public static final String AUTHENTICATION_IN_URL = "alf_ticket=";

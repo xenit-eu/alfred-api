@@ -120,11 +120,8 @@ public class AlfredApiRestServletContext extends DefaultAlfrescoMvcServletContex
         return om;
     }
 
-//// TODO - Verify this works
-    // Print outs say that it returns true for incomming post/put requests so works?
     @Override
     protected MultipartResolver createMultipartResolver() {
-        log.error("AlfredApiRestServletContext.java called, is alternative implementation");
         StandardServletMultipartResolver resolver = new StandardServletMultipartResolver(){
             @Override
             public boolean isMultipart(HttpServletRequest request) {
@@ -134,7 +131,6 @@ public class AlfredApiRestServletContext extends DefaultAlfrescoMvcServletContex
                     return false;
                 }
                 String contentType = request.getContentType();
-                System.out.println("createMultipartResolver - isMultipart : " + request.getContentType());
                 return (contentType != null && contentType.toLowerCase().startsWith("multipart/"));
             }
         };

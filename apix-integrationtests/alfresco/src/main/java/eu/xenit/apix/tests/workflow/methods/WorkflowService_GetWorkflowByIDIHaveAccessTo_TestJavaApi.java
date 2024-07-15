@@ -40,7 +40,6 @@ public class WorkflowService_GetWorkflowByIDIHaveAccessTo_TestJavaApi extends Wo
         if (workflow == null) {
             Assert.fail("Could not find pre-configured workflow for this test.");
         }
-// hasAccessToWorkflowInstance == null ?
         assertTrue(hasAccessToWorkflowInstance(workflow));
     }
 }

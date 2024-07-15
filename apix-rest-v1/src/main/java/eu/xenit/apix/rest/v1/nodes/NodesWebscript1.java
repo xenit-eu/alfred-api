@@ -58,8 +58,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @AlfrescoTransaction
 @RestController
-//@RequestMapping("/v1")
-//@MultipartConfig(fileSizeThreshold = 20971520) // 20MB
 public class NodesWebscript1 extends ApixV1Webscript {
 
     private static final Logger logger = LoggerFactory.getLogger(NodesWebscript1.class);
@@ -498,8 +496,6 @@ public class NodesWebscript1 extends ApixV1Webscript {
     @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/content")
     public ResponseEntity<?> getContent(@PathVariable String space, @PathVariable String store, @PathVariable String guid) {
-        logger.error("/v1/nodes/{space}/{store}/{guid}/content GET called");
-
         final NodeRef nodeRef = this.createNodeRef(space, store, guid);
         ContentInputStream contentInputStream = nodeService.getContent(nodeRef);
         if (contentInputStream == null) {
@@ -513,8 +509,6 @@ public class NodesWebscript1 extends ApixV1Webscript {
     @PutMapping(value = "/v1/nodes/{space}/{store}/{guid}/content")
     public ResponseEntity<Void> setContent(@PathVariable String space, @PathVariable String store,
                                            @PathVariable String guid, @RequestPart final MultipartFile file) {
-        logger.error("/v1/nodes/{space}/{store}/{guid}/content PUT called");
-        logger.error("space {} store {} guid{} file {}", space, store, guid, file );
 
         final NodeRef finalDestination = this.createNodeRef(space, store, guid);
         RetryingTransactionHelper transactionHelper = serviceRegistry.getRetryingTransactionHelper();
@@ -549,38 +543,6 @@ public class NodesWebscript1 extends ApixV1Webscript {
                         this.createNodeRef(space, store, guid)
                 )
         );
-    }
-
-//    @AlfrescoTransaction
-////    @PostMapping(value = "/v1/nodes/simpleuploadtest", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE} )
-//    @RequestMapping(value = "/v1/nodes/simpleuploadtest", method = RequestMethod.POST, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}
-//            , produces = MediaType.TEXT_PLAIN_VALUE)
-//    public ResponseEntity<Object> testUpload1(
-//            @RequestParam("file") final MultipartFile file)  {
-////        if (guid == null) {
-////            guid = "test empty string";
-////        }
-////        logger.error("simpleuploadtest POST req --- guid = {}", guid);
-//
-//        if (file == null) {
-//            logger.error("file is null");
-//        } else {
-//            logger.error("file {} is {} bytes long", file.getName() ,file);
-//        }
-//
-//        return ResponseEntity.ok("File uploaded successfully ...");
-//    }
-
-    @AlfrescoTransaction
-    @RequestMapping(
-            value = "/v1/nodes/simpleuploadtest",
-            method = RequestMethod.POST,
-            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE}
-    )
-    public ResponseEntity<String> simpleuploadtest(
-            @RequestPart(value = "file") final MultipartFile file) {
-        System.out.println("Uploaded File Name = " + file.getName());
-        return ResponseEntity.ok("File uploaded successfully ...");
     }
 
     @AlfrescoTransaction
