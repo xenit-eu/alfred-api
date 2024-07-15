@@ -65,7 +65,6 @@ public class WorkflowTest extends StagingBaseTest {
                         return null;
                     }
                 }, false, true);
-        logger.error("End of setup()");
     }
 
     private WorkflowPath createWorkflow() {

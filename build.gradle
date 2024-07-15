@@ -17,9 +17,8 @@ ext {
     versionWithoutQualifier = '6.0.0'
 
     mvc = '9.0.0'
-    jackson_version = '2.15.2' // 2.14.2    ==> 2.8.3 , 2.15.2
-//    care4alfVersion = '2.3.0'
-    http_version = '4.5.13' // Used by integration tests   4.3.4
+    jackson_version = '2.15.2' // 2.14.2
+    http_version = '4.5.13' // Used by integration tests
 }
 
 subprojects {

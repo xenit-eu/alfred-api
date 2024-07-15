@@ -222,7 +222,7 @@ public class SearchFacetServiceUnitTest {
         List<FacetSearchResult> expectedResult = initExpectedResult_for_assertThat_getFacetResults_returnIncludes_translationsForListOfValueConstraints();
         List<FacetSearchResult> result = searchFacetsService.getFacetResults(facetOptionsMock, resultSetMock,
                 searchParametersMock);
-        Assertions.assertEquals(expectedResult, result); // TODO works for list?
+        Assertions.assertEquals(expectedResult, result);
         verify(translationServiceMock, times(2)).getMessageTranslation(Mockito.anyString());
     }
 

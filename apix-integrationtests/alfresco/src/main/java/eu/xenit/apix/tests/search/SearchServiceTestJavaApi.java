@@ -56,20 +56,7 @@ public abstract class SearchServiceTestJavaApi extends JavaApiBaseTest {
         solrHelper = testApplicationContext.getBean(SolrTestHelperImpl.class);
         facetService = testApplicationContext.getBean(SolrFacetService.class);
     }
-    public void SetupSearchServiceTest() {
-        logger.error("SearchServiceTest SetupSearchServiceTest");
 
-//        AuthenticationUtil.setFullyAuthenticatedUser(ADMIN_USER_NAME);
-//        // initialise the local beans
-//        testApplicationContext = ApplicationContextProvider.getApplicationContext();
-//        searchService = testApplicationContext.getBean(ISearchService.class);
-//        serviceRegistry = testApplicationContext.getBean(ServiceRegistry.class);
-//        nodeService = serviceRegistry.getNodeService();
-//        transactionService = testApplicationContext.getBean(TransactionService.class);
-//        repository = testApplicationContext.getBean(Repository.class);
-//        namespacePrefixResolver = testApplicationContext.getBean("namespaceService",NamespacePrefixResolver.class);
-//        solrHelper = testApplicationContext.getBean(SolrTestHelperImpl.class);
-    }
     @Before
     public void Setup() {
         AuthenticationUtil.setFullyAuthenticatedUser(ADMIN_USER_NAME);

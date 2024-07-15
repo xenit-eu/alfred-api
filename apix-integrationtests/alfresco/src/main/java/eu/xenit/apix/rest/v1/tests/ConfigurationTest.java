@@ -41,10 +41,6 @@ public class ConfigurationTest extends RestV1BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(ConfigurationTest.class);
 
-//    @Autowired
-//    @Qualifier("FileFolderService")
-//    FileFolderService fileFolderService;
-
     private INodeService nodeService;
     private IContentService contentService;
     private IFileFolderService apixFileFolderService;

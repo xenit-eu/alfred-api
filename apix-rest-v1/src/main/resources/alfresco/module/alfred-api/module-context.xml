@@ -5,12 +5,3 @@
         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
     <bean class="eu.xenit.apix.rest.SpringConfig" />
 </beans>
-
-<!---->
-<!--<beans>-->
-<!--<bean id="multipartResolver"-->
-<!--        class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>-->
-<!--&lt;!&ndash; Declare explicitly, or use <context:annotation-config/> &ndash;&gt;-->
-<!--<bean id="fileUploadController" class="examples.FileUploadController"/>-->
-
-<!--</beans>-->

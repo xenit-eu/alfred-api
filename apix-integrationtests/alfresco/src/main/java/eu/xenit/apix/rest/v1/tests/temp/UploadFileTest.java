@@ -43,45 +43,19 @@ public class UploadFileTest extends RestV1BaseTest {
     @Test
     public void testUploadFile() throws IOException {
         String url = createUrl(null, null);
-        logger.error("testUploadFile URL: " + url);
+        logger.debug(" URL: " + url);
         HttpEntity entity = createHttpEntity(parentNodeRef.toString(), LOCAL_TESTFILE_NAME);
         try (CloseableHttpResponse response = doPost(url, entity)) {
             String resultString = EntityUtils.toString(response.getEntity());
-            logger.error(" resultString: " + resultString);
+            logger.debug(" resultString: " + resultString);
             assertEquals(200, response.getStatusLine().getStatusCode());
         }
     }
-
-    @Test
-    public void testUploadSimpleFile() throws IOException {
-        String url = createUrl(null, null);
-        url = "http://admin:admin@localhost:8080/alfresco/s/apix/v1/nodes/simpleuploadtest";
-        logger.error("testUploadSimpleFile URL: " + url);
-        HttpEntity entity = MultipartEntityBuilder.create()
-                .addTextBody("parent", parentNodeRef.toString())
-                .addTextBody("guid", parentNodeRef.toString())
-                .addTextBody("type", ContentModel.TYPE_CONTENT.toString())
-                .addBinaryBody("file", createTestFile(LOCAL_TESTFILE_NAME)) //, ContentType.APPLICATION_OCTET_STREAM, "file.txt"
-                .build();
-
-        try (CloseableHttpResponse response = doPost(url, entity)) {
-            String resultString = EntityUtils.toString(response.getEntity());
-            logger.error(" resultString: " + resultString);
-            assertEquals(200, response.getStatusLine().getStatusCode());
-        }
-    }
-
-
 
     @Test
     public void testUploadFileWhereFileAlreadyExists() throws IOException {
         String url = createUrl("admin", "admin");
-        logger.error("testUploadFileWhereFileAlreadyExists >>>>> URL: {}", url);
-
         HttpEntity entity = createHttpEntity(parentNodeRef.toString(), RestV1BaseTest.TESTFILE_NAME);
-        logger.error("testUploadFileWhereFileAlreadyExists >>>>> entity.getContentEncoding: {}", entity.getContentEncoding());
-        logger.error("testUploadFileWhereFileAlreadyExists >>>>> entity.getContentType: {}", entity.getContentType());
-
         try (CloseableHttpResponse response = doPost(url, entity)) {
             assertEquals(400, response.getStatusLine().getStatusCode());
         }
@@ -90,11 +64,11 @@ public class UploadFileTest extends RestV1BaseTest {
     @Test
     public void testUploadFileResultsInAccessDenied() throws IOException {
         String url = createUrl(RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS);
-        logger.error(">>>>> URL: {}", url);
+        logger.debug(">>>>> URL: {}", url);
         HttpEntity entity = createHttpEntity(initNodeRefArray.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME).toString(), LOCAL_TESTFILE_NAME);
         try (CloseableHttpResponse response = doPost(url, entity)) {
             String resultString = EntityUtils.toString(response.getEntity());
-            logger.error(" resultString: {}", resultString);
+            logger.debug(" resultString: {}", resultString);
             assertEquals(403, response.getStatusLine().getStatusCode());
         }
     }
@@ -123,34 +97,28 @@ public class UploadFileTest extends RestV1BaseTest {
                 .addPart("file", new FileBody(createTestFile(LOCAL_TESTFILE_NAME)))
                 .addTextBody("metadata", json(metadata), ContentType.APPLICATION_JSON)
                 .build();
-        logger.error("HttpEntity entity getContent {}", entity.getContent());
-        logger.error("HttpEntity entity getContentEncoding {}", entity.getContentEncoding());
+
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(makeAlfrescoBaseurlAdmin() + "/apix/v1/nodes/upload");
         httpPost.setEntity(entity);
         try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
-            logger.error("response.getEntity = {}", response.getEntity());
-            logger.error("response.getStatusLine = {}", response.getStatusLine().getStatusCode());
             EntityUtils.toString(response.getEntity());
             assertEquals(200, response.getStatusLine().getStatusCode());
         }
     }
-//setContentType(MediaType.APPLICATION_JSON_UTF8)
+
     private HttpEntity createHttpEntity(String parentRef, String filename) throws IOException {
         return MultipartEntityBuilder.create()
                 .addTextBody("parent", parentRef)
                 .addTextBody("type", ContentModel.TYPE_CONTENT.toString())
-                .addBinaryBody("file", createTestFile(filename)) //, ContentType.APPLICATION_OCTET_STREAM, "file.txt"
+                .addBinaryBody("file", createTestFile(filename))
                 .build();
     }
-
-
 
     private CloseableHttpResponse doPost(String url, HttpEntity entity) throws IOException {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(url);
         httpPost.setEntity(entity);
-        logger.error("httpPost.setEntity(entity): {}", entity.getContentType());
         return httpClient.execute(httpPost);
     }
 
@@ -160,15 +128,14 @@ public class UploadFileTest extends RestV1BaseTest {
         Boolean newFileCreated;
         newFileCreated = result.createNewFile();
         if (newFileCreated) {
-            logger.error(" Created new file. ");
+            logger.debug(" Created new file. ");
         } else {
-            logger.error(" Did not create new file. ");
+            logger.debug(" Did not create new file. ");
         }
         PrintWriter writer = new PrintWriter(pathName, "UTF-8");
         String contentString = "This is the content";
         writer.println(contentString);
         writer.close();
-        logger.error("result = {}" , result.isFile());
         return result;
     }
 }

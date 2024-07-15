@@ -14,7 +14,7 @@ import org.apache.http.util.EntityUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-// TODO - solve webscript issue
+
 public class PeopleTest extends RestV2BaseTest {
     @Test
     public void testGetSelf() throws IOException {

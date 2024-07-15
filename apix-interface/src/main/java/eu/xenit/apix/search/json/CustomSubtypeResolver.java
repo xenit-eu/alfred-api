@@ -47,7 +47,6 @@ class CustomSubtypeResolver extends SubtypeResolver {
 
     @Override
     public void registerSubtypes(Collection<Class<?>> collection) {
-
     }
 
 

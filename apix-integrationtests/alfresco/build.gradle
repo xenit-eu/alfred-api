@@ -58,11 +58,10 @@ allprojects {
             exclude(group: "eu.xenit.alfred.api", module: "apix-interface")
         }
         // Read in the integration-test-server static ApplicationContext + Helperclasses
-        implementation project(path: ":apix-integrationtests-server") // Read in the alfresco integration-test-server
-        //        testImplementation project.sourceSets.integrationTest.output
+        implementation project(path: ":apix-integrationtests-server")
     }
 }
-// Custom JAR task to include only the specified package
+
 subprojects {
     apply plugin: 'eu.xenit.docker-compose'
 
@@ -73,7 +72,7 @@ subprojects {
 
     // Subproject of supported Alfresco versions
     def projectApixImpl = project(":apix-impl:apix-impl-${project.projectDir.name}")
-    def projectDocker = project(":apix-docker:docker-${project.projectDir.name}") // contains the docker-build
+    def projectDocker = project(":apix-docker:docker-${project.projectDir.name}")
     evaluationDependsOn(projectApixImpl.path)
     evaluationDependsOn(projectDocker.path)
     def assembleTask = projectApixImpl.tasks.getByName("assemble")

@@ -68,12 +68,6 @@ allprojects {
 
     task generateVersionFile(type: Task) {
         def versionFile = "${rootDir}/apix-impl/src/main/java/eu/xenit/apix/Version.java"
-        // Delete the existing file if it exists
-//        def versionFileHandle = file(versionFile)
-//        if (versionFileHandle.exists()) {
-//            println("file existed and got deleted.")
-//            versionFileHandle.delete()
-//        }
         outputs.file versionFile
         doFirst {
             file(versionFile).text = """package eu.xenit.apix;
@@ -88,6 +82,5 @@ public static final String Number = "${project.versionWithoutQualifier}";
 """
         }
     }
-
     compileJava.dependsOn(generateVersionFile)
 }

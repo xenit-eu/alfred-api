@@ -50,46 +50,6 @@ public class NodeContentTest extends RestV1BaseTest {
     }
 
     @Test
-    public void testStupidTest() {
-        final HashMap<String, NodeRef> initializedNodeRefs = init();
-
-        // Create the HttpClient
-        final HttpClient client = HttpClient.newHttpClient();
-        String url = makeNodesUrl(
-                initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME),
-                "/content", "admin", "admin");
-        String finalUrl = "http://admin:admin@localhost:8080/alfresco/s/apix/v1/nodes/simpleuploadtest";
-        int returnedStatusCode = transactionService.getRetryingTransactionHelper()
-                .doInTransaction(() -> {
-                    // Set up the basic authentication header
-                    String auth = "admin" + ":" + "admin";
-                    String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
-                    HttpEntity httpBody = MultipartEntityBuilder.create()
-                            .addBinaryBody("file", createTestFile())
-                            .build();
-                    // Convert HttpEntity to byte array
-                    byte[] entityBytes = EntityUtils.toByteArray(httpBody);
-                    // Create the HttpRequest with the GET method
-                    logger.error("Content-Type {}", httpBody.getContentType().getValue());
-                    logger.error("entityBytes {}", HttpRequest.BodyPublishers.ofByteArray(entityBytes));
-                    logger.error("url {}", finalUrl);
-                    HttpRequest request = HttpRequest.newBuilder()
-                            .uri(URI.create(finalUrl))
-                            .header("Authorization", "Basic " + encodedAuth)
-                            .header("Content-Type", httpBody.getContentType().getValue())
-                            .POST(HttpRequest.BodyPublishers.ofByteArray(entityBytes))
-                            .build();
-                    HttpResponse httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
-                    return httpResponse.statusCode();
-                }, false, true);
-        logger.error("returnedStatusCode {}", returnedStatusCode);
-
-        assertEquals(200, returnedStatusCode);
-    }
-
-
-
-    @Test
     public void testSetNodeContent() {
         final HashMap<String, NodeRef> initializedNodeRefs = init();
 
@@ -98,8 +58,6 @@ public class NodeContentTest extends RestV1BaseTest {
                 "/content", "admin", "admin");
         final CloseableHttpClient httpclient = HttpClients.createDefault();
 
-        logger.error("testSetNodeContent url {}", url);
-        // Returns code 400...
         int returnedStatusCode = transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
                     HttpPut httpput = new HttpPut(url);
@@ -107,46 +65,16 @@ public class NodeContentTest extends RestV1BaseTest {
                             .addBinaryBody(
                                     "file", createTestFile())
                             .build();
-                    logger.error("httpBody {}", httpBody);
                     httpput.setEntity(httpBody);
+
                     try (CloseableHttpResponse response = httpclient.execute(httpput)) {
                         return response.getStatusLine().getStatusCode();
                     }
                 }, false, true);
-//        // Create the HttpClient
-//        final HttpClient client = HttpClient.newHttpClient();
-//        int returnedStatusCode = transactionService.getRetryingTransactionHelper()
-//            .doInTransaction(() -> {
-//                // Set up the basic authentication header
-//                String auth = "admin" + ":" + "admin";
-//                String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
-//                HttpEntity httpBody = MultipartEntityBuilder.create()
-//                    .addBinaryBody("file", createTestFile())
-//                    .build();
-//                // Convert HttpEntity to byte array
-//                byte[] entityBytes = EntityUtils.toByteArray(httpBody);
-//                // Create the HttpRequest with the GET method
-//                logger.error("Content-Type {}", httpBody.getContentType().getValue());
-//                logger.error("entityBytes {}", HttpRequest.BodyPublishers.ofByteArray(entityBytes));
-//                HttpRequest request = HttpRequest.newBuilder()
-//                        .uri(URI.create(url))
-//                        .header("Authorization", "Basic " + encodedAuth)
-//                        .header("Content-Type", httpBody.getContentType().getValue())
-//                        .PUT(HttpRequest.BodyPublishers.ofByteArray(entityBytes))
-//                        .build();
-//                HttpResponse httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
-//                return httpResponse.statusCode();
-//            }, false, true);
-        logger.error("returnedStatusCode {}", returnedStatusCode);
         assertEquals(200, returnedStatusCode);
-
-
-        logger.error("reached point 1");
 
         final INodeService ns = this.nodeService;
         final NodeRef nodeRef = initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME);
-        logger.error("nodeRef {} point 1", nodeRef);
-
         String content = transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
                     ContentInputStream c = ns.getContent(nodeRef);

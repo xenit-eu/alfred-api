@@ -100,7 +100,6 @@ public class AssociationsTest extends RestV1BaseTest {
         logger.error("nodeRefA {} , nodeRefB {}, RegexQNamePattern.MATCH_ALL {}   c.alfresco(nodeRefA)={}",nodeRefA, nodeRefB, RegexQNamePattern.MATCH_ALL, nodeRefApix);
 
         final java.util.List<org.alfresco.service.cmr.repository.AssociationRef> assocs = nodeService.getTargetAssocs(nodeRefApix, RegexQNamePattern.MATCH_ALL);
-        logger.error("assocs.size={}",assocs.size());
 
         assertEquals(0, assocs.size());
 

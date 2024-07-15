@@ -184,10 +184,8 @@ public abstract class RestV1BaseTest extends BaseApplicationContextTest {
 
     protected HashMap<String, eu.xenit.apix.data.NodeRef> init(final String testName) {
         final HashMap<String, eu.xenit.apix.data.NodeRef> initializedNodeRefs = new HashMap<>();
-        logger.error("init() restV1Started");
 
         TransactionService transactionService = serviceRegistry.getTransactionService();
-        logger.error("init()  transactionService = {}" , transactionService);
         this.removeMainTestFolder();
 
         RetryingTransactionHelper.RetryingTransactionCallback<Object> txnWork = () -> {
@@ -230,12 +228,10 @@ public abstract class RestV1BaseTest extends BaseApplicationContextTest {
 
             createUser(USERWITHOUTRIGHTS, USERWITHOUTRIGHTS, USERWITHOUTRIGHTS,
                     USERWITHOUTRIGHTS_EMAIL);
-            logger.error("RestV1BaseTest will return init() = null");
             return null;
         };
 
         transactionService.getRetryingTransactionHelper().doInTransaction(txnWork, false, true);
-        logger.error("RestV1BaseTest will return initializedNodeRefs {}", initializedNodeRefs);
         return initializedNodeRefs;
     }
 
@@ -330,7 +326,7 @@ public abstract class RestV1BaseTest extends BaseApplicationContextTest {
                     NodeRef nodeRef = getMainTestFolder();
                     removeTestNode(nodeRef);
                 } catch (RuntimeException ex) {
-                    logger.error("Did not need to remove mainTestFolder because it did not exist");
+                    logger.debug("Did not need to remove mainTestFolder because it did not exist");
                     //ex.printStackTrace();
                 }
                 return null;

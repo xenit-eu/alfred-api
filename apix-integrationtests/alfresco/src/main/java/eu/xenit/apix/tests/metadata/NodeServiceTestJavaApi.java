@@ -53,7 +53,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO - 1/22 tests failed
 public class NodeServiceTestJavaApi extends JavaApiBaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(NodeServiceTestJavaApi.class);
