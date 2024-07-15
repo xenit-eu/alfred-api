@@ -14,8 +14,9 @@ import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.SearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Configuration;
 
-
+@Configuration
 public abstract class JavaApiBaseTest extends BaseApplicationContextTest {
 
     //Apix Test model contstants
@@ -70,7 +71,6 @@ public abstract class JavaApiBaseTest extends BaseApplicationContextTest {
         FileFolderService fileFolderService = serviceRegistry.getFileFolderService();
         NodeService alfrescoNodeService = serviceRegistry.getNodeService();
         FileInfo testNode = fileFolderService.create(parentRef, name, ContentModel.TYPE_CONTENT);
-        logger.error("newFile {}" , testNode);
 
         alfrescoNodeService.addAspect(testNode.getNodeRef(), ContentModel.ASPECT_TEMPORARY, null);
         alfrescoNodeService.addAspect(testNode.getNodeRef(), ContentModel.ASPECT_VERSIONABLE, null);
