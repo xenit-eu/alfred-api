@@ -15,12 +15,15 @@ import java.util.List;
 import java.util.Map;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.version.VersionType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service("eu.xenit.apix.versionhistory.VersionHistoryService")
 public class VersionHistoryService implements IVersionHistoryService {
 
+    private static final Logger log = LoggerFactory.getLogger(VersionHistoryService.class);
     private ApixToAlfrescoConversion c;
     private org.alfresco.service.cmr.version.VersionService alfrescoVersionHistoryService;
     private NodeService nodeService;
