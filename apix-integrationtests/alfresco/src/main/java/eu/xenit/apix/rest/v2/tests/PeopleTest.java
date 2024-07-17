@@ -1,18 +1,12 @@
 package eu.xenit.apix.rest.v2.tests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.people.Person;
-import eu.xenit.apix.server.ApplicationContextProvider;
 import java.io.IOException;
-import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.service.ServiceRegistry;
-import org.alfresco.service.transaction.TransactionService;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.util.EntityUtils;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 public class PeopleTest extends RestV2BaseTest {

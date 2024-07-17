@@ -47,8 +47,8 @@ public class MetadataTest extends RestV1BaseTest {
         // initialise the local beans
         nodeService = serviceRegistry.getNodeService();
         fileFolderService = serviceRegistry.getFileFolderService();
-        transactionService = testApplicationContext.getBean(TransactionService.class);
-        nodeArchiveService = testApplicationContext.getBean(NodeArchiveService.class);
+        transactionService = getBean(TransactionService.class);
+        nodeArchiveService = getBean(NodeArchiveService.class);
     }
 
     @Before

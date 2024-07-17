@@ -26,7 +26,7 @@ public class CategoryServiceTestJavaApi extends JavaApiBaseTest {
     private ICategoryService categoryService;
 
     public CategoryServiceTestJavaApi(){
-        categoryService = testApplicationContext.getBean(ICategoryService.class);
+        categoryService = getBean(ICategoryService.class);
     }
 
     @Before

@@ -42,7 +42,7 @@ public class DictionaryTest extends RestV1BaseTest {
 
     public DictionaryTest(){
         // initialise the local beans
-        dictionaryDAO = testApplicationContext.getBean(DictionaryDAO.class);
+        dictionaryDAO = getBean(DictionaryDAO.class);
     }
 
     @Before

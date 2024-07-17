@@ -55,12 +55,12 @@ public class ConfigurationTest extends RestV1BaseTest {
     public ConfigurationTest(){
         // initialise the local beans
         permissionService = serviceRegistry.getPermissionService();
-        nodeArchiveService = (NodeArchiveService) testApplicationContext.getBean(NodeArchiveService.class);
-        authenticationService = (AuthenticationService) testApplicationContext.getBean("AuthenticationService",AuthenticationService.class);
+        nodeArchiveService = getBean(NodeArchiveService.class);
+        authenticationService = getBean("AuthenticationService",AuthenticationService.class);
         // Apix beans
-        apixFileFolderService = (IFileFolderService) testApplicationContext.getBean(IFileFolderService.class);
-        contentService = (IContentService) testApplicationContext.getBean(IContentService.class);
-        nodeService = (eu.xenit.apix.alfresco.metadata.NodeService) testApplicationContext.getBean(eu.xenit.apix.alfresco.metadata.NodeService.class); // fetches APIX nodeService
+        apixFileFolderService = getBean(IFileFolderService.class);
+        contentService = getBean(IContentService.class);
+        nodeService = getBean(eu.xenit.apix.alfresco.metadata.NodeService.class); // fetches APIX nodeService
     }
 
     @Before

@@ -50,11 +50,11 @@ public abstract class SearchServiceTestJavaApi extends JavaApiBaseTest {
     protected SolrFacetService facetService;
 
     public SearchServiceTestJavaApi(){
-        searchService = testApplicationContext.getBean(ISearchService.class);
+        searchService = getBean(ISearchService.class);
         nodeService = serviceRegistry.getNodeService();
-        namespacePrefixResolver = testApplicationContext.getBean("namespaceService",NamespacePrefixResolver.class);
-        solrHelper = testApplicationContext.getBean(SolrTestHelperImpl.class);
-        facetService = testApplicationContext.getBean(SolrFacetService.class);
+        namespacePrefixResolver = getBean("namespaceService",NamespacePrefixResolver.class);
+        solrHelper = getBean(SolrTestHelperImpl.class);
+        facetService = getBean(SolrFacetService.class);
     }
 
     @Before

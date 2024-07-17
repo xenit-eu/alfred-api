@@ -18,8 +18,8 @@ public class TransactionServiceTestJavaApi extends JavaApiBaseTest {
     IFileFolderService ffservice;
 
     public TransactionServiceTestJavaApi(){
-        service = testApplicationContext.getBean(ITransactionService.class);
-        ffservice = testApplicationContext.getBean(IFileFolderService.class);
+        service = getBean(ITransactionService.class);
+        ffservice = getBean(IFileFolderService.class);
     }
 
     @Before

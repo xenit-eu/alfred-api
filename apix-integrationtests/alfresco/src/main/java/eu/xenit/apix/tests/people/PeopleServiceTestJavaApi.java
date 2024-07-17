@@ -32,7 +32,7 @@ public class PeopleServiceTestJavaApi extends JavaApiBaseTest {
 
     public PeopleServiceTestJavaApi(){
         // initialise the local beans
-        peopleService = (IPeopleService) testApplicationContext.getBean(IPeopleService.class);
+        peopleService = getBean(IPeopleService.class);
         alfrescoPersonService = serviceRegistry.getPersonService();
     }
 

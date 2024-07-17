@@ -21,7 +21,7 @@ public class PropertyServiceTestJavaApi extends JavaApiBaseTest {
 
     public PropertyServiceTestJavaApi(){
         // initialise the local beans
-        propertyService = (IPropertyService) testApplicationContext.getBean(IPropertyService.class);
+        propertyService = getBean(IPropertyService.class);
     }
 
     @Test

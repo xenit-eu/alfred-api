@@ -49,12 +49,12 @@ public class FileFolderServiceTestJavaApi extends JavaApiBaseTest {
 
     public FileFolderServiceTestJavaApi(){
         // initialise the local beans
-        service = testApplicationContext.getBean(IFileFolderService.class);
+        service = getBean(IFileFolderService.class);
         fileFolderService = serviceRegistry.getFileFolderService();
         searchService = serviceRegistry.getSearchService();
         alfrescoNodeService = serviceRegistry.getNodeService();
         contentService = serviceRegistry.getContentService();
-        solrHelper = testApplicationContext.getBean(SolrTestHelperImpl.class);
+        solrHelper = getBean(SolrTestHelperImpl.class);
     }
 
     @Before

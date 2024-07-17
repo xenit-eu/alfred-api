@@ -51,7 +51,6 @@ public abstract class JavaApiBaseTest extends BaseApplicationContextTest {
 
     protected NodeRef getMainTestFolder() {
         NodeService nodeService = serviceRegistry.getNodeService();
-        logger.error("repository.getCompanyHome() {} , getMainTestFolder {}",repository.getCompanyHome(), nodeService.getChildByName(repository.getCompanyHome(), ContentModel.ASSOC_CONTAINS, mainTestFolderName));
         return nodeService.getChildByName(repository.getCompanyHome(), ContentModel.ASSOC_CONTAINS, mainTestFolderName);
     }
 
@@ -78,16 +77,6 @@ public abstract class JavaApiBaseTest extends BaseApplicationContextTest {
     }
 
     protected boolean removeTestNode(NodeRef nodeRef) {
-        NodeService alfrescoNodeService = serviceRegistry.getNodeService();
-        boolean success = false;
-        if (alfrescoNodeService.exists(nodeRef)) {
-            alfrescoNodeService.deleteNode(nodeRef);
-            success = true;
-        }
-        return success;
-    }
-
-    protected boolean removeTestPersonNode(NodeRef nodeRef) {
         NodeService alfrescoNodeService = serviceRegistry.getNodeService();
         boolean success = false;
         if (alfrescoNodeService.exists(nodeRef)) {

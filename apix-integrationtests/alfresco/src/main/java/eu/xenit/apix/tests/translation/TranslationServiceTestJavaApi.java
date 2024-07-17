@@ -27,7 +27,7 @@ public class TranslationServiceTestJavaApi extends JavaApiBaseTest {
     private ITranslationService service;
 
     public TranslationServiceTestJavaApi(){
-        service = testApplicationContext.getBean(ITranslationService.class);
+        service = getBean(ITranslationService.class);
     }
 
     @Before

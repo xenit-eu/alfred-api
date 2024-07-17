@@ -95,9 +95,8 @@ public class AssociationsTest extends RestV1BaseTest {
         HashMap<String, NodeRef> initializedNodeRefs = init();
         final NodeRef nodeRefA = initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME);
         final NodeRef nodeRefB = initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME);
-        logger.error("testing c methods... {}", c.alfresco(nodeRefA));
         org.alfresco.service.cmr.repository.NodeRef nodeRefApix = c.alfresco(nodeRefA);
-        logger.error("nodeRefA {} , nodeRefB {}, RegexQNamePattern.MATCH_ALL {}   c.alfresco(nodeRefA)={}",nodeRefA, nodeRefB, RegexQNamePattern.MATCH_ALL, nodeRefApix);
+        logger.debug("nodeRefA {} ,  c.alfresco(nodeRefA)={}",nodeRefA, nodeRefApix);
 
         final java.util.List<org.alfresco.service.cmr.repository.AssociationRef> assocs = nodeService.getTargetAssocs(nodeRefApix, RegexQNamePattern.MATCH_ALL);
 

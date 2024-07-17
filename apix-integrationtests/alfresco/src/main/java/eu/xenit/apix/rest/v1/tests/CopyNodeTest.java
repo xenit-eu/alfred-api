@@ -21,7 +21,7 @@ public class CopyNodeTest extends NodesBaseTest {
     private INodeService iNodeService;
 
     public CopyNodeTest(){
-        iNodeService = (eu.xenit.apix.alfresco.metadata.NodeService) testApplicationContext.getBean(eu.xenit.apix.alfresco.metadata.NodeService.class);
+        iNodeService = getBean(eu.xenit.apix.alfresco.metadata.NodeService.class);
     }
 
     @Before

@@ -35,7 +35,7 @@ public abstract class NodesBaseTest extends RestV1BaseTest {
     protected NodeService nodeService;
 
     public NodesBaseTest(){
-        nodeService = (eu.xenit.apix.alfresco.metadata.NodeService) testApplicationContext.getBean(eu.xenit.apix.alfresco.metadata.NodeService.class);
+        nodeService = getBean(eu.xenit.apix.alfresco.metadata.NodeService.class);
     }
 
     protected String getSimpleNodesUrl() {

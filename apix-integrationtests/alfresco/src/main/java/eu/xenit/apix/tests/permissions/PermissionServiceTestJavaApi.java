@@ -48,13 +48,13 @@ public class PermissionServiceTestJavaApi extends JavaApiBaseTest {
 
   public PermissionServiceTestJavaApi(){
     // initialise the local beans
-    service = (IPermissionService) testApplicationContext.getBean(IPermissionService.class);
+    service = getBean(IPermissionService.class);
     permissionService = serviceRegistry.getPermissionService();
     searchService = serviceRegistry.getSearchService();
     fileFolderService = serviceRegistry.getFileFolderService();
     alfrescoNodeService = serviceRegistry.getNodeService();
-    llAlfrescoNodeService = (NodeService) testApplicationContext.getBean("nodeService",NodeService.class);
-    solrHelper = testApplicationContext.getBean(SolrTestHelperImpl.class);
+    llAlfrescoNodeService = getBean("nodeService",NodeService.class);
+    solrHelper = getBean(SolrTestHelperImpl.class);
   }
 
   @Before

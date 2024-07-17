@@ -18,7 +18,7 @@ public class DictionaryServiceTestJavaApi extends JavaApiBaseTest {
     private IDictionaryService service;
 
     public DictionaryServiceTestJavaApi(){
-        service = testApplicationContext.getBean(IDictionaryService.class);
+        service = getBean(IDictionaryService.class);
     }
     @Before
     public void Setup() {

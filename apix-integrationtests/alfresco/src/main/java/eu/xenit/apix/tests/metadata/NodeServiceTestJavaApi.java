@@ -71,11 +71,11 @@ public class NodeServiceTestJavaApi extends JavaApiBaseTest {
 
     public NodeServiceTestJavaApi(){
         // initialise the local beans
-        service = testApplicationContext.getBean(INodeService.class);
+        service = getBean(INodeService.class);
         alfrescoNodeService = serviceRegistry.getNodeService();
         contentService = serviceRegistry.getContentService();
         versionService = serviceRegistry.getVersionService();
-        repository = testApplicationContext.getBean(Repository.class);
+        repository = getBean(Repository.class);
         copyService = serviceRegistry.getCopyService();
         roots = serviceRegistry.getNodeService().getAllRootNodes(alfStoreRef);
     }
