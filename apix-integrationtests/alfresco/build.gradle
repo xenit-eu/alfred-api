@@ -40,6 +40,7 @@ allprojects {
     dependencies {
         alfrescoProvided(project(":apix-rest-v1")) { transitive = false }
         alfrescoProvided(project(":apix-interface")) { transitive = false }
+        alfrescoProvided(project(":apix-interface")) { transitive = false }
 
         alfrescoProvided platform("org.alfresco:acs-community-packaging:${alfresco_version}")
         alfrescoProvided("org.alfresco:alfresco-repository")

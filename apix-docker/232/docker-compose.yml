@@ -34,7 +34,7 @@ services:
     restart: unless-stopped
 
   activemq:
-    image: alfresco/alfresco-activemq:5.17.1-jre11-rockylinux8
+    image: alfresco/alfresco-activemq:5.17.1-jre17-rockylinux8
     mem_limit: 1g
 
   transform-core-aio:

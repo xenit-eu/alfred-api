@@ -41,9 +41,9 @@ public class ContentServiceTestJavaApi extends JavaApiBaseTest {
 
     public ContentServiceTestJavaApi(){
         // initialise the local beans
-        contentService = testApplicationContext.getBean(IContentService.class);
-        nodeService= testApplicationContext.getBean(INodeService.class);
-        solrHelper = testApplicationContext.getBean(SolrTestHelperImpl.class);
+        contentService = getBean(IContentService.class);
+        nodeService= getBean(INodeService.class);
+        solrHelper = getBean(SolrTestHelperImpl.class);
     }
 
     @Before

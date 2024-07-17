@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+    The Tomcat-10 context.xml used for the dispatchServlet will be set to override the default behaviour.
+        - Do not send - Content-Type: multipart/form-data; - if the receiving servlet has not set the @multipart (does not seem to work)
+        - allowMultipleLeadingForwardSlashInPath is false by default.
+               In a GET-Request test it appeared that this new default-behaviour would cause issues.
+               Since we would send Qnames with :// inside the string in URL
+-->
 <Context allowCasualMultipartParsing="true" allowMultipleLeadingForwardSlashInPath="true">
     <!-- Uncomment in $CATALINA_BASE/conf/[enginename]/[hostname]/alfresco.xml to define your own datasource. Add value attributes to each of the environment tags below to define your environment settings. -->
     <!-- Resource defaultTransactionIsolation="-1" defaultAutoCommit="false" maxActive="100" initialSize="10" password="alfresco" username="alfresco" url="jdbc:mysql:///alfresco" driverClassName="org.gjt.mm.mysql.Driver" type="javax.sql.DataSource" auth="Container" name="jdbc/dataSource"/-->

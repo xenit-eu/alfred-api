@@ -50,9 +50,9 @@ public class CommentsTest extends RestV1BaseTest {
 
     public CommentsTest(){
         // initialise the local beans
-        nodeService = (eu.xenit.apix.alfresco.metadata.NodeService) testApplicationContext.getBean(eu.xenit.apix.alfresco.metadata.NodeService.class);
-        commentService= (ICommentService) testApplicationContext.getBean(ICommentService.class);
-        alfrescoCommentService = (CommentService) testApplicationContext.getBean("commentService", CommentService.class);
+        nodeService = getBean(eu.xenit.apix.alfresco.metadata.NodeService.class);
+        commentService= getBean(ICommentService.class);
+        alfrescoCommentService = getBean("commentService", CommentService.class);
     }
 
     @Before

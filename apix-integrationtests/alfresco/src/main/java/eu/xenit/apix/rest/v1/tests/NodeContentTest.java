@@ -35,14 +35,13 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO - fails 2 tests
 public class NodeContentTest extends RestV1BaseTest {
     private final static Logger logger = LoggerFactory.getLogger(NodeContentTest.class);
     private INodeService nodeService;
 
     public NodeContentTest(){
         // initialise the local beans
-        nodeService = (INodeService) testApplicationContext.getBean(INodeService.class);
+        nodeService = getBean(INodeService.class);
     }
     @Before
     public void setup() {

@@ -23,17 +23,17 @@ public class AlfrescoApplicationContextIT {
 
     @Before
     public void setUp() {
-        this.testApplicationContext = ApplicationContextProvider.getApplicationContext();
-
+        this.testApplicationContext = Server.getApplicationContext();
         try{
-            serviceRegistry = (ServiceRegistry) testApplicationContext.getBean(ServiceRegistry.class);
+            serviceRegistry = testApplicationContext.getBean(ServiceRegistry.class);
             nodeService = serviceRegistry.getNodeService();
 
-//            // Print out all available beans.
-//            String[] beanDefinitionNames = testApplicationContext.getBeanDefinitionNames();
-//            for(String beanName : beanDefinitionNames){
-//                System.out.println(beanName);
-//            }
+            if (logger.isTraceEnabled()) {
+                String[] beanDefinitionNames = testApplicationContext.getBeanDefinitionNames();
+                for(String beanName : beanDefinitionNames){
+                    logger.trace("{}", beanName);
+                }
+            }
         }catch (BeansException e){
             System.out.println(e.getMessage());
         }

@@ -38,9 +38,9 @@ public class TermHitHighlightingTestJavaApi extends JavaApiBaseTest {
 
     public TermHitHighlightingTestJavaApi(){
         // initialise the local beans
-        nodeService = testApplicationContext.getBean(INodeService.class);
-        retryingTransactionHelper = testApplicationContext.getBean(RetryingTransactionHelper.class);
-        solrHelper = testApplicationContext.getBean(SolrTestHelperImpl.class);
+        nodeService = getBean(INodeService.class);
+        retryingTransactionHelper = getBean(RetryingTransactionHelper.class);
+        solrHelper = getBean(SolrTestHelperImpl.class);
     }
 
     @Before

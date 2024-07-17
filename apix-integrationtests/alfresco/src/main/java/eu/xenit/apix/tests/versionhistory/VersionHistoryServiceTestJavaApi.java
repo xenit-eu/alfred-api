@@ -30,7 +30,7 @@ public class VersionHistoryServiceTestJavaApi extends JavaApiBaseTest {
     private NodeRef testNode;
 
     public VersionHistoryServiceTestJavaApi(){
-        versionHistoryService = testApplicationContext.getBean(IVersionHistoryService.class);
+        versionHistoryService = getBean(IVersionHistoryService.class);
         alfrizcoVersionHistoryService = serviceRegistry.getVersionService();
     }
 

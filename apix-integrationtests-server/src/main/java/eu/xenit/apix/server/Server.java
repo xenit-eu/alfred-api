@@ -18,45 +18,35 @@
 package eu.xenit.apix.server;
 
 import com.github.ruediste.remoteJUnit.codeRunner.CodeRunnerStandaloneServer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
-public class Server implements ApplicationContextAware, InitializingBean
+public class Server implements InitializingBean
 {
+	private static ApplicationContext applicationContext;
+
 	private static final Logger logger = LoggerFactory.getLogger(Server.class);
 	private CodeRunnerStandaloneServer codeRunnerStandaloneServer;
-	private ApplicationContext applicationContext;
 
 	public void setCodeRunnerStandaloneServer(CodeRunnerStandaloneServer codeRunnerStandaloneServer) {
-		logger.error("initialise codeRunnerStandaloneServer");
-		System.out.println("initialise codeRunnerStandaloneServer");
 		this.codeRunnerStandaloneServer = codeRunnerStandaloneServer;
 	}
 
 	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) {
-		logger.error("initialise applicationContext in Server");
-		this.applicationContext = applicationContext;
-	}
-
-	@Override
 	public void afterPropertiesSet() throws Exception {
-		System.out.println("Loading Application Context for Integration Tests...");
-		ApplicationContextProvider.setApplicationContext(this.applicationContext);
-		if (ApplicationContextProvider.getApplicationContext() == null){
-			logger.error("Application Context Loading Failed! context=" + ApplicationContextProvider.getApplicationContext());
-		}
-
-		System.out.println("JUnit-remote server is starting...");
 		Thread newThread = new Thread(() -> {
 			codeRunnerStandaloneServer.startAndWait();
 		});
-
 		newThread.start();
+	}
+
+	public static void setApplicationContext(ApplicationContext context) {
+		applicationContext = context;
+	}
+
+	public static ApplicationContext getApplicationContext() {
+		return applicationContext;
 	}
 }

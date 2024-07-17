@@ -35,7 +35,6 @@ public class SearchServiceFacetsTestJavaApi extends SearchServiceTestJavaApi {
     @Before
     public void Setup() {
         AuthenticationUtil.setFullyAuthenticatedUser(ADMIN_USER_NAME);
-        SetupSearchServiceTest();
     }
 
     @Test
@@ -61,7 +60,7 @@ public class SearchServiceFacetsTestJavaApi extends SearchServiceTestJavaApi {
                 .isEnabled(true)
                 .isDefault(true)
                 .build();
-        logger.error("SolrFacetProperties newFacet = {}", newFacet);
+        logger.debug("SolrFacetProperties newFacet = {}", newFacet);
         facetService.createFacetNode(newFacet);
 
         try {

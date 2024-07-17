@@ -69,7 +69,7 @@ public abstract class WorkflowServiceJavaApiBaseTest extends JavaApiBaseTest {
 
     @Before
     public void initialiseBeansWorkflowServiceBaseTest() {
-        apixWorkflowService = testApplicationContext.getBean("eu.xenit.apix.workflow.IWorkflowService",IWorkflowService.class);
+        apixWorkflowService = getBean("eu.xenit.apix.workflow.IWorkflowService",IWorkflowService.class);
     }
 
     protected void SetupLocal() {

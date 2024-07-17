@@ -35,7 +35,7 @@ public class SolrTestHelperImpl implements SolrTestHelper {
     public SolrTestHelperImpl(
             @Qualifier("global-properties") Properties globalProperties,
             @Qualifier("Search") SwitchableApplicationContextFactory searchSubSystem,
-            AlfrescoServerInfo alfrescoServerInfoParam) { // @Qualifier("defaultDataSource") ??
+            AlfrescoServerInfo alfrescoServerInfoParam) {
         String subsystem = globalProperties.getProperty("index.subsystem.name");
         String solrBaseUrl = subsystem.equals("solr4") ? "/solr4" : "/solr";
         alfrescoServerInfo = alfrescoServerInfoParam;

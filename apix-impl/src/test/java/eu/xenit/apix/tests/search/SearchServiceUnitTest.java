@@ -24,14 +24,13 @@ import eu.xenit.apix.search.nodes.SearchSyntaxNode;
 import java.util.ArrayList;
 import org.alfresco.model.ContentModel;
 import org.alfresco.service.ServiceRegistry;
-import org.alfresco.service.cmr.repository.InvalidNodeRefException;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.QueryConsistency;
 import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.ResultSetRow;
 import org.alfresco.service.cmr.search.SearchParameters;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 public class SearchServiceUnitTest {
@@ -93,7 +92,7 @@ public class SearchServiceUnitTest {
         verify(alfrescoSearchServiceMock).query(searchParamsArgument.capture());
         Assertions.assertEquals(QueryConsistency.EVENTUAL, searchParamsArgument.getValue().getQueryConsistency());
     }
-
+    // TODO : set () to a method
     @Test
     public void testOrderBy_withMultivalueProperty_throwsIllegalArgumentException() {
         Assertions.assertThrows(IllegalArgumentException.class,

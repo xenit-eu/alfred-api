@@ -6,12 +6,9 @@ import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.permissions.IPermissionService;
 import eu.xenit.apix.rest.v2.tests.AllNodeInfoTest;
 import eu.xenit.apix.rest.v2.tests.RestV2BaseTest;
-import eu.xenit.apix.server.ApplicationContextProvider;
 import java.io.IOException;
 import java.util.HashMap;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.service.ServiceRegistry;
-import org.alfresco.service.transaction.TransactionService;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -26,9 +23,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
 
 public class SetInheritParentPermissionsTest extends RestV2BaseTest {
 
@@ -36,7 +30,7 @@ public class SetInheritParentPermissionsTest extends RestV2BaseTest {
     protected IPermissionService permissionService;
 
     public SetInheritParentPermissionsTest(){
-        permissionService = (IPermissionService) testApplicationContext.getBean(IPermissionService.class);
+        permissionService = getBean(IPermissionService.class);
     }
 
     @Before

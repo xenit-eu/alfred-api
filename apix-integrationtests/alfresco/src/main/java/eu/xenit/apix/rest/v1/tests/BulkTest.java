@@ -46,7 +46,7 @@ public abstract class BulkTest extends RestV1BaseTest {
     public BulkTest(){
         // initialise the local beans
         alfrescoNodeService = serviceRegistry.getNodeService();
-        nodeService = (eu.xenit.apix.alfresco.metadata.NodeService) testApplicationContext.getBean(eu.xenit.apix.alfresco.metadata.NodeService.class); // fetches APIX nodeService
+        nodeService = getBean(eu.xenit.apix.alfresco.metadata.NodeService.class); // fetches APIX nodeService
     }
 
     private String jsonObjectGetStringFromInt(JSONObject targetObject, String key) {

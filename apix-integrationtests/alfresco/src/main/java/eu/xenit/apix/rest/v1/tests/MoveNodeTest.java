@@ -33,7 +33,7 @@ public class MoveNodeTest extends RestV1BaseTest {
 
     public MoveNodeTest(){
         // initialise the local beans
-        nodeService = (INodeService) testApplicationContext.getBean(INodeService.class);
+        nodeService = getBean(INodeService.class);
     }
 
     @Before

@@ -23,8 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CommentServiceTestJavaApi extends JavaApiBaseTest {
-    private static final Logger logger = LoggerFactory.getLogger(CommentServiceTestJavaApi.class);
-
     private static final String commentTitle = "testComment";
     private static final String commentContent = "Test Comment";
     private static FileInfo testDocumentNode;
@@ -33,8 +31,8 @@ public class CommentServiceTestJavaApi extends JavaApiBaseTest {
     private CommentService alfrescoCommentService;
 
     public CommentServiceTestJavaApi(){
-        commentService = testApplicationContext.getBean(ICommentService.class);
-        alfrescoCommentService = testApplicationContext.getBean("CommentService",CommentService.class);
+        commentService = getBean(ICommentService.class);
+        alfrescoCommentService = getBean("CommentService",CommentService.class);
     }
 
     @Before
