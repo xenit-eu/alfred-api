@@ -16,7 +16,7 @@ public class TransactionServiceTestJavaApi extends JavaApiBaseTest {
 
     ITransactionService service;
     IFileFolderService ffservice;
-
+    FileInfo mainTestFolder;
     public TransactionServiceTestJavaApi(){
         service = getBean(ITransactionService.class);
         ffservice = getBean(IFileFolderService.class);
@@ -25,18 +25,14 @@ public class TransactionServiceTestJavaApi extends JavaApiBaseTest {
     @Before
     public void SetupTransactionServiceTest() {
         AuthenticationUtil.setFullyAuthenticatedUser("admin");
+        this.cleanUp();
+        NodeRef companyHomeNodeRef = this.getNodeAtPath("/app:company_home");
+        mainTestFolder = this.createMainTestFolder(companyHomeNodeRef);
     }
 
-    public FileInfo Setup() {
-        this.cleanUp();
-        AuthenticationUtil.setFullyAuthenticatedUser("admin");
-        NodeRef companyHomeNodeRef = this.getNodeAtPath("/app:company_home");
-        return this.createMainTestFolder(companyHomeNodeRef);
-    }
 
     @Test
     public void TestTransactionService_NotransactionBaseScenario() {
-        final FileInfo mainTestFolder = Setup();
         final TransactionServiceTestJavaApi me = this;
         FileInfo testNode = me.createTestNode(mainTestFolder.getNodeRef(), "testnode");
         assertTrue(testNode.getName().equals("testnode"));
@@ -46,7 +42,6 @@ public class TransactionServiceTestJavaApi extends JavaApiBaseTest {
 
     @Test
     public void TestTransactionServiceSuccessTransaction() {
-        final FileInfo mainTestFolder = Setup();
         final TransactionServiceTestJavaApi me = this;
         final FileInfo shouldExist = service.doInTransaction(new Callable<FileInfo>() {
             @Override

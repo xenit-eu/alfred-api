@@ -6,7 +6,8 @@ plugins {
 
 description = 'Xenit Alfred API Rest on Alfresco V23.X'
 apply from: "$rootProject.projectDir/alfresco/231/overrides.gradle"
-
+// apix : Dirty context, zien om op te schonen, rebase, comment bijna af. Beetje readme polishen
+// bnppf, reviews done, nog eentje doen?
 dependencies {
     implementation platform("org.alfresco:acs-community-packaging:${alfresco_version}")
     // Alfresco dependency should be removed in the future
