@@ -46,7 +46,12 @@ Alfresco version used.
 * *alfresco* builds the AMP for each Alfresco version that is the main deliverable for Alfred API. The AMP contains
   the JARs of *apix-interface* and *apix-rest-v1*.
     * *alfresco/xx* contains the correct properties for each Alfresco version.
-* *apix-integrationtests* contains the integration tests for each Alfresco version.
+* *apix-integrationtests-client* contains the integration tests for each Alfresco version.
+* *apix-integrationtests-server* contains the Remote-JUnit runner for remote class loading. 
+    * uses java serialization and HTTP for communication.
+      * We startup a CodeRunnerStandaloneServer, which starts a nanohttpd server, listening on a specific port (4578 by default)
+      * Using a static appicationContext to reach all necessary beans.
+      * SRC: https://github.com/ruediste/remote-junit
 
 ### How to
 
@@ -56,25 +61,25 @@ The following command starts up all docker containers required for an Alfresco r
 ```bash
 ./gradlew :apix-docker:docker-${VERSION}:composeUp --info
 ```
-Where `VERSION` is e.g. `70`.
+Where `VERSION` is e.g. `231`.
 
 
 #### Run integration tests
 ```bash
-./gradlew :apix-integrationtests:alfresco:${VERSION}:integrationTest
+./gradlew :apix-integrationtests-client:alfresco:${VERSION}:integrationTest
 ```  
-Again, where `VERSION` is e.g. `70`.
+Again, where `VERSION` is e.g. `231`.
 
 However, this starts (and afterwards stops) docker containers. This includes starting an Alfresco container,
  adding a startup time of several minutes. To circumvent this you also run the test on already running containers with
  for example:
  ```bash
-./gradlew -x composeUp -x composeDown :apix-integrationtests:alfresco:74:integrationTest -Pprotocol=http -Phost=localhost -Pport=8074
+./gradlew -x composeUp -x composeDown :apix-integrationtests-client:alfresco:231:integrationTest -Pprotocol=http -Phost=localhost -Pport=8074
 ```
 
 If you only want to run specific tests, you can specify this on the Gradle invocation with a pattern. For example:
  ```bash
-./gradlew  :apix-integrationtests:alfresco:74:integrationTest -x composeDown --tests C*ServiceTest
+./gradlew  :apix-integrationtests-client:alfresco:231:integrationTest -x composeDown --tests ContentServiceTestJavaApi.TestContentUrlExists
  ```
 
 #### Run integration tests under debugger
@@ -85,4 +90,4 @@ portmapping `8000:8000`. This file does not get loaded when running in CI.
 3. Run the integration tests (see section above).
 4. Wait until the container is started and healthy, then attach the debugger.
 
-Again, where `VERSION` is e.g. `70`.
+Again, where `VERSION` is e.g. `231`.

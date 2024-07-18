@@ -1,6 +1,5 @@
 package eu.xenit.apix.tests.filefolder;
 
-//import com.github.dynamicextensionsalfresco.webscripts.annotations.Before; // TODO switch to before of junit,
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

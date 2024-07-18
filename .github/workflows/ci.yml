@@ -67,7 +67,7 @@ jobs:
           arguments: >-
             --info
             :apix-impl:apix-impl-${{ matrix.alfresco_version }}:test
-            :apix-integrationtests:alfresco:${{ matrix.alfresco_version }}:integrationTest
+            :apix-integrationtests-client:alfresco:${{ matrix.alfresco_version }}:integrationTest
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3.7.6
         if: success() || failure()

@@ -13,7 +13,7 @@ subprojects {
     dependencies {
         alfrescoAmp project(path: ":alfresco:${subproject_alfresco_version}", configuration: 'ampArtifact') // Read in the alfresco V 23.x in with alfred-api amps
         alfrescoAmp project(path: ":apix-integrationtests-server", configuration: 'amp') // Read in the alfresco integration-test-server
-        alfrescoAmp project(path: ':apix-integrationtests:model-amp', configuration: 'ampArchives') // Read the model in for running the integration tests.
+        alfrescoAmp project(path: ':apix-integrationtests-client:model-amp', configuration: 'ampArchives') // Read the model in for running the integration tests.
         alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-rest:${mvc}"
         alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-aop:${mvc}"
         alfrescoSM files(jar)
