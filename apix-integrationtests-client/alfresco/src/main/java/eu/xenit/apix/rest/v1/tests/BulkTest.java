@@ -29,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +37,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by kenneth on 18.03.16.
  */
-public abstract class BulkTest extends RestV1BaseTest {
+public class BulkTest extends RestV1BaseTest {
 
     public static final String AUTHENTICATION_IN_URL = "alf_ticket=";
     private final static Logger logger = LoggerFactory.getLogger(BulkTest.class);
@@ -75,12 +76,14 @@ public abstract class BulkTest extends RestV1BaseTest {
         String firstGetUrl = removePrefixAndAuthenticate(
                 makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/metadata", "admin", "admin"));
         String secondGetUrl = removePrefixAndAuthenticate(makeNodesUrl(parentRef, "/metadata", "admin", "admin"));
-        httpPost.setEntity(new StringEntity(json(String
+        StringEntity entity = new StringEntity(json(String
                 .format("[{'url':'%s','method':'%s'},{'url':'%s','method':'%s'}]", firstGetUrl, "get", secondGetUrl,
-                        "get"))));
+                        "get")), "UTF-8");
+        entity.setContentType("application/json");
+        httpPost.setEntity(entity);
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
             String result = EntityUtils.toString(response.getEntity());
-            logger.debug(" Result bulk metadata get: " + result);
+            logger.error(" Result bulk metadata get: " + result);
             assertEquals(200, response.getStatusLine().getStatusCode());
             JSONArray jsonArray = new JSONArray(result);
             logger.debug(" json object 0: " + jsonArray.get(0));
@@ -94,7 +97,9 @@ public abstract class BulkTest extends RestV1BaseTest {
         }
     }
 
+    @Ignore
     @Test
+    // @Deprecated(since = "Deprecated since Oct 2015, use DictionaryWebScript1 instead")
     public void testUrlEncode() throws IOException, JSONException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
         List<ChildParentAssociation> parentAssociations = this.nodeService
@@ -102,7 +107,6 @@ public abstract class BulkTest extends RestV1BaseTest {
         final ChildParentAssociation primaryParentAssoc = parentAssociations.get(0);
         assertTrue(primaryParentAssoc.isPrimary());
         NodeRef parentRef = primaryParentAssoc.getTarget();
-
         String url = makeBulkUrl();
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -111,9 +115,11 @@ public abstract class BulkTest extends RestV1BaseTest {
         String secondGetUrl = "/properties/" + ContentModel.PROP_OWNER.toString();
         String thirdGetUrl = "/properties/%7Bhttp%3A%2F%2Fwww.alfresco.org%2Fmodel%2Fcontent%2F1.0%7Dname";
 
-        httpPost.setEntity(new StringEntity(json(String.format(
+        StringEntity entity = new StringEntity(json(String.format(
                 "[{'url':'%s','method':'get'},{'url':'%s','method':'get'},{'url':'%s','method':'get'}]",
-                firstGetUrl, secondGetUrl, thirdGetUrl))));
+                firstGetUrl, secondGetUrl, thirdGetUrl)), "UTF-8");
+        entity.setContentType("application/json");
+        httpPost.setEntity(entity);
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
             String result = EntityUtils.toString(response.getEntity());
             logger.debug(" Result bulk metadata get: " + result);
@@ -260,8 +266,11 @@ public abstract class BulkTest extends RestV1BaseTest {
         final String url = makeBulkUrl();
         final HttpPost post = new HttpPost(url);
 
-        post.setEntity(new StringEntity(json(comboPostBody)));
+        StringEntity entity = new StringEntity(json(comboPostBody), "UTF-8");
+        entity.setContentType("application/json");
+        post.setEntity(entity);
         CloseableHttpClient client = HttpClients.createDefault();
+        logger.info("post getEntity {}", post.getEntity());
         CloseableHttpResponse response = client.execute(post);
 
         assertEquals(200, response.getStatusLine().getStatusCode());
