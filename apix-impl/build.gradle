@@ -54,6 +54,14 @@ allprojects {
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
         // Hamcrest dependencies
         testImplementation 'org.hamcrest:hamcrest:2.2'
+
+        test {
+            // Always run unit tests
+            outputs.upToDateWhen { false }
+
+            // Show test results when running from the CLI
+            testLogging { events "PASSED", "FAILED", "SKIPPED" }
+        }
     }
 
     task generateVersionFile(type: Task) {
