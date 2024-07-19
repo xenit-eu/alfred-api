@@ -14,6 +14,8 @@ import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by kenneth on 31.03.16.
@@ -25,12 +27,12 @@ public class CheckoutCheckinTest extends RestV1BaseTest {
     public CheckoutCheckinTest(){
         // initialise the local beans
         nodeService = serviceRegistry.getNodeService();
-        originalNoderef = init().get(RestV1BaseTest.TESTFILE_NAME);
     }
 
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        originalNoderef = init().get(RestV1BaseTest.TESTFILE_NAME);
     }
 
     @Test
@@ -38,7 +40,6 @@ public class CheckoutCheckinTest extends RestV1BaseTest {
         NoderefResult checkoutResult = doPost(makeAlfrescoBaseurlAdmin() + "/apix/v1/workingcopies",
                 NoderefResult.class,
                 "{'original':'%s'}", originalNoderef.getValue());
-
         NodeRef workingCopyRef = checkoutResult.getNoderef();
 
         final NodeRef testWorkingCopyRef = workingCopyRef;
