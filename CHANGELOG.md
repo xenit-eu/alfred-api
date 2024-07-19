@@ -15,8 +15,6 @@ Breaking changes:
     * Fix has to be deployed from your tomcat image. You will have to update your META-INF/context.xml in tomcat. See subproject apix-docker. 
   * Dropped all support for older Alfresco version prior to V23.1 just as alfresco-mvc
 
-NOTE This release also drops support for Alfresco 7.x and adds support for 23.1 && 23.2.
-
 * [ALFREDAPI-548](https://xenitsupport.jira.com/browse/ALFREDAPI-548): Support Alfresco V23.1 && V23.2, dropping V7.x
 
 ## 5.0.4 (Unreleased)
