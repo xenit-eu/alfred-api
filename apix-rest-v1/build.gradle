@@ -20,7 +20,9 @@ dependencies {
     alfrescoProvided "jakarta.servlet:jakarta.servlet-api:6.0.0"
     // Fix for missing javax.xml.bind library for fasterxml
     // https://github.com/FasterXML/jackson-modules-base/discussions/239
-    implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+//    implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+    implementation 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.15.2'
+
 
     testImplementation (project(':apix-interface')) {transitive = false}
     testImplementation project(':apix-impl')
