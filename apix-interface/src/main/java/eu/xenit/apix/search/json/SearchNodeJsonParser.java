@@ -13,15 +13,23 @@ import java.util.ArrayList;
 
 public class SearchNodeJsonParser {
 
-    public SearchSyntaxNode ParseJSON(String json) throws IOException {
-        json = json.replaceAll("'", "\"");
-        ObjectMapper mapper = getObjectMapper();
-        return mapper.readValue(json, SearchSyntaxNode.class);
+    private final ObjectMapper mapper;
+
+    public SearchNodeJsonParser() {
+        this.mapper = new ObjectMapper();
+        configureObjectMapper();
     }
 
     public ObjectMapper getObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
+        return mapper;
+    }
 
+    public SearchSyntaxNode ParseJSON(String json) throws IOException {
+        json = json.replaceAll("'", "\"");
+        return mapper.readValue(json, SearchSyntaxNode.class);
+    }
+
+    private ObjectMapper configureObjectMapper() {
         mapper.setSubtypeResolver(new CustomSubtypeResolver());
 
         // TODO: improve Type configuration location, use annotation in nodes?
