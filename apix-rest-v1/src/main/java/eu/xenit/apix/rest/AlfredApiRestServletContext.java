@@ -38,6 +38,10 @@ import eu.xenit.apix.rest.v2.nodes.NodesWebscriptV2;
 import eu.xenit.apix.rest.v2.people.PeopleWebscript;
 import eu.xenit.apix.search.json.SearchNodeJsonParser;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 import org.alfresco.rest.framework.jacksonextensions.RestJsonModule;
 import org.alfresco.service.namespace.NamespaceService;
 import org.slf4j.Logger;
@@ -51,11 +55,6 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebMvc
