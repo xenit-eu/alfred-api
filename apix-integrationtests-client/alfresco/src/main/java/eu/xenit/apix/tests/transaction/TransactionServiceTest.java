@@ -1,6 +1,7 @@
 package eu.xenit.apix.tests.transaction;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import eu.xenit.apix.filefolder.IFileFolderService;
 import eu.xenit.apix.tests.JavaApiBaseTest;
@@ -17,7 +18,8 @@ public class TransactionServiceTest extends JavaApiBaseTest {
     ITransactionService service;
     IFileFolderService ffservice;
     FileInfo mainTestFolder;
-    public TransactionServiceTest(){
+
+    public TransactionServiceTest() {
         service = getBean(ITransactionService.class);
         ffservice = getBean(IFileFolderService.class);
     }
@@ -35,9 +37,9 @@ public class TransactionServiceTest extends JavaApiBaseTest {
     public void TestTransactionService_NotransactionBaseScenario() {
         final TransactionServiceTest me = this;
         FileInfo testNode = me.createTestNode(mainTestFolder.getNodeRef(), "testnode");
-        assertTrue(testNode.getName().equals("testnode"));
+        assertEquals("testnode", testNode.getName());
         eu.xenit.apix.data.NodeRef cNR = ffservice.getChildNodeRef(c.apix(mainTestFolder.getNodeRef()), "testnode");
-        assertTrue(cNR != null);
+        assertNotNull(cNR);
     }
 
     @Test
@@ -51,8 +53,8 @@ public class TransactionServiceTest extends JavaApiBaseTest {
             }
         }, false, false);
 
-        assertTrue(shouldExist.getName().equals("testnode"));
+        assertEquals("testnode", shouldExist.getName());
         eu.xenit.apix.data.NodeRef cNR = ffservice.getChildNodeRef(c.apix(mainTestFolder.getNodeRef()), "testnode");
-        assertTrue(cNR != null);
+        assertNotNull(cNR);
     }
 }

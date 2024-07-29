@@ -12,14 +12,13 @@ import eu.xenit.apix.permissions.IPermissionService;
 import eu.xenit.apix.permissions.PermissionValue;
 import eu.xenit.apix.rest.v1.nodes.NodeInfo;
 import eu.xenit.apix.rest.v1.nodes.NodeInfoRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 
 public class ApixV1Webscript {
 
@@ -34,9 +33,9 @@ public class ApixV1Webscript {
     }
 
     protected List<NodeInfo> nodeRefToNodeInfo(NodeInfoRequest nodeInfoRequest,
-                                               IFileFolderService fileFolderService,
-                                               INodeService nodeService,
-                                               IPermissionService permissionService
+            IFileFolderService fileFolderService,
+            INodeService nodeService,
+            IPermissionService permissionService
     ) {
         List<NodeInfo> nodeInfoList = new ArrayList<>();
         List<NodeRef> nodeRefs = nodeInfoRequest.getNoderefs().stream().map(NodeRef::new).collect(Collectors.toList());
@@ -64,24 +63,24 @@ public class ApixV1Webscript {
     }
 
     protected NodeInfo nodeRefToNodeInfo(NodeRef nodeRef, IFileFolderService fileFolderService,
-                                         INodeService nodeService, IPermissionService permissionService) {
+            INodeService nodeService, IPermissionService permissionService) {
         return nodeRefToNodeInfo(nodeRef, fileFolderService, nodeService, permissionService,
                 true, true, true, true,
                 true, true, true, true);
     }
 
     protected NodeInfo nodeRefToNodeInfo(NodeRef nodeRef,
-                                         IFileFolderService fileFolderService,
-                                         INodeService nodeService,
-                                         IPermissionService permissionService,
-                                         boolean retrievePath,
-                                         boolean retrieveMetadata,
-                                         boolean retrievePermissions,
-                                         boolean retrieveAssocs,
-                                         boolean retrieveChildAssocs,
-                                         boolean retrieveParentAssocs,
-                                         boolean retrieveTargetAssocs,
-                                         boolean retrieveSourceAssocs) {
+            IFileFolderService fileFolderService,
+            INodeService nodeService,
+            IPermissionService permissionService,
+            boolean retrievePath,
+            boolean retrieveMetadata,
+            boolean retrievePermissions,
+            boolean retrieveAssocs,
+            boolean retrieveChildAssocs,
+            boolean retrieveParentAssocs,
+            boolean retrieveTargetAssocs,
+            boolean retrieveSourceAssocs) {
         if (!permissionService.hasPermission(nodeRef, IPermissionService.READ)) {
             logger.warn("Excluding node {} from results due to insufficient permissions", nodeRef);
             return null;

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Represents an unique name in alfresco for properties and types.
@@ -53,7 +54,7 @@ public class QName implements Serializable {
 
         QName qName = (QName) o;
 
-        return value != null ? value.equals(qName.value) : qName.value == null;
+        return Objects.equals(value, qName.value);
 
     }
 

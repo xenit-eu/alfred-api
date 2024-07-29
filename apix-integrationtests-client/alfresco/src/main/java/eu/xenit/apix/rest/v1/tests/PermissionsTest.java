@@ -1,6 +1,7 @@
 package eu.xenit.apix.rest.v1.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -38,7 +39,8 @@ public class PermissionsTest extends RestV1BaseTest {
     @Test
     public void testPermissionsGet() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/permissions", "admin", "admin");
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/permissions", "admin",
+                "admin");
 
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
         logger.debug(EntityUtils.toString(httpResponse.getEntity()));
@@ -49,7 +51,8 @@ public class PermissionsTest extends RestV1BaseTest {
     @Test
     public void testPermissionsShortGet() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getGuid(), "/permissions", "admin",
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getGuid(), "/permissions",
+                "admin",
                 "admin");
 
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
@@ -64,7 +67,8 @@ public class PermissionsTest extends RestV1BaseTest {
     @Test
     public void testNodePermissionGetDefault() throws IOException, JSONException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getGuid(), "/acl", "admin", "admin");
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getGuid(), "/acl", "admin",
+                "admin");
 
         checkNoPermissionOnNode(url);
     }
@@ -80,7 +84,7 @@ public class PermissionsTest extends RestV1BaseTest {
         assertTrue(jsonObject.has("inheritFromParent"));
         assertTrue(jsonObject.has("ownAccessList"));
 
-        assertEquals(true, jsonObject.getBoolean("inheritFromParent"));
+        assertTrue(jsonObject.getBoolean("inheritFromParent"));
 
         JSONArray list = jsonObject.getJSONArray("inheritedAccessList");
         assertEquals(1, list.length());
@@ -90,7 +94,7 @@ public class PermissionsTest extends RestV1BaseTest {
         assertTrue(access1.has("authority"));
         assertTrue(access1.has("permission"));
 
-        assertEquals(true, access1.getBoolean("allowed"));
+        assertTrue(access1.getBoolean("allowed"));
         assertEquals("GROUP_EVERYONE", access1.getString("authority"));
         assertEquals("Consumer", access1.getString("permission"));
     }
@@ -102,7 +106,8 @@ public class PermissionsTest extends RestV1BaseTest {
     @Test
     public void testNodePermissionApplyGetAndRemove() throws IOException, JSONException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getGuid(), "/acl", "admin", "admin");
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getGuid(), "/acl", "admin",
+                "admin");
 
         doPut(url,
                 null,
@@ -119,7 +124,7 @@ public class PermissionsTest extends RestV1BaseTest {
         assertTrue(jsonObject.has("inheritFromParent"));
         assertTrue(jsonObject.has("ownAccessList"));
 
-        assertEquals(false, jsonObject.getBoolean("inheritFromParent"));
+        assertFalse(jsonObject.getBoolean("inheritFromParent"));
 
         JSONArray list = jsonObject.getJSONArray("ownAccessList");
         assertEquals(2, list.length());
@@ -129,7 +134,7 @@ public class PermissionsTest extends RestV1BaseTest {
             assertTrue(access.has("allowed"));
             assertTrue(access.has("authority"));
             assertTrue(access.has("permission"));
-            assertEquals(true, access.getBoolean("allowed"));
+            assertTrue(access.getBoolean("allowed"));
             switch (access.getString("authority")) {
                 case "abeecher":
                     assertEquals("Consumer", access.getString("permission"));
@@ -166,7 +171,8 @@ public class PermissionsTest extends RestV1BaseTest {
     @Test
     public void testSetNodeAclsReturnsAccesDenied() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/acl", RestV1BaseTest.USERWITHOUTRIGHTS,
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/acl",
+                RestV1BaseTest.USERWITHOUTRIGHTS,
                 RestV1BaseTest.USERWITHOUTRIGHTS);
 
         HttpResponse httpResponse = Request.Put(url).body(new StringEntity(
@@ -191,8 +197,9 @@ public class PermissionsTest extends RestV1BaseTest {
         HashMap<String, NodeRef> initializedNodeRefs = init();
         assertEquals(403,
                 Request.Post(
-                        makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/acl/inheritFromParent",
-                                RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS))
+                                makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME),
+                                        "/acl/inheritFromParent",
+                                        RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS))
                         .body(new StringEntity("{\"inheritFromParent\":true}",
                                 ContentType.APPLICATION_JSON))
                         .execute()

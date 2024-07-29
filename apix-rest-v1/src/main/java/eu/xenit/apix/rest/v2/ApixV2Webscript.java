@@ -13,12 +13,11 @@ import eu.xenit.apix.permissions.PermissionValue;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
 import eu.xenit.apix.rest.v1.nodes.NodeInfo;
 import eu.xenit.apix.rest.v1.nodes.NodeInfoRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by jasper on 16/02/17.
@@ -28,7 +27,7 @@ public class ApixV2Webscript extends ApixV1Webscript {
     private static final Logger logger = LoggerFactory.getLogger(ApixV2Webscript.class);
 
     protected List<NodeInfo> nodeRefToNodeInfo(NodeInfoRequest nodeInfoRequest, IFileFolderService fileFolderService,
-                                               INodeService nodeService, IPermissionService permissionService) {
+            INodeService nodeService, IPermissionService permissionService) {
         List<NodeRef> nodeRefs = nodeInfoRequest.getNoderefs().stream().map(NodeRef::new).collect(Collectors.toList());
 
         return nodeRefs.stream().filter(nodeRef -> {
@@ -59,7 +58,8 @@ public class ApixV2Webscript extends ApixV1Webscript {
                 }).collect(Collectors.toList());
     }
 
-    private Map<String, PermissionValue> getNodePermissions(NodeInfoRequest nodeInfoRequest, IPermissionService permissionService, NodeRef nodeRef) {
+    private Map<String, PermissionValue> getNodePermissions(NodeInfoRequest nodeInfoRequest,
+            IPermissionService permissionService, NodeRef nodeRef) {
         logger.debug("start getPermissions");
         Map<String, PermissionValue> permissions = null;
         if (nodeInfoRequest.getRetrievePermissions()) {
@@ -79,7 +79,8 @@ public class ApixV2Webscript extends ApixV1Webscript {
         return nodeMetadata;
     }
 
-    private NodePath getNodePath(NodeInfoRequest nodeInfoRequest, IFileFolderService fileFolderService, NodeRef nodeRef) {
+    private NodePath getNodePath(NodeInfoRequest nodeInfoRequest, IFileFolderService fileFolderService,
+            NodeRef nodeRef) {
         logger.debug("start getPath");
         NodePath path = null;
         if (nodeInfoRequest.getRetrievePath()) {
@@ -89,7 +90,8 @@ public class ApixV2Webscript extends ApixV1Webscript {
         return path;
     }
 
-    private NodeAssociations getNodeAssociations(NodeInfoRequest nodeInfoRequest, INodeService nodeService, NodeRef nodeRef) {
+    private NodeAssociations getNodeAssociations(NodeInfoRequest nodeInfoRequest, INodeService nodeService,
+            NodeRef nodeRef) {
         logger.debug("start getAssociations");
         NodeAssociations associations = null;
         if (nodeInfoRequest.getRetrieveAssocs()) {
@@ -109,7 +111,8 @@ public class ApixV2Webscript extends ApixV1Webscript {
             if (nodeInfoRequest.getRetrieveSourceAssocs()) {
                 sourceAssociations = nodeService.getSourceAssociations(nodeRef);
             }
-            associations = new NodeAssociations(childAssocs, parentAssociations, targetAssociations, sourceAssociations);
+            associations = new NodeAssociations(childAssocs, parentAssociations, targetAssociations,
+                    sourceAssociations);
         }
         logger.debug("end getAssociations");
         return associations;

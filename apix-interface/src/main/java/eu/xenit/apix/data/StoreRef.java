@@ -2,6 +2,7 @@ package eu.xenit.apix.data;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.util.Objects;
 
 /**
  * Represents a store id. This consists of two parts: 1) Store Protocol - that is, the type of store 2) Store Identifier
@@ -13,7 +14,8 @@ public class StoreRef {
 
     private String value;
 
-    public StoreRef() {}
+    public StoreRef() {
+    }
 
     @JsonCreator
     public StoreRef(String s) {
@@ -49,7 +51,7 @@ public class StoreRef {
 
         StoreRef nodeRef = (StoreRef) o;
 
-        return value != null ? value.equals(nodeRef.value) : nodeRef.value == null;
+        return Objects.equals(value, nodeRef.value);
 
     }
 

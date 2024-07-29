@@ -39,9 +39,9 @@ public class VersionHistoryTest extends RestV1BaseTest {
 
     NodeService nodeService;
     DictionaryService dictionaryService;
-    private org.alfresco.service.cmr.version.VersionService alfrizcoVersionHistoryService;
+    private final org.alfresco.service.cmr.version.VersionService alfrizcoVersionHistoryService;
 
-    public VersionHistoryTest(){
+    public VersionHistoryTest() {
         // initialise the local beans
         nodeService = serviceRegistry.getNodeService();
         dictionaryService = serviceRegistry.getDictionaryService();

@@ -1,14 +1,13 @@
 package eu.xenit.apix.rest.v1.bulk.response;
 
 
-import org.springframework.lang.Nullable;
-import org.springframework.util.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import org.springframework.lang.Nullable;
+import org.springframework.util.CollectionUtils;
 
 public class HeaderValueHolder {
 

@@ -20,7 +20,8 @@ public class ConfigurationFile {
     public ConfigurationFile() {
     }
 
-    public ConfigurationFile(String content, NodeRef nodeRef, NodeMetadata metadata, NodePath path, Object parsedContent) {
+    public ConfigurationFile(String content, NodeRef nodeRef, NodeMetadata metadata, NodePath path,
+            Object parsedContent) {
         this.content = content;
         this.nodeRef = nodeRef;
         this.metadata = metadata;

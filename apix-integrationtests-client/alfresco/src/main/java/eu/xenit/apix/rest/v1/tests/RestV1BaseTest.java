@@ -166,9 +166,9 @@ public abstract class RestV1BaseTest extends BaseApplicationContextTest {
     }
 
     protected String makeCommentsUrl(String space, String store, String guid, String userName,
-        String password) {
+            String password) {
         return String.format(makeAlfrescoBaseurl(userName, password) + "/apix/%s/comments/%s/%s/%s", getVersion(),
-                        space, store, guid);
+                space, store, guid);
     }
 
     protected String makeCommentsUrl(eu.xenit.apix.data.NodeRef nodeRef, String userName, String password) {
@@ -195,7 +195,8 @@ public abstract class RestV1BaseTest extends BaseApplicationContextTest {
                     ContentModel.TYPE_FOLDER);
             FileInfo testFolder = createTestNode(mainTestFolder.getNodeRef(), TESTFOLDER_NAME,
                     ContentModel.TYPE_FOLDER);
-            initializedNodeRefs.put(TESTFOLDER_NAME, new eu.xenit.apix.data.NodeRef(testFolder.getNodeRef().toString()));
+            initializedNodeRefs.put(TESTFOLDER_NAME,
+                    new eu.xenit.apix.data.NodeRef(testFolder.getNodeRef().toString()));
             FileInfo testNode = createTestNode(testFolder.getNodeRef(), TESTFILE_NAME, ContentModel.TYPE_CONTENT);
             NodeRef testNodeRef = testNode.getNodeRef();
             eu.xenit.apix.data.NodeRef apixTestNodeRef = new eu.xenit.apix.data.NodeRef(testNodeRef.toString());
@@ -360,10 +361,11 @@ public abstract class RestV1BaseTest extends BaseApplicationContextTest {
     }
 
     public <T> T doPost(String checkoutUrl, Class<T> returnType, String jsonBody, Object... args) throws IOException {
-        return doWithBody(new HttpPost(checkoutUrl), returnType, HttpStatus.SC_OK, jsonBody,  args);
+        return doWithBody(new HttpPost(checkoutUrl), returnType, HttpStatus.SC_OK, jsonBody, args);
     }
 
-    public <T> T doPostExpected(String checkoutUrl, Class<T> returnType, String jsonBody, int expectedResponse, Object... args) throws IOException {
+    public <T> T doPostExpected(String checkoutUrl, Class<T> returnType, String jsonBody, int expectedResponse,
+            Object... args) throws IOException {
         return doWithBody(new HttpPost(checkoutUrl), returnType, expectedResponse, jsonBody, args);
     }
 
@@ -371,11 +373,13 @@ public abstract class RestV1BaseTest extends BaseApplicationContextTest {
         return doWithBody(new HttpPut(checkoutUrl), returnType, HttpStatus.SC_OK, jsonBody, args);
     }
 
-    public <T> T doPutExpected(String checkoutUrl, Class<T> returnType, String jsonBody, int expectedResponse, Object... args) throws IOException {
+    public <T> T doPutExpected(String checkoutUrl, Class<T> returnType, String jsonBody, int expectedResponse,
+            Object... args) throws IOException {
         return doWithBody(new HttpPut(checkoutUrl), returnType, expectedResponse, jsonBody, args);
     }
 
-    private <T> T doWithBody(HttpEntityEnclosingRequestBase req, Class<T> returnType, int expectedResponseCode, String jsonBody, Object... args)
+    private <T> T doWithBody(HttpEntityEnclosingRequestBase req, Class<T> returnType, int expectedResponseCode,
+            String jsonBody, Object... args)
             throws IOException {
         final CloseableHttpClient checkoutHttpclient = HttpClients.createDefault();
         if (jsonBody != null) {

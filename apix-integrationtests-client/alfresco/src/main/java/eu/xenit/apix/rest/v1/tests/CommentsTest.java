@@ -2,6 +2,7 @@ package eu.xenit.apix.rest.v1.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +15,6 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import org.alfresco.repo.forum.CommentService;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CommentsTest extends RestV1BaseTest {
+
     private static final Logger log = LoggerFactory.getLogger(CommentsTest.class);
 
     private static final String commentTitle = "commentTitle";
@@ -44,14 +45,14 @@ public class CommentsTest extends RestV1BaseTest {
     private static final String SKIPCOUNT = "skipcount";
     private static final String PAGESIZE = "pagesize";
 
-    private CommentService alfrescoCommentService;
-    private ICommentService commentService;
-    private NodeService nodeService;
+    private final CommentService alfrescoCommentService;
+    private final ICommentService commentService;
+    private final NodeService nodeService;
 
-    public CommentsTest(){
+    public CommentsTest() {
         // initialise the local beans
         nodeService = getBean(eu.xenit.apix.alfresco.metadata.NodeService.class);
-        commentService= getBean(ICommentService.class);
+        commentService = getBean(ICommentService.class);
         alfrescoCommentService = getBean("commentService", CommentService.class);
     }
 
@@ -68,7 +69,7 @@ public class CommentsTest extends RestV1BaseTest {
     }
 
     private HashMap<String, NodeRef> initComments(HashMap<String, NodeRef> initializedNodeRefs) {
-        return this.transactionHelper.doInTransaction( () -> {
+        return this.transactionHelper.doInTransaction(() -> {
             Comment comment = commentService.addNewComment(initializedNodeRefs.get(TESTFILE_NAME), commentContent);
             initializedNodeRefs.put(COMMENTNODE1, comment.getId());
             org.alfresco.service.cmr.repository.NodeRef alfrescoCommentNode2 = alfrescoCommentService
@@ -85,7 +86,7 @@ public class CommentsTest extends RestV1BaseTest {
         String url = makeNodesUrl(initializedRefs.get(RestV1BaseTest.TESTFILE_NAME), "/comments", "admin", "admin");
         URIBuilder builder = new URIBuilder(url);
         builder.addParameter(PAGESIZE, "10");
-        builder.addParameter(SKIPCOUNT,"0");
+        builder.addParameter(SKIPCOUNT, "0");
         HttpGet req = new HttpGet(builder.build());
 
         final CloseableHttpClient checkoutHttpclient = HttpClients.createDefault();
@@ -196,11 +197,12 @@ public class CommentsTest extends RestV1BaseTest {
     @Test
     public void testGetCommentsAccessDenied() throws IOException, URISyntaxException {
         HashMap<String, NodeRef> initializedRefs = init();
-        String url = makeNodesUrl(initializedRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/comments", RestV1BaseTest.USERWITHOUTRIGHTS,
+        String url = makeNodesUrl(initializedRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/comments",
+                RestV1BaseTest.USERWITHOUTRIGHTS,
                 RestV1BaseTest.USERWITHOUTRIGHTS);
         URIBuilder builder = new URIBuilder(url);
         builder.addParameter(PAGESIZE, "10");
-        builder.addParameter(SKIPCOUNT,"0");
+        builder.addParameter(SKIPCOUNT, "0");
         HttpResponse httpResponse = Request.Get(builder.build()).execute().returnResponse();
         assertEquals(403, httpResponse.getStatusLine().getStatusCode());
     }
@@ -208,10 +210,11 @@ public class CommentsTest extends RestV1BaseTest {
     @Test
     public void testGetCommentsNotFound() throws IOException, URISyntaxException {
         HashMap<String, NodeRef> initializedRefs = init();
-        String url = makeNodesUrl(new NodeRef("workspace://SpacesStore/00000000-0000-0000-0000-000000000000"), "/comments", "admin", "admin");
+        String url = makeNodesUrl(new NodeRef("workspace://SpacesStore/00000000-0000-0000-0000-000000000000"),
+                "/comments", "admin", "admin");
         URIBuilder builder = new URIBuilder(url);
         builder.addParameter(PAGESIZE, "10");
-        builder.addParameter(SKIPCOUNT,"0");
+        builder.addParameter(SKIPCOUNT, "0");
         HttpResponse httpResponse = Request.Get(builder.build()).execute().returnResponse();
         assertEquals(404, httpResponse.getStatusLine().getStatusCode());
     }
@@ -233,7 +236,7 @@ public class CommentsTest extends RestV1BaseTest {
 
         ObjectMapper mapper = new ObjectMapper();
         JsonNode comment = mapper.readTree(result);
-        assertEquals(true, nodeService.exists(new NodeRef(comment.get("id").textValue())));
+        assertTrue(nodeService.exists(new NodeRef(comment.get("id").textValue())));
     }
 
 }

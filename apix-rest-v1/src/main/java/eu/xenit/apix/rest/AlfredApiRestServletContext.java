@@ -3,7 +3,6 @@ package eu.xenit.apix.rest;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gradecak.alfresco.mvc.annotation.EnableAlfrescoMvcAop;
 import com.gradecak.alfresco.mvc.rest.config.DefaultAlfrescoMvcServletContextConfiguration;
@@ -40,8 +39,6 @@ import eu.xenit.apix.search.json.SearchNodeJsonParser;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
 import org.alfresco.rest.framework.jacksonextensions.RestJsonModule;
 import org.alfresco.service.namespace.NamespaceService;
 import org.slf4j.Logger;
@@ -51,7 +48,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -113,25 +109,6 @@ public class AlfredApiRestServletContext extends DefaultAlfrescoMvcServletContex
         );
     }
 
-    @Override
-    protected void customizeJackson2ObjectMapperBuilder(Jackson2ObjectMapperBuilder builder) {
-        filterJaxbJavaxModule(builder);
-        builder.createXmlMapper(false);
-    }
-
-    private void filterJaxbJavaxModule(Jackson2ObjectMapperBuilder builder) {
-        List<Module> modules = ObjectMapper.findModules(Jackson2ObjectMapperBuilder.class.getClassLoader());
-        List<Module> filteredModules = modules.stream()
-                .filter(m -> !m.getModuleName()
-                        .toLowerCase(Locale.ROOT)
-                        .contains("jaxb"))
-                .peek(m -> log.debug("Found Jackson module {}", m.getModuleName()))
-                .collect(Collectors.toList());
-        builder.modules(filteredModules);
-        if(filteredModules.isEmpty()) {
-            log.debug("No jackson modules found.");
-        }
-    }
 
     @Bean
     @Primary
@@ -145,7 +122,7 @@ public class AlfredApiRestServletContext extends DefaultAlfrescoMvcServletContex
 
     @Override
     protected MultipartResolver createMultipartResolver() {
-        return new StandardServletMultipartResolver(){
+        return new StandardServletMultipartResolver() {
             @Override
             public boolean isMultipart(HttpServletRequest request) {
                 String method = request.getMethod().toLowerCase();

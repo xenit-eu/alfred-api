@@ -1,22 +1,16 @@
 package eu.xenit.apix.rest.v1.tests;
 
-import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.data.QName;
-
-import java.util.HashMap;
 import eu.xenit.apix.rest.v1.nodes.CreateNodeOptions;
+import java.util.HashMap;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.service.transaction.TransactionService;
 import org.apache.commons.httpclient.HttpStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
 
 public class CreateNodeTest extends NodesBaseTest {
 
@@ -107,7 +101,7 @@ public class CreateNodeTest extends NodesBaseTest {
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
                     doPostNodes(createNodeOptions, HttpStatus.SC_FORBIDDEN,
-                            RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS );
+                            RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS);
                     return null;
                 }, false, true);
     }

@@ -3,6 +3,7 @@ package eu.xenit.apix.rest.v1.nodes;
 import java.util.List;
 
 public class NodeInfoRequest {
+
     Boolean retrieveMetadata;
     Boolean retrievePath;
     Boolean retrievePermissions;
@@ -17,14 +18,14 @@ public class NodeInfoRequest {
     }
 
     public NodeInfoRequest(Boolean retrieveMetadata,
-                           Boolean retrievePath,
-                           Boolean retrievePermissions,
-                           Boolean retrieveAssocs,
-                           Boolean retrieveChildAssocs,
-                           Boolean retrieveParentAssocs,
-                           Boolean retrieveTargetAssocs,
-                           Boolean retrieveSourceAssocs,
-                           List<String> noderefs) {
+            Boolean retrievePath,
+            Boolean retrievePermissions,
+            Boolean retrieveAssocs,
+            Boolean retrieveChildAssocs,
+            Boolean retrieveParentAssocs,
+            Boolean retrieveTargetAssocs,
+            Boolean retrieveSourceAssocs,
+            List<String> noderefs) {
         this.retrieveMetadata = retrieveMetadata;
         this.retrievePath = retrievePath;
         this.retrievePermissions = retrievePermissions;

@@ -7,6 +7,9 @@ import eu.xenit.apix.groups.Group;
 import eu.xenit.apix.people.IPeopleService;
 import eu.xenit.apix.people.Person;
 import eu.xenit.apix.rest.v2.ApixV2Webscript;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +20,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 @AlfrescoAuthentication(AuthenticationType.USER)
@@ -43,7 +42,7 @@ public class GroupsWebscript extends ApixV2Webscript {
     @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v2/groups/{name}/people")
     public ResponseEntity<?> GetPeopleOfGroup(@PathVariable final String name,
-                                              @RequestParam(required = false) Boolean immediate) {
+            @RequestParam(required = false) Boolean immediate) {
         if (immediate == null) {
             immediate = false;
         }
@@ -57,7 +56,7 @@ public class GroupsWebscript extends ApixV2Webscript {
     @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v2/groups/{name}/groups")
     public ResponseEntity<?> GetGroupsOfGroup(@PathVariable final String name,
-                                              @RequestParam(required = false) Boolean immediate) {
+            @RequestParam(required = false) Boolean immediate) {
         if (immediate == null) {
             immediate = false;
         }
@@ -72,7 +71,7 @@ public class GroupsWebscript extends ApixV2Webscript {
     @AlfrescoTransaction
     @PutMapping(value = "/v2/groups/{name}/people")
     public ResponseEntity<?> SetPeopleInGroup(@PathVariable final String name,
-                                              @RequestBody SetUsersInGroupOptions options) {
+            @RequestBody SetUsersInGroupOptions options) {
         // We want to replace all of the users in group {name} by a new list of users
         // We're going to avoid unlinking and re-linking the same user, because iterating over the list to check for
         // duplicates is going to be cheaper than unnecessarily invoking all of Alfresco's internal safety checking
@@ -97,7 +96,7 @@ public class GroupsWebscript extends ApixV2Webscript {
     @AlfrescoTransaction
     @PutMapping(value = "/v2/groups/{name}/groups")
     public ResponseEntity<?> SetGroupsOfGroup(@PathVariable final String name,
-                                              @RequestBody SetSubgroupOptions options) {
+            @RequestBody SetSubgroupOptions options) {
         // We want to replace all of the subgroups of {name} by a new list of subgroups
         // We're going to avoid unlinking and re-linking the same group, because iterating over the list to check for
         // duplicates is going to be cheaper than unnecessarily invoking all of Alfresco's internal safety checking

@@ -49,10 +49,10 @@ public abstract class SearchServiceTest extends JavaApiBaseTest {
     protected SolrTestHelperImpl solrHelper;
     protected SolrFacetService facetService;
 
-    public SearchServiceTest(){
+    public SearchServiceTest() {
         searchService = getBean(ISearchService.class);
         nodeService = serviceRegistry.getNodeService();
-        namespacePrefixResolver = getBean("namespaceService",NamespacePrefixResolver.class);
+        namespacePrefixResolver = getBean("namespaceService", NamespacePrefixResolver.class);
         solrHelper = getBean(SolrTestHelperImpl.class);
         facetService = getBean(SolrFacetService.class);
     }
@@ -61,6 +61,7 @@ public abstract class SearchServiceTest extends JavaApiBaseTest {
     public void Setup() {
         AuthenticationUtil.setFullyAuthenticatedUser(ADMIN_USER_NAME);
     }
+
     @After
     public void tearDown() {
         cleanUp();
@@ -77,7 +78,7 @@ public abstract class SearchServiceTest extends JavaApiBaseTest {
         SearchQueryResult result = searchService.query(query);
 
         assertTrue(result.getNoderefs().size() > 0);
-        Assert.assertEquals(null, result.getFacets());
+        Assert.assertNull(result.getFacets());
     }
 
     @Test
@@ -158,9 +159,9 @@ public abstract class SearchServiceTest extends JavaApiBaseTest {
                 .doInTransaction((RetryingTransactionCallback<NodeRef>) () -> {
                     QueryBuilder builder = new QueryBuilder();
                     SearchSyntaxNode node = builder.property(
-                            ContentModel.PROP_NAME.toPrefixString(namespacePrefixResolver),
-                            "testNode",
-                            false)
+                                    ContentModel.PROP_NAME.toPrefixString(namespacePrefixResolver),
+                                    "testNode",
+                                    false)
                             .create();
 
                     SearchQuery query = new SearchQuery();
@@ -182,10 +183,10 @@ public abstract class SearchServiceTest extends JavaApiBaseTest {
                     FileInfo testFolder = createTestFolder(mainTestFolder.getNodeRef(), "testFolderSetOf1001");
                     Map<QName, Serializable> props = new HashMap<>();
                     props.put(
-                        QName.createQName(APIX_TESTCM_NAMESPACE, APIX_TESTCM_PROP_SEARCHSERVICELIMITTEST_SHORTNAME),
-                        DESCRIPTION_SET_OF_1001
+                            QName.createQName(APIX_TESTCM_NAMESPACE, APIX_TESTCM_PROP_SEARCHSERVICELIMITTEST_SHORTNAME),
+                            DESCRIPTION_SET_OF_1001
                     );
-                    for (int i = 0; i < 1001 ; i++) {
+                    for (int i = 0; i < 1001; i++) {
                         FileInfo testNode = createTestNode(testFolder.getNodeRef(), "testNode-1001-" + i);
                         nodeService.addProperties(testNode.getNodeRef(), props);
                     }
@@ -399,7 +400,7 @@ public abstract class SearchServiceTest extends JavaApiBaseTest {
 
         QueryBuilder builder = new QueryBuilder();
         SearchSyntaxNode node = builder.property(
-                ContentModel.PROP_DESCRIPTION.toPrefixString(namespacePrefixResolver), testString, true)
+                        ContentModel.PROP_DESCRIPTION.toPrefixString(namespacePrefixResolver), testString, true)
                 .create();
 
         SearchQuery query = new SearchQuery();

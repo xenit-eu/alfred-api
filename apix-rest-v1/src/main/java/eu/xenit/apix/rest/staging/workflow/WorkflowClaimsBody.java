@@ -1,6 +1,7 @@
 package eu.xenit.apix.rest.staging.workflow;
 
 public class WorkflowClaimsBody {
+
     private String id;
     private String userName;
 

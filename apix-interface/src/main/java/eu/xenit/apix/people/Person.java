@@ -4,6 +4,7 @@ import eu.xenit.apix.data.NodeRef;
 
 import java.util.List;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Datastructure that represents a person in alfresco and its information. nodeRef: The noderef of a person. userName:
@@ -95,26 +96,22 @@ public class Person implements Serializable {
 
         Person person = (Person) object;
 
-        if (nodeRef != null ? !nodeRef.equals(person.nodeRef) : person.nodeRef != null) {
+        if (!Objects.equals(nodeRef, person.nodeRef)) {
             return false;
         }
-        if (userName != null ? !userName.equals(person.userName) : person.userName != null) {
+        if (!Objects.equals(userName, person.userName)) {
             return false;
         }
-        if (firstName != null ? !firstName.equals(person.firstName) : person.firstName != null) {
+        if (!Objects.equals(firstName, person.firstName)) {
             return false;
         }
-        if (lastName != null ? !lastName.equals(person.lastName) : person.lastName != null) {
+        if (!Objects.equals(lastName, person.lastName)) {
             return false;
         }
-        if (emailAddress != null ? !emailAddress.equals(person.emailAddress) : person.emailAddress != null) {
+        if (!Objects.equals(emailAddress, person.emailAddress)) {
             return false;
         }
-        if (groups != null ? !groups.equals(person.groups) : person.groups != null) {
-            return false;
-        }
-
-        return true;
+        return Objects.equals(groups, person.groups);
     }
 
     public int hashCode() {

@@ -27,10 +27,10 @@ public class PeopleServiceTest extends JavaApiBaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(PeopleServiceTest.class);
 
-    private IPeopleService peopleService;
-    private PersonService alfrescoPersonService;
+    private final IPeopleService peopleService;
+    private final PersonService alfrescoPersonService;
 
-    public PeopleServiceTest(){
+    public PeopleServiceTest() {
         // initialise the local beans
         peopleService = getBean(IPeopleService.class);
         alfrescoPersonService = serviceRegistry.getPersonService();

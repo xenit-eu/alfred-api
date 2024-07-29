@@ -21,16 +21,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class CommentServiceTest extends JavaApiBaseTest {
+
     private static final String commentTitle = "testComment";
     private static final String commentContent = "Test Comment";
     private static FileInfo testDocumentNode;
 
-    private ICommentService commentService;
-    private CommentService alfrescoCommentService;
+    private final ICommentService commentService;
+    private final CommentService alfrescoCommentService;
 
-    public CommentServiceTest(){
+    public CommentServiceTest() {
         commentService = getBean(ICommentService.class);
-        alfrescoCommentService = getBean("CommentService",CommentService.class);
+        alfrescoCommentService = getBean("CommentService", CommentService.class);
     }
 
     @Before

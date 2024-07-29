@@ -30,11 +30,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class NodesBaseTest extends RestV1BaseTest {
+
     private static final Logger logger = LoggerFactory.getLogger(NodesBaseTest.class);
 
     protected NodeService nodeService;
 
-    public NodesBaseTest(){
+    public NodesBaseTest() {
         nodeService = getBean(eu.xenit.apix.alfresco.metadata.NodeService.class);
     }
 
@@ -53,9 +54,11 @@ public abstract class NodesBaseTest extends RestV1BaseTest {
         return properties;
     }
 
-    public eu.xenit.apix.data.NodeRef doPostNodes(CreateNodeOptions createNodeOptions, int expectedResponseCode, String username, String password) throws Throwable {
+    public eu.xenit.apix.data.NodeRef doPostNodes(CreateNodeOptions createNodeOptions, int expectedResponseCode,
+            String username, String password) throws Throwable {
         // If username || password is null, admin account is used
-        final String url = (username == null || password == null ) ? getSimpleNodesUrl() : getSimpleNodesUrl(username, password);
+        final String url =
+                (username == null || password == null) ? getSimpleNodesUrl() : getSimpleNodesUrl(username, password);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         String requestBody = objectMapper.writeValueAsString(createNodeOptions);
@@ -93,7 +96,8 @@ public abstract class NodesBaseTest extends RestV1BaseTest {
         String copyFromString = (copyFrom != null) ? copyFrom.toString() : null;
         String typeString = (type != null) ? type.toString() : null;
 
-        return new CreateNodeOptions(parentRefString, name, typeString, properties, aspectsToAdd, aspectsToRemove, copyFromString);
+        return new CreateNodeOptions(parentRefString, name, typeString, properties, aspectsToAdd, aspectsToRemove,
+                copyFromString);
     }
 
     protected CreateNodeOptions getCreateNodeOptions(eu.xenit.apix.data.NodeRef parentRef,
@@ -104,7 +108,8 @@ public abstract class NodesBaseTest extends RestV1BaseTest {
 
     public void checkCreatedNode(NodeRef newRef, CreateNodeOptions createNodeOptions) {
         assertTrue(nodeService.exists(newRef));
-        assertEquals(createNodeOptions.getParent(), nodeService.getParentAssociations(newRef).get(0).getTarget().toString());
+        assertEquals(createNodeOptions.getParent(),
+                nodeService.getParentAssociations(newRef).get(0).getTarget().toString());
 
         if (createNodeOptions.getType() != null) {
             assertEquals(createNodeOptions.getType(), nodeService.getMetadata(newRef).getType().toString());
@@ -116,7 +121,8 @@ public abstract class NodesBaseTest extends RestV1BaseTest {
 
         if (createNodeOptions.getProperties() != null) {
             for (Map.Entry<QName, String[]> property : createNodeOptions.getProperties().entrySet()) {
-                assertArrayEquals(property.getValue(), nodeService.getMetadata(newRef).getProperties().get(property.getKey()).toArray());
+                assertArrayEquals(property.getValue(),
+                        nodeService.getMetadata(newRef).getProperties().get(property.getKey()).toArray());
             }
         }
 

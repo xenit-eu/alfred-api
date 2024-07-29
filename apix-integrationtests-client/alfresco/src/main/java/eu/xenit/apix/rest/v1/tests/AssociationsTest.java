@@ -26,9 +26,9 @@ public class AssociationsTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(AssociationsTest.class);
 
-    private NodeService nodeService;
+    private final NodeService nodeService;
 
-    public AssociationsTest(){
+    public AssociationsTest() {
         // initialise the local beans
         nodeService = serviceRegistry.getNodeService();
     }
@@ -41,7 +41,8 @@ public class AssociationsTest extends RestV1BaseTest {
     @Test
     public void testAssociationsGet() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/associations", "admin", "admin");
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/associations", "admin",
+                "admin");
 
         HttpResponse response = Request.Get(url).execute().returnResponse();
         String result = EntityUtils.toString(response.getEntity());
@@ -51,7 +52,8 @@ public class AssociationsTest extends RestV1BaseTest {
     @Test
     public void testAssociationsGetDenied() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/associations", RestV1BaseTest.USERWITHOUTRIGHTS,
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/associations",
+                RestV1BaseTest.USERWITHOUTRIGHTS,
                 RestV1BaseTest.USERWITHOUTRIGHTS);
         HttpResponse response = Request.Get(url).execute().returnResponse();
         assertEquals(403, response.getStatusLine().getStatusCode());
@@ -60,7 +62,8 @@ public class AssociationsTest extends RestV1BaseTest {
     @Test
     public void testParentAssociationsGet() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/associations/parents", "admin",
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/associations/parents",
+                "admin",
                 "admin");
 
         HttpResponse response = Request.Get(url).execute().returnResponse();
@@ -71,7 +74,8 @@ public class AssociationsTest extends RestV1BaseTest {
     @Test
     public void testChildAssociationsGet() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/associations/children", "admin",
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/associations/children",
+                "admin",
                 "admin");
 
         HttpResponse response = Request.Get(url).execute().returnResponse();
@@ -82,7 +86,8 @@ public class AssociationsTest extends RestV1BaseTest {
     @Test
     public void testPeerAssociationsGet() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/associations/targets", "admin",
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/associations/targets",
+                "admin",
                 "admin");
 
         HttpResponse response = Request.Get(url).execute().returnResponse();
@@ -96,9 +101,10 @@ public class AssociationsTest extends RestV1BaseTest {
         final NodeRef nodeRefA = initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME);
         final NodeRef nodeRefB = initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME);
         org.alfresco.service.cmr.repository.NodeRef nodeRefApix = c.alfresco(nodeRefA);
-        logger.debug("nodeRefA {} ,  c.alfresco(nodeRefA)={}",nodeRefA, nodeRefApix);
+        logger.debug("nodeRefA {} ,  c.alfresco(nodeRefA)={}", nodeRefA, nodeRefApix);
 
-        final java.util.List<org.alfresco.service.cmr.repository.AssociationRef> assocs = nodeService.getTargetAssocs(nodeRefApix, RegexQNamePattern.MATCH_ALL);
+        final java.util.List<org.alfresco.service.cmr.repository.AssociationRef> assocs = nodeService.getTargetAssocs(
+                nodeRefApix, RegexQNamePattern.MATCH_ALL);
 
         assertEquals(0, assocs.size());
 

@@ -39,10 +39,10 @@ public class WorkflowTest extends StagingBaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(WorkflowTest.class);
     private final List<WorkflowPath> wfPaths = new ArrayList<>();
-    private WorkflowService workflowService;
-    private AuthorityService authorityService;
+    private final WorkflowService workflowService;
+    private final AuthorityService authorityService;
 
-    public WorkflowTest(){
+    public WorkflowTest() {
         workflowService = this.serviceRegistry.getWorkflowService();
         authorityService = this.serviceRegistry.getAuthorityService();
     }
@@ -74,7 +74,7 @@ public class WorkflowTest extends StagingBaseTest {
             logger.debug("title: " + workflowDef.getTitle());
             WorkflowTaskDefinition startTaskDefinition = workflowDef.getStartTaskDefinition();
             logger.debug("startTaskDefinition metadata: " + startTaskDefinition.getMetadata().toString());
-            logger.debug("startTaskDefinition: " + startTaskDefinition.toString());
+            logger.debug("startTaskDefinition: " + startTaskDefinition);
             logger.debug("##################################");
         }
 

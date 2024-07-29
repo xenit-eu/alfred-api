@@ -13,6 +13,7 @@ import eu.xenit.apix.node.INodeService;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.node.archive.NodeArchiveService;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -41,22 +42,22 @@ public class ConfigurationTest extends RestV1BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(ConfigurationTest.class);
 
-    private INodeService nodeService;
-    private IContentService contentService;
-    private IFileFolderService apixFileFolderService;
-    private NodeArchiveService nodeArchiveService;
-    private PermissionService permissionService;
+    private final INodeService nodeService;
+    private final IContentService contentService;
+    private final IFileFolderService apixFileFolderService;
+    private final NodeArchiveService nodeArchiveService;
+    private final PermissionService permissionService;
 
     private NodeRef jsonNodeRef;
     private NodeRef yamlNodeRef;
     private NodeRef otherNodeRef;
     private NodeRef yamlsubNodeRef;
 
-    public ConfigurationTest(){
+    public ConfigurationTest() {
         // initialise the local beans
         permissionService = serviceRegistry.getPermissionService();
         nodeArchiveService = getBean(NodeArchiveService.class);
-        authenticationService = getBean("AuthenticationService",AuthenticationService.class);
+        authenticationService = getBean("AuthenticationService", AuthenticationService.class);
         // Apix beans
         apixFileFolderService = getBean(IFileFolderService.class);
         contentService = getBean(IContentService.class);
@@ -194,7 +195,7 @@ public class ConfigurationTest extends RestV1BaseTest {
 
     @Test
     public void testConfigurationFilterFields() throws IOException, JSONException {
-        String requestUrl = makeBasePath() + "&filter.name=" + URLEncoder.encode("\\.yaml$", "UTF-8");
+        String requestUrl = makeBasePath() + "&filter.name=" + URLEncoder.encode("\\.yaml$", StandardCharsets.UTF_8);
         JSONArray jsonFiles = callConfiguration(requestUrl);
         assertEquals(2, jsonFiles.length());
         for (int i = 0; i < jsonFiles.length(); i++) {
@@ -214,7 +215,7 @@ public class ConfigurationTest extends RestV1BaseTest {
             JSONObject jsonFile = jsonFiles.getJSONObject(i);
             String nodeRef = jsonFile.optString("nodeRef");
             assertNotNull(nodeRef);
-            assertTrue(nodeRef.equals(this.yamlsubNodeRef.toString()));
+            assertEquals(nodeRef, this.yamlsubNodeRef.toString());
         }
     }
 

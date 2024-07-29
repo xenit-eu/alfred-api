@@ -29,7 +29,7 @@ public class SetInheritParentPermissionsTest extends RestV2BaseTest {
     private final static Logger logger = LoggerFactory.getLogger(AllNodeInfoTest.class);
     protected IPermissionService permissionService;
 
-    public SetInheritParentPermissionsTest(){
+    public SetInheritParentPermissionsTest() {
         permissionService = getBean(IPermissionService.class);
     }
 

@@ -17,7 +17,7 @@ class CheckoutBody {
 
     @JsonCreator
     public CheckoutBody(@JsonProperty("original") NodeRef original,
-                        @JsonProperty("destinationFolder") NodeRef destinationFolder) {
+            @JsonProperty("destinationFolder") NodeRef destinationFolder) {
         this.original = original;
         this.destinationFolder = destinationFolder;
     }

@@ -17,9 +17,9 @@ public class PropertyServiceTest extends JavaApiBaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(PropertyServiceTest.class);
 
-    private IPropertyService propertyService;
+    private final IPropertyService propertyService;
 
-    public PropertyServiceTest(){
+    public PropertyServiceTest() {
         // initialise the local beans
         propertyService = getBean(IPropertyService.class);
     }

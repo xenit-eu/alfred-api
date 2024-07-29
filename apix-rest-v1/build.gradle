@@ -7,8 +7,6 @@ plugins {
 description = 'Xenit Alfred API Rest on Alfresco V23.X'
 apply from: "$rootProject.projectDir/alfresco/231/overrides.gradle"
 
-// apix : Dirty context, zien om op te schonen, rebase, comment bijna af. Beetje readme polishen
-// bnppf, reviews done, nog eentje doen?
 dependencies {
     implementation platform("org.alfresco:acs-community-packaging:${alfresco_version}")
     // Alfresco dependency should be removed in the future
@@ -19,8 +17,11 @@ dependencies {
     alfrescoProvided "com.gradecak.alfresco-mvc:alfresco-mvc-rest:${mvc}"
     alfrescoProvided "com.gradecak.alfresco-mvc:alfresco-mvc-aop:${mvc}"
     alfrescoProvided "jakarta.servlet:jakarta.servlet-api:6.0.0"
+    // Fix for missing javax.xml.bind library for fasterxml
+    // https://github.com/FasterXML/jackson-modules-base/discussions/239
+    implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
 
-    testImplementation (project(':apix-interface')) {transitive = false}
+    testImplementation(project(':apix-interface')) { transitive = false }
     testImplementation project(':apix-impl')
     testImplementation platform("org.alfresco:acs-community-packaging:${alfresco_version}")
     testImplementation 'org.springframework:spring-core'

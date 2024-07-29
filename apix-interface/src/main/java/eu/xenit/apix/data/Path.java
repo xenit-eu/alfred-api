@@ -1,11 +1,13 @@
 package eu.xenit.apix.data;
 
+import java.util.Objects;
+
 /**
  * Represents a path to a node. Has a string value.
  */
 public class Path {
 
-    private String value;
+    private final String value;
 
     public Path(String value) {
         this.value = value;
@@ -27,7 +29,7 @@ public class Path {
 
         Path path = (Path) o;
 
-        return value != null ? value.equals(path.value) : path.value == null;
+        return Objects.equals(value, path.value);
 
     }
 

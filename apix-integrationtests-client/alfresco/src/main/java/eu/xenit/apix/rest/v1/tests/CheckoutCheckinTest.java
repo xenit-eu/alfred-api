@@ -14,17 +14,16 @@ import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Created by kenneth on 31.03.16.
  */
 public class CheckoutCheckinTest extends RestV1BaseTest {
-    private NodeService nodeService;
+
+    private final NodeService nodeService;
     private NodeRef originalNoderef;
 
-    public CheckoutCheckinTest(){
+    public CheckoutCheckinTest() {
         // initialise the local beans
         nodeService = serviceRegistry.getNodeService();
     }

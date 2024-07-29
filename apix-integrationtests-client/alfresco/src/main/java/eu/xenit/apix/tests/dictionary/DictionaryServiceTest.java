@@ -15,11 +15,12 @@ import org.junit.Test;
  */
 public class DictionaryServiceTest extends JavaApiBaseTest {
 
-    private IDictionaryService service;
+    private final IDictionaryService service;
 
-    public DictionaryServiceTest(){
+    public DictionaryServiceTest() {
         service = getBean(IDictionaryService.class);
     }
+
     @Before
     public void Setup() {
         AuthenticationUtil.setFullyAuthenticatedUser("admin");

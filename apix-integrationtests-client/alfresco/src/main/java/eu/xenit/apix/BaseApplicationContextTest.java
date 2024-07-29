@@ -12,11 +12,11 @@ import org.alfresco.service.transaction.TransactionService;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 @RunWith(RemoteTestRunner.class)
 public abstract class BaseApplicationContextTest {
+
     private final static Logger logger = LoggerFactory.getLogger(BaseApplicationContextTest.class);
 
     protected ServiceRegistry serviceRegistry;
@@ -32,7 +32,7 @@ public abstract class BaseApplicationContextTest {
         // initialise the static application-context
         testApplicationContext = Server.getApplicationContext();
         serviceRegistry = getBean(ServiceRegistry.class);
-        c =  getBean(ApixToAlfrescoConversion.class);
+        c = getBean(ApixToAlfrescoConversion.class);
         repository = getBean(Repository.class);
         transactionService = getBean(TransactionService.class);
         transactionHelper = getBean("retryingTransactionHelper", RetryingTransactionHelper.class);

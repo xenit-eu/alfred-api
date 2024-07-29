@@ -8,11 +8,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ApplicationContextSetter implements ApplicationContextAware {
+
     private static final Logger logger = LoggerFactory.getLogger(ApplicationContextSetter.class);
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
-        if(applicationContext == null) throw new NullPointerException();
-        else {
+        if (applicationContext == null) {
+            throw new NullPointerException();
+        } else {
             logger.info("setApplicationContext with " + applicationContext.getId());
             Server.setApplicationContext(applicationContext);
         }

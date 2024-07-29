@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class IntermediateContent extends ServletInputStream {
+
     IntermediateContent(Object body) throws JsonProcessingException {
         mapper = new ObjectMapper();
         delegate = new ByteArrayInputStream(mapper.writeValueAsBytes(body));

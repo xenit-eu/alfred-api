@@ -7,6 +7,7 @@ import java.io.IOException;
 import org.springframework.util.StringUtils;
 
 public class BulkHttpServletRequest extends HttpServletRequestWrapper {
+
     private static final String HTTP = "http";
 
     private static final String HTTPS = "https";

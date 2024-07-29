@@ -16,5 +16,5 @@ public interface ITransactionService {
      * @param <T> Return type parameter
      * @return the result of the transaction in case of success.
      */
-    public <T> T doInTransaction(Callable<T> func, boolean readOnly, boolean requiresNew);
+    <T> T doInTransaction(Callable<T> func, boolean readOnly, boolean requiresNew);
 }

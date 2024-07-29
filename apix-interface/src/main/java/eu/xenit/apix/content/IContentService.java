@@ -12,10 +12,11 @@ public interface IContentService {
 
     /**
      * Checks if the content url exists.
+     *
      * @param contentUrl The content url to check.
      * @return true if exists, false otherwise
      */
-    public boolean contentUrlExists(String contentUrl);
+    boolean contentUrlExists(String contentUrl);
 
     /**
      * Sets content of a specific node. Also changes mimetype by guessing it via the original file name.

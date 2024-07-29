@@ -30,9 +30,9 @@ public class PeopleTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(VersionHistoryTest.class);
 
-    private PersonService alfrescoPersonService;
+    private final PersonService alfrescoPersonService;
 
-    public PeopleTest(){
+    public PeopleTest() {
         // initialise the local beans
         alfrescoPersonService = serviceRegistry.getPersonService();
     }

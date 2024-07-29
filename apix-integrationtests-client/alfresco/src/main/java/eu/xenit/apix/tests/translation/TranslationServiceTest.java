@@ -23,10 +23,10 @@ public class TranslationServiceTest extends JavaApiBaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(TranslationServiceTest.class);
 
-    private static String facet_bucket_month_label = "faceted-search.date.one-month.label";
-    private ITranslationService service;
+    private static final String facet_bucket_month_label = "faceted-search.date.one-month.label";
+    private final ITranslationService service;
 
-    public TranslationServiceTest(){
+    public TranslationServiceTest() {
         service = getBean(ITranslationService.class);
     }
 
@@ -84,9 +84,9 @@ public class TranslationServiceTest extends JavaApiBaseTest {
             }
         }
 
-        Assert.assertTrue("testType1 is not found: " + testType1.toString(), testType1found);
-        Assert.assertTrue("testType2 is not found: " + testType2.toString(), testType2found);
-        Assert.assertTrue("testType3 is not found: " + testType3.toString(), testType3found);
+        Assert.assertTrue("testType1 is not found: " + testType1, testType1found);
+        Assert.assertTrue("testType2 is not found: " + testType2, testType2found);
+        Assert.assertTrue("testType3 is not found: " + testType3, testType3found);
 
         TranslationValue testAspect1 = new TranslationValue(
                 new QName("{http://www.alfresco.org/model/system/1.0}archived"), "Archived", "Archived Node");
@@ -114,9 +114,9 @@ public class TranslationServiceTest extends JavaApiBaseTest {
             }
         }
 
-        Assert.assertTrue("testAspect1 is not found: " + testAspect1.toString(), testAspect1found);
-        Assert.assertTrue("testAspect2 is not found: " + testAspect2.toString(), testAspect2found);
-        Assert.assertTrue("testAspect3 is not found: " + testAspect3.toString(), testAspect3found);
+        Assert.assertTrue("testAspect1 is not found: " + testAspect1, testAspect1found);
+        Assert.assertTrue("testAspect2 is not found: " + testAspect2, testAspect2found);
+        Assert.assertTrue("testAspect3 is not found: " + testAspect3, testAspect3found);
 
         TranslationValue testAssoc1 = new TranslationValue(
                 new QName("{http://www.alfresco.org/model/forum/1.0}discussion"), "Discussion",
@@ -146,9 +146,9 @@ public class TranslationServiceTest extends JavaApiBaseTest {
             }
         }
 
-        Assert.assertTrue("testAssoc1 is not found: " + testAssoc1.toString(), testAssoc1found);
-        Assert.assertTrue("testAssoc2 is not found: " + testAssoc2.toString(), testAssoc2found);
-        Assert.assertTrue("testAssoc3 is not found: " + testAssoc3.toString(), testAssoc3found);
+        Assert.assertTrue("testAssoc1 is not found: " + testAssoc1, testAssoc1found);
+        Assert.assertTrue("testAssoc2 is not found: " + testAssoc2, testAssoc2found);
+        Assert.assertTrue("testAssoc3 is not found: " + testAssoc3, testAssoc3found);
 
         PropertyTranslationValue testProp2 = new PropertyTranslationValue(
                 new QName("{http://www.alfresco.org/model/workflow/invite/moderated/1.0}reviewOutcome"), null, null,
@@ -171,7 +171,7 @@ public class TranslationServiceTest extends JavaApiBaseTest {
             }
         }
 
-        Assert.assertTrue("testProp2 is not found: " + testProp2.toString(), testProp2found);
+        Assert.assertTrue("testProp2 is not found: " + testProp2, testProp2found);
 
 
     }
@@ -229,7 +229,7 @@ public class TranslationServiceTest extends JavaApiBaseTest {
     }
 
     private double average(Long[] array) {
-        Long sum = 0l;
+        Long sum = 0L;
 
         for (Long value : array) {
             sum += value;

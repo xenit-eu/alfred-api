@@ -63,31 +63,26 @@ public class SearchServiceFacetsTest extends SearchServiceTest {
         logger.debug("SolrFacetProperties newFacet = {}", newFacet);
         facetService.createFacetNode(newFacet);
 
-        try {
-            // Perform search query
-            SearchSyntaxNode node = new QueryBuilder().term("type", "cm:content").create();
+        // Perform search query
+        SearchSyntaxNode node = new QueryBuilder().term("type", "cm:content").create();
 
-            SearchQuery.FacetOptions options = new SearchQuery.FacetOptions();
-            options.setEnabled(true);
+        SearchQuery.FacetOptions options = new SearchQuery.FacetOptions();
+        options.setEnabled(true);
 
-            SearchQuery query = new SearchQuery();
-            query.setQuery(node);
-            query.setFacets(options);
+        SearchQuery query = new SearchQuery();
+        query.setQuery(node);
+        query.setFacets(options);
 
-            SearchQueryResult result = searchService.query(query);
+        SearchQueryResult result = searchService.query(query);
 
-            // Results must contain newly created facet filter
-            boolean isFacetFound = false;
-            for (FacetSearchResult facet : result.getFacets()) {
-                if (QName.createQName(facet.getName()).equals(facetQName)) {
-                    isFacetFound = true;
-                }
+        // Results must contain newly created facet filter
+        boolean isFacetFound = false;
+        for (FacetSearchResult facet : result.getFacets()) {
+            if (QName.createQName(facet.getName()).equals(facetQName)) {
+                isFacetFound = true;
             }
-            assertTrue("'" + facetQName + "' not found in returned facets.", isFacetFound);
-        } finally {
-            // TODO - Breaks the test, but not needed aslong as we run it once.
-//            facetService.deleteFacet(newFacetFilterId);
         }
+        assertTrue("'" + facetQName + "' not found in returned facets.", isFacetFound);
     }
 
     @Test
@@ -99,7 +94,7 @@ public class SearchServiceFacetsTest extends SearchServiceTest {
         Set<String> bucketedFacetNames = new HashSet<>(Arrays.asList(
                 ContentModel.PROP_CREATED.toString(),
                 ContentModel.PROP_MODIFIED.toString(),
-                ContentModel.PROP_CONTENT.toString() + ".size"));
+                ContentModel.PROP_CONTENT + ".size"));
         Set<String> foundBucketedFacets = new HashSet<>();
         SearchSyntaxNode node = new QueryBuilder().term("type", "cm:content").create();
 

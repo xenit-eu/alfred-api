@@ -43,7 +43,7 @@ public class MetadataTest extends RestV1BaseTest {
     TransactionService transactionService;
     NodeArchiveService nodeArchiveService;
 
-    public MetadataTest(){
+    public MetadataTest() {
         // initialise the local beans
         nodeService = serviceRegistry.getNodeService();
         fileFolderService = serviceRegistry.getFileFolderService();
@@ -59,7 +59,8 @@ public class MetadataTest extends RestV1BaseTest {
     @Test
     public void testMetadataGet() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/metadata?alf_ticket=" + authenticationService.getCurrentTicket(),
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME),
+                "/metadata?alf_ticket=" + authenticationService.getCurrentTicket(),
                 "admin", "admin");
         logger.debug("URL: " + url);
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
@@ -87,7 +88,7 @@ public class MetadataTest extends RestV1BaseTest {
         logger.debug(" URL: " + url);
 
         assertFalse(this.nodeService.hasAspect(new org.alfresco.service.cmr.repository.NodeRef(initializedNodeRefs.get(
-                RestV1BaseTest.TESTFILE_NAME).getValue()),
+                        RestV1BaseTest.TESTFILE_NAME).getValue()),
                 ContentModel.ASPECT_VERSIONABLE));
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httppost = new HttpPost(url);
@@ -98,7 +99,7 @@ public class MetadataTest extends RestV1BaseTest {
 
         //Adding the cm:versionable aspect as a test
         httppost.setEntity(new StringEntity(json(String
-                .format("{'aspectsToAdd':['%s'], %s}", ContentModel.ASPECT_VERSIONABLE.toString(), propertiesToSet)),
+                .format("{'aspectsToAdd':['%s'], %s}", ContentModel.ASPECT_VERSIONABLE, propertiesToSet)),
                 ContentType.APPLICATION_JSON));
 
         final NodeRef testNodeRef;
@@ -117,7 +118,8 @@ public class MetadataTest extends RestV1BaseTest {
                     org.alfresco.service.cmr.repository.NodeRef alfTestRef = new org.alfresco.service.cmr.repository.NodeRef(
                             testNodeRef.toString());
                     assertEquals("newTitle", nodeService.getProperty(alfTestRef, ContentModel.PROP_TITLE));
-                    assertEquals(RestV1BaseTest.TESTFILE_NAME, nodeService.getProperty(alfTestRef, ContentModel.PROP_NAME));
+                    assertEquals(RestV1BaseTest.TESTFILE_NAME,
+                            nodeService.getProperty(alfTestRef, ContentModel.PROP_NAME));
                     assertTrue(nodeService.hasAspect(alfTestRef, ContentModel.ASPECT_VERSIONABLE));
                     return null;
                 }, false, true);
@@ -126,7 +128,8 @@ public class MetadataTest extends RestV1BaseTest {
     @Test
     public void testMetadataPostReturnsAccesDenied() throws IOException, JSONException {
         final HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/metadata", RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS);
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/metadata",
+                RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS);
         logger.debug(" URL: " + url);
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -138,7 +141,7 @@ public class MetadataTest extends RestV1BaseTest {
 
         //Adding the cm:versionable aspect as a test
         httppost.setEntity(new StringEntity(json(String
-                .format("{'aspectsToAdd':['%s'], %s}", ContentModel.ASPECT_VERSIONABLE.toString(), propertiesToSet)),
+                .format("{'aspectsToAdd':['%s'], %s}", ContentModel.ASPECT_VERSIONABLE, propertiesToSet)),
                 ContentType.APPLICATION_JSON));
 
         try (CloseableHttpResponse response = httpclient.execute(httppost)) {
@@ -176,7 +179,8 @@ public class MetadataTest extends RestV1BaseTest {
                 .doInTransaction(() -> {
                     assertFalse(checkExists(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME)));
                     org.alfresco.service.cmr.repository.NodeRef archivedRef = nodeArchiveService.getArchivedNode(
-                            new org.alfresco.service.cmr.repository.NodeRef(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getValue()));
+                            new org.alfresco.service.cmr.repository.NodeRef(
+                                    initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getValue()));
                     logger.debug(" deleted node: {}", archivedRef);
                     assertNotNull(archivedRef);
                     return null;
@@ -204,7 +208,8 @@ public class MetadataTest extends RestV1BaseTest {
     @Test
     public void testDeletePermanentlyReturnsAccesDenied() throws IOException {
         final HashMap<String, NodeRef> initializedNodeRefs = init();
-        final String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS) + "?permanently=true";
+        final String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME),
+                RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS) + "?permanently=true";
         transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
                     assertEquals(403, Request.Delete(url).execute().returnResponse().getStatusLine().getStatusCode());
@@ -216,7 +221,8 @@ public class MetadataTest extends RestV1BaseTest {
     @Test
     public void testMetadataShortGet() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
-        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getGuid(), "/metadata", "admin", "admin");
+        String url = makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME).getGuid(), "/metadata", "admin",
+                "admin");
         logger.debug("URL: " + url);
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
 

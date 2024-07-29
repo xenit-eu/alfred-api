@@ -49,25 +49,25 @@ public class SearchNodeTypeDeserializer
      */
     @Override
     public Object deserializeTypedFromObject(JsonParser jp, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
+            throws IOException {
         return _deserialize(jp, ctxt);
     }
 
     @Override
     public Object deserializeTypedFromArray(JsonParser jp, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
+            throws IOException {
         return _deserialize(jp, ctxt);
     }
 
     @Override
     public Object deserializeTypedFromScalar(JsonParser jp, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
+            throws IOException {
         return _deserialize(jp, ctxt);
     }
 
     @Override
     public Object deserializeTypedFromAny(JsonParser jp, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
+            throws IOException {
         return _deserialize(jp, ctxt);
     }
 
@@ -83,7 +83,7 @@ public class SearchNodeTypeDeserializer
      */
     @SuppressWarnings("resource")
     private final Object _deserialize(JsonParser jp, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
+            throws IOException {
         // 02-Aug-2013, tatu: May need to use native type ids
         if (jp.canReadTypeId()) {
             return _deserializeWithNativeTypeId(jp, ctxt);

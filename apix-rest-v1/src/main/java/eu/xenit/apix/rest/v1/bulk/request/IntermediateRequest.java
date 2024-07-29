@@ -5,6 +5,7 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.servlet.WebScriptServletRequest;
 
 public class IntermediateRequest extends WebScriptServletRequest {
+
     public static final String MATCH = "apix/";
 
     public IntermediateRequest(WebScriptRequest bulkWebScriptRequest, HttpServletRequest request) {

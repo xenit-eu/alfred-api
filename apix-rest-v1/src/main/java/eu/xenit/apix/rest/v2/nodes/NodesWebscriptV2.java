@@ -13,6 +13,9 @@ import eu.xenit.apix.rest.v1.nodes.CreateNodeOptions;
 import eu.xenit.apix.rest.v1.nodes.NodeInfo;
 import eu.xenit.apix.rest.v1.nodes.NodeInfoRequest;
 import eu.xenit.apix.rest.v2.ApixV2Webscript;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.alfresco.service.ServiceRegistry;
 import org.apache.http.HttpStatus;
 import org.json.JSONException;
@@ -24,10 +27,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @AlfrescoAuthentication
 @RestController
@@ -44,7 +43,7 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
     private final ServiceRegistry serviceRegistry;
 
     public NodesWebscriptV2(INodeService nodeService, IPermissionService permissionService,
-                            IFileFolderService fileFolderService, ServiceRegistry serviceRegistry) {
+            IFileFolderService fileFolderService, ServiceRegistry serviceRegistry) {
         this.nodeService = nodeService;
         this.permissionService = permissionService;
         this.fileFolderService = fileFolderService;
@@ -54,8 +53,8 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
     @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v2/nodes/{space}/{store}/{guid}")
     public ResponseEntity<NodeInfo> getAllInfo(@PathVariable String space,
-                                               @PathVariable String store,
-                                               @PathVariable String guid) {
+            @PathVariable String store,
+            @PathVariable String guid) {
         NodeRef nodeRef = this.createNodeRef(space, store, guid);
 
         NodeInfo nodeInfo = this
@@ -66,7 +65,8 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
 
     @AlfrescoTransaction
     @PostMapping(value = "/v2/nodes/nodeInfo")
-    public ResponseEntity<List<NodeInfo>> getAllInfos(@RequestBody final NodeInfoRequest nodeInfoRequest) throws JSONException {
+    public ResponseEntity<List<NodeInfo>> getAllInfos(@RequestBody final NodeInfoRequest nodeInfoRequest)
+            throws JSONException {
         List<NodeInfo> nodeInfoList = this.nodeRefToNodeInfo(
                 nodeInfoRequest,
                 this.fileFolderService,
@@ -78,8 +78,8 @@ public class NodesWebscriptV2 extends ApixV2Webscript {
     @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v2/nodes/{space}/{store}/{guid}/permissions")
     public ResponseEntity<Map<String, PermissionValue>> getPermissions(@PathVariable String space,
-                                                                       @PathVariable String store,
-                                                                       @PathVariable String guid) {
+            @PathVariable String store,
+            @PathVariable String guid) {
         NodeRef nodeRef = this.createNodeRef(space, store, guid);
         return writeJsonResponse(
                 this.permissionService.getPermissionsFast(nodeRef)

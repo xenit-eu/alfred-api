@@ -43,8 +43,8 @@ public class WorkingcopiesWebscript1 extends ApixV1Webscript {
     @AlfrescoTransaction
     @PostMapping(value = "/v1/workingcopies/{space}/{store}/{guid}/checkin")
     public ResponseEntity<?> checkinWorkingcopy(@PathVariable final String space, @PathVariable final String store,
-                                   @PathVariable final String guid,
-                                   @RequestBody final CheckinBody checkinBody) {
+            @PathVariable final String guid,
+            @RequestBody final CheckinBody checkinBody) {
         final NodeRef nodeRef = createNodeRef(space, store, guid);
         if (nodeService.exists(nodeRef)) {
             NodeRef originalRef = nodeService.checkin(nodeRef, checkinBody.getComment(), checkinBody.getMajorVersion());
@@ -64,6 +64,7 @@ public class WorkingcopiesWebscript1 extends ApixV1Webscript {
         }
         return respondDoesNotExist(workingCopyRef);
     }
+
     @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/workingcopies/{space}/{store}/{guid}/original")
     public ResponseEntity<?> getWorkingCopySource(@PathVariable final String space, @PathVariable final String store,

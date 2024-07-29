@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import eu.xenit.apix.util.AlfrescoServerInfo;
+
 /**
  * This class should only be used by the integration tests.
  */
@@ -17,6 +17,7 @@ import eu.xenit.apix.util.AlfrescoServerInfo;
 // This is a Helperclass for the integrationTests but have to be loaded on the runtimeclasspath!
 // This is due to the applicationContext not being able to load via osgi anymore
 public class SolrTestHelperImpl implements SolrTestHelper {
+
     private static final Logger logger = LoggerFactory.getLogger(SolrTestHelperImpl.class);
 
     private static final String SOLR_SUMMARY_CORE_ALFRESCO = "alfresco";
@@ -116,7 +117,7 @@ public class SolrTestHelperImpl implements SolrTestHelper {
     private boolean isContentIndexedImpl(Integer previousCleanCount) {
         JSONObject ftsBlock = getSummaryFtsSection();
         logger.debug("solrSummaryFTSBlock: {}", ftsBlock.toString(4));
-        if(isAlfresco61()) {
+        if (isAlfresco61()) {
             return 0 == ((Integer) ftsBlock.get(SOLR_SUMMARY_FTS_NEW_6))
                     && 0 == (Integer) ftsBlock.get(SOLR_SUMMARY_FTS_DIRTY_6)
                     && checkPreviousCount(previousCleanCount, (Integer) ftsBlock.get(SOLR_SUMMARY_FTS_CLEAN_6));
@@ -131,7 +132,7 @@ public class SolrTestHelperImpl implements SolrTestHelper {
     }
 
     private boolean checkPreviousCount(Integer previousCleanCount, Integer solrSummaryFtsCount) {
-        if(previousCleanCount == null) {
+        if (previousCleanCount == null) {
             return true; // no need to check
         }
         return previousCleanCount < solrSummaryFtsCount;

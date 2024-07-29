@@ -14,7 +14,6 @@ import eu.xenit.apix.util.SolrTestHelperImpl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.alfresco.model.ContentModel;
@@ -27,16 +26,16 @@ import org.junit.Test;
 
 @Ignore("Disabled for GHA build")
 public class TermHitHighlightingTest extends JavaApiBaseTest {
+
     INodeService nodeService;
     SearchService searchService;
     RetryingTransactionHelper retryingTransactionHelper;
-    private SolrTestHelperImpl solrHelper;
-    private static final String FURIES_TXT = ""
-            + "The furies are at home\nin the mirror; it is their address.\nEven the clearest water,\nif deep enough can drown.\n"
+    private final SolrTestHelperImpl solrHelper;
+    private static final String FURIES_TXT = "The furies are at home\nin the mirror; it is their address.\nEven the clearest water,\nif deep enough can drown.\n"
             + "\nNever think to surprise them.\nYour face approaching ever\nso friendly is the white flag\nthey ignore. There is no truce\n"
             + "\nwith the furies. A mirror’s temperature is always at zero.\n";
 
-    public TermHitHighlightingTest(){
+    public TermHitHighlightingTest() {
         // initialise the local beans
         nodeService = getBean(INodeService.class);
         retryingTransactionHelper = getBean(RetryingTransactionHelper.class);
@@ -69,12 +68,12 @@ public class TermHitHighlightingTest extends JavaApiBaseTest {
     /** Test all major parameters for term hit highlighting */
     public void searchResponseContainsHighlights() throws InterruptedException {
         int initialCleanDocs = solrHelper.getNumberOfFtsStatusCleanDocs();
-        List<HighlightResult> expected = Arrays.asList(new HighlightResult("cm:content", Arrays.asList(""
-                + "The !PREFIX!furies!SUFFIX! are at home\nin the mirror; it is their address.\n"
-                + "Even the clearest water,\nif deep enough can drown.\n\n"
-                + "Never think to surprise them.\nYour face approaching ever\n"
-                + "so friendly is the white flag\nthey ignore. There is no truce\n\n"
-                + "with the !PREFIX!furies!SUFFIX!. A mirror’s temperature is always at zero.\n\n")));
+        List<HighlightResult> expected = List.of(new HighlightResult("cm:content", List.of(
+                "The !PREFIX!furies!SUFFIX! are at home\nin the mirror; it is their address.\n"
+                        + "Even the clearest water,\nif deep enough can drown.\n\n"
+                        + "Never think to surprise them.\nYour face approaching ever\n"
+                        + "so friendly is the white flag\nthey ignore. There is no truce\n\n"
+                        + "with the !PREFIX!furies!SUFFIX!. A mirror’s temperature is always at zero.\n\n")));
 
         // Waiting for Solr's indexing process to catch up before executing test.
         solrHelper.waitForTransactionSync();

@@ -25,7 +25,7 @@ public class IntermediateCookie extends Cookie {
     /**
      * Construct a new {@link IntermediateCookie} with the supplied name and value.
      *
-     * @param name  the name
+     * @param name the name
      * @param value the value
      * @see Cookie#Cookie(String, String)
      */
@@ -56,8 +56,8 @@ public class IntermediateCookie extends Cookie {
     /**
      * Set the "SameSite" attribute for this cookie.
      * <p>This limits the scope of the cookie such that it will only be attached
-     * to same-site requests if the supplied value is {@code "Strict"} or cross-site
-     * requests if the supplied value is {@code "Lax"}.
+     * to same-site requests if the supplied value is {@code "Strict"} or cross-site requests if the supplied value is
+     * {@code "Lax"}.
      *
      * @see <a href="https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis#section-4.1.2.7">RFC6265 bis</a>
      */

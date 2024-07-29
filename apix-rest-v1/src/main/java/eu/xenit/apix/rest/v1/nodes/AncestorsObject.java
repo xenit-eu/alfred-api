@@ -1,7 +1,6 @@
 package eu.xenit.apix.rest.v1.nodes;
 
 import eu.xenit.apix.data.NodeRef;
-
 import java.util.List;
 
 public class AncestorsObject {

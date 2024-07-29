@@ -1,8 +1,8 @@
 description = "Xenit Alfred API implementation Alfresco 23.1.0"
 
 ext {
-    alfresco_version = '23.1.0'
-    alfresco_min_version = alfresco_version.substring(0, 4) + ".0"
+    alfresco_version = "23.1.0"
+    alfresco_min_version ="23.1.0"
     //Not setting alfresco_max_version here to make it easier to test on next Alfresco version (only for latest version)
-    alfresco_max_version = null // explicit null to overwrite properties from other projects
+    alfresco_max_version = "23.1.99"
 }

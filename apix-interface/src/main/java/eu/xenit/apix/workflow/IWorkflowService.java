@@ -20,35 +20,35 @@ public interface IWorkflowService {
 
     ///<editor-fold comment="BPM Workflow instance/task properties' Full QNames">
     // TODO Refactor to dictionary service or smth?
-    String ALFRESCO_ACTIVE               = "{http://www.alfresco.org/model/bpm/1.0}active";
-    String ALFRESCO_OWNER                = "{http://www.alfresco.org/model/content/1.0}owner";
-    String ALFRESCO_COMPLETIONDATE       = "{http://www.alfresco.org/model/bpm/1.0}completionDate";
-    String ALFRESCO_ENDDATE              = "{http://www.alfresco.org/model/bpm/1.0}endDate";
-    String ALFRESCO_STARTDATE            = "{http://www.alfresco.org/model/bpm/1.0}startDate";
-    String ALFRESCO_DUEDATE              = "{http://www.alfresco.org/model/bpm/1.0}dueDate";
-    String ALFRESCO_WF_DUEDATE           = "{http://www.alfresco.org/model/bpm/1.0}workflowDueDate";
-    String ALFRESCO_ID                   = "{http://www.alfresco.org/model/bpm/1.0}id";
-    String ALFRESCO_INITIATOR            = "{http://www.alfresco.org/model/bpm/1.0}initiator";
-    String ALFRESCO_BPM_NAME             = "{http://www.alfresco.org/model/bpm/1.0}name";
-    String ALFRESCO_CM_NAME              = "{http://www.alfresco.org/model/content/1.0}name";
-    String ALFRESCO_VERSION              = "{http://www.alfresco.org/model/bpm/1.0}version";
-    String ALFRESCO_PRIORITY             = "{http://www.alfresco.org/model/bpm/1.0}priority";
-    String ALFRESCO_WF_PRIORITY          = "{http://www.alfresco.org/model/bpm/1.0}workflowPriority";
-    String ALFRESCO_TITLE                = "{http://www.alfresco.org/model/bpm/1.0}title";
-    String ALFRESCO_WORKFLOW_PACKAGE     = "{http://www.alfresco.org/model/bpm/1.0}workflowPackage";
-    String ALFRESCO_CONTEXT              = "{http://www.alfresco.org/model/bpm/1.0}context";
-    String ALFRESCO_DESCRIPTION          = "{http://www.alfresco.org/model/bpm/1.0}description";
-    String ALFRESCO_CLAIMABLE            = "{http://www.alfresco.org/model/bpm/1.0}claimable";
-    String ALFRESCO_RELEASABLE           = "{http://www.alfresco.org/model/bpm/1.0}releasable";
-    String ALFRESCO_TYPE                 = "{http://www.alfresco.org/model/bpm/1.0}type";
-    String ALFRESCO_DEFINITION           = "{http://www.alfresco.org/model/bpm/1.0}definition";
-    String ALFRESCO_STATE                = "{http://www.alfresco.org/model/bpm/1.0}state";
-    String ALFRESCO_TRANSITIONS          = "{http://www.alfresco.org/model/bpm/1.0}transitions";
-    String ALFRESCO_WORKFLOW_ID          = "{http://www.alfresco.org/model/bpm/1.0}workflowId";
+    String ALFRESCO_ACTIVE = "{http://www.alfresco.org/model/bpm/1.0}active";
+    String ALFRESCO_OWNER = "{http://www.alfresco.org/model/content/1.0}owner";
+    String ALFRESCO_COMPLETIONDATE = "{http://www.alfresco.org/model/bpm/1.0}completionDate";
+    String ALFRESCO_ENDDATE = "{http://www.alfresco.org/model/bpm/1.0}endDate";
+    String ALFRESCO_STARTDATE = "{http://www.alfresco.org/model/bpm/1.0}startDate";
+    String ALFRESCO_DUEDATE = "{http://www.alfresco.org/model/bpm/1.0}dueDate";
+    String ALFRESCO_WF_DUEDATE = "{http://www.alfresco.org/model/bpm/1.0}workflowDueDate";
+    String ALFRESCO_ID = "{http://www.alfresco.org/model/bpm/1.0}id";
+    String ALFRESCO_INITIATOR = "{http://www.alfresco.org/model/bpm/1.0}initiator";
+    String ALFRESCO_BPM_NAME = "{http://www.alfresco.org/model/bpm/1.0}name";
+    String ALFRESCO_CM_NAME = "{http://www.alfresco.org/model/content/1.0}name";
+    String ALFRESCO_VERSION = "{http://www.alfresco.org/model/bpm/1.0}version";
+    String ALFRESCO_PRIORITY = "{http://www.alfresco.org/model/bpm/1.0}priority";
+    String ALFRESCO_WF_PRIORITY = "{http://www.alfresco.org/model/bpm/1.0}workflowPriority";
+    String ALFRESCO_TITLE = "{http://www.alfresco.org/model/bpm/1.0}title";
+    String ALFRESCO_WORKFLOW_PACKAGE = "{http://www.alfresco.org/model/bpm/1.0}workflowPackage";
+    String ALFRESCO_CONTEXT = "{http://www.alfresco.org/model/bpm/1.0}context";
+    String ALFRESCO_DESCRIPTION = "{http://www.alfresco.org/model/bpm/1.0}description";
+    String ALFRESCO_CLAIMABLE = "{http://www.alfresco.org/model/bpm/1.0}claimable";
+    String ALFRESCO_RELEASABLE = "{http://www.alfresco.org/model/bpm/1.0}releasable";
+    String ALFRESCO_TYPE = "{http://www.alfresco.org/model/bpm/1.0}type";
+    String ALFRESCO_DEFINITION = "{http://www.alfresco.org/model/bpm/1.0}definition";
+    String ALFRESCO_STATE = "{http://www.alfresco.org/model/bpm/1.0}state";
+    String ALFRESCO_TRANSITIONS = "{http://www.alfresco.org/model/bpm/1.0}transitions";
+    String ALFRESCO_WORKFLOW_ID = "{http://www.alfresco.org/model/bpm/1.0}workflowId";
     String ALFRESCO_WORKFLOW_INSTANCE_ID = "{http://www.alfresco.org/model/bpm/1.0}workflowInstanceId";
-    String ALFRESCO_ASSIGNEE             = "{http://www.alfresco.org/model/bpm/1.0}assignee";
-    String ALFRESCO_GROUP_ASSIGNEE       = "{http://www.alfresco.org/model/bpm/1.0}groupAssignee";
-    String ALFRESCO_INVOLVED             = "{http://www.alfresco.org/model/bpm/1.0}involved";
+    String ALFRESCO_ASSIGNEE = "{http://www.alfresco.org/model/bpm/1.0}assignee";
+    String ALFRESCO_GROUP_ASSIGNEE = "{http://www.alfresco.org/model/bpm/1.0}groupAssignee";
+    String ALFRESCO_INVOLVED = "{http://www.alfresco.org/model/bpm/1.0}involved";
     ///</editor-fold>
 
     /**
@@ -144,8 +144,8 @@ public interface IWorkflowService {
     Task claimWorkflowTask(String taskID, String userName);
 
     /**
-     * Release the task to pool of {@link eu.xenit.apix.people.Person users} and/or {@link eu.xenit.apix.people.Person
-     * groups} with the provided id.
+     * Release the task to pool of {@link eu.xenit.apix.people.Person users} and/or
+     * {@link eu.xenit.apix.people.Person groups} with the provided id.
      *
      * @param taskID Specifies the id of the workflow {@link eu.xenit.apix.workflow.model.Task task} that is to be
      * released
@@ -168,6 +168,7 @@ public interface IWorkflowService {
 
     /**
      * Starts one instance of the workflow of the given definition
+     *
      * @param definitionId The id defining a workflow definition
      * @param parameters Starting parameters for workflow
      * @return POJO containing workflow instance id

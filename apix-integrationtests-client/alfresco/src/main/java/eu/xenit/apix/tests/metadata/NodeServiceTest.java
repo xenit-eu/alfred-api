@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -60,16 +61,16 @@ public class NodeServiceTest extends JavaApiBaseTest {
     StoreRef alfStoreRef = new StoreRef("workspace", "SpacesStore");
     eu.xenit.apix.data.StoreRef apixStoreRef = new eu.xenit.apix.data.StoreRef("workspace", "SpacesStore");
 
-    private INodeService service;
-    private ContentService contentService;
-    private NodeService alfrescoNodeService;
-    private VersionService versionService;
-    private CopyService copyService;
-    private Repository repository;
-    private Set<NodeRef> roots;
+    private final INodeService service;
+    private final ContentService contentService;
+    private final NodeService alfrescoNodeService;
+    private final VersionService versionService;
+    private final CopyService copyService;
+    private final Repository repository;
+    private final Set<NodeRef> roots;
     private ICategoryService categoryService;
 
-    public NodeServiceTest(){
+    public NodeServiceTest() {
         // initialise the local beans
         service = getBean(INodeService.class);
         alfrescoNodeService = serviceRegistry.getNodeService();
@@ -396,7 +397,7 @@ public class NodeServiceTest extends JavaApiBaseTest {
             NodeRef copyNodeRef = this.copyService.copyAndRename(testNode.getNodeRef(),
                     mainTestFolder.getNodeRef(),
                     ContentModel.ASSOC_CONTAINS,
-                    (QName) null, true);
+                    null, true);
 
             this.alfrescoNodeService.createAssociation(testNode.getNodeRef(), copyNodeRef, ContentModel.ASSOC_ORIGINAL);
 
@@ -554,7 +555,8 @@ public class NodeServiceTest extends JavaApiBaseTest {
 
                             FileInfo mainTestFolder = self.createMainTestFolder(companyHomeRef);
                             FileInfo testFolder = self.createTestFolder(mainTestFolder.getNodeRef(), "testfolder2");
-                            self.service.createNode(c.apix(testFolder.getNodeRef()), propertiesToSet, null, null, type, null);
+                            self.service.createNode(c.apix(testFolder.getNodeRef()), propertiesToSet, null, null, type,
+                                    null);
                             return null;
                         }
                     }, false, true);
@@ -562,9 +564,6 @@ public class NodeServiceTest extends JavaApiBaseTest {
             fail();
         } catch (org.alfresco.repo.node.integrity.IntegrityException e) {
             assertTrue(true);
-        } finally {
-            // this hides the raise of exception !!! Why ??
-            //self.removeTestNode(mainTestFolder.getNodeRef());
         }
 
 
@@ -580,7 +579,7 @@ public class NodeServiceTest extends JavaApiBaseTest {
 
         String mimeType = "text/plain";
         String contentStr = "TEST CONTENT";
-        InputStream is = new ByteArrayInputStream(contentStr.getBytes("UTF-8"));
+        InputStream is = new ByteArrayInputStream(contentStr.getBytes(StandardCharsets.UTF_8));
 
         try {
             eu.xenit.apix.data.ContentData content = this.service.createContent(is, mimeType, "UTF-8");
@@ -592,7 +591,8 @@ public class NodeServiceTest extends JavaApiBaseTest {
             Map<eu.xenit.apix.data.QName, String[]> propertiesToSet = new HashMap<>();
             propertiesToSet.put(c.apix(ContentModel.PROP_NAME), new String[]{"nodeWithContent"});
             eu.xenit.apix.data.NodeRef createdNodeRef = this.service
-                    .createNode(c.apix(testFolder.getNodeRef()), propertiesToSet, null, null, c.apix(ContentModel.TYPE_CONTENT),
+                    .createNode(c.apix(testFolder.getNodeRef()), propertiesToSet, null, null,
+                            c.apix(ContentModel.TYPE_CONTENT),
                             content);
 
             // re-read content of the node.
@@ -621,7 +621,7 @@ public class NodeServiceTest extends JavaApiBaseTest {
 
             String mimeType = "text/plain";
             String contentStr = "TEST CONTENT";
-            InputStream is = new ByteArrayInputStream(contentStr.getBytes("UTF-8"));
+            InputStream is = new ByteArrayInputStream(contentStr.getBytes(StandardCharsets.UTF_8));
 
             //properties to set
             Map<eu.xenit.apix.data.QName, String[]> propertiesToSet = new HashMap<>();
@@ -650,8 +650,7 @@ public class NodeServiceTest extends JavaApiBaseTest {
             assertNotNull("the cm:name property could not be found", testProperties.get(ContentModel.PROP_NAME));
             assertNotNull("", testProperties.get(c.alfresco(documentStatusQname)));
             assertTrue(alfrescoNodeService.hasAspect(c.alfresco(createdNodeRef), ContentModel.ASPECT_TEMPORARY));
-        }
-        finally {
+        } finally {
             this.cleanUp();
         }
     }
@@ -787,7 +786,7 @@ public class NodeServiceTest extends JavaApiBaseTest {
     }
 
     @Test
-    public void testTextFileUploadWithMimeGuess() throws IOException{
+    public void testTextFileUploadWithMimeGuess() throws IOException {
         cleanUp();
         NodeRef companyHomeNodeRef = repository.getCompanyHome();
         FileInfo mainTestFolder = createMainTestFolder(companyHomeNodeRef);
@@ -797,7 +796,7 @@ public class NodeServiceTest extends JavaApiBaseTest {
             eu.xenit.apix.data.ContentData contentData = service.createContentWithMimetypeGuess(inputStream,
                     testTextFile.getName(),
                     "UTF-8");
-            assertEquals(contentData.getEncoding(),"UTF-8");
+            assertEquals(contentData.getEncoding(), "UTF-8");
             assertEquals(TEXT_MIMETYPE, contentData.getMimetype());
         } finally {
             removeTestNode(mainTestFolder.getNodeRef());
@@ -824,12 +823,12 @@ public class NodeServiceTest extends JavaApiBaseTest {
                             Locale.CHINA);
             service.setContent(c.apix(testNode), apContentData);
             ContentData newData = (ContentData) alfNodeService.getProperty(testNode, ContentModel.PROP_CONTENT);
-            assertTrue(newData.getContentUrl().equals("www.mycontent.be"));
-            assertTrue(newData.getMimetype().equals("text/plain"));
-            assertTrue(newData.getEncoding().equals("UTF8"));
-            assertTrue(newData.getSize() == (128));
+            assertEquals("www.mycontent.be", newData.getContentUrl());
+            assertEquals("text/plain", newData.getMimetype());
+            assertEquals("UTF8", newData.getEncoding());
+            assertEquals((128), newData.getSize());
 
-            assertTrue(newData.getLocale().equals(Locale.CHINA));
+            assertEquals(newData.getLocale(), Locale.CHINA);
         } finally {
             this.removeTestNode(mainTestFolder.getNodeRef());
         }

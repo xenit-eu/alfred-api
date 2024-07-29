@@ -8,7 +8,7 @@ plugins {
 }
 
 def static getVersionQualifier(String branch_name) {
-    if(branch_name.startsWith('release'))
+    if (branch_name.startsWith('release'))
         return ''
     return '-SNAPSHOT'
 }
@@ -42,12 +42,4 @@ subprojects {
             }
         }
     }
-}
-
-
-def getSecondDotPosition(String version) {
-    return version.split(/\./)[0].length() + 1 + version.split(/\./)[1].length()
-}
-def getTotalNumbersAfterDash(String version) {
-    return version.split("-")[1].length()
 }

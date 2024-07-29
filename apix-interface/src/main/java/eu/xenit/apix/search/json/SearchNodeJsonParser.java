@@ -9,6 +9,7 @@ import eu.xenit.apix.search.nodes.SearchSyntaxNode;
 import eu.xenit.apix.search.nodes.TermSearchNode;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class SearchNodeJsonParser {
@@ -48,9 +49,7 @@ public class SearchNodeJsonParser {
 
     private ArrayList<String> newArrayList(String... elements) {
         ArrayList<String> ret = new ArrayList<String>();
-        for (String el : elements) {
-            ret.add(el);
-        }
+        Collections.addAll(ret, elements);
 
         return ret;
     }

@@ -30,8 +30,8 @@ public class AlfrescoServerInfo {
     }
 
     /**
-     * Tried using SearchTrackingComponent and NodeDAO to getMaxTxnId, but they are not as consistent and quick
-     * as getting it from alf_node table.
+     * Tried using SearchTrackingComponent and NodeDAO to getMaxTxnId, but they are not as consistent and quick as
+     * getting it from alf_node table.
      */
     public long getAlfTransactionIdDAO() {
         try (Connection connection = dataSource.getConnection()) {

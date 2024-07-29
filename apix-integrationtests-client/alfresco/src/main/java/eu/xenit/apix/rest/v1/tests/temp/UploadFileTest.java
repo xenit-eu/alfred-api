@@ -7,6 +7,7 @@ import eu.xenit.apix.rest.v1.tests.RestV1BaseTest;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -65,7 +66,8 @@ public class UploadFileTest extends RestV1BaseTest {
     public void testUploadFileResultsInAccessDenied() throws IOException {
         String url = createUrl(RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS);
         logger.debug(">>>>> URL: {}", url);
-        HttpEntity entity = createHttpEntity(initNodeRefArray.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME).toString(), LOCAL_TESTFILE_NAME);
+        HttpEntity entity = createHttpEntity(initNodeRefArray.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME).toString(),
+                LOCAL_TESTFILE_NAME);
         try (CloseableHttpResponse response = doPost(url, entity)) {
             String resultString = EntityUtils.toString(response.getEntity());
             logger.debug(" resultString: {}", resultString);
@@ -132,7 +134,7 @@ public class UploadFileTest extends RestV1BaseTest {
         } else {
             logger.debug(" Did not create new file. ");
         }
-        PrintWriter writer = new PrintWriter(pathName, "UTF-8");
+        PrintWriter writer = new PrintWriter(pathName, StandardCharsets.UTF_8);
         String contentString = "This is the content";
         writer.println(contentString);
         writer.close();

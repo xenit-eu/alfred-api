@@ -5,6 +5,7 @@ import com.gradecak.alfresco.mvc.annotation.AlfrescoTransaction;
 import com.gradecak.alfresco.mvc.annotation.AuthenticationType;
 import eu.xenit.apix.people.IPeopleService;
 import eu.xenit.apix.rest.v1.ApixV1Webscript;
+import java.util.NoSuchElementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.NoSuchElementException;
 
 @AlfrescoAuthentication(AuthenticationType.USER)
 @RestController
@@ -29,8 +28,8 @@ public class PeopleWebscript1 extends ApixV1Webscript {
     @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/people/{space}/{store}/{guid}")
     public ResponseEntity<?> getPerson(@PathVariable final String space,
-                                       @PathVariable final String store,
-                                       @PathVariable final String guid) {
+            @PathVariable final String store,
+            @PathVariable final String guid) {
         logger.debug("Asked person with guid: {}", guid);
         try {
             return writeJsonResponse(

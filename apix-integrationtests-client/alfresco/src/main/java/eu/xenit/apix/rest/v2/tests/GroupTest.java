@@ -27,6 +27,7 @@ import org.apache.http.util.EntityUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 public class GroupTest extends RestV2BaseTest {
 
     private final String[] userNames = {"GroupTestUser", "GroupTestUser2", "GroupTestUser3"};
@@ -37,10 +38,10 @@ public class GroupTest extends RestV2BaseTest {
     private final String groupName = "GroupTestGroup";
     private final String groupIdentifier = "GROUP_" + groupName;
 
-    private PersonService alfrescoPersonService;
-    private AuthorityService alfrescoAuthorityService;
+    private final PersonService alfrescoPersonService;
+    private final AuthorityService alfrescoAuthorityService;
 
-    public GroupTest(){
+    public GroupTest() {
         alfrescoPersonService = serviceRegistry.getPersonService();
         alfrescoAuthorityService = serviceRegistry.getAuthorityService();
     }
@@ -292,7 +293,7 @@ public class GroupTest extends RestV2BaseTest {
         // Replace with empty list
 
         put = new HttpPut(putUrl);
-        put.setEntity(new StringEntity(String.format("{\"users\":[]}"), ContentType.APPLICATION_JSON));
+        put.setEntity(new StringEntity("{\"users\":[]}", ContentType.APPLICATION_JSON));
 
         CloseableHttpResponse respTwo = client.execute(put);
         Assert.assertEquals(200, respOne.getStatusLine().getStatusCode());

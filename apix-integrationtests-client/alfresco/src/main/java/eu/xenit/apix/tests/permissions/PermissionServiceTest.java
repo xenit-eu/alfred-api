@@ -34,166 +34,166 @@ import org.slf4j.LoggerFactory;
  */
 public class PermissionServiceTest extends JavaApiBaseTest {
 
-  private final static Logger logger = LoggerFactory.getLogger(PermissionServiceTest.class);
-  private static final String ADMIN_USER_NAME = "admin";
+    private final static Logger logger = LoggerFactory.getLogger(PermissionServiceTest.class);
+    private static final String ADMIN_USER_NAME = "admin";
 
-  private IPermissionService service;
-  private PermissionService permissionService;
-  private SearchService searchService;
-  private NodeService alfrescoNodeService;
+    private final IPermissionService service;
+    private final PermissionService permissionService;
+    private final SearchService searchService;
+    private final NodeService alfrescoNodeService;
 
-  private NodeService llAlfrescoNodeService;
-  private FileFolderService fileFolderService;
-  private SolrTestHelperImpl solrHelper;
+    private final NodeService llAlfrescoNodeService;
+    private final FileFolderService fileFolderService;
+    private final SolrTestHelperImpl solrHelper;
 
-  public PermissionServiceTest(){
-    // initialise the local beans
-    service = getBean(IPermissionService.class);
-    permissionService = serviceRegistry.getPermissionService();
-    searchService = serviceRegistry.getSearchService();
-    fileFolderService = serviceRegistry.getFileFolderService();
-    alfrescoNodeService = serviceRegistry.getNodeService();
-    llAlfrescoNodeService = getBean("nodeService",NodeService.class);
-    solrHelper = getBean(SolrTestHelperImpl.class);
-  }
-
-  @Before
-  public void Setup() {
-    AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-  }
-
-  public NodeRef getNodeAtPath(String path) {
-    StoreRef storeRef = StoreRef.STORE_REF_WORKSPACE_SPACESSTORE;
-    ResultSet rs = searchService.query(storeRef, SearchService.LANGUAGE_XPATH, path);
-    NodeRef companyHomeNodeRef = null;
-    try {
-      if (rs.length() == 0) {
-        throw new RuntimeException("Didn't find node at: " + path);
-      }
-      companyHomeNodeRef = rs.getNodeRef(0);
-    } finally {
-      rs.close();
-    }
-    return companyHomeNodeRef;
-  }
-
-  @Test
-  public void testGetPermissions() {
-    try {
-      solrHelper.waitForTransactionSync();
-    } catch (InterruptedException e) {
-      Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
-    }
-    cleanUp();
-
-    NodeRef companyHomeNodeRef = getNodeAtPath("/app:company_home");
-    FileInfo mainTestFolder = createMainTestFolder(companyHomeNodeRef);
-    FileInfo testNode = createTestNode(mainTestFolder.getNodeRef(), "testnode");
-    try {
-      solrHelper.waitForTransactionSync();
-    } catch (InterruptedException e) {
-      Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
-    }
-    try {
-      Map<String, PermissionValue> permissions = service
-          .getPermissions(c.apix(testNode.getNodeRef()));
-      logger.debug(permissions.toString());
-      assertTrue(permissions.containsKey("Read"));
-      assertTrue(permissions.containsKey("Write"));
-      assertTrue(permissions.containsKey("Delete"));
-      assertEquals(permissions.get("Read"), PermissionValue.ALLOW);
-      assertEquals(permissions.get("Write"), PermissionValue.ALLOW);
-      assertEquals(permissions.get("Delete"), PermissionValue.ALLOW);
-    } finally {
-      removeTestNode(mainTestFolder.getNodeRef());
-    }
-  }
-
-  @Test
-  public void testGetPermissionsV2() {
-    try {
-      solrHelper.waitForTransactionSync();
-    } catch (InterruptedException e) {
-      Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
-    }
-    cleanUp();
-
-    NodeRef companyHomeNodeRef = getNodeAtPath("/app:company_home");
-    FileInfo mainTestFolder = createMainTestFolder(companyHomeNodeRef);
-    FileInfo testNode = createTestNode(mainTestFolder.getNodeRef(), "testnode");
-    try {
-      solrHelper.waitForTransactionSync();
-    } catch (InterruptedException e) {
-      Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+    public PermissionServiceTest() {
+        // initialise the local beans
+        service = getBean(IPermissionService.class);
+        permissionService = serviceRegistry.getPermissionService();
+        searchService = serviceRegistry.getSearchService();
+        fileFolderService = serviceRegistry.getFileFolderService();
+        alfrescoNodeService = serviceRegistry.getNodeService();
+        llAlfrescoNodeService = getBean("nodeService", NodeService.class);
+        solrHelper = getBean(SolrTestHelperImpl.class);
     }
 
-    try {
-      Map<String, PermissionValue> permissions = service
-          .getPermissionsFast(c.apix(testNode.getNodeRef()));
-      logger.debug(permissions.toString());
-      assertTrue(permissions.containsKey("Read"));
-      assertTrue(permissions.containsKey("Write"));
-      assertTrue(permissions.containsKey("Delete"));
-      assertEquals(permissions.get("Read"), PermissionValue.ALLOW);
-      assertEquals(permissions.get("Write"), PermissionValue.ALLOW);
-      assertEquals(permissions.get("Delete"), PermissionValue.ALLOW);
-    } finally {
-      removeTestNode(mainTestFolder.getNodeRef());
-    }
-  }
-
-  @Test
-  public void testSetPermissions() {
-    try {
-      solrHelper.waitForTransactionSync();
-    } catch (InterruptedException e) {
-      Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
-    }
-    cleanUp();
-
-    NodeRef companyHomeNodeRef = getNodeAtPath("/app:company_home");
-    FileInfo mainTestFolder = createMainTestFolder(companyHomeNodeRef);
-    FileInfo testNode = createTestNode(mainTestFolder.getNodeRef(), "testnode");
-    Long initialAclId = llAlfrescoNodeService.getNodeAclId(testNode.getNodeRef());
-    try {
-      solrHelper.waitForTransactionSync();
-    } catch (InterruptedException e) {
-      Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+    @Before
+    public void Setup() {
+        AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
     }
 
-    try {
-      Set<Access> accessSet = new HashSet<>();
-      Access access = new Access();
-      access.setAuthority("abeecher");
-      access.setPermission("Contributor");
-      accessSet.add(access);
-      NodePermission nodePermission = new NodePermission(true, accessSet, null);
-
-      service.setNodePermissions(c.apix(testNode.getNodeRef()), nodePermission);
-
-      //check if the effect of setting the permissions is reached
-      NodePermission nodePermission1 = service
-          .getNodePermissions(c.apix(testNode.getNodeRef()));
-      assertEquals(nodePermission.isInheritFromParent(),
-          nodePermission1.isInheritFromParent());
-      assertEquals(nodePermission.getOwnAccessList().size(),
-          nodePermission1.getOwnAccessList().size());
-      Access access1 = (Access) nodePermission1.getOwnAccessList().toArray()[0];
-      assertEquals(access.getAuthority(), access1.getAuthority());
-      assertEquals(access.getPermission(), access1.getPermission());
-      assertEquals(access.isAllowed(), access1.isAllowed());
-      assertNotEquals(initialAclId, llAlfrescoNodeService.getNodeAclId(testNode.getNodeRef()));
-
-      //reset the nodes permissions
-      service.setNodePermissions(c.apix(testNode.getNodeRef()),
-          new NodePermission(true, new HashSet<Access>(), null));
-
-      //check if the aclId is set back to the initial one.
-      assertEquals(initialAclId, llAlfrescoNodeService.getNodeAclId(testNode.getNodeRef()));
-
-
-    } finally {
-      removeTestNode(mainTestFolder.getNodeRef());
+    public NodeRef getNodeAtPath(String path) {
+        StoreRef storeRef = StoreRef.STORE_REF_WORKSPACE_SPACESSTORE;
+        ResultSet rs = searchService.query(storeRef, SearchService.LANGUAGE_XPATH, path);
+        NodeRef companyHomeNodeRef = null;
+        try {
+            if (rs.length() == 0) {
+                throw new RuntimeException("Didn't find node at: " + path);
+            }
+            companyHomeNodeRef = rs.getNodeRef(0);
+        } finally {
+            rs.close();
+        }
+        return companyHomeNodeRef;
     }
-  }
+
+    @Test
+    public void testGetPermissions() {
+        try {
+            solrHelper.waitForTransactionSync();
+        } catch (InterruptedException e) {
+            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+        }
+        cleanUp();
+
+        NodeRef companyHomeNodeRef = getNodeAtPath("/app:company_home");
+        FileInfo mainTestFolder = createMainTestFolder(companyHomeNodeRef);
+        FileInfo testNode = createTestNode(mainTestFolder.getNodeRef(), "testnode");
+        try {
+            solrHelper.waitForTransactionSync();
+        } catch (InterruptedException e) {
+            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+        }
+        try {
+            Map<String, PermissionValue> permissions = service
+                    .getPermissions(c.apix(testNode.getNodeRef()));
+            logger.debug(permissions.toString());
+            assertTrue(permissions.containsKey("Read"));
+            assertTrue(permissions.containsKey("Write"));
+            assertTrue(permissions.containsKey("Delete"));
+            assertEquals(permissions.get("Read"), PermissionValue.ALLOW);
+            assertEquals(permissions.get("Write"), PermissionValue.ALLOW);
+            assertEquals(permissions.get("Delete"), PermissionValue.ALLOW);
+        } finally {
+            removeTestNode(mainTestFolder.getNodeRef());
+        }
+    }
+
+    @Test
+    public void testGetPermissionsV2() {
+        try {
+            solrHelper.waitForTransactionSync();
+        } catch (InterruptedException e) {
+            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+        }
+        cleanUp();
+
+        NodeRef companyHomeNodeRef = getNodeAtPath("/app:company_home");
+        FileInfo mainTestFolder = createMainTestFolder(companyHomeNodeRef);
+        FileInfo testNode = createTestNode(mainTestFolder.getNodeRef(), "testnode");
+        try {
+            solrHelper.waitForTransactionSync();
+        } catch (InterruptedException e) {
+            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+        }
+
+        try {
+            Map<String, PermissionValue> permissions = service
+                    .getPermissionsFast(c.apix(testNode.getNodeRef()));
+            logger.debug(permissions.toString());
+            assertTrue(permissions.containsKey("Read"));
+            assertTrue(permissions.containsKey("Write"));
+            assertTrue(permissions.containsKey("Delete"));
+            assertEquals(permissions.get("Read"), PermissionValue.ALLOW);
+            assertEquals(permissions.get("Write"), PermissionValue.ALLOW);
+            assertEquals(permissions.get("Delete"), PermissionValue.ALLOW);
+        } finally {
+            removeTestNode(mainTestFolder.getNodeRef());
+        }
+    }
+
+    @Test
+    public void testSetPermissions() {
+        try {
+            solrHelper.waitForTransactionSync();
+        } catch (InterruptedException e) {
+            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+        }
+        cleanUp();
+
+        NodeRef companyHomeNodeRef = getNodeAtPath("/app:company_home");
+        FileInfo mainTestFolder = createMainTestFolder(companyHomeNodeRef);
+        FileInfo testNode = createTestNode(mainTestFolder.getNodeRef(), "testnode");
+        Long initialAclId = llAlfrescoNodeService.getNodeAclId(testNode.getNodeRef());
+        try {
+            solrHelper.waitForTransactionSync();
+        } catch (InterruptedException e) {
+            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+        }
+
+        try {
+            Set<Access> accessSet = new HashSet<>();
+            Access access = new Access();
+            access.setAuthority("abeecher");
+            access.setPermission("Contributor");
+            accessSet.add(access);
+            NodePermission nodePermission = new NodePermission(true, accessSet, null);
+
+            service.setNodePermissions(c.apix(testNode.getNodeRef()), nodePermission);
+
+            //check if the effect of setting the permissions is reached
+            NodePermission nodePermission1 = service
+                    .getNodePermissions(c.apix(testNode.getNodeRef()));
+            assertEquals(nodePermission.isInheritFromParent(),
+                    nodePermission1.isInheritFromParent());
+            assertEquals(nodePermission.getOwnAccessList().size(),
+                    nodePermission1.getOwnAccessList().size());
+            Access access1 = (Access) nodePermission1.getOwnAccessList().toArray()[0];
+            assertEquals(access.getAuthority(), access1.getAuthority());
+            assertEquals(access.getPermission(), access1.getPermission());
+            assertEquals(access.isAllowed(), access1.isAllowed());
+            assertNotEquals(initialAclId, llAlfrescoNodeService.getNodeAclId(testNode.getNodeRef()));
+
+            //reset the nodes permissions
+            service.setNodePermissions(c.apix(testNode.getNodeRef()),
+                    new NodePermission(true, new HashSet<Access>(), null));
+
+            //check if the aclId is set back to the initial one.
+            assertEquals(initialAclId, llAlfrescoNodeService.getNodeAclId(testNode.getNodeRef()));
+
+
+        } finally {
+            removeTestNode(mainTestFolder.getNodeRef());
+        }
+    }
 }

@@ -4,6 +4,7 @@ import eu.xenit.apix.BaseApplicationContextTest;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import org.alfresco.model.ContentModel;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
@@ -31,7 +32,7 @@ public abstract class JavaApiBaseTest extends BaseApplicationContextTest {
 
 
     protected NodeRef getNodeAtPath(String path) {
-        if("/app:company_home".equals(path)) {
+        if ("/app:company_home".equals(path)) {
             return repository.getCompanyHome();
         }
         SearchService searchService = serviceRegistry.getSearchService();
@@ -93,7 +94,7 @@ public abstract class JavaApiBaseTest extends BaseApplicationContextTest {
         File textFile = new File(fileName);
         textFile.deleteOnExit();
         textFile.createNewFile();
-        try(PrintWriter writer = new PrintWriter(fileName, "UTF-8")){
+        try (PrintWriter writer = new PrintWriter(fileName, StandardCharsets.UTF_8)) {
             writer.println(content);
         }
         return textFile;

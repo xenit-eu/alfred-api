@@ -3,6 +3,7 @@ package eu.xenit.apix.translation;
 import eu.xenit.apix.data.QName;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Datastructure that represents the translations of a single property its values for a single language. values: The map
@@ -42,7 +43,7 @@ public class PropertyTranslationValue extends TranslationValue {
 
         PropertyTranslationValue that = (PropertyTranslationValue) o;
 
-        return values != null ? values.equals(that.values) : that.values == null;
+        return Objects.equals(values, that.values);
 
     }
 

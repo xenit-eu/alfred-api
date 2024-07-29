@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
  */
 public class VersionDescription {
 
-    private static Pattern versionPattern = Pattern.compile("([0-9]+).([0-9]+).([0-9]+)(-.+)?");
+    private static final Pattern versionPattern = Pattern.compile("([0-9]+).([0-9]+).([0-9]+)(-.+)?");
 
     private String version;
     private String description;

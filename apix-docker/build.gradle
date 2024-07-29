@@ -9,7 +9,7 @@ subprojects {
     }
 
     // Isolate the version number ("docker-231" -> "231"). We should find a cleaner way
-    def subproject_alfresco_version = project.name.substring(project.name.length() - getTotalNumbersAfterDash(project.name))
+    def subproject_alfresco_version = project.name.split("-").last()
     dependencies {
         alfrescoAmp project(path: ":alfresco:${subproject_alfresco_version}", configuration: 'ampArtifact') // Read in the alfresco V 23.x in with alfred-api amps
         alfrescoAmp project(path: ":apix-integrationtests-server", configuration: 'amp') // Read in the alfresco integration-test-server
@@ -34,8 +34,4 @@ subprojects {
             }
         }
     }
-}
-
-def getTotalNumbersAfterDash(String version) {
-    return version.split("-")[1].length()
 }

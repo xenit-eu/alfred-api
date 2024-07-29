@@ -2,7 +2,6 @@ package eu.xenit.apix.rest.v1.nodes;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Set;
 
 public class ChangeAclsOptions {
@@ -15,7 +14,7 @@ public class ChangeAclsOptions {
 
     @JsonCreator
     public ChangeAclsOptions(@JsonProperty("inheritFromParent") boolean inheritFromParent,
-                             @JsonProperty("ownAccessList") Set<Access> ownAccessList) {
+            @JsonProperty("ownAccessList") Set<Access> ownAccessList) {
         this.ownAccessList = ownAccessList;
         this.inheritFromParent = inheritFromParent;
     }

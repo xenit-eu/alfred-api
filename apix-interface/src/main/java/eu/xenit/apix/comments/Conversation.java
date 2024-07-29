@@ -51,10 +51,9 @@ public class Conversation {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Conversation)) {
+        if (!(o instanceof Conversation that)) {
             return false;
         }
-        Conversation that = (Conversation) o;
         return hasMore() == that.hasMore() &&
                 isCreatable() == that.isCreatable() &&
                 getComments().equals(that.getComments());

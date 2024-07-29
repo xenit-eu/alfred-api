@@ -23,9 +23,9 @@ public class CategoryServiceTest extends JavaApiBaseTest {
     private static final String ADMIN_USER_NAME = "admin";
 
     private QName generalClassifiableQName;
-    private ICategoryService categoryService;
+    private final ICategoryService categoryService;
 
-    public CategoryServiceTest(){
+    public CategoryServiceTest() {
         categoryService = getBean(ICategoryService.class);
     }
 

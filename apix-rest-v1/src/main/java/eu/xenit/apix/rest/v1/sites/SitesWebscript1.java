@@ -37,24 +37,25 @@ public class SitesWebscript1 extends ApixV1Webscript {
     private final ServiceRegistry serviceRegistry;
 
     public SitesWebscript1(INodeService nodeService, IPermissionService permissionService,
-                           IFileFolderService fileFolderService, ISiteService siteService,
-                           ServiceRegistry serviceRegistry) {
+            IFileFolderService fileFolderService, ISiteService siteService,
+            ServiceRegistry serviceRegistry) {
         this.nodeService = nodeService;
         this.permissionService = permissionService;
         this.fileFolderService = fileFolderService;
         this.siteService = siteService;
         this.serviceRegistry = serviceRegistry;
     }
+
     @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/sites/mySites")
     public ResponseEntity<List<SiteInfo>> getMySites(
-             @RequestParam(required = false, defaultValue = "false") Boolean retrieveMetadata,
-             @RequestParam(required = false, defaultValue = "false") boolean retrievePath,
-             @RequestParam(required = false, defaultValue = "false") boolean retrievePermissions,
-             @RequestParam(required = false, defaultValue = "false") boolean retrieveChildAssocs,
-             @RequestParam(required = false, defaultValue = "false") boolean retrieveParentAssocs,
-             @RequestParam(required = false, defaultValue = "false") boolean retrieveTargetAssocs,
-             @RequestParam(required = false, defaultValue = "false") boolean retrieveSourceAssocs) {
+            @RequestParam(required = false, defaultValue = "false") Boolean retrieveMetadata,
+            @RequestParam(required = false, defaultValue = "false") boolean retrievePath,
+            @RequestParam(required = false, defaultValue = "false") boolean retrievePermissions,
+            @RequestParam(required = false, defaultValue = "false") boolean retrieveChildAssocs,
+            @RequestParam(required = false, defaultValue = "false") boolean retrieveParentAssocs,
+            @RequestParam(required = false, defaultValue = "false") boolean retrieveTargetAssocs,
+            @RequestParam(required = false, defaultValue = "false") boolean retrieveSourceAssocs) {
         logger.debug("retrieveMetadata: {}", retrieveMetadata);
         logger.debug("retrievePath: {}", retrievePath);
         logger.debug("retrievePermissions: {}", retrievePermissions);

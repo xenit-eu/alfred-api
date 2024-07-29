@@ -10,7 +10,6 @@ import eu.xenit.apix.versionhistory.Version;
 import eu.xenit.apix.versionhistory.VersionHistory;
 import java.io.Serializable;
 import java.util.HashMap;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -34,36 +33,39 @@ public class VersionHistoryWebScript1 extends ApixV1Webscript {
             new QName("{http://www.alfresco.org/model/content/1.0}autoVersion");
     private static final QName PROP_AUTO_VERSION_PROPS =
             new QName(
-            "{http://www.alfresco.org/model/content/1.0}autoVersionOnUpdateProps");
+                    "{http://www.alfresco.org/model/content/1.0}autoVersionOnUpdateProps");
     private final IVersionHistoryService versionHistoryService;
 
     public VersionHistoryWebScript1(IVersionHistoryService versionHistoryService) {
         this.versionHistoryService = versionHistoryService;
     }
+
     @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/versionhistory/{space}/{store}/{guid}/versions")
     public ResponseEntity<VersionHistory> getVersionHistory(@PathVariable final String space,
-                                                            @PathVariable final String store,
-                                                            @PathVariable final String guid) {
+            @PathVariable final String store,
+            @PathVariable final String guid) {
         logger.debug("Asked versionhistory for node with guid: {}", guid);
         return writeJsonResponse(
                 versionHistoryService.GetVersionHistory(createNodeRef(space, store, guid))
         );
     }
+
     @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/versionhistory/{space}/{store}/{guid}/root")
     public ResponseEntity<Version> getVersionHistoryRoot(@PathVariable final String space,
-                                                         @PathVariable final String store,
-                                                         @PathVariable final String guid) {
+            @PathVariable final String store,
+            @PathVariable final String guid) {
         return writeJsonResponse(
                 versionHistoryService.getRootVersion(createNodeRef(space, store, guid))
         );
     }
+
     @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/versionhistory/{space}/{store}/{guid}/head")
     public ResponseEntity<Version> getVersionHistoryHead(@PathVariable final String space,
-                                                         @PathVariable final String store,
-                                                         @PathVariable final String guid) {
+            @PathVariable final String store,
+            @PathVariable final String guid) {
         return writeJsonResponse(
                 versionHistoryService.getHeadVersion(createNodeRef(space, store, guid))
         );
@@ -74,8 +76,8 @@ public class VersionHistoryWebScript1 extends ApixV1Webscript {
     //No method available to disable versioning. deleting will merely reset version history,
     // starting a new history upon a new version change
     public ResponseEntity<?> deleteVersionHistory(@PathVariable final String space,
-                                                       @PathVariable final String store,
-                                                       @PathVariable final String guid) {
+            @PathVariable final String store,
+            @PathVariable final String guid) {
         versionHistoryService.deleteVersionHistory(createNodeRef(space, store, guid));
         return ResponseEntity.ok().build();
     }
@@ -83,11 +85,11 @@ public class VersionHistoryWebScript1 extends ApixV1Webscript {
     @AlfrescoTransaction
     @PutMapping(value = "/v1/versionhistory/{space}/{store}/{guid}")
     public ResponseEntity<?> setVersionHistory(@PathVariable final String space,
-                                                @PathVariable final String store,
-                                                @PathVariable final String guid,
-                                                @RequestBody(required = false) final VersionOptions versionOptions) {
+            @PathVariable final String store,
+            @PathVariable final String guid,
+            @RequestBody(required = false) final VersionOptions versionOptions) {
         HashMap<QName, Serializable> versionProperties = new HashMap<>();
-        if(versionOptions != null) {
+        if (versionOptions != null) {
             if (versionOptions.getAutoVersion() != null) {
                 versionProperties.put(PROP_AUTO_VERSION, versionOptions.getAutoVersion());
             }
@@ -105,9 +107,9 @@ public class VersionHistoryWebScript1 extends ApixV1Webscript {
     @AlfrescoTransaction
     @PostMapping(value = "/v1/versionhistory/{space}/{store}/{guid}/versions/{label}/revert")
     public ResponseEntity<?> revertVersionHistory(@PathVariable final String space,
-                                                       @PathVariable final String store,
-                                                       @PathVariable final String guid,
-                                                       @PathVariable final String label) {
+            @PathVariable final String store,
+            @PathVariable final String guid,
+            @PathVariable final String label) {
         versionHistoryService.revert(createNodeRef(space, store, guid), label);
         return ResponseEntity.ok().build();
     }
@@ -115,9 +117,9 @@ public class VersionHistoryWebScript1 extends ApixV1Webscript {
     @AlfrescoTransaction
     @DeleteMapping(value = "/v1/versionhistory/{space}/{store}/{guid}/versions/{label}")
     public ResponseEntity<?> deleteVersion(@PathVariable final String space,
-                                                @PathVariable final String store,
-                                                @PathVariable final String guid,
-                                                @PathVariable final String label) {
+            @PathVariable final String store,
+            @PathVariable final String guid,
+            @PathVariable final String label) {
         versionHistoryService.deleteVersion(createNodeRef(space, store, guid), label);
         return ResponseEntity.ok().build();
     }

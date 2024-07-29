@@ -8,11 +8,11 @@ import java.util.Locale;
  */
 public class ContentInputStream {
 
-    private InputStream inputStream;
-    private String mimetype;
-    private long size;
-    private String encoding;
-    private Locale locale;
+    private final InputStream inputStream;
+    private final String mimetype;
+    private final long size;
+    private final String encoding;
+    private final Locale locale;
 
 
     public ContentInputStream(InputStream inputStream, String mimetype, long size, String encoding, Locale locale) {

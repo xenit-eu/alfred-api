@@ -69,7 +69,7 @@ public abstract class WorkflowServiceBaseTest extends JavaApiBaseTest {
 
     @Before
     public void initialiseBeansWorkflowServiceBaseTest() {
-        apixWorkflowService = getBean("eu.xenit.apix.workflow.IWorkflowService",IWorkflowService.class);
+        apixWorkflowService = getBean("eu.xenit.apix.workflow.IWorkflowService", IWorkflowService.class);
     }
 
     protected void SetupLocal() {
@@ -257,7 +257,7 @@ public abstract class WorkflowServiceBaseTest extends JavaApiBaseTest {
 
         Map<QName, Serializable> parameters = new HashMap<>();
         NodeRef sharedFolder = this.getNodeAtPath("/app:company_home/app:shared");
-        FileInfo testNode = this.createTestNode(sharedFolder, "temp_" + Long.toString(new Random().nextLong()));
+        FileInfo testNode = this.createTestNode(sharedFolder, "temp_" + new Random().nextLong());
         tempFiles.add(testNode);
         parameters.put(WorkflowModel.ASSOC_PACKAGE, testNode.getNodeRef());
         parameters.put(WorkflowModel.PROP_WORKFLOW_DESCRIPTION, "This is the description");
@@ -481,7 +481,7 @@ public abstract class WorkflowServiceBaseTest extends JavaApiBaseTest {
 
     protected boolean apixIsClaimable(Task task) {
         if (!task.getProperties().containsKey(ContentModel.PROP_OWNER.toString())) {
-            Assert.fail(ContentModel.PROP_OWNER.toString() + " is not in the properties of the task.");
+            Assert.fail(ContentModel.PROP_OWNER + " is not in the properties of the task.");
         }
 
         boolean isClaimable = (Boolean) task.getProperties().get(IWorkflowService.ALFRESCO_CLAIMABLE);
@@ -545,7 +545,7 @@ public abstract class WorkflowServiceBaseTest extends JavaApiBaseTest {
 
     protected boolean apixIsReleasable(Task task) {
         if (!task.getProperties().containsKey(ContentModel.PROP_OWNER.toString())) {
-            Assert.fail(ContentModel.PROP_OWNER.toString() + " is not in the properties of the task.");
+            Assert.fail(ContentModel.PROP_OWNER + " is not in the properties of the task.");
         }
         boolean isReleasable = (Boolean) task.getProperties().get(IWorkflowService.ALFRESCO_RELEASABLE);
         //boolean apixTaskHasNoOwner = apixTaskHasNoOwner(task);
@@ -873,7 +873,7 @@ public abstract class WorkflowServiceBaseTest extends JavaApiBaseTest {
                 logger.debug(methodName + ": Property: '" + propertyKey + "' is null");
                 continue;
             }
-            logger.debug(methodName + ": Property: '" + propertyKey + "': '" + serializableValue.toString() + "'");
+            logger.debug(methodName + ": Property: '" + propertyKey + "': '" + serializableValue + "'");
         }
     }
 

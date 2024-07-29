@@ -32,7 +32,7 @@ public class PropertiesWebScript1 extends ApixV1Webscript {
     //Use qname with slash to avoid
     //https://stackoverflow.com/questions/13482020/encoded-slash-2f-with-spring-requestmapping-path-param-gives-http-400
     public ResponseEntity<?> getPropertyDefinition(@PathVariable final QName qname,
-                                                   @RequestParam(required = false) QName qnameWithSlash) {
+            @RequestParam(required = false) QName qnameWithSlash) {
         QName apixQName = qnameWithSlash != null ? qnameWithSlash : qname;
         PropertyDefinition propDef = propertyService.GetPropertyDefinition(apixQName);
         if (propDef == null) {

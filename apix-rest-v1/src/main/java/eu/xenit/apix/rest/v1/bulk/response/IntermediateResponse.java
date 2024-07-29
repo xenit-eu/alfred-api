@@ -1,13 +1,5 @@
 package eu.xenit.apix.rest.v1.bulk.response;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
-import org.springframework.util.LinkedCaseInsensitiveMap;
-import org.springframework.util.StringUtils;
-import org.springframework.web.util.WebUtils;
-
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,6 +21,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
+import org.springframework.util.LinkedCaseInsensitiveMap;
+import org.springframework.util.StringUtils;
+import org.springframework.web.util.WebUtils;
 
 
 public class IntermediateResponse implements HttpServletResponse {
@@ -39,7 +38,6 @@ public class IntermediateResponse implements HttpServletResponse {
 
     private static final TimeZone GMT = TimeZone.getTimeZone("GMT");
 
-
     //---------------------------------------------------------------------
     // ServletResponse properties
     //---------------------------------------------------------------------
@@ -48,9 +46,8 @@ public class IntermediateResponse implements HttpServletResponse {
     private String characterEncoding = WebUtils.DEFAULT_CHARACTER_ENCODING;
 
     /**
-     * {@code true} if the character encoding has been explicitly set through
-     * {@link HttpServletResponse} methods or through a {@code charset} parameter
-     * on the {@code Content-Type}.
+     * {@code true} if the character encoding has been explicitly set through {@link HttpServletResponse} methods or
+     * through a {@code charset} parameter on the {@code Content-Type}.
      */
     private boolean characterEncodingSet = false;
 
@@ -71,7 +68,6 @@ public class IntermediateResponse implements HttpServletResponse {
 
     private Locale locale = Locale.getDefault();
 
-
     //---------------------------------------------------------------------
     // HttpServletResponse properties
     //---------------------------------------------------------------------
@@ -80,7 +76,6 @@ public class IntermediateResponse implements HttpServletResponse {
     private final Map<String, HeaderValueHolder> headers = new LinkedCaseInsensitiveMap<>();
 
     private int status = HttpServletResponse.SC_OK;
-
 
     //---------------------------------------------------------------------
     // ServletResponse interface
@@ -135,11 +130,9 @@ public class IntermediateResponse implements HttpServletResponse {
 
 
     /**
-     * Get the content of the response body as a {@code String}, using the charset
-     * specified for the response by the application, either through
-     * {@link HttpServletResponse} methods or through a charset parameter on the
-     * {@code Content-Type}. If no charset has been explicitly defined, they
-     * will be used.
+     * Get the content of the response body as a {@code String}, using the charset specified for the response by the
+     * application, either through {@link HttpServletResponse} methods or through a charset parameter on the
+     * {@code Content-Type}. If no charset has been explicitly defined, they will be used.
      *
      * @return the content as a {@code String}
      * @throws UnsupportedEncodingException if the character encoding is not supported
@@ -254,7 +247,6 @@ public class IntermediateResponse implements HttpServletResponse {
         return this.locale;
     }
 
-
     //---------------------------------------------------------------------
     // HttpServletResponse interface
     //---------------------------------------------------------------------
@@ -275,7 +267,8 @@ public class IntermediateResponse implements HttpServletResponse {
             buf.append("; Domain=").append(cookie.getDomain());
         }
         int maxAge = cookie.getMaxAge();
-        ZonedDateTime expires = (cookie instanceof IntermediateCookie ? ((IntermediateCookie) cookie).getExpires() : null);
+        ZonedDateTime expires = (cookie instanceof IntermediateCookie ? ((IntermediateCookie) cookie).getExpires()
+                : null);
         if (maxAge >= 0) {
             buf.append("; Max-Age=").append(maxAge);
             buf.append("; Expires=");
@@ -297,8 +290,7 @@ public class IntermediateResponse implements HttpServletResponse {
         if (cookie.isHttpOnly()) {
             buf.append("; HttpOnly");
         }
-        if (cookie instanceof IntermediateCookie) {
-            IntermediateCookie intermediateCookie = (IntermediateCookie) cookie;
+        if (cookie instanceof IntermediateCookie intermediateCookie) {
             if (StringUtils.hasText(intermediateCookie.getSameSite())) {
                 buf.append("; SameSite=").append(intermediateCookie.getSameSite());
             }
@@ -327,8 +319,8 @@ public class IntermediateResponse implements HttpServletResponse {
     }
 
     /**
-     * Return the primary value for the given header as a String, if any.
-     * Will return the first value in case of multiple values.
+     * Return the primary value for the given header as a String, if any. Will return the first value in case of
+     * multiple values.
      * <p>As of Servlet 3.0, this method is also defined in {@link HttpServletResponse}.
      * As of Spring 3.1, it returns a stringified value for Servlet 3.0 compatibility.
      *
@@ -370,12 +362,10 @@ public class IntermediateResponse implements HttpServletResponse {
     }
 
     /**
-     * The default implementation delegates to {@link #encodeURL},
-     * returning the given URL String as-is.
+     * The default implementation delegates to {@link #encodeURL}, returning the given URL String as-is.
      * <p>Can be overridden in subclasses, appending a session id or the like
-     * in a redirect-specific fashion. For general URL encoding rules,
-     * override the common {@link #encodeURL} method instead, applying
-     * to redirect URLs as well as to general URLs.
+     * in a redirect-specific fashion. For general URL encoding rules, override the common {@link #encodeURL} method
+     * instead, applying to redirect URLs as well as to general URLs.
      */
     @Override
     public String encodeRedirectURL(String url) {
@@ -485,7 +475,8 @@ public class IntermediateResponse implements HttpServletResponse {
             setContentType(value.toString());
             return true;
         } else if (HttpHeaders.CONTENT_LENGTH.equalsIgnoreCase(name)) {
-            setContentLength(value instanceof Number ? ((Number) value).intValue() : Integer.parseInt(value.toString()));
+            setContentLength(
+                    value instanceof Number ? ((Number) value).intValue() : Integer.parseInt(value.toString()));
             return true;
         } else if (HttpHeaders.CONTENT_LANGUAGE.equalsIgnoreCase(name)) {
             String contentLanguages = value.toString();
@@ -522,8 +513,7 @@ public class IntermediateResponse implements HttpServletResponse {
     }
 
     /**
-     * Set the {@code Set-Cookie} header to the supplied {@link Cookie},
-     * overwriting any previous cookies.
+     * Set the {@code Set-Cookie} header to the supplied {@link Cookie}, overwriting any previous cookies.
      *
      * @param cookie the {@code Cookie} to set
      * @see #addCookie(Cookie)
@@ -560,8 +550,8 @@ public class IntermediateResponse implements HttpServletResponse {
 
 
     /**
-     * Inner class that adapts the ServletOutputStream to mark the
-     * response as committed once the buffer size is exceeded.
+     * Inner class that adapts the ServletOutputStream to mark the response as committed once the buffer size is
+     * exceeded.
      */
     private class ResponseServletOutputStream extends DelegatingServletOutputStream {
 
@@ -584,8 +574,7 @@ public class IntermediateResponse implements HttpServletResponse {
     }
 
     /**
-     * Inner class that adapts the PrintWriter to mark the
-     * response as committed once the buffer size is exceeded.
+     * Inner class that adapts the PrintWriter to mark the response as committed once the buffer size is exceeded.
      */
     private class ResponsePrintWriter extends PrintWriter {
 

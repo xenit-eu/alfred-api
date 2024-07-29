@@ -5,13 +5,13 @@ import eu.xenit.apix.sites.ISite;
 
 public class SiteInfo {
 
-    private ISite site;
+    private final ISite site;
 
     public ISite getSite() {
         return site;
     }
 
-    private NodeInfo nodeInfo;
+    private final NodeInfo nodeInfo;
 
     public NodeInfo getNodeInfo() {
         return nodeInfo;

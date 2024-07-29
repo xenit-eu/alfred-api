@@ -100,10 +100,12 @@ public class AllNodeInfoTest extends RestV1BaseTest {
         String jsonString = json("{\"noderefs\":["
                 + "\"" + initializedNodes.get(RestV1BaseTest.TESTFILE_NAME).toString() + "\"," //regular node
                 + "\"workspace://SpacesStore/12345678-1234-1234-1234-123456789012\"," //non-existing node
-                + "\"" + initializedNodes.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME).toString() + "\"" //no-permissions node
+                + "\"" + initializedNodes.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME).toString() + "\""
+                //no-permissions node
                 + "]}");
         final CloseableHttpClient httpclient = HttpClients.createDefault();
-        final String url = makeAlfrescoBaseurl(RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS) + "/apix/v1/nodes/nodeInfo";
+        final String url = makeAlfrescoBaseurl(RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS)
+                + "/apix/v1/nodes/nodeInfo";
         logger.debug("url: " + url);
         HttpPost httppost = new HttpPost(url);
         httppost.setEntity(new StringEntity(jsonString, ContentType.APPLICATION_JSON));
@@ -120,7 +122,8 @@ public class AllNodeInfoTest extends RestV1BaseTest {
     public void testGetAllNodeInfoForNodeWithoutPermissions() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
         String url =
-                makeAlfrescoBaseurl(RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS) + "/apix/v1/nodes/nodeInfo";
+                makeAlfrescoBaseurl(RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS)
+                        + "/apix/v1/nodes/nodeInfo";
         logger.debug("url: {}", url);
         String jsonString = json(
                 "{" +

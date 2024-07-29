@@ -18,7 +18,7 @@ public class Jackson2ApixQnameDeserializer extends JsonDeserializer<QName> imple
     @Override
     public QName deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         return new QName(
-            jp.getText()
+                jp.getText()
         );
     }
 

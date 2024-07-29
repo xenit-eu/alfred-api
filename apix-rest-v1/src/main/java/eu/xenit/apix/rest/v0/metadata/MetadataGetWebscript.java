@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class MetadataGetWebscript {
+
     private final INodeService service;
     private final IPermissionService permissionService;
 
@@ -19,6 +20,7 @@ public class MetadataGetWebscript {
         this.service = service;
         this.permissionService = permissionService;
     }
+
     @AlfrescoTransaction(readOnly = true)
     @GetMapping(
             value = "/eu/xenit/metadata",

@@ -10,6 +10,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class PeopleTest extends RestV2BaseTest {
+
     @Test
     public void testGetSelf() throws IOException {
         final String userName = "-me-";

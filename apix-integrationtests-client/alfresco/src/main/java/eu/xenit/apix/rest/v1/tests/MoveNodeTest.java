@@ -29,9 +29,9 @@ public class MoveNodeTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(MoveNodeTest.class);
 
-    private INodeService nodeService;
+    private final INodeService nodeService;
 
-    public MoveNodeTest(){
+    public MoveNodeTest() {
         // initialise the local beans
         nodeService = getBean(INodeService.class);
     }
@@ -45,13 +45,14 @@ public class MoveNodeTest extends RestV1BaseTest {
     public void testMoveNode() throws IOException {
         final HashMap<String, NodeRef> initializedNodeRefs = init();
 
-        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initializedNodeRefs.get(
-                RestV1BaseTest.TESTFILE_NAME));
-        final ChildParentAssociation primaryParentAssocTestNode = (ChildParentAssociation) parentAssociations.get(0);
+        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(
+                initializedNodeRefs.get(
+                        RestV1BaseTest.TESTFILE_NAME));
+        final ChildParentAssociation primaryParentAssocTestNode = parentAssociations.get(0);
         final NodeRef testFolder = primaryParentAssocTestNode.getTarget();
 
         parentAssociations = this.nodeService.getParentAssociations(testFolder);
-        final ChildParentAssociation primaryParentAssocTestFolder = (ChildParentAssociation) parentAssociations.get(0);
+        final ChildParentAssociation primaryParentAssocTestFolder = parentAssociations.get(0);
         final NodeRef mainTestFolder = primaryParentAssocTestFolder.getTarget();
 
         transactionService.getRetryingTransactionHelper()
@@ -70,7 +71,8 @@ public class MoveNodeTest extends RestV1BaseTest {
                     }
                 }, false, true);
 
-        final String url = this.makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/parent", "admin", "admin");
+        final String url = this.makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/parent", "admin",
+                "admin");
         logger.debug(" URL: " + url);
 
         doPut(url, null, "{\"parent\":\"%s\"}", mainTestFolder.toString());
@@ -85,8 +87,9 @@ public class MoveNodeTest extends RestV1BaseTest {
     public void testMoveNodeReturnsAccesDenied() throws IOException {
         final HashMap<String, NodeRef> initializedNodeRefs = init();
 
-        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(initializedNodeRefs.get(
-                RestV1BaseTest.NOUSERRIGHTS_FILE_NAME));
+        List<ChildParentAssociation> parentAssociations = this.nodeService.getParentAssociations(
+                initializedNodeRefs.get(
+                        RestV1BaseTest.NOUSERRIGHTS_FILE_NAME));
         final ChildParentAssociation primaryParentAssocTestNode = parentAssociations.get(0);
         final NodeRef testFolder = primaryParentAssocTestNode.getTarget();
 
@@ -94,14 +97,15 @@ public class MoveNodeTest extends RestV1BaseTest {
         final ChildParentAssociation primaryParentAssocTestFolder = parentAssociations.get(0);
         final NodeRef mainTestFolder = primaryParentAssocTestFolder.getTarget();
 
-        final String url = this.makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/parent", RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS);
+        final String url = this.makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME), "/parent",
+                RestV1BaseTest.USERWITHOUTRIGHTS, RestV1BaseTest.USERWITHOUTRIGHTS);
         logger.debug(" URL: " + url);
         final CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPut httpPut = new HttpPut(url);
         httpPut.setEntity(new StringEntity(String.format("{\"parent\":\"%s\"}", mainTestFolder.toString()),
                 ContentType.APPLICATION_JSON));
 
-        try(CloseableHttpResponse httpResponse = httpClient.execute(httpPut)) {
+        try (CloseableHttpResponse httpResponse = httpClient.execute(httpPut)) {
             assertEquals(403, httpResponse.getStatusLine().getStatusCode());
         }
     }

@@ -9,7 +9,14 @@ import eu.xenit.apix.rest.v1.bulk.request.BulkHttpServletRequest;
 import eu.xenit.apix.rest.v1.bulk.request.BulkRequest;
 import eu.xenit.apix.rest.v1.bulk.request.IntermediateRequest;
 import eu.xenit.apix.rest.v1.bulk.response.IntermediateResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.ServiceRegistry;
 import org.slf4j.Logger;
@@ -23,14 +30,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 
 @RestController
 public class BulkWebscript1 extends ApixV1Webscript {
@@ -42,7 +41,7 @@ public class BulkWebscript1 extends ApixV1Webscript {
     private final DispatcherWebscript dispatcherWebscript;
 
     public BulkWebscript1(ServiceRegistry serviceRegistry,
-                          @Qualifier("alfred.api") DispatcherWebscript dispatcherWebscript) {
+            @Qualifier("alfred.api") DispatcherWebscript dispatcherWebscript) {
         this.serviceRegistry = serviceRegistry;
         this.dispatcherWebscript = dispatcherWebscript;
     }
@@ -50,7 +49,7 @@ public class BulkWebscript1 extends ApixV1Webscript {
     @AlfrescoTransaction
     @PostMapping(value = "/v1/bulk")
     public ResponseEntity<List<BulkSubResult>> bulk(@RequestBody final BulkRequest[] bulkRequests,
-                                                    final HttpServletRequest req) {
+            final HttpServletRequest req) {
         final WebScriptRequest wsReq = ((DispatcherWebscript.WebscriptRequestWrapper) req).getWebScriptServletRequest();
 
         final List<BulkSubResult> bulkResults = new ArrayList<>();
@@ -66,7 +65,6 @@ public class BulkWebscript1 extends ApixV1Webscript {
                     bulkHttpServletRequest.getBody(),
                     bulkHttpServletRequest.getMethod());
 
-
             final IntermediateRequest intermediateRequest = new IntermediateRequest(wsReq, bulkHttpServletRequest);
 
             final IntermediateResponse intermediateResponse = new IntermediateResponse();
@@ -78,7 +76,6 @@ public class BulkWebscript1 extends ApixV1Webscript {
             intermediateResponse.setCharacterEncoding(StandardCharsets.UTF_8.toString());
             final WebScriptServletResponse webScriptServletResponse = new WebScriptServletResponse(wsReq.getRuntime(),
                     intermediateResponse);
-
 
             // Each subrequest gets to run in its own transaction context, because even a caught exception can mark a
             // transaction as "needs to be rolled back". We don't want a previous subrequest to be rolled back because
@@ -94,7 +91,8 @@ public class BulkWebscript1 extends ApixV1Webscript {
                         } catch (Exception e) {
                             // Catching all exceptions to just print a stacktrace isn't super clean...
                             // But we want the bulk to continue with the other requests even if this one fails.
-                            logger.error("Error in bulk call to {}", intermediateRequest.getHttpServletRequest().getRequestURI(), e);
+                            logger.error("Error in bulk call to {}",
+                                    intermediateRequest.getHttpServletRequest().getRequestURI(), e);
                             return new BulkSubResult(500,
                                     mapper.valueToTree("Exception found: " + e.getMessage()),
                                     new HashMap<>());
@@ -102,7 +100,8 @@ public class BulkWebscript1 extends ApixV1Webscript {
                     }, false, true);
 
             if (subRes == null) {
-                logger.warn("bulkSubResult is null for request {}.", intermediateRequest.getHttpServletRequest().getRequestURI());
+                logger.warn("bulkSubResult is null for request {}.",
+                        intermediateRequest.getHttpServletRequest().getRequestURI());
             } else {
                 bulkResults.add(subRes);
             }

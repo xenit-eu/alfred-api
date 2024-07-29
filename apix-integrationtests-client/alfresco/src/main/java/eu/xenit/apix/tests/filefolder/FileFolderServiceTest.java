@@ -38,15 +38,15 @@ public class FileFolderServiceTest extends JavaApiBaseTest {
     StoreRef alfStoreRef = new StoreRef("workspace", "SpacesStore");
     eu.xenit.apix.data.StoreRef apixStoreRef = new eu.xenit.apix.data.StoreRef("workspace", "SpacesStore");
 
-    private IFileFolderService service;
-    private FileFolderService fileFolderService;
-    private SearchService searchService;
-    private NodeService alfrescoNodeService;
-    private ContentService contentService;
-    private SolrTestHelperImpl solrHelper;
+    private final IFileFolderService service;
+    private final FileFolderService fileFolderService;
+    private final SearchService searchService;
+    private final NodeService alfrescoNodeService;
+    private final ContentService contentService;
+    private final SolrTestHelperImpl solrHelper;
 
 
-    public FileFolderServiceTest(){
+    public FileFolderServiceTest() {
         // initialise the local beans
         service = getBean(IFileFolderService.class);
         fileFolderService = serviceRegistry.getFileFolderService();
@@ -200,10 +200,10 @@ public class FileFolderServiceTest extends JavaApiBaseTest {
         NodeRef alfRef = repository.getCompanyHome();
         eu.xenit.apix.data.NodeRef apixRef = service.getCompanyHome();
         eu.xenit.apix.data.NodeRef check = c.apix(alfRef);
-        assertTrue(apixRef.getGuid().equals(check.getGuid()));
-        assertTrue(apixRef.getStoreRefId().equals(check.getStoreRefId()));
-        assertTrue(apixRef.getStoreRefProtocol().equals(check.getStoreRefProtocol()));
-        assertTrue(apixRef.toString().equals(check.toString()));
+        assertEquals(apixRef.getGuid(), check.getGuid());
+        assertEquals(apixRef.getStoreRefId(), check.getStoreRefId());
+        assertEquals(apixRef.getStoreRefProtocol(), check.getStoreRefProtocol());
+        assertEquals(apixRef.toString(), check.toString());
     }
 
     @Test

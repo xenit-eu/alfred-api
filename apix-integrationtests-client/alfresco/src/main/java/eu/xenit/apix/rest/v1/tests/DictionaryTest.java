@@ -15,6 +15,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -35,12 +36,12 @@ public class DictionaryTest extends RestV1BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(DictionaryTest.class);
     // Credentials
-    private String username = "admin";
-    private String password = "admin";
+    private final String username = "admin";
+    private final String password = "admin";
     private String encodedAuth;
-    private DictionaryDAO dictionaryDAO;
+    private final DictionaryDAO dictionaryDAO;
 
-    public DictionaryTest(){
+    public DictionaryTest() {
         // initialise the local beans
         dictionaryDAO = getBean(DictionaryDAO.class);
     }
@@ -73,7 +74,7 @@ public class DictionaryTest extends RestV1BaseTest {
             assertEquals(200, httpResponse.statusCode());
             // Parse the response body into a JSONObject
             ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree( httpResponse.body().toString());
+            JsonNode jsonNode = objectMapper.readTree(httpResponse.body().toString());
             JsonNode namespaces = jsonNode.get("namespaces");
             String cmNamespace = "http://www.alfresco.org/model/content/1.0";
             JsonNode cm = namespaces.get(cmNamespace);
@@ -84,7 +85,6 @@ public class DictionaryTest extends RestV1BaseTest {
             assertEquals(cmNamespace, name.asText());
         } catch (JSONException e) {
             fail("Failed to parse JSON response: " + e.getMessage());
-            return;
         }
     }
 
@@ -95,8 +95,8 @@ public class DictionaryTest extends RestV1BaseTest {
 
         // Short qname lookup
         String uri = baseUrl + URLEncoder.encode(shortName,
-                    String.valueOf(Charset.defaultCharset())
-            );
+                String.valueOf(Charset.defaultCharset())
+        );
         HttpResponse<String> httpResponseQnameLookup = null;
         try {
             // Create the HttpClient
@@ -112,7 +112,7 @@ public class DictionaryTest extends RestV1BaseTest {
             // Send the request and get the response
             httpResponseQnameLookup = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.error("{}", e);
         }
         assertEquals(uri, 200, httpResponseQnameLookup.statusCode());
@@ -122,19 +122,19 @@ public class DictionaryTest extends RestV1BaseTest {
             assertMandatoryAspects(jsonObject, mandatoryAspect);
         }
 
-        JSONObject jsonObjectFinal = getRequest(baseUrl , longName);
+        JSONObject jsonObjectFinal = getRequest(baseUrl, longName);
         // Execute the request
         assertNotNull(jsonObjectFinal);
         assertEquals(longName, jsonObjectFinal.getString("name"));
 
     }
 
-    public JSONObject getRequest(String baseUrl, String longName){
+    public JSONObject getRequest(String baseUrl, String longName) {
         HttpResponse<String> response = null;
         try {
             // Full qualified name to be looked up
             String encodedLongName = URI.create(
-                    baseUrl + java.net.URLEncoder.encode(longName, java.nio.charset.StandardCharsets.UTF_8.toString())
+                    baseUrl + java.net.URLEncoder.encode(longName, StandardCharsets.UTF_8)
                             .replaceAll("%2F", "/")
             ).toString();
 
@@ -192,7 +192,7 @@ public class DictionaryTest extends RestV1BaseTest {
             assertEquals(200, httpResponse.statusCode());
             // Parse the response body into a JSONObject
             ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree( httpResponse.body().toString());
+            JsonNode jsonNode = objectMapper.readTree(httpResponse.body().toString());
             JsonNode jsonTypes = jsonNode.get("types");
             List<String> typeNames = new ArrayList<>(jsonTypes.size());
             for (int i = 0; i < jsonTypes.size(); i++) {
@@ -212,7 +212,7 @@ public class DictionaryTest extends RestV1BaseTest {
 
             HttpResponse httpResponseContent = client.send(request, HttpResponse.BodyHandlers.ofString());
             assertEquals(200, httpResponseContent.statusCode());
-            JsonNode jsonResponseContent = objectMapper.readTree( httpResponseContent.body().toString());
+            JsonNode jsonResponseContent = objectMapper.readTree(httpResponseContent.body().toString());
             jsonTypes = jsonResponseContent.get("types");
             typeNames = new ArrayList<>(jsonTypes.size());
             for (int i = 0; i < jsonTypes.size(); i++) {

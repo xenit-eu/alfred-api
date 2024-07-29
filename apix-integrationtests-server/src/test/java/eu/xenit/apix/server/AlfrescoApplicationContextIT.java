@@ -16,6 +16,7 @@ import org.springframework.context.ApplicationContext;
 
 @RunWith(RemoteTestRunner.class)
 public class AlfrescoApplicationContextIT {
+
     private static final Logger logger = LoggerFactory.getLogger(AlfrescoApplicationContextIT.class);
     private ApplicationContext testApplicationContext;
     private NodeService nodeService;
@@ -24,17 +25,17 @@ public class AlfrescoApplicationContextIT {
     @Before
     public void setUp() {
         this.testApplicationContext = Server.getApplicationContext();
-        try{
+        try {
             serviceRegistry = testApplicationContext.getBean(ServiceRegistry.class);
             nodeService = serviceRegistry.getNodeService();
 
             if (logger.isTraceEnabled()) {
                 String[] beanDefinitionNames = testApplicationContext.getBeanDefinitionNames();
-                for(String beanName : beanDefinitionNames){
+                for (String beanName : beanDefinitionNames) {
                     logger.trace("{}", beanName);
                 }
             }
-        }catch (BeansException e){
+        } catch (BeansException e) {
             System.out.println(e.getMessage());
         }
     }

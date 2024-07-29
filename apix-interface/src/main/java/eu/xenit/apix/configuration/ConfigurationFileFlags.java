@@ -12,7 +12,7 @@ public class ConfigurationFileFlags {
     }
 
     public ConfigurationFileFlags(boolean addContent, boolean addPath, boolean addParsedContent, boolean addMetadata,
-                                  boolean addNodeRef) {
+            boolean addNodeRef) {
         this.addContent = addContent;
         this.addPath = addPath;
         this.addParsedContent = addParsedContent;

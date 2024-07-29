@@ -54,7 +54,7 @@ public class V1SearchWebscriptTest extends RestV1BaseTest {
         logger.debug(String.valueOf(result.getTotalResultCount()));
         Assert.assertFalse(result.getFacets().isEmpty());
         Assert.assertFalse(result.getNoderefs().isEmpty());
-        Assert.assertFalse(result.getTotalResultCount() == 0L);
+        Assert.assertNotEquals(0L, result.getTotalResultCount());
     }
 
 }

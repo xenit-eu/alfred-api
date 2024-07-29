@@ -15,10 +15,10 @@ sourceSets {
     main {
         amp {
             module([
-                'module.id': project.name,
-                'module.version': project.version,
-                'module.title': 'integrationtests-model',
-                'module.description': 'Model and messages used in integration tests',
+                    'module.id'         : project.name,
+                    'module.version'    : project.version,
+                    'module.title'      : 'integrationtests-model',
+                    'module.description': 'Model and messages used in integration tests',
             ])
         }
     }

@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 
 public class ContentServiceTest extends JavaApiBaseTest {
+
     private final static Logger logger = LoggerFactory.getLogger(ContentServiceTest.class);
 
     INodeService nodeService;
@@ -39,10 +40,10 @@ public class ContentServiceTest extends JavaApiBaseTest {
     private NodeRef testNode;
     private FileInfo mainTestFolder;
 
-    public ContentServiceTest(){
+    public ContentServiceTest() {
         // initialise the local beans
         contentService = getBean(IContentService.class);
-        nodeService= getBean(INodeService.class);
+        nodeService = getBean(INodeService.class);
         solrHelper = getBean(SolrTestHelperImpl.class);
     }
 

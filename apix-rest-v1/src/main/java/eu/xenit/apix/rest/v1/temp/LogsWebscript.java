@@ -22,8 +22,9 @@ public class LogsWebscript extends ApixV1Webscript {
     public LogsWebscript(Environment env) {
         logPath = env.resolvePlaceholders("$CATALINA_HOME/logs/catalina.out");
     }
+
     @AlfrescoTransaction(readOnly = true)
-    @GetMapping(value = "/v1/tmp/log", produces = { MediaType.TEXT_PLAIN_VALUE })
+    @GetMapping(value = "/v1/tmp/log", produces = {MediaType.TEXT_PLAIN_VALUE})
     @AlfrescoAuthentication(AuthenticationType.ADMIN)
     public ResponseEntity<String> showLog(@RequestParam(defaultValue = "200") int lines) throws IOException {
         StringBuilder log = new StringBuilder();
@@ -31,7 +32,7 @@ public class LogsWebscript extends ApixV1Webscript {
         try (ReversedLinesFileReader reader = new ReversedLinesFileReader(logFile)) {
             for (int i = 0; i < lines; i++) {
                 log.append(reader.readLine())
-                    .append("\n");
+                        .append("\n");
             }
         }
         return ResponseEntity.ok(log.toString());

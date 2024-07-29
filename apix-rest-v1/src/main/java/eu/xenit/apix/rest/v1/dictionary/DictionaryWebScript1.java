@@ -53,7 +53,8 @@ public class DictionaryWebScript1 extends ApixV1Webscript {
 
     @AlfrescoTransaction(readOnly = true)
     @GetMapping(value = "/v1/dictionary/types")
-    public ResponseEntity<Types> getSubTypeDefinitions(@RequestParam(defaultValue = "sys:base", required = false) final String parent) {
+    public ResponseEntity<Types> getSubTypeDefinitions(
+            @RequestParam(defaultValue = "sys:base", required = false) final String parent) {
         return writeJsonResponse(
                 dictionaryService.GetSubTypeDefinitions(
                         new QName(parent), true

@@ -23,13 +23,13 @@ import org.slf4j.LoggerFactory;
 public class VersionHistoryServiceTest extends JavaApiBaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(VersionHistoryServiceTest.class);
-    private IVersionHistoryService versionHistoryService;
-    private org.alfresco.service.cmr.version.VersionService alfrizcoVersionHistoryService;
+    private final IVersionHistoryService versionHistoryService;
+    private final org.alfresco.service.cmr.version.VersionService alfrizcoVersionHistoryService;
 
     //Test variables
     private NodeRef testNode;
 
-    public VersionHistoryServiceTest(){
+    public VersionHistoryServiceTest() {
         versionHistoryService = getBean(IVersionHistoryService.class);
         alfrizcoVersionHistoryService = serviceRegistry.getVersionService();
     }

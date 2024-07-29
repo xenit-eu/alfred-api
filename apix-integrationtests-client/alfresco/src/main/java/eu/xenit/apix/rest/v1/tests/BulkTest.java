@@ -41,10 +41,10 @@ public class BulkTest extends RestV1BaseTest {
 
     public static final String AUTHENTICATION_IN_URL = "alf_ticket=";
     private final static Logger logger = LoggerFactory.getLogger(BulkTest.class);
-    private INodeService nodeService;
-    private NodeService alfrescoNodeService;
+    private final INodeService nodeService;
+    private final NodeService alfrescoNodeService;
 
-    public BulkTest(){
+    public BulkTest() {
         // initialise the local beans
         alfrescoNodeService = serviceRegistry.getNodeService();
         nodeService = getBean(eu.xenit.apix.alfresco.metadata.NodeService.class); // fetches APIX nodeService
@@ -112,7 +112,7 @@ public class BulkTest extends RestV1BaseTest {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(url);
         String firstGetUrl = "/properties/%7Bhttp://www.alfresco.org/model/content/1.0%7Dname";
-        String secondGetUrl = "/properties/" + ContentModel.PROP_OWNER.toString();
+        String secondGetUrl = "/properties/" + ContentModel.PROP_OWNER;
         String thirdGetUrl = "/properties/%7Bhttp%3A%2F%2Fwww.alfresco.org%2Fmodel%2Fcontent%2F1.0%7Dname";
 
         StringEntity entity = new StringEntity(json(String.format(
@@ -151,7 +151,7 @@ public class BulkTest extends RestV1BaseTest {
         final HashMap<String, NodeRef> initializedNodeRefs = init();
         List<ChildParentAssociation> parentAssociations = this.nodeService
                 .getParentAssociations(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME));
-        final ChildParentAssociation primaryParentAssoc = (ChildParentAssociation) parentAssociations.get(0);
+        final ChildParentAssociation primaryParentAssoc = parentAssociations.get(0);
         assertTrue(primaryParentAssoc.isPrimary());
         final NodeRef parentRef = primaryParentAssoc.getTarget();
 
@@ -162,8 +162,8 @@ public class BulkTest extends RestV1BaseTest {
         String firstPostUrl = removePrefixAndAuthenticate(
                 makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME), "/metadata", "admin", "admin"));
         String secondPostUrl = removePrefixAndAuthenticate(makeNodesUrl(parentRef, "/metadata", "admin", "admin"));
-        String firstJsonBody = String.format("{'aspectsToAdd':['%s']}", ContentModel.ASPECT_VERSIONABLE.toString());
-        String secondJsonBody = String.format("{'aspectsToAdd':['%s']}", ContentModel.ASPECT_VERSIONABLE.toString());
+        String firstJsonBody = String.format("{'aspectsToAdd':['%s']}", ContentModel.ASPECT_VERSIONABLE);
+        String secondJsonBody = String.format("{'aspectsToAdd':['%s']}", ContentModel.ASPECT_VERSIONABLE);
         String jsonString = json(
                 String.format("[{'url':'%s','method':'%s','body':%s},{'url':'%s','method':'%s','body':%s}]",
                         firstPostUrl, "post", firstJsonBody,
@@ -195,7 +195,7 @@ public class BulkTest extends RestV1BaseTest {
         secondPostUrl = removePrefixAndAuthenticate(
                 makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME), "/metadata", "admin", "admin"));
 
-        firstJsonBody = String.format("{'propertiesToSet':{'%s':['newName']}}", ContentModel.PROP_NAME.toString());
+        firstJsonBody = String.format("{'propertiesToSet':{'%s':['newName']}}", ContentModel.PROP_NAME);
         jsonString = json(String.format("[{'url':'%s','method':'%s','body':%s}]",
                 firstPostUrl, "post", firstJsonBody));
         final HttpPost httpPost2 = new HttpPost(url);
@@ -217,7 +217,7 @@ public class BulkTest extends RestV1BaseTest {
                     }
                 }, false, true);
 
-        secondJsonBody = String.format("{'propertiesToSet':{'%s':['newName']}}", ContentModel.PROP_NAME.toString());
+        secondJsonBody = String.format("{'propertiesToSet':{'%s':['newName']}}", ContentModel.PROP_NAME);
         jsonString = json(String.format("[{'url':'%s','method':'%s','body':%s}]",
                 secondPostUrl, "post", secondJsonBody));
         final HttpPost httpPost3 = new HttpPost(url);
@@ -251,11 +251,11 @@ public class BulkTest extends RestV1BaseTest {
         final String thirdUrlForRename = removePrefixAndAuthenticate(
                 makeNodesUrl(initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME), "/metadata", "admin", "admin"));
         final String firstPostBody = String
-                .format("{'propertiesToSet':{'%s':['testName1']}}", ContentModel.PROP_NAME.toString());
+                .format("{'propertiesToSet':{'%s':['testName1']}}", ContentModel.PROP_NAME);
         final String secndPostBody = String
-                .format("{'propertiesToSet':{'%s':['testName2']}}", ContentModel.PROP_NAME.toString());
+                .format("{'propertiesToSet':{'%s':['testName2']}}", ContentModel.PROP_NAME);
         final String thirdPostBody = String
-                .format("{'propertiesToSet':{'%s':['testName3']}}", ContentModel.PROP_NAME.toString());
+                .format("{'propertiesToSet':{'%s':['testName3']}}", ContentModel.PROP_NAME);
         final String comboPostBody = String.format("[{'url':'%s', 'method': 'post', 'body':%s}," +
                         "{'url':'%s', 'method': 'get', 'body':%s}," +
                         "{'url':'%s', 'method': 'post', 'body':%s}]",
@@ -285,11 +285,11 @@ public class BulkTest extends RestV1BaseTest {
 
         List<ChildParentAssociation> parentAssociations = this.nodeService
                 .getParentAssociations(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME));
-        ChildParentAssociation primaryParentAssoc = (ChildParentAssociation) parentAssociations.get(0);
+        ChildParentAssociation primaryParentAssoc = parentAssociations.get(0);
         NodeRef folderRef = primaryParentAssoc.getTarget();
 
         parentAssociations = this.nodeService.getParentAssociations(folderRef);
-        primaryParentAssoc = (ChildParentAssociation) parentAssociations.get(0);
+        primaryParentAssoc = parentAssociations.get(0);
         final NodeRef mainFolderRef = primaryParentAssoc.getTarget();
 
         List<ChildParentAssociation> childAssocs = this.nodeService.getChildAssociations(mainFolderRef);
@@ -327,7 +327,7 @@ public class BulkTest extends RestV1BaseTest {
 
         List<ChildParentAssociation> parentAssociations = this.nodeService
                 .getParentAssociations(initializedNodeRefs.get(RestV1BaseTest.TESTFILE2_NAME));
-        ChildParentAssociation primaryParentAssoc = (ChildParentAssociation) parentAssociations.get(0);
+        ChildParentAssociation primaryParentAssoc = parentAssociations.get(0);
         final NodeRef folderRef = primaryParentAssoc.getTarget();
 
         List<ChildParentAssociation> childAssocs = this.nodeService.getChildAssociations(folderRef);

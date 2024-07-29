@@ -20,6 +20,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 
 public class Charsets {
+
     /**
      * Returns the given Charset or the default Charset if the given Charset is null.
      *

@@ -142,7 +142,7 @@ public class SearchQueryV0 {
 
             private final String value;
 
-            private Order(String value) {
+            Order(String value) {
                 this.value = value;
             }
 

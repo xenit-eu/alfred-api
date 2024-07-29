@@ -28,7 +28,7 @@ public class MetadataPostWebscript {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<NodeMetadataV0> execute(@RequestParam final NodeRef nodeRef,
-                                                  @RequestBody final MetadataChangesV0 changes) {
+            @RequestBody final MetadataChangesV0 changes) {
         return ResponseEntity.ok(
                 NodeMetadataV0.FromV1(
                         service.setMetadata(nodeRef, changes.ToV1()), permissionService

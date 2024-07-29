@@ -26,6 +26,6 @@ public class AlfrescoPropertyConvertorTest extends JavaApiBaseTest {
                 propertyValue);
 
         Assert.assertEquals(new eu.xenit.apix.data.QName(propertyName), result.getFirst());
-        Assert.assertEquals(Arrays.asList(new String[]{propertyValue}), result.getSecond());
+        Assert.assertEquals(Arrays.asList(propertyValue), result.getSecond());
     }
 }

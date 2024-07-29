@@ -18,7 +18,8 @@ public class Category {
     private ArrayList<Category> subcategories = new ArrayList<>();
 
     /**
-     * @return The full path of the qname of the category. An example is: /app:company_home/st:sites/cm:mysite/cm:documentLibrary
+     * @return The full path of the qname of the category. An example is:
+     * /app:company_home/st:sites/cm:mysite/cm:documentLibrary
      */
     public String getQnamePath() {
         return qnamePath;
@@ -26,6 +27,7 @@ public class Category {
 
     /**
      * Sets the category qname path.
+     *
      * @param qnamePath qname path of the category.
      */
     public void setQnamePath(String qnamePath) {
@@ -41,6 +43,7 @@ public class Category {
 
     /**
      * Sets the category noderef.
+     *
      * @param noderef nodeRef of the category.
      */
     public void setNoderef(String noderef) {
@@ -56,6 +59,7 @@ public class Category {
 
     /**
      * Sets the name of the category.
+     *
      * @param name Name of the category.
      */
     public void setName(String name) {
@@ -71,6 +75,7 @@ public class Category {
 
     /**
      * Sets the subcategories of this category.
+     *
      * @param subcategories the subcategories of the Category.
      */
     public void setSubcategories(ArrayList<Category> subcategories) {

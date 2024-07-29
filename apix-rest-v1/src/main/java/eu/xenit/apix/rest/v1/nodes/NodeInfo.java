@@ -5,7 +5,6 @@ import eu.xenit.apix.filefolder.NodePath;
 import eu.xenit.apix.node.NodeAssociations;
 import eu.xenit.apix.node.NodeMetadata;
 import eu.xenit.apix.permissions.PermissionValue;
-
 import java.util.Map;
 
 /**
@@ -24,10 +23,10 @@ public class NodeInfo {
     }
 
     public NodeInfo(NodeRef nodeRef,
-                    NodeMetadata metadata,
-                    Map<String, PermissionValue> permissions,
-                    NodeAssociations associations,
-                    NodePath path) {
+            NodeMetadata metadata,
+            Map<String, PermissionValue> permissions,
+            NodeAssociations associations,
+            NodePath path) {
         this.noderef = nodeRef;
         this.metadata = metadata;
         this.permissions = permissions;

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class SearchWebScript0 {
+
     private static final Logger logger = LoggerFactory.getLogger(SearchWebScript0.class);
     private final ISearchService service;
 
@@ -25,7 +26,7 @@ public class SearchWebScript0 {
             value = "/eu/xenit/search",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<SearchQueryResult> execute(@RequestBody final SearchQueryV0 query){
+    public ResponseEntity<SearchQueryResult> execute(@RequestBody final SearchQueryV0 query) {
         logger.debug("query: {}", query);
         SearchQueryResult result;
         result = service.query(query.toV1());

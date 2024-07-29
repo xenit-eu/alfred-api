@@ -1,7 +1,11 @@
 package eu.xenit.apix.rest.v2.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import eu.xenit.apix.data.NodeRef;
 import eu.xenit.apix.rest.v1.tests.RestV1BaseTest;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -22,12 +26,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 public class AllNodeInfoTest extends RestV2BaseTest {
+
     private final static Logger logger = LoggerFactory.getLogger(AllNodeInfoTest.class);
 
     @Before
@@ -96,7 +96,8 @@ public class AllNodeInfoTest extends RestV2BaseTest {
     public void testGetAllNodeInfoForNodeWithoutPermissions() throws IOException {
         HashMap<String, NodeRef> initializedNodeRefs = init();
         String url =
-                makeAlfrescoBaseurl(RestV2BaseTest.USERWITHOUTRIGHTS, RestV2BaseTest.USERWITHOUTRIGHTS) + "/apix/v2/nodes/nodeInfo";
+                makeAlfrescoBaseurl(RestV2BaseTest.USERWITHOUTRIGHTS, RestV2BaseTest.USERWITHOUTRIGHTS)
+                        + "/apix/v2/nodes/nodeInfo";
         logger.debug("url: {}", url);
         String jsonString = json(
                 "{" +
@@ -126,7 +127,8 @@ public class AllNodeInfoTest extends RestV2BaseTest {
         String jsonString = json("{\"noderefs\":["
                 + "\"" + initializedNodes.get(RestV1BaseTest.TESTFILE_NAME).toString() + "\"," //regular node
                 + "\"workspace://SpacesStore/12345678-1234-1234-1234-123456789012\"," //non-existing node
-                + "\"" + initializedNodes.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME).toString() + "\"" //no-permissions node
+                + "\"" + initializedNodes.get(RestV1BaseTest.NOUSERRIGHTS_FILE_NAME).toString() + "\""
+                //no-permissions node
                 + "]}");
         final CloseableHttpClient httpclient = HttpClients.createDefault();
         final String url = makeAlfrescoBaseurl(

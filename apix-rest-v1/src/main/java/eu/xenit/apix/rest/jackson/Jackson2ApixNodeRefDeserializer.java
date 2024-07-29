@@ -18,7 +18,7 @@ public class Jackson2ApixNodeRefDeserializer extends JsonDeserializer<NodeRef> i
     @Override
     public NodeRef deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         return new NodeRef(
-            jp.getText()
+                jp.getText()
         );
     }
 

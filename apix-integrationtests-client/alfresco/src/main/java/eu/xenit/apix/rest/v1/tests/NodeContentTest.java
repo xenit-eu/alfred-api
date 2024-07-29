@@ -11,12 +11,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.nio.charset.Charset;
-import java.util.Base64;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.apache.commons.io.IOUtils;
@@ -28,7 +24,6 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,13 +31,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class NodeContentTest extends RestV1BaseTest {
-    private final static Logger logger = LoggerFactory.getLogger(NodeContentTest.class);
-    private INodeService nodeService;
 
-    public NodeContentTest(){
+    private final static Logger logger = LoggerFactory.getLogger(NodeContentTest.class);
+    private final INodeService nodeService;
+
+    public NodeContentTest() {
         // initialise the local beans
         nodeService = getBean(INodeService.class);
     }
+
     @Before
     public void setup() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
@@ -77,7 +74,7 @@ public class NodeContentTest extends RestV1BaseTest {
         String content = transactionService.getRetryingTransactionHelper()
                 .doInTransaction(() -> {
                     ContentInputStream c = ns.getContent(nodeRef);
-                    try(InputStream inputStream = c.getInputStream()) {
+                    try (InputStream inputStream = c.getInputStream()) {
                         return IOUtils.toString(inputStream, Charset.defaultCharset());
                     }
                 }, false, true);
@@ -215,7 +212,7 @@ public class NodeContentTest extends RestV1BaseTest {
         String pathName = "test.txt";
         File result = new File(pathName);
         result.createNewFile();
-        PrintWriter writer = new PrintWriter(pathName, "UTF-8");
+        PrintWriter writer = new PrintWriter(pathName, StandardCharsets.UTF_8);
         String contentString = "This is the content";
         writer.print(contentString);
         writer.close();

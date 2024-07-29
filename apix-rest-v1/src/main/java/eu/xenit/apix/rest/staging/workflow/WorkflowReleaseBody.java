@@ -1,6 +1,7 @@
 package eu.xenit.apix.rest.staging.workflow;
 
 public class WorkflowReleaseBody {
+
     private String id;
 
     public WorkflowReleaseBody() {

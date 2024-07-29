@@ -9,4 +9,6 @@ import com.gradecak.alfresco.mvc.rest.annotation.EnableAlfrescoMvcRest;
                 servletContext = AlfredApiRestServletContext.class
         )
 )
-public class SpringConfig {}
+public class SpringConfig {
+
+}
