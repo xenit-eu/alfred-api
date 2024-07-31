@@ -10,7 +10,6 @@ def format = new SimpleDateFormat("yyyy-MM-dd")
 
 tasks.register("buildWebsiteScript", Exec) {
     setGroup "documentation"
-    commandLine 'chmod', '+x', './build-website.sh'
     commandLine 'bash', './build-website.sh'
 }
 assemble.dependsOn buildWebsiteScript
@@ -36,13 +35,19 @@ tasks.register("deployWebsiteToWebHost") {
         ssh.run {
             session(remotes.a2hosting) {
                 def remoteHomeDir = execute 'pwd'
+                def websiteDir = "${remoteHomeDir}/docs.xenit.eu"
                 def today = format.format(date)
-                put from: file("${layout.buildDirectory.get()}/website-alfred-api_${today}.tar.gz"), into: "${remoteHomeDir}/docs.xenit.eu/"
-                execute "mv ${remoteHomeDir}/docs.xenit.eu/alfred-api ${remoteHomeDir}/docs.xenit.eu/alfred-api_${today}_back"
-                execute "mkdir -p ${remoteHomeDir}/docs.xenit.eu/back/"
-                execute "tar vxzf ${remoteHomeDir}/docs.xenit.eu/website-alfred-api_${today}.tar.gz -C ${remoteHomeDir}/docs.xenit.eu/back/"
-                execute "tar vczf ${remoteHomeDir}/docs.xenit.eu/alfred-api_${today}_back.tar.gz -C ${remoteHomeDir}/docs.xenit.eu alfred-api_${today}_back"
-                remove "${remoteHomeDir}/docs.xenit.eu/alfred-api_${today}_back"
+                def websiteTar = "website-alfred-api_${today}.tar.gz"
+                def backupDir = "alfred-api_${today}_back"
+                // Upload
+                put from: file("${layout.buildDirectory.get()}/${websiteTar}"), into: "${websiteDir}/"
+                // Backup old website component to tar
+                execute "mv ${websiteDir}/alfred-api ${remoteHomeDir}/${backupDir}"
+                execute "tar vczf alfred-api_${today}_back.tar.gz -C ${remoteHomeDir} ${backupDir}"
+                // Deploy new website component from tar
+                execute "tar vxzf ${websiteDir}/${websiteTar} -C ${websiteDir}"
+                // Cleanup uncompressed backup
+                remove "${remoteHomeDir}/${backupDir}"
             }
         }
     }

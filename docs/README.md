@@ -1,6 +1,6 @@
 # Documentation Alfred API
 
-**Process is automatically executed by GHA on release"
+**Process is automated through GHA. Trigger the appropriate workflow.**
 
 ## Generate website
 

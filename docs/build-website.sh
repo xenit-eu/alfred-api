@@ -62,7 +62,7 @@ build_javadoc() {
     local alfredapidir=".."
 
     pushd "$alfredapidir"
-    ./gradlew clean :apix-interface:javadoc
+    ./gradlew :apix-interface:javadoc
     popd
 
     local outputdir="build/website/$productName/"
