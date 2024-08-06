@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--WARNING THIS IS A DUPLICATE OF THE integrationtests-50 version! EACH INTEGRATIONTESTS should have this file-->
-<model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.alfresco.org/model/dictionary/1.0 http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD/root/projects/repository/config/alfresco/model/modelSchema.xsd" xmlns="http://www.alfresco.org/model/dictionary/1.0" name="apixtest:model">
+<model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.alfresco.org/model/dictionary/1.0 http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD/root/projects/repository/config/alfresco/model/modelSchema.xsd"
+        xmlns="http://www.alfresco.org/model/dictionary/1.0" name="apixtest:model">
     <description>APIX integration tests Metadata Model</description>
     <author>gb</author>
     <version>1</version>
@@ -67,7 +69,7 @@
                     <index enabled="true">
                         <tokenised>false</tokenised>
                     </index>
-                </property>                
+                </property>
             </properties>
         </type>
     </types>

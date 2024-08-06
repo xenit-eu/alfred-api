@@ -18,10 +18,11 @@
 -->
 <beans>
     <!-- Define the CodeRunnerStandaloneServer bean -->
-    <bean id="CodeRunnerStandaloneServer" class="com.github.ruediste.remoteJUnit.codeRunner.CodeRunnerStandaloneServer"/>
+    <bean id="CodeRunnerStandaloneServer"
+            class="com.github.ruediste.remoteJUnit.codeRunner.CodeRunnerStandaloneServer"/>
 
     <!-- Define your custom server bean that references CodeRunnerStandaloneServer -->
     <bean id="eu.xenit.apix.testserver" class="eu.xenit.apix.server.Server">
-        <property name="codeRunnerStandaloneServer" ref="CodeRunnerStandaloneServer" />
+        <property name="codeRunnerStandaloneServer" ref="CodeRunnerStandaloneServer"/>
     </bean>
 </beans>

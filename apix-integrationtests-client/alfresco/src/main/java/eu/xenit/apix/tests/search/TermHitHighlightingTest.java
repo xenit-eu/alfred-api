@@ -31,9 +31,10 @@ public class TermHitHighlightingTest extends JavaApiBaseTest {
     SearchService searchService;
     RetryingTransactionHelper retryingTransactionHelper;
     private final SolrTestHelperImpl solrHelper;
-    private static final String FURIES_TXT = "The furies are at home\nin the mirror; it is their address.\nEven the clearest water,\nif deep enough can drown.\n"
-            + "\nNever think to surprise them.\nYour face approaching ever\nso friendly is the white flag\nthey ignore. There is no truce\n"
-            + "\nwith the furies. A mirror’s temperature is always at zero.\n";
+    private static final String FURIES_TXT =
+            "The furies are at home\nin the mirror; it is their address.\nEven the clearest water,\nif deep enough can drown.\n"
+                    + "\nNever think to surprise them.\nYour face approaching ever\nso friendly is the white flag\nthey ignore. There is no truce\n"
+                    + "\nwith the furies. A mirror’s temperature is always at zero.\n";
 
     public TermHitHighlightingTest() {
         // initialise the local beans

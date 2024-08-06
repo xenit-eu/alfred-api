@@ -52,20 +52,13 @@ allprojects {
             exclude group: 'org.apache.httpcomponents', module: 'httpcore'
         }
         // Add services used to the integration test fatjar, since we can't access the ones deployed in Alfresco
-        testImplementation (project(":apix-impl:apix-impl-${subproject_alfresco_version}"))
+        testImplementation(project(":apix-impl:apix-impl-${subproject_alfresco_version}"))
         // Read in the integration-test-server static ApplicationContext + Helperclasses
         implementation project(path: ":apix-integrationtests-server")
     }
 }
 
 subprojects {
-    apply plugin: 'eu.xenit.docker-compose'
-
-    // Subproject of supported Alfresco versions
-    def subproject_alfresco_version = project.projectDir.name == "alfresco"
-            ? "231" // minimum supported version
-            : project.projectDir.name
-
     // Subproject of supported Alfresco versions
     def projectApixImpl = project(":apix-impl:apix-impl-${project.projectDir.name}")
     def projectDocker = project(":apix-docker:docker-${project.projectDir.name}")
