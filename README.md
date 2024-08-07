@@ -41,10 +41,10 @@ Full documentation can be found at the [project's documentation](https://docs.xe
 ### Project structure
 * *apix-interface* builds the interface of Alfred API. This part is agnostic of the 
 Alfresco version used.
-* *apix-rest-v1* builds the REST API of Alfred API. 
+* *apix-rest* builds the REST API of Alfred API. 
 * *apix-impl* builds the Java code for each version of Alfresco.
 * *alfresco* builds the AMP for each Alfresco version that is the main deliverable for Alfred API. The AMP contains
-  the JARs of *apix-interface* and *apix-rest-v1*.
+  the JARs of *apix-interface* and *apix-rest*.
     * *alfresco/xx* contains the correct properties for each Alfresco version.
 * *apix-integrationtests-client* contains the integration tests for each Alfresco version.
 * *apix-integrationtests-server* contains the Remote-JUnit runner for remote class loading. 

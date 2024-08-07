@@ -1,7 +1,4 @@
-plugins {
-    id 'java'
-    id 'java-library'
-}
+apply plugin: 'java-library'
 
 dependencies {
     api project(":apix-interface")
@@ -21,7 +18,6 @@ subprojects {
         main {
             java {
                 srcDirs = ["${project.parent.projectDir}/src/main/java"]
-
             }
         }
         test {
@@ -73,7 +69,6 @@ allprojects {
 }
 
 task generateVersionFile(type: Task) {
-    System.out.println("Start task generateVersionFile")
     def versionFile = "${rootDir}/apix-impl/src/main/java/eu/xenit/apix/Version.java"
     outputs.file versionFile
     doFirst {

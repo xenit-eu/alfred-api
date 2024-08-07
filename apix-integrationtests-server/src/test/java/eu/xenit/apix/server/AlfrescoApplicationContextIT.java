@@ -36,7 +36,7 @@ public class AlfrescoApplicationContextIT {
                 }
             }
         } catch (BeansException e) {
-            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
         }
     }
 

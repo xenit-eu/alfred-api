@@ -12,9 +12,9 @@ services:
     environment:
       - SOLR_HOST=solr
       - TERM=xterm
-      - JMX_ENABLED=true
       - GLOBAL_messaging.broker.url=failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true
       - GLOBAL_localTransform.core-aio.url=http://transform-core-aio:8090/
+      - GLOBAL_tomcat.context.path=/usr/local/tomcat/webapps/alfresco/META-INF/context.xml
   solr:
     image: private.docker.xenit.eu/alfresco-enterprise/alfresco-solr6:2.0.9.1
     volumes:

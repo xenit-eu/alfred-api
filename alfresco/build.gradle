@@ -33,7 +33,7 @@ subprojects {
     dependencies {
         implementation(project(":apix-impl"))
         implementation(project(":apix-impl:apix-impl-${project.name}"))
-        implementation(project(":apix-rest-v1"))
+        implementation(project(":apix-rest"))
     }
 
     publishing {

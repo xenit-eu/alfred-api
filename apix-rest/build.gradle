@@ -4,7 +4,7 @@ plugins {
     id 'eu.xenit.alfresco' version '1.1.0'
 }
 
-description = 'Xenit Alfred API Rest on Alfresco V23.X'
+description = 'Xenit Alfred API Rest'
 apply from: "$rootProject.projectDir/alfresco/231/overrides.gradle"
 
 dependencies {
@@ -31,8 +31,5 @@ dependencies {
     testImplementation 'org.alfresco:alfresco-remote-api'
 
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.0.0'
-    // JUnit 5 dependencies
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.1'
 }

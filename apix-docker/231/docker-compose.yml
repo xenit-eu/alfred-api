@@ -2,7 +2,7 @@ version: '2'
 
 services:
   alfresco-core:
-    image: ${DOCKER_IMAGE}
+    image: ${DOCKER_IMAGE:-local}
     ports:
       - "${DOCKER_IP}:8080:8080"
       - "4578:4578" # coderunner-server
@@ -12,7 +12,6 @@ services:
     environment:
       - SOLR_HOST=solr
       - TERM=xterm
-      - JMX_ENABLED=true
       - GLOBAL_messaging.broker.url=failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true
       - GLOBAL_localTransform.core-aio.url=http://transform-core-aio:8090/
   solr:

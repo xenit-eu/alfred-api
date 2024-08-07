@@ -38,7 +38,7 @@ allprojects {
     check.dependsOn integrationTest
 
     dependencies {
-        alfrescoProvided(project(":apix-rest-v1")) { transitive = false }
+        alfrescoProvided(project(":apix-rest")) { transitive = false }
         alfrescoProvided(project(":apix-interface")) { transitive = false }
         alfrescoProvided(project(":apix-interface")) { transitive = false }
 

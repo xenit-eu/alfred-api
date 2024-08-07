@@ -92,7 +92,7 @@ public class SearchServiceUnitTest {
         verify(alfrescoSearchServiceMock).query(searchParamsArgument.capture());
         Assertions.assertEquals(QueryConsistency.EVENTUAL, searchParamsArgument.getValue().getQueryConsistency());
     }
-    // TODO : set () to a method
+
     @Test
     public void testOrderBy_withMultivalueProperty_throwsIllegalArgumentException() {
         Assertions.assertThrows(IllegalArgumentException.class,

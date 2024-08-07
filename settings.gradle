@@ -2,7 +2,7 @@ rootProject.name = 'apix'
 
 include ':apix-interface'
 include ':apix-impl'
-include ':apix-rest-v1'
+include ':apix-rest'
 include ':alfresco'
 include ':apix-docker'
 include ':apix-integrationtests-client:model-amp'

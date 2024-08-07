@@ -17,7 +17,7 @@ public class SearchNodeJsonParser {
     private final ObjectMapper mapper;
 
     public SearchNodeJsonParser() {
-        this.mapper = new ObjectMapper();
+        mapper = new ObjectMapper();
         configureObjectMapper();
     }
 
