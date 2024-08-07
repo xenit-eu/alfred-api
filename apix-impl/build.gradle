@@ -1,15 +1,7 @@
-apply plugin: 'java-library'
-
-dependencies {
-    api project(":apix-interface")
-    implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.0.0'
-    implementation group: 'jakarta.annotation', name: 'jakarta.annotation-api', version: '3.0.0'
-}
 subprojects {
-    def shortAlfrescoVersion = project.name.split("-").last()
-    apply from: "${rootProject.projectDir}/alfresco/${shortAlfrescoVersion}/overrides.gradle"
     apply plugin: 'java-library'
 
+    // ::apix-impl cannot be set in allprojects due to circular dependency issues
     dependencies {
         api(project(":apix-impl"))
     }
@@ -39,6 +31,10 @@ allprojects {
     apply plugin: 'java-library'
 
     dependencies {
+        api project(":apix-interface")
+        implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.0.0'
+        implementation group: 'jakarta.annotation', name: 'jakarta.annotation-api', version: '3.0.0'
+
         alfrescoProvided platform("org.alfresco:acs-community-packaging:${alfresco_version}")
         alfrescoProvided "org.alfresco:alfresco-repository"
         alfrescoProvided 'org.alfresco:alfresco-remote-api'
@@ -49,7 +45,6 @@ allprojects {
         testImplementation 'org.alfresco:alfresco-remote-api'
         testImplementation 'org.alfresco:alfresco-data-model'
         testImplementation 'org.mockito:mockito-core'
-        // JUnit 5 dependencies
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
         // Hamcrest dependencies
         testImplementation 'org.hamcrest:hamcrest:2.2'

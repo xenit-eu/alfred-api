@@ -2,7 +2,7 @@ version: '2'
 
 services:
   alfresco-core:
-    image: ${DOCKER_IMAGE}
+    image: ${DOCKER_IMAGE:-local}
     ports:
       - "${DOCKER_IP}:8080:8080"
       - "4578:4578" # coderunner-server
