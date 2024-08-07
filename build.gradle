@@ -4,8 +4,8 @@ plugins {
     id 'eu.xenit.de' version '3.1.0' apply false
     id 'eu.xenit.amp' version '1.1.0' apply false
     id 'eu.xenit.alfresco' version '1.1.0' apply false
-    id 'eu.xenit.docker-alfresco' version '5.3.1' apply false
-    id 'eu.xenit.docker-compose' version '5.3.1' apply false
+    id 'eu.xenit.docker-alfresco' version '5.5.0' apply false
+    id 'eu.xenit.docker-compose' version '5.5.0' apply false
     id 'eu.xenit.alfresco-remote-testrunner' version '2.0.1' apply false
 }
 
