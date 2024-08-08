@@ -1,0 +1,54 @@
+import java.text.SimpleDateFormat
+
+plugins {
+    id "base"
+    id "org.hidetake.ssh" version "2.11.2"
+}
+
+def date = new Date()
+def format = new SimpleDateFormat("yyyy-MM-dd")
+
+tasks.register("buildWebsiteScript", Exec) {
+    setGroup "documentation"
+    commandLine 'bash', './build-website.sh'
+}
+assemble.dependsOn buildWebsiteScript
+
+remotes {
+    a2hosting {
+        host = project.findProperty("webHostAddress")
+        port = project.hasProperty("webHostPort") ? (project.getProperty("webHostPort") as Integer) : 22
+        user = project.findProperty("webHostUser")
+        def keyFileLocation = project.hasProperty("webHostSshKey") ? project.getProperty("webHostSshKey") : "No Key"
+        identity = file(keyFileLocation)
+    }
+}
+
+ssh.settings {
+    knownHosts = allowAnyHosts
+}
+
+tasks.register("deployWebsiteToWebHost") {
+    setGroup "publishing"
+    dependsOn buildWebsiteScript
+    doLast {
+        ssh.run {
+            session(remotes.a2hosting) {
+                def remoteHomeDir = execute 'pwd'
+                def websiteDir = "${remoteHomeDir}/docs.xenit.eu"
+                def today = format.format(date)
+                def websiteTar = "website-alfred-api_${today}.tar.gz"
+                def backupDir = "alfred-api_${today}_back"
+                // Upload
+                put from: file("${layout.buildDirectory.get()}/${websiteTar}"), into: "${websiteDir}/"
+                // Backup old website component to tar
+                execute "mv ${websiteDir}/alfred-api ${remoteHomeDir}/${backupDir}"
+                execute "tar vczf alfred-api_${today}_back.tar.gz -C ${remoteHomeDir} ${backupDir}"
+                // Deploy new website component from tar
+                execute "tar vxzf ${websiteDir}/${websiteTar} -C ${websiteDir}"
+                // Cleanup uncompressed backup
+                remove "${remoteHomeDir}/${backupDir}"
+            }
+        }
+    }
+}

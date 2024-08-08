@@ -1,9 +1,9 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "This is the swagger specification for Api-X REST API\n\nExamples can be found at: https://docs.xenit.eu/alfred-api",
-    "version": "5.0.0",
-    "title": "Api-X REST API",
+    "description": "This is the swagger specification for Alfred REST API\n\nExamples can be found at: https://docs.xenit.eu/alfred-api",
+    "version": "5.0.3",
+    "title": "Alfred REST Api",
     "contact": {
       "name": "XeniT",
       "url": "http://www.xenit.eu",
@@ -288,10 +288,10 @@
           {
             "name": "fields",
             "in": "query",
-            "description": "Comma separated field names to include.",
+            "description": "Comma separated field names to include. Example: \"content,nodeRef\"",
             "required": true,
             "type": "string",
-            "default": "content,nodeRef",
+            "default": "nodeRef",
             "enum": [
               "content",
               "nodeRef",
@@ -503,7 +503,7 @@
         ],
         "summary": "The Swagger Spec for Alfred API",
         "description": "",
-        "operationId": "execute",
+        "operationId": "v1.getDocumentation",
         "parameters": [],
         "responses": {
           "200": {
@@ -536,7 +536,7 @@
         ],
         "summary": "Creates or copies a node",
         "description": "Example of POST body:\n\n```\nPOST /apix/v1/nodes\n{\n\"parent\" : \"workspace://SpacesStore/d5dac928-e581-4507-9be7-9a2416adc318\", \n\"name\" : \"mydocument.txt\", \n\"type\" : \"{http://www.alfresco.org/model/content/1.0}content\", \n\"properties\" : {\n      \"{namespace}property1\": [\n        \"string\"\n      ],\n      \"{namespace}property2\": [\n        \"string\"\n      ],\n      \"{namespace}property3\": [\n        \"string\"\n      ]\n}, \n\"aspectsToAdd\" : [\n      \"{namespace}aspect1\"\n], \n\"aspectsToRemove\" : [\n      \"{namespace}aspect1\"\n], \n\"copyFrom\" : \"workspace://SpacesStore/f0d15919-3841-4170-807f-b81d2ebdeb80\", \n}\n```\n\"aspectsToRemove\" is only relevant when copying a node.\n",
-        "operationId": "createNode",
+        "operationId": "v1.createNode",
         "parameters": [
           {
             "in": "body",
@@ -1431,6 +1431,7 @@
             "type": "file"
           }
         ],
+        "consumes": ["multipart/form-data"],
         "responses": {
           "200": {
             "description": "Success"
@@ -1658,7 +1659,7 @@
         ],
         "summary": "Retrieve current user's permissions for a node",
         "description": "Returns a key-value map of permissions keys to a value of 'DENY' or 'ALLOW'. Possible keys are: Read, Write, Delete, CreateChildren, ReadPermissions, ChangePermissions, or custom permissions",
-        "operationId": "getPermissions",
+        "operationId": "v1.getPermissions",
         "parameters": [
           {
             "name": "space",
@@ -1828,7 +1829,7 @@
         ],
         "summary": "Returns person information",
         "description": "",
-        "operationId": "getPerson",
+        "operationId": "v1.getPerson",
         "parameters": [
           {
             "name": "space",
@@ -1866,7 +1867,7 @@
         ],
         "summary": "Return the definition of a property",
         "description": "",
-        "operationId": "getPropertyDefinition",
+        "operationId": "v1.getPropertyDefinition",
         "parameters": [
           {
             "name": "qname",
@@ -1898,7 +1899,7 @@
         ],
         "summary": "Performs a search for nodes",
         "description": "# Request components\n\n## query\nObject containing subcomponents that build the requested query.\nInfo about the Search query syntax can be found here: https://docs.xenit.eu/alfred-api/user/rest-api\n### special search terms:\n- type: searches for nodes of that type (for example: \"type\" : \"cm:content\")\n- aspect: searches for nodes with that aspect (for example: \"aspect\" : \"cm:titled\")\n- noderef: searches the node with that noderef (for example: \"noderef\" : \"workspace://SpacesStore/f0d15919-3841-4170-807f-b81d2ebdeb80\")\n- parent: searches the nodes with that parent (for example: \"parent\" : \"workspace://SpacesStore/f0d15919-3841-4170-807f-b81d2ebdeb80\")\n- path: searches the nodes with that path (for example: \"path\" : \"/\")\n- category: searches the nodes with that category (for example: \"category\" : \"workspace://SpacesStore/f0d15919-3841-4170-807f-b81d2ebdeb80\")\n- text: searches the nodes with content containing that text (for example: \"text\" : \"this text\")\n- all: searches the nodes with content, cm:name, cm:creator, cm:modifier or cm:author containing the value (for example: \"all\" : \"search term\")\n- isunset: searches the nodes with where the value of the property is not set (for example: \"isunset\" : \"cm:author\")\n- isnull: searches the nodes with where the value of the property is null (for example: \"isnull\" : \"cm:author\")\n- isnotnull: searches the nodes with where the value of the property is not null (for example: \"isnotnull\" : \"cm:author\")\n- exists: searches the nodes that have the property (for example: \"exists\" : \"cm:author\")\n\n## paging\n`Optional`\n\nOptions to skip over results starting from the top of the result and to limit the total number of results.\n\n## facets\n`Optional`\n\nOptions to enable, limit the total amount, minimum number of hits and customize input of facets.\n\n<b>Note:</b> facets with 0 hits are not returned in the result\n\n## orderBy\n`Optional`\n\nOptions to select the property to order by and the direction of sorting.\n\n## consistency\n`Optional`\n\nOption to request specific consistency\n\n## locale\n`Optional`\n\nOptions to request specific locale and encoding options\n\n## workspace\n`Optional`\n\nOptions to change the target alfresco workspace\n\n## highlight\n`5.2 and up`\n\n`Optional`\n\nOptions to change the highlight configuration.\nMinimal requirement is the `fields` array, which takes object containing at least the `field` property. Each list element specifies a property on which higlighting needs to be applied. When no fields are specified, the call defaults to `cm:content` as field.\nFull documentation can be found on the alfresco [documentation](https://docs.alfresco.com/5.2/concepts/search-api-highlight.html) page.\n\n# Examples\n\nSearch for the first 10 nodes in the `cm:content` namespace:\n```json\n{\n  \"query\": {\"type\":\"{http://www.alfresco.org/model/content/1.0}content\"},\n  \"paging\": {\n    \"limit\": 10,\n    \"skip\": 0\n  },\n  \"facets\": {\n    \"enabled\": false\n  }\n}\n```\n\nSearch for all nodes with the term 'budget' in the `cm:content` property (fulltext), and show two highlighted hits with delimiter \\<highlight>\\</highlight>:\n```json\n{\n    \"query\": {\n        \"property\": {\n            \"exact\": false,\n            \"name\": \"cm:content\",\n            \"value\": \"budget\"\n        }\n    },\n    \"highlight\":{\n        \"prefix\":\"<highlight>\",\n        \"postfix\":\"</highlight>\",\n        \"snippetCount\":2,\n\t\t\"fields\":[{\"field\":\"cm:content\"}]\n    }\n}\n```",
-        "operationId": "execute",
+        "operationId": "v1.search",
         "parameters": [
           {
             "in": "body",
@@ -2658,7 +2659,7 @@
         ],
         "summary": "Creates or copies a node",
         "description": "",
-        "operationId": "createNode",
+        "operationId": "v2.createNode",
         "parameters": [
           {
             "in": "body",
@@ -2746,7 +2747,7 @@
         ],
         "summary": "Retrieve current user's permissions for a node",
         "description": "Returns a key-value map of permissions keys to a value of 'DENY' or 'ALLOW'. Possible keys are: Read, Write, Delete, CreateChildren, ReadPermissions, ChangePermissions, or custom permissions",
-        "operationId": "getPermissions",
+        "operationId": "v2.getPermissions",
         "parameters": [
           {
             "name": "space",
@@ -2862,7 +2863,7 @@
         ],
         "summary": "Returns person information",
         "description": "",
-        "operationId": "getPerson",
+        "operationId": "v2.getPerson",
         "parameters": [
           {
             "name": "space",
@@ -3160,12 +3161,10 @@
       "type": "object",
       "properties": {
         "comment": {
-          "type": "string",
-          "readOnly": true
+          "type": "string"
         },
         "majorVersion": {
           "type": "boolean",
-          "readOnly": true,
           "default": false
         }
       }
@@ -3233,7 +3232,11 @@
         },
         "type": {
           "description": "Defaults to cm:content",
-          "$ref": "#/definitions/QName"
+          "allOf": [
+            {
+              "$ref": "#/definitions/QName"
+            }
+          ]
         }
       }
     },
@@ -3668,20 +3671,16 @@
       ],
       "properties": {
         "parent": {
-          "type": "string",
-          "readOnly": true
+          "type": "string"
         },
         "name": {
-          "type": "string",
-          "readOnly": true
+          "type": "string"
         },
         "type": {
-          "type": "string",
-          "readOnly": true
+          "type": "string"
         },
         "properties": {
           "type": "object",
-          "readOnly": true,
           "additionalProperties": {
             "type": "array",
             "items": {
@@ -3691,21 +3690,18 @@
         },
         "aspectsToAdd": {
           "type": "array",
-          "readOnly": true,
           "items": {
             "$ref": "#/definitions/QName"
           }
         },
         "aspectsToRemove": {
           "type": "array",
-          "readOnly": true,
           "items": {
             "$ref": "#/definitions/QName"
           }
         },
         "copyFrom": {
-          "type": "string",
-          "readOnly": true
+          "type": "string"
         }
       }
     },
@@ -3763,8 +3759,7 @@
       ],
       "properties": {
         "parent": {
-          "type": "string",
-          "readOnly": true
+          "type": "string"
         }
       }
     },
@@ -3775,13 +3770,15 @@
       ],
       "properties": {
         "original": {
-          "readOnly": true,
           "$ref": "#/definitions/NodeRef"
         },
         "destinationFolder": {
           "description": "Optional, if not specified uses the original node's folder. If current user does not have permissions for this folder, the working copy is created in the user's home folder",
-          "readOnly": true,
-          "$ref": "#/definitions/NodeRef"
+          "allOf": [
+            {
+              "$ref": "#/definitions/NodeRef"
+            }
+          ]
         }
       }
     },
@@ -3804,7 +3801,6 @@
       "properties": {
         "users": {
           "type": "array",
-          "readOnly": true,
           "items": {
             "type": "string"
           }
@@ -4172,7 +4168,6 @@
       "properties": {
         "subgroups": {
           "type": "array",
-          "readOnly": true,
           "items": {
             "type": "string"
           }

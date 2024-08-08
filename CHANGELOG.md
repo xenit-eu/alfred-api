@@ -1,5 +1,10 @@
 # Alfred API - Changelog
 
+## 5.0.4 (Unreleased)
+
+### Fixed
+* [ALFREDAPI-552](https://xenitsupport.jira.com/browse/ALFREDAPI-552) Make swagger spec Open Api v2 compliant
+
 ## 5.0.3 (2024-06-17)
 
 ### Fixed
