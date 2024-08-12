@@ -8,14 +8,16 @@ as framework to reduce maintenance efforts.
 A subproject with the name of `apix-integrationtests-server` has been added. (See README)
 The artifact name of `apix-integrationtests` has been changed to `apix-integrationtests-client`.
 
-Breaking changes: 
+**Breaking changes:** 
   * JDK11 --> JDK 17
   * Library changes from Javax to Jakarta
   * Tomcat V10.1: this comes with a breaking change in the dispatchservlet, blocking the MultiPart handling and blocks double forward slashes
     * Fix has to be deployed from your tomcat image. You will have to update your META-INF/context.xml in tomcat. See subproject apix-docker. 
   * Dropped all support for older Alfresco version prior to V23.1 just as alfresco-mvc
+  * **All package names have been updated from `eu.xenit.apix` to `eu.xenit.alfred.api`.**
 
 * [ALFREDAPI-548](https://xenitsupport.jira.com/browse/ALFREDAPI-548): Support Alfresco V23.1 && V23.2, dropping V7.x
+* [ALFREDAPI-556](https://xenitsupport.jira.com/browse/ALFREDAPI-556): Change apix package-names to `eu.xenit.alfred.api`.
 
 ## 5.0.4 (Unreleased)
 

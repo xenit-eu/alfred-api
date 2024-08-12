@@ -22,7 +22,7 @@
             class="com.github.ruediste.remoteJUnit.codeRunner.CodeRunnerStandaloneServer"/>
 
     <!-- Define your custom server bean that references CodeRunnerStandaloneServer -->
-    <bean id="eu.xenit.apix.testserver" class="eu.xenit.apix.server.Server">
+    <bean id="eu.xenit.alfred.api.testserver" class="eu.xenit.alfred.api.server.Server">
         <property name="codeRunnerStandaloneServer" ref="CodeRunnerStandaloneServer"/>
     </bean>
 </beans>

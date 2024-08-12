@@ -1,10 +1,10 @@
-import eu.xenit.apix.data.NodeRef;
-import eu.xenit.apix.data.QName;
-import eu.xenit.apix.dictionary.IDictionaryService;
-import eu.xenit.apix.dictionary.types.TypeDefinition;
-import eu.xenit.apix.node.INodeService;
-import eu.xenit.apix.node.MetadataChanges;
-import eu.xenit.apix.node.NodeMetadata;
+import eu.xenit.alfred.api.data.NodeRef;
+import eu.xenit.alfred.api.data.QName;
+import eu.xenit.alfred.api.dictionary.IDictionaryService;
+import eu.xenit.alfred.api.dictionary.types.TypeDefinition;
+import eu.xenit.alfred.api.node.INodeService;
+import eu.xenit.alfred.api.node.MetadataChanges;
+import eu.xenit.alfred.api.node.NodeMetadata;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

@@ -13,7 +13,7 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
     <context:annotation-config/>
     <context:component-scan base-package="com.github.dynamicextensionsalfresco"/>
-    <bean class="eu.xenit.apix.rest.TestDEWebscript1"/>
+    <bean class="eu.xenit.alfred.api.rest.TestDEWebscript1"/>
     <!--<bean id="webscripts.builder" class="com.github.dynamicextensionsalfresco.webscripts.AnnotationWebScriptBuilder">-->
     <!--<constructor-arg ref="webscripts.argumentsResolver"/>-->
     <!--</bean>-->
