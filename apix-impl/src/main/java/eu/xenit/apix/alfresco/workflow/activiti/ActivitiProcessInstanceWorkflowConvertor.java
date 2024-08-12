@@ -2,12 +2,8 @@ package eu.xenit.apix.alfresco.workflow.activiti;
 
 import eu.xenit.apix.alfresco.workflow.AbstractApixWorkflowConvertor;
 import eu.xenit.apix.alfresco.workflow.WorkflowConverterFactory;
-import eu.xenit.apix.data.QName;
 import eu.xenit.apix.workflow.model.ITaskOrWorkflow;
 import eu.xenit.apix.workflow.model.WorkflowOrTaskChanges;
-import java.io.Serializable;
-import java.util.Map;
-import javax.annotation.Resource;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

@@ -19,7 +19,7 @@ public class OperatorSearchNodeDeserializer extends JsonDeserializer<OperatorSea
 
     @Override
     public OperatorSearchNode deserialize(JsonParser jp, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
+            throws IOException {
 
         // Anti-hack for the 'hack' in AsWrapperType, remove 'nodeType' field again
         if (jp.getCurrentToken() != JsonToken.START_ARRAY) {

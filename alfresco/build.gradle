@@ -18,10 +18,10 @@ subprojects {
                     it.put("module.id", "alfred-api-${project.name}")
                     it.put("module.title", "alfred-api-${project.name}")
                     it.put("module.description",
-                            "Xenit Alfred API implementation Alfresco ${alfresco_version.substring(0, 3)}")
+                            "Xenit Alfred API implementation Alfresco ${alfresco_version}")
                     it.put("module.version", project.version)
                     it.put("module.repo.version.min", project.alfresco_min_version)
-                    if(project.hasProperty("alfresco_max_version")
+                    if (project.hasProperty("alfresco_max_version")
                             && project.alfresco_max_version != null) {
                         it.put("module.repo.version.max", project.alfresco_max_version)
                     }
@@ -33,7 +33,7 @@ subprojects {
     dependencies {
         implementation(project(":apix-impl"))
         implementation(project(":apix-impl:apix-impl-${project.name}"))
-        implementation(project(":apix-rest-v1"))
+        implementation(project(":apix-rest"))
     }
 
     publishing {

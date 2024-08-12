@@ -23,7 +23,7 @@ public interface INodeService {
     NodeMetadata getMetadata(NodeRef noderef);
 
     /**
-     * @param noderef  The noderef for which the metadata is set.
+     * @param noderef The noderef for which the metadata is set.
      * @param metadata The new metadata for the given noderef.
      * @return Returns the new metadata in a NodeMetadata object (contains node ref, properties, ...).
      */
@@ -78,9 +78,9 @@ public interface INodeService {
     /**
      * Returns all primary ancestors of the given node.
      *
-     * @param ref     The node for which the ancestors are requested.
-     * @param rootRef The node up to which point the ancestors have to be retrieved.
-     *                This is optional and uses Company Home as root by default.
+     * @param ref The node for which the ancestors are requested.
+     * @param rootRef The node up to which point the ancestors have to be retrieved. This is optional and uses Company
+     * Home as root by default.
      * @return a list of the node references of the primary parents.
      */
     List<NodeRef> getAncestors(NodeRef ref, NodeRef rootRef);
@@ -88,8 +88,8 @@ public interface INodeService {
     /**
      * Creates an association between source and target of a given type.
      *
-     * @param source    The source of the association to create.
-     * @param target    The target of the association to create.
+     * @param source The source of the association to create.
+     * @param target The target of the association to create.
      * @param assocType The type of association to create.
      */
     void createAssociation(NodeRef source, NodeRef target, QName assocType);
@@ -97,8 +97,8 @@ public interface INodeService {
     /**
      * Removes an association between source and target of a given type.
      *
-     * @param source    The source of the association to remove.
-     * @param target    The target of the association to remove.
+     * @param source The source of the association to remove.
+     * @param target The target of the association to remove.
      * @param assocType The type of association to remove.
      */
     void removeAssociation(NodeRef source, NodeRef target, QName assocType);
@@ -106,9 +106,9 @@ public interface INodeService {
     /**
      * Copies a source node to a given destination parent node. Children are copied if deepCopy is true.
      *
-     * @param source      The node to copy.
+     * @param source The node to copy.
      * @param destination The parent which will contain the copied node.
-     * @param deepCopy    If true child nodes are also copied.
+     * @param deepCopy If true child nodes are also copied.
      * @return The noderef of the new node.
      */
     NodeRef copyNode(NodeRef source, NodeRef destination, boolean deepCopy);
@@ -116,7 +116,7 @@ public interface INodeService {
     /**
      * Moves a source node to a given destination parent node.
      *
-     * @param source      The node to move.
+     * @param source The node to move.
      * @param destination The parent which will contain the moved node.
      * @return The new noderef of the moved node.
      */
@@ -126,8 +126,8 @@ public interface INodeService {
      * Create a node with a given parent, name and type.
      *
      * @param parent The parent node of the new node.
-     * @param name   The name of the new node.
-     * @param type   The type of the new node.
+     * @param name The name of the new node.
+     * @param type The type of the new node.
      * @return The noderef of the newly created node.
      */
     NodeRef createNode(NodeRef parent, String name, QName type);
@@ -136,9 +136,9 @@ public interface INodeService {
      * Creation of a node giving the list of properties as well as the type. To be used when using a custom type has
      * required properties.
      *
-     * @param parent      The parent node of the new node.
-     * @param properties  list of properties to add to node.
-     * @param type        The type of the node.
+     * @param parent The parent node of the new node.
+     * @param properties list of properties to add to node.
+     * @param type The type of the node.
      * @param contentData can contain returned result of function createContent (or null).
      * @return The noderef of the new node.
      */
@@ -148,11 +148,11 @@ public interface INodeService {
      * Creation of a node giving the list of properties as well as the type. To be used when using a custom type has
      * required properties.
      *
-     * @param parent      The parent node of the new node.
-     * @param properties  list of properties to add to node.
-     * @param aspectsToAdd  list of aspects to add to node.
-     * @param aspectsToRemove  list of aspects to remove from node.
-     * @param type        The type of the node.
+     * @param parent The parent node of the new node.
+     * @param properties list of properties to add to node.
+     * @param aspectsToAdd list of aspects to add to node.
+     * @param aspectsToRemove list of aspects to remove from node.
+     * @param type The type of the node.
      * @param contentData can contain returned result of function createContent (or null).
      * @return The noderef of the new node.
      */
@@ -160,24 +160,24 @@ public interface INodeService {
             QName type, ContentData contentData);
 
     /**
-     * Convenience method to create a node giving the type, the list of properties,
-     * and requesting metadata extraction from its content.
-     * Since Alfresco 7, metadata extraction is done asynchronously. The metadata should be
-     * added to the node upon success.
+     * Convenience method to create a node giving the type, the list of properties, and requesting metadata extraction
+     * from its content. Since Alfresco 7, metadata extraction is done asynchronously. The metadata should be added to
+     * the node upon success.
      *
-     * @param parent      The parent node of the new node.
-     * @param fileName    Name for the target document.
+     * @param parent The parent node of the new node.
+     * @param fileName Name for the target document.
      * @param contentType String representation of the target alfresco contenttype.
-     * @param metadata    Properties (and optionally, aspects) to set on the new node in MetadataChanges format.
-     * @param content     Inputstream for the content for this new node.
+     * @param metadata Properties (and optionally, aspects) to set on the new node in MetadataChanges format.
+     * @param content Inputstream for the content for this new node.
      * @return The noderef of the new node.
      */
-    NodeRef createNode(NodeRef parent, String fileName, String contentType, MetadataChanges metadata, InputStream content);
+    NodeRef createNode(NodeRef parent, String fileName, String contentType, MetadataChanges metadata,
+            InputStream content);
 
     /**
      * Delete a node.
      *
-     * @param nodeRef     The noderef of the node to delete.
+     * @param nodeRef The noderef of the node to delete.
      * @param permanently If true the node is deleted permanently. If false the node is just moved to the trashcan.
      * @return whether the deletion was successful.
      */
@@ -200,7 +200,7 @@ public interface INodeService {
     /**
      * Checks out the given node placing a working copy in the destination specified.
      *
-     * @param original    The node to checkout
+     * @param original The node to checkout
      * @param destination The destination in which the working copy is placed.
      * @return null in case the checkout fails.
      */
@@ -209,10 +209,10 @@ public interface INodeService {
     /**
      * Checks in the given working copy.
      *
-     * @param nodeRef      the node that will be checked.
-     * @param comment      Give a comment while checking in.
+     * @param nodeRef the node that will be checked.
+     * @param comment Give a comment while checking in.
      * @param majorVersion If true this version will have an increased major version number relative to the previous
-     *                     commit. Otherwise an increased minor version number.
+     * commit. Otherwise an increased minor version number.
      * @return the noderef to the original node, updated with the checked in state.
      */
     NodeRef checkin(NodeRef nodeRef, String comment, boolean majorVersion);
@@ -234,13 +234,13 @@ public interface INodeService {
     /**
      * Sets content of a specific node. Also changes mimetype by guessing it using content and original file name.
      *
-     * @param node             noderef of the node where the content of the inputStream will placed.
-     * @param inputStream      The input stream that contains the content. In case the input stream is null the content will
-     *                         be set to empty. The inputstream will be read (in combination with originalFilename)
-     *                         to make a best effort guess about which mimetype the content should have.
-     *                         To enforce a specific mimetype, use {@link #setContent(NodeRef, ContentData) setContent(NodeRef, ContentData)}
-     *                         with a ContentData object that has the mimetype explicitly set.
-     *                         A ContentData object can be obtained from the method {@link #createContent(InputStream, String, String) createContent}
+     * @param node noderef of the node where the content of the inputStream will placed.
+     * @param inputStream The input stream that contains the content. In case the input stream is null the content will
+     * be set to empty. The inputstream will be read (in combination with originalFilename) to make a best effort guess
+     * about which mimetype the content should have. To enforce a specific mimetype, use
+     * {@link #setContent(NodeRef, ContentData) setContent(NodeRef, ContentData)} with a ContentData object that has the
+     * mimetype explicitly set. A ContentData object can be obtained from the method
+     * {@link #createContent(InputStream, String, String) createContent}
      * @param originalFilename The filename of the content. This is only used to guess the mimetype of the node.
      */
     void setContent(eu.xenit.apix.data.NodeRef node, InputStream inputStream, String originalFilename);
@@ -248,7 +248,7 @@ public interface INodeService {
     /**
      * Set the content of a node.
      *
-     * @param node        The node of which the content is set.
+     * @param node The node of which the content is set.
      * @param contentData The content to set.
      */
     void setContent(eu.xenit.apix.data.NodeRef node, eu.xenit.apix.data.ContentData contentData);
@@ -258,8 +258,8 @@ public interface INodeService {
      * Creates a content without linking it to a specific node yet.
      *
      * @param inputStream Can be null: in that case, the content property of the file is removed.
-     * @param mimeType    ex: "application/pdf"
-     * @param encoding    ex: "UTF-8", ....
+     * @param mimeType ex: "application/pdf"
+     * @param encoding ex: "UTF-8", ....
      * @return the URL of the content (can be set to the content property of a node).
      */
     ContentData createContent(InputStream inputStream, String mimeType, String encoding);
@@ -268,9 +268,9 @@ public interface INodeService {
      * Creates a content without linking it to a specific node yet.
      *
      * @param inputStream Can be null: in that case, the content property of the file is removed.
-     * @param fileName    Needed for guessing the mimetype. (Does necessary not need to contain the extension
-     *                    as mimeTypeGuessing will also work on content of the inputStream)
-     * @param encoding    Encoding of the inputStream. ex: "UTF-8", ....
+     * @param fileName Needed for guessing the mimetype. (Does necessary not need to contain the extension as
+     * mimeTypeGuessing will also work on content of the inputStream)
+     * @param encoding Encoding of the inputStream. ex: "UTF-8", ....
      * @return the URL of the content (can be set to the content property of a node).
      */
     ContentData createContentWithMimetypeGuess(InputStream inputStream, String fileName, String encoding);

@@ -3,9 +3,9 @@ package eu.xenit.apix.tests.translations;
 import eu.xenit.apix.alfresco.translation.TranslationService;
 import org.alfresco.repo.i18n.MessageService;
 import org.alfresco.service.ServiceRegistry;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -16,7 +16,7 @@ public class TranslationsServiceUnitTest {
     private ServiceRegistry serviceRegistryMock;
     private MessageService messageServiceMock;
 
-    @Before
+    @BeforeEach
     public void init() {
         serviceRegistryMock = mock(ServiceRegistry.class);
         when(serviceRegistryMock.getNamespaceService()).thenReturn(null);
@@ -29,20 +29,20 @@ public class TranslationsServiceUnitTest {
     @Test
     public void TestGetTranslatedMessage_GetMessageFromMessageService() {
         TranslationService ts = new TranslationService(serviceRegistryMock, null, null, messageServiceMock);
-        Assert.assertEquals(facetBucketMonthLabel, ts.getMessageTranslation(facetBucketMonthLabel));
-        Assert.assertNotNull(ts.getMessageTranslation(facetBucketMonthLabel));
+        Assertions.assertEquals(facetBucketMonthLabel, ts.getMessageTranslation(facetBucketMonthLabel));
+        Assertions.assertNotNull(ts.getMessageTranslation(facetBucketMonthLabel));
     }
 
     @Test
     public void TestGetTranslatedMessage_NullMessageService() {
         TranslationService ts = new TranslationService(serviceRegistryMock, null, null, null);
-        Assert.assertEquals(facetBucketMonthLabel, ts.getMessageTranslation(facetBucketMonthLabel));
-        Assert.assertNotNull(ts.getMessageTranslation(facetBucketMonthLabel));
+        Assertions.assertEquals(facetBucketMonthLabel, ts.getMessageTranslation(facetBucketMonthLabel));
+        Assertions.assertNotNull(ts.getMessageTranslation(facetBucketMonthLabel));
     }
 
     @Test
     public void TestGetTranslatedMessage_NullParameter() {
         TranslationService ts = new TranslationService(serviceRegistryMock, null, null, messageServiceMock);
-        Assert.assertNull(ts.getMessageTranslation(null));
+        Assertions.assertNull(ts.getMessageTranslation(null));
     }
 }

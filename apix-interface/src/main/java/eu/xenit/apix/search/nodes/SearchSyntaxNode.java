@@ -19,5 +19,5 @@ import eu.xenit.apix.search.visitors.ISearchSyntaxVisitor;
 //@JsonIgnoreProperties(value = "nodeType",ignoreUnknown = true)
 public interface SearchSyntaxNode {
 
-    public <T> T accept(ISearchSyntaxVisitor<T> visitor);
+    <T> T accept(ISearchSyntaxVisitor<T> visitor);
 }

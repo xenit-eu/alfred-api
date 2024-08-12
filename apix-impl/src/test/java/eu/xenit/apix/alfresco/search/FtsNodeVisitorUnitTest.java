@@ -1,14 +1,13 @@
 package eu.xenit.apix.alfresco.search;
 
 import eu.xenit.apix.search.QueryBuilder;
-import eu.xenit.apix.search.json.SearchNodeJsonParser;
 import eu.xenit.apix.search.nodes.SearchSyntaxNode;
 import eu.xenit.apix.search.visitors.SearchSyntaxPrinter;
 import java.io.IOException;
 import java.util.Arrays;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +18,7 @@ public class FtsNodeVisitorUnitTest {
 
     private QueryBuilder builder;
 
-    @Before
+    @BeforeEach
     public void Setup() {
         builder = new QueryBuilder();
     }
@@ -31,12 +30,12 @@ public class FtsNodeVisitorUnitTest {
         for (String t : terms) {
             builder = new QueryBuilder();
             SearchSyntaxNode node = builder.term(t, "myVal").create();
-            Assert.assertEquals(t.toUpperCase() + ":\"myVal\"", toFts(node));
+            Assertions.assertEquals(t.toUpperCase() + ":\"myVal\"", toFts(node));
         }
 
         builder = new QueryBuilder();
         SearchSyntaxNode node = builder.term("noderef", "workspace://SpacesStore/some-uuid").create();
-        Assert.assertEquals("ID:\"workspace://SpacesStore/some-uuid\"", toFts(node));
+        Assertions.assertEquals("ID:\"workspace://SpacesStore/some-uuid\"", toFts(node));
     }
 
     @Test
@@ -44,7 +43,7 @@ public class FtsNodeVisitorUnitTest {
         builder = new QueryBuilder();
         SearchSyntaxNode node = builder.term("all", "fred").create();
 
-        Assert.assertEquals(
+        Assertions.assertEquals(
                 "(TEXT:\"fred\" OR cm:name:\"fred\" OR cm:author:\"fred\" OR cm:creator:\"fred\" OR cm:modifier:\"fred\")",
                 toFts(node));
     }
@@ -53,20 +52,20 @@ public class FtsNodeVisitorUnitTest {
     public void TestTermEscaped() {
         String t = "type";
         SearchSyntaxNode node = builder.term(t, "my\"Val").create();
-        Assert.assertEquals(t.toUpperCase() + ":\"my\\\"Val\"", toFts(node));
+        Assertions.assertEquals(t.toUpperCase() + ":\"my\\\"Val\"", toFts(node));
     }
 
     @Test
     public void TestProperty() {
         String t = "type";
         SearchSyntaxNode node = builder.property("cm:content", "myContent").create();
-        Assert.assertEquals("cm:content:\"myContent\"", toFts(node));
+        Assertions.assertEquals("cm:content:\"myContent\"", toFts(node));
     }
 
     @Test
     public void TestPropertyEscaped() {
         SearchSyntaxNode node = builder.property("cm:content", "my\"Content").create();
-        Assert.assertEquals("cm:content:\"my\\\"Content\"", toFts(node));
+        Assertions.assertEquals("cm:content:\"my\\\"Content\"", toFts(node));
     }
 
 
@@ -74,20 +73,20 @@ public class FtsNodeVisitorUnitTest {
     public void TestAnd() {
         SearchSyntaxNode node = builder.startAnd().term("type", "myType").term("aspect", "myAspect")
                 .term("aspect", "myAspect2").end().create();
-        Assert.assertEquals("(TYPE:\"myType\" AND ASPECT:\"myAspect\" AND ASPECT:\"myAspect2\")", toFts(node));
+        Assertions.assertEquals("(TYPE:\"myType\" AND ASPECT:\"myAspect\" AND ASPECT:\"myAspect2\")", toFts(node));
     }
 
     @Test
     public void TestOr() {
         SearchSyntaxNode node = builder.startOr().term("type", "myType").term("aspect", "myAspect")
                 .term("aspect", "myAspect2").end().create();
-        Assert.assertEquals("(TYPE:\"myType\" OR ASPECT:\"myAspect\" OR ASPECT:\"myAspect2\")", toFts(node));
+        Assertions.assertEquals("(TYPE:\"myType\" OR ASPECT:\"myAspect\" OR ASPECT:\"myAspect2\")", toFts(node));
     }
 
     @Test
     public void TestNot() {
         SearchSyntaxNode node = builder.not().term("type", "myType").create();
-        Assert.assertEquals("NOT TYPE:\"myType\"", toFts(node));
+        Assertions.assertEquals("NOT TYPE:\"myType\"", toFts(node));
     }
 
     @Test
@@ -119,7 +118,7 @@ public class FtsNodeVisitorUnitTest {
         //SearchSyntaxNode val = parser.ParseJSON("{\"not\":{\"property\":{\"name\":\"@{claims.model}duplicate\",\"value\":\"true\"}}}");
 
         logger.debug(toFts(node));
-        Assert.assertEquals(
+        Assertions.assertEquals(
                 "((TEXT:\"hello\" OR cm:name:\"hello\" OR cm:author:\"hello\" OR cm:creator:\"hello\" OR cm:modifier:\"hello\") AND TYPE:\"cm:content\")",
                 toFts(node));
 
@@ -137,7 +136,7 @@ public class FtsNodeVisitorUnitTest {
 
         logger.debug(toFts(node));
         //THERE SHOULD NOT BE ANY ADDITIONAL PARENTHESIS!
-        Assert.assertEquals("TYPE:\"cm:content\"", toFts(node));
+        Assertions.assertEquals("TYPE:\"cm:content\"", toFts(node));
 
     }
 

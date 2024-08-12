@@ -51,10 +51,9 @@ public class FacetSearchResult {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof FacetSearchResult)) {
+        if (!(o instanceof FacetSearchResult that)) {
             return false;
         }
-        FacetSearchResult that = (FacetSearchResult) o;
         return Objects.equals(getName(), that.getName()) &&
                 Objects.equals(getValues(), that.getValues());
     }
@@ -133,10 +132,9 @@ public class FacetSearchResult {
             if (this == o) {
                 return true;
             }
-            if (!(o instanceof FacetValue)) {
+            if (!(o instanceof FacetValue that)) {
                 return false;
             }
-            FacetValue that = (FacetValue) o;
             return getCount() == that.getCount() &&
                     Objects.equals(getValue(), that.getValue()) &&
                     Objects.equals(getRange(), that.getRange()) &&

@@ -3,14 +3,9 @@ package eu.xenit.apix.alfresco.workflow.activiti.query;
 import eu.xenit.apix.alfresco.workflow.AbstractApixQueryConverter;
 import eu.xenit.apix.alfresco.workflow.AbstractApixWorkflowConvertor;
 import eu.xenit.apix.alfresco.workflow.WorkflowConverterFactory;
-import eu.xenit.apix.data.QName;
 import eu.xenit.apix.workflow.model.ITaskOrWorkflow;
 import eu.xenit.apix.workflow.model.WorkflowOrTaskChanges;
 import eu.xenit.apix.workflow.search.SearchQuery;
-import java.io.Serializable;
-import java.util.Map;
-import javax.annotation.Resource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;

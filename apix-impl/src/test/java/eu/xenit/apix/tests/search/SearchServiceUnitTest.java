@@ -29,8 +29,8 @@ import org.alfresco.service.cmr.search.QueryConsistency;
 import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.ResultSetRow;
 import org.alfresco.service.cmr.search.SearchParameters;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 public class SearchServiceUnitTest {
@@ -55,7 +55,7 @@ public class SearchServiceUnitTest {
     @Test
     public void testDefaultSearchQueryConsistencyIsTransactionalIfPossible() {
         SearchQuery searchQuery = new SearchQuery();
-        Assert.assertEquals(SearchQueryConsistency.TRANSACTIONAL_IF_POSSIBLE, searchQuery.getConsistency());
+        Assertions.assertEquals(SearchQueryConsistency.TRANSACTIONAL_IF_POSSIBLE, searchQuery.getConsistency());
     }
 
     @Test
@@ -90,36 +90,39 @@ public class SearchServiceUnitTest {
         ArgumentCaptor<SearchParameters> searchParamsArgument = ArgumentCaptor.forClass(SearchParameters.class);
         apixSearchServiceMocked.query(searchQuery);
         verify(alfrescoSearchServiceMock).query(searchParamsArgument.capture());
-        Assert.assertEquals(QueryConsistency.EVENTUAL, searchParamsArgument.getValue().getQueryConsistency());
+        Assertions.assertEquals(QueryConsistency.EVENTUAL, searchParamsArgument.getValue().getQueryConsistency());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testOrderBy_withMultivalueProperty_throwsIllegalArgumentException() {
-        SearchService apixSearchServiceMocked = buildApixSearchServiceWithMocks(
-                StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
+        Assertions.assertThrows(IllegalArgumentException.class,
+()->{
+            SearchService apixSearchServiceMocked = buildApixSearchServiceWithMocks(
+                    StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
 
-        PropertyService propertyServiceMock_withMultivalueTrue = mock(PropertyService.class);
-        PropertyDefinition propertyDefinition = mock(PropertyDefinition.class);
-        when(propertyDefinition.isMultiValued()).thenReturn(true);
-        when(propertyServiceMock_withMultivalueTrue.GetPropertyDefinition(any(QName.class)))
-                .thenReturn(propertyDefinition);
-        apixSearchServiceMocked.setPropertyService(propertyServiceMock_withMultivalueTrue);
+            PropertyService propertyServiceMock_withMultivalueTrue = mock(PropertyService.class);
+            PropertyDefinition propertyDefinition = mock(PropertyDefinition.class);
+            when(propertyDefinition.isMultiValued()).thenReturn(true);
+            when(propertyServiceMock_withMultivalueTrue.GetPropertyDefinition(any(QName.class)))
+                    .thenReturn(propertyDefinition);
+            apixSearchServiceMocked.setPropertyService(propertyServiceMock_withMultivalueTrue);
 
-        QueryBuilder builder = new QueryBuilder();
-        SearchSyntaxNode node = builder
-                .property(ContentModel.PROP_NAME.toPrefixString(), "Company Home")
-                .create();
-        SearchQuery query = new SearchQuery();
-        query.setQuery(node);
-        eu.xenit.apix.data.StoreRef apixStore = new eu.xenit.apix.data.StoreRef(
-                StoreRef.STORE_REF_WORKSPACE_SPACESSTORE.toString());
-        query.setWorkspace(apixStore);
-        QName apixQname = new QName("cm:multivalued");
-        OrderBy multivalueOrdering = new OrderBy(Order.ASCENDING, apixQname);
-        ArrayList<OrderBy> orderings = new ArrayList<>();
-        orderings.add(multivalueOrdering);
-        query.setOrderBy(orderings);
-        apixSearchServiceMocked.query(query);
+            QueryBuilder builder = new QueryBuilder();
+            SearchSyntaxNode node = builder
+                    .property(ContentModel.PROP_NAME.toPrefixString(), "Company Home")
+                    .create();
+            SearchQuery query = new SearchQuery();
+            query.setQuery(node);
+            eu.xenit.apix.data.StoreRef apixStore = new eu.xenit.apix.data.StoreRef(
+                    StoreRef.STORE_REF_WORKSPACE_SPACESSTORE.toString());
+            query.setWorkspace(apixStore);
+            QName apixQname = new QName("cm:multivalued");
+            OrderBy multivalueOrdering = new OrderBy(Order.ASCENDING, apixQname);
+            ArrayList<OrderBy> orderings = new ArrayList<>();
+            orderings.add(multivalueOrdering);
+            query.setOrderBy(orderings);
+            apixSearchServiceMocked.query(query);
+        }, "Expected an IllegalArgumentException to be thrown by testOrderBy_withMultivalueProperty_throwsIllegalArgumentException");
     }
 
     @Test
@@ -129,7 +132,7 @@ public class SearchServiceUnitTest {
         SearchQuery query = new SearchQuery();
         query.setQuery(new QueryBuilder().property("foo", "bar").create());
 
-        Assert.assertEquals(1000, searchService.buildSearchParameters(query).getMaxItems());
+        Assertions.assertEquals(1000, searchService.buildSearchParameters(query).getMaxItems());
     }
 
     @Test
@@ -140,7 +143,7 @@ public class SearchServiceUnitTest {
         query.setQuery(new QueryBuilder().property("foo", "bar").create());
         query.setPaging(new PagingOptions(26000, 0));
 
-        Assert.assertEquals(26000, searchService.buildSearchParameters(query).getMaxItems());
+        Assertions.assertEquals(26000, searchService.buildSearchParameters(query).getMaxItems());
     }
 
     private void assertAlfrescoSearchQueryStoreMatchesInput(StoreRef store, StoreRef expectedStore) {
@@ -155,7 +158,7 @@ public class SearchServiceUnitTest {
         ArrayList<StoreRef> stores = argument
                 .getValue()
                 .getStores();
-        Assert.assertTrue(stores.contains(expectedStore));
+        Assertions.assertTrue(stores.contains(expectedStore));
     }
 
     private org.alfresco.service.cmr.search.SearchService searchInStore(StoreRef store) {

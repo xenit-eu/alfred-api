@@ -10,8 +10,8 @@ import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.AccessStatus;
 import org.alfresco.service.cmr.security.PermissionService;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 public class AncestorsFromInaccessibleNodeUnitTest extends AncestorsBaseUnitTest {
 
     @Override
@@ -41,13 +41,15 @@ public class AncestorsFromInaccessibleNodeUnitTest extends AncestorsBaseUnitTest
         return permissionServiceMock;
     }
 
-    @Test(expected = AccessDeniedException.class)
+    @Test
     public void getAncestorsOfNodeTest() {
-        eu.xenit.apix.alfresco.metadata.NodeService apixNodeService = new eu.xenit.apix.alfresco.metadata.NodeService(
-                serviceRegistry, apixAlfrescoConverter);
-        eu.xenit.apix.data.NodeRef rootRef = new eu.xenit.apix.data.NodeRef(testNode3.toString());
-        eu.xenit.apix.data.NodeRef testNode = new eu.xenit.apix.data.NodeRef(testNode1.toString());
-
-        apixNodeService.getAncestors(testNode, rootRef);
+        Assertions.assertThrows(AccessDeniedException.class,
+()->{
+            eu.xenit.apix.alfresco.metadata.NodeService apixNodeService = new eu.xenit.apix.alfresco.metadata.NodeService(
+                    serviceRegistry, apixAlfrescoConverter);
+            eu.xenit.apix.data.NodeRef rootRef = new eu.xenit.apix.data.NodeRef(testNode3.toString());
+            eu.xenit.apix.data.NodeRef testNode = new eu.xenit.apix.data.NodeRef(testNode1.toString());
+            apixNodeService.getAncestors(testNode, rootRef);
+        }, "Expected an AccessDeniedException to be thrown");
     }
 }

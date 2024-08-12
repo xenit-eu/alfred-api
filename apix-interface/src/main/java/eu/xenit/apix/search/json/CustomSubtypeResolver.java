@@ -45,6 +45,10 @@ class CustomSubtypeResolver extends SubtypeResolver {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public void registerSubtypes(Collection<Class<?>> collection) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Not Supported at the moment

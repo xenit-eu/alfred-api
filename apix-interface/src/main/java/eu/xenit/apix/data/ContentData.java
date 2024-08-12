@@ -2,6 +2,7 @@ package eu.xenit.apix.data;
 
 import java.io.Serializable;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Represents the data of a file.
@@ -11,11 +12,11 @@ public class ContentData implements Serializable {
     private static final long serialVersionUID = 8979634213050121462L;
 
 
-    private String contentUrl;
-    private String mimetype;
-    private long size;
-    private String encoding;
-    private Locale locale;
+    private final String contentUrl;
+    private final String mimetype;
+    private final long size;
+    private final String encoding;
+    private final Locale locale;
 
     public ContentData(String contentUrl, String mimetype, long size, String encoding, Locale locale) {
         this.contentUrl = contentUrl;
@@ -70,15 +71,14 @@ public class ContentData implements Serializable {
             return true;
         } else if (obj == null) {
             return false;
-        } else if (!(obj instanceof ContentData)) {
+        } else if (!(obj instanceof ContentData that)) {
             return false;
         } else {
-            ContentData that = (ContentData) obj;
-            return (this.contentUrl != null ? this.contentUrl.equals(that.contentUrl) : that.contentUrl == null)
-                    && (this.mimetype != null ? this.mimetype.equals(that.mimetype) : that.mimetype == null)
+            return (Objects.equals(this.contentUrl, that.contentUrl))
+                    && (Objects.equals(this.mimetype, that.mimetype))
                     && (this.size == that.size)
-                    && (this.encoding != null ? this.encoding.equals(that.encoding) : that.encoding == null)
-                    && (this.locale != null ? this.locale.equals(that.locale) : that.locale == null);
+                    && (Objects.equals(this.encoding, that.encoding))
+                    && (Objects.equals(this.locale, that.locale));
         }
     }
 

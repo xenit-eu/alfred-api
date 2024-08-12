@@ -13,7 +13,7 @@ public class SearchNodeDeserializer extends JsonDeserializer<SearchSyntaxNode> {
 
     @Override
     public SearchSyntaxNode deserialize(JsonParser jp, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
+            throws IOException {
         if (jp.getCurrentToken() != JsonToken.START_OBJECT) {
             throw new UnsupportedOperationException();
         }

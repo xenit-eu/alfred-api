@@ -3,6 +3,7 @@ package eu.xenit.apix.translation;
 import eu.xenit.apix.data.QName;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Datastructure that represents a value of a translation. qname: The qname of the property title: The title (which is
@@ -43,13 +44,13 @@ public class TranslationValue {
 
         TranslationValue that = (TranslationValue) o;
 
-        if (qname != null ? !qname.equals(that.qname) : that.qname != null) {
+        if (!Objects.equals(qname, that.qname)) {
             return false;
         }
-        if (title != null ? !title.equals(that.title) : that.title != null) {
+        if (!Objects.equals(title, that.title)) {
             return false;
         }
-        return description != null ? description.equals(that.description) : that.description == null;
+        return Objects.equals(description, that.description);
 
     }
 

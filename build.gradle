@@ -1,28 +1,24 @@
 plugins {
     // Centralize plugin version management
     id 'be.vbgn.ci-detect' version '0.5.0' apply false
-    id 'eu.xenit.de' version '3.1.0' apply false
     id 'eu.xenit.amp' version '1.1.0' apply false
     id 'eu.xenit.alfresco' version '1.1.0' apply false
     id 'eu.xenit.docker-alfresco' version '5.5.0' apply false
     id 'eu.xenit.docker-compose' version '5.5.0' apply false
-    id 'eu.xenit.alfresco-remote-testrunner' version '2.0.1' apply false
 }
 
 def static getVersionQualifier(String branch_name) {
-    if(branch_name.startsWith('release'))
+    if (branch_name.startsWith('release'))
         return ''
     return '-SNAPSHOT'
 }
 
 ext {
-    versionWithoutQualifier = '5.0.3'
+    versionWithoutQualifier = '6.0.0'
 
-    de_version = '3.1.0' // Only used for integration testing
-    mvc = '8.0.0'
-    jackson_version = '2.8.3'
-    care4alfVersion = '2.3.0'
-    http_version = '4.3.4' // Used by integration tests
+    mvc = '9.0.0'
+    jackson_version = '2.15.2'
+    http_version = '4.5.13' // Used by integration tests
 }
 
 subprojects {
@@ -30,8 +26,8 @@ subprojects {
 
     group = 'eu.xenit.alfred.api'
     version = versionWithoutQualifier + getVersionQualifier(System.env.BRANCH_NAME ?: 'local')
-    sourceCompatibility = 11
-    targetCompatibility = 11
+    sourceCompatibility = 17
+    targetCompatibility = 17
 
     repositories {
         mavenCentral()

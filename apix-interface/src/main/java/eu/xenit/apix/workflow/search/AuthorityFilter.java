@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class AuthorityFilter implements IQueryFilter {
 
     public static final String TYPE = "AuthorityFilter";
-    private String property;
-    private String value;
+    private final String property;
+    private final String value;
 
     @JsonCreator
     public AuthorityFilter(@JsonProperty("value") String value, @JsonProperty("property") String property,

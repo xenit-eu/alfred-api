@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class PropertyFilter implements IQueryFilter {
 
     public static final String TYPE = "PropertyFilter";
-    private String property;
-    private String value;
+    private final String property;
+    private final String value;
 
     @JsonCreator
     public PropertyFilter(@JsonProperty("value") String value, @JsonProperty("property") String property,
@@ -25,7 +25,7 @@ public class PropertyFilter implements IQueryFilter {
     }
 
     public String getType() {
-        return this.TYPE;
+        return TYPE;
     }
 
     public int getIntValue() {

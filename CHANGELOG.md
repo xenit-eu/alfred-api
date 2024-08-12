@@ -1,5 +1,22 @@
 # Alfred API - Changelog
 
+
+## 6.0.0 (2024-07-18)
+From this version onward Dynamic Extensions for integration-testing is replaced by [remote-junit](https://github.com/ruediste/remote-junit)
+as framework to reduce maintenance efforts.
+
+A subproject with the name of `apix-integrationtests-server` has been added. (See README)
+The artifact name of `apix-integrationtests` has been changed to `apix-integrationtests-client`.
+
+Breaking changes: 
+  * JDK11 --> JDK 17
+  * Library changes from Javax to Jakarta
+  * Tomcat V10.1: this comes with a breaking change in the dispatchservlet, blocking the MultiPart handling and blocks double forward slashes
+    * Fix has to be deployed from your tomcat image. You will have to update your META-INF/context.xml in tomcat. See subproject apix-docker. 
+  * Dropped all support for older Alfresco version prior to V23.1 just as alfresco-mvc
+
+* [ALFREDAPI-548](https://xenitsupport.jira.com/browse/ALFREDAPI-548): Support Alfresco V23.1 && V23.2, dropping V7.x
+
 ## 5.0.4 (Unreleased)
 
 ### Fixed
@@ -8,9 +25,8 @@
 ## 5.0.3 (2024-06-17)
 
 ### Fixed
-
 * [ALFREDAPI-554](https://xenitsupport.jira.com/browse/ALFREDAPI-554): expose `apix-impl`
-beans in main application context (to be used by other AMPs)
+  beans in main application context (to be used by other AMPs)
 
 ## 5.0.2 (2024-05-14)
 

@@ -1,7 +1,8 @@
 package eu.xenit.apix.properties;
 
 /**
- * Information around the indexation with a property. https://community.alfresco.com/docs/DOC-4798-full-text-search-configuration
+ * Information around the indexation with a property.
+ * https://community.alfresco.com/docs/DOC-4798-full-text-search-configuration
  */
 public class PropertyIndexOptions {
 

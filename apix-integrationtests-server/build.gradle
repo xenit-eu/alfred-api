@@ -1,0 +1,33 @@
+plugins {
+    id 'eu.xenit.alfresco'
+    id 'eu.xenit.amp' version '1.1.0'
+}
+
+dependencies {
+    alfrescoProvided platform("org.alfresco:acs-community-packaging:23.1.0")
+    alfrescoProvided("org.alfresco:alfresco-repository")
+    // To setup on server side!
+    implementation 'com.github.ruediste.remoteJUnit:remoteJUnit-codeRunnerServer:1.1'
+    implementation 'com.github.ruediste.remoteJUnit:remoteJUnit-client:1.1'
+}
+
+configurations {
+    ampArchives
+}
+
+artifacts {
+    ampArchives amp
+}
+
+sourceSets {
+    main {
+        amp {
+            module([
+                    'module.id'         : project.name,
+                    'module.version'    : project.version,
+                    'module.title'      : 'integrationtests-server',
+                    'module.description': 'Integration-test server used to run the integration tests on requiring Java-API',
+            ])
+        }
+    }
+}

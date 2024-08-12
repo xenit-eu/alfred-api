@@ -32,7 +32,7 @@ public interface IFileFolderService {
      *
      * @return The noderef of the company home folder.
      */
-    public NodeRef getCompanyHome();
+    NodeRef getCompanyHome();
 
     /**
      * Checks if a folder exists.

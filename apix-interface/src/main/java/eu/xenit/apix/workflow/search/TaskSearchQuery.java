@@ -25,7 +25,6 @@ public class TaskSearchQuery extends SearchQuery {
             default:
                 this.filters.add(new PropertyFilter(currentUserName, "{http://www.alfresco.org/model/bpm/1.0}involved",
                         PropertyFilter.TYPE));
-                return;
         }
     }
 

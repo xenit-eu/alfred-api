@@ -7,9 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Datastructure that represents the result of a search.
- * noderefs: The list of noderefs that fulfill the search.
- * facets: The facets available on the search result.
+ * Datastructure that represents the result of a search. noderefs: The list of noderefs that fulfill the search. facets:
+ * The facets available on the search result.
  */
 public class SearchQueryResult {
 
@@ -39,8 +38,8 @@ public class SearchQueryResult {
     }
 
     /**
-     * @return Returns the total number of results for the search query. Depending on if the query is executed
-     * against the database or Solr this will include the skipped results or not.
+     * @return Returns the total number of results for the search query. Depending on if the query is executed against
+     * the database or Solr this will include the skipped results or not.
      */
     public long getTotalResultCount() {
         return totalResultCount;

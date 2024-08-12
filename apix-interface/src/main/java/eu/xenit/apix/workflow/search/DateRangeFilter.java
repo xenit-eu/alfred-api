@@ -7,9 +7,9 @@ import java.util.Date;
 public class DateRangeFilter implements IQueryFilter {
 
     public static final String TYPE = "DateRangeFilter";
-    private String property;
-    private Date startDate;
-    private Date endDate;
+    private final String property;
+    private final Date startDate;
+    private final Date endDate;
 
     @JsonCreator
     public DateRangeFilter(@JsonProperty("startDate") Date startDate, @JsonProperty("endDate") Date endDate,
@@ -50,7 +50,7 @@ public class DateRangeFilter implements IQueryFilter {
     }
 
     public String getType() {
-        return this.TYPE;
+        return TYPE;
     }
 
     public boolean matches(Date dateToVerify) {
@@ -60,9 +60,7 @@ public class DateRangeFilter implements IQueryFilter {
         if (this.endDate != null && this.endDate.before(dateToVerify)) { // endLimit > date
             return false;
         }
-        if (this.startDate != null && this.startDate.after(dateToVerify)) { // startLimit < date
-            return false;
-        }
-        return true;
+        // startLimit < date
+        return this.startDate == null || !this.startDate.after(dateToVerify);
     }
 }

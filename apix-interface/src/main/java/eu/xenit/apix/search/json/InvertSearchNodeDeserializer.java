@@ -12,7 +12,7 @@ public class InvertSearchNodeDeserializer extends JsonDeserializer<InvertSearchN
 
     @Override
     public InvertSearchNode deserialize(JsonParser jp, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
+            throws IOException {
         SearchSyntaxNode nested = (SearchSyntaxNode) ctxt
                 .findRootValueDeserializer(ctxt.constructType(SearchSyntaxNode.class)).deserialize(jp, ctxt);
 

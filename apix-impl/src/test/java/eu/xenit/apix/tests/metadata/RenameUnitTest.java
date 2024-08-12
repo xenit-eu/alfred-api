@@ -19,8 +19,9 @@ import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.NodeService;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.mockito.ArgumentCaptor;
 
 public class RenameUnitTest {
@@ -31,7 +32,7 @@ public class RenameUnitTest {
     private static final String NODEREF_STRING = "workspapce://SpacesStore/d1ef44c4-5bd3-457a-9b08-abd23d588bce";
     private static final String NEW_NAME = "newName";
 
-    @Before
+    @BeforeEach
     public void init() {
         //Initializing node service
         NodeService nodeServiceMock = mock(NodeService.class);

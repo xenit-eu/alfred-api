@@ -17,30 +17,30 @@ public interface IPermissionService {
     String FILING = "Filing";
 
 
-
     /**
      * getPermissionsFast is not certifiable by Alfresco because it uses the ModelDAO, which is not part of the public
      * API. However, getPermissionsFast is roughly 3 times as efficient as getPermissions. I have made case on Alfresco
      * support with case id 00930777
+     *
      * @param node the noderef from which the permissions will be gathered.
-     * @return Returns a map with the permissions and a PermissionValue
-     * that allows or denies actions on the provided node for the current authentication.
+     * @return Returns a map with the permissions and a PermissionValue that allows or denies actions on the provided
+     * node for the current authentication.
      */
     Map<String, PermissionValue> getPermissionsFast(NodeRef node);
 
     /**
      * getPermissions cannot be replaced yet by getPermissionsFast because getPermissionsFast is not certifiable yet.
-     * However, in the future that is what we want to do.
-     * Returns the set of permissions that are present on this object.
-     * Possible values are Read, Write, Delete, CreateChildren, ReadPermissions, ChangePermissions
-     * and custom permissions
+     * However, in the future that is what we want to do. Returns the set of permissions that are present on this
+     * object. Possible values are Read, Write, Delete, CreateChildren, ReadPermissions, ChangePermissions and custom
+     * permissions
+     *
      * @param node the noderef from which the permissions will be gathered
-     * @return Returns a map with the permissions and a PermissionValue
-     * that allows or denies actions on the provided node for the current authentication
+     * @return Returns a map with the permissions and a PermissionValue that allows or denies actions on the provided
+     * node for the current authentication
      */
     Map<String, PermissionValue> getPermissions(NodeRef node);
 
-    public void setPermission(NodeRef node, String authority, String permission);
+    void setPermission(NodeRef node, String authority, String permission);
 
     /**
      * Delete the permission for a given node for a given authority.
@@ -49,7 +49,7 @@ public interface IPermissionService {
      * @param authority The authority for which the permission is deleted.
      * @param permission The permission that is removed.
      */
-    public void deletePermission(NodeRef node, String authority, String permission);
+    void deletePermission(NodeRef node, String authority, String permission);
 
     /**
      * Sets whether the given node inherits permissions from its parent.
@@ -57,7 +57,7 @@ public interface IPermissionService {
      * @param node The node to set wether it inherits permissions from its parent.
      * @param inheritPermissions Whether to inherit or not.
      */
-    public void setInheritParentPermissions(NodeRef node, boolean inheritPermissions);
+    void setInheritParentPermissions(NodeRef node, boolean inheritPermissions);
 
     /**
      * returns the ACL for a given node.
@@ -82,7 +82,6 @@ public interface IPermissionService {
      *
      * @param nodeRef the noderef on which the permission is queried.
      * @param permission the String representation of the Permission that is being checked.
-     *
      * @return - Boolean indicating whether the asked permission is present.
      */
     boolean hasPermission(NodeRef nodeRef, String permission);

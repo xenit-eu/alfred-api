@@ -7,15 +7,17 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Data structure that represents part of the search results, specifically the highlights of a single field.
- * A query should return one of these for each field that they enabled highlighting on.
- * Each field may have multiple resulting highlighted snippets.
+ * Data structure that represents part of the search results, specifically the highlights of a single field. A query
+ * should return one of these for each field that they enabled highlighting on. Each field may have multiple resulting
+ * highlighted snippets.
  */
 public class Highlights {
+
     private Map<String, List<HighlightResult>> noderefs;
 
     // Empty constructor Needed for Jackson deserialization
-    public Highlights() {}
+    public Highlights() {
+    }
 
     public Highlights(Map<String, List<HighlightResult>> solrHighlights) {
         setNoderefs(solrHighlights);
@@ -24,17 +26,19 @@ public class Highlights {
     public Map<String, List<HighlightResult>> getNoderefs() {
         return noderefs;
     }
-    public void setNoderefs(Map<String, List<HighlightResult>> noderefs) { this.noderefs = noderefs; }
+
+    public void setNoderefs(Map<String, List<HighlightResult>> noderefs) {
+        this.noderefs = noderefs;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Highlights)) {
+        if (!(o instanceof Highlights that)) {
             return false;
         }
-        Highlights that = (Highlights) o;
         return Objects.equals(getNoderefs(), that.getNoderefs());
     }
 
@@ -50,7 +54,7 @@ public class Highlights {
                 '}';
     }
 
-    public static class HighlightResult{
+    public static class HighlightResult {
 
         private String field;
         private List<String> snippets;
@@ -85,10 +89,9 @@ public class Highlights {
             if (this == o) {
                 return true;
             }
-            if (!(o instanceof HighlightResult)) {
+            if (!(o instanceof HighlightResult that)) {
                 return false;
             }
-            HighlightResult that = (HighlightResult) o;
             return getField().equals(that.getField()) &&
                     getSnippets().equals(that.getSnippets());
         }

@@ -24,7 +24,6 @@ import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.search.SearchParameters.FieldFacet;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.Pair;
-import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -35,7 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -222,7 +222,7 @@ public class SearchFacetServiceUnitTest {
         List<FacetSearchResult> expectedResult = initExpectedResult_for_assertThat_getFacetResults_returnIncludes_translationsForListOfValueConstraints();
         List<FacetSearchResult> result = searchFacetsService.getFacetResults(facetOptionsMock, resultSetMock,
                 searchParametersMock);
-        assertEquals(expectedResult, result);
+        Assertions.assertEquals(expectedResult, result);
         verify(translationServiceMock, times(2)).getMessageTranslation(Mockito.anyString());
     }
 

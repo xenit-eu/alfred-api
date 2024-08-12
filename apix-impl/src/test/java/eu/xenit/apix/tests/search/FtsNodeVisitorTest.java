@@ -3,7 +3,7 @@ package eu.xenit.apix.tests.search;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import eu.xenit.apix.alfresco.dictionary.PropertyService;
 import eu.xenit.apix.alfresco.search.FtsNodeVisitor;
@@ -16,7 +16,7 @@ import eu.xenit.apix.search.visitors.SearchSyntaxPrinter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

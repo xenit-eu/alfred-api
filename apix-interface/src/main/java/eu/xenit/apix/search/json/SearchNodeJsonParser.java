@@ -9,19 +9,28 @@ import eu.xenit.apix.search.nodes.SearchSyntaxNode;
 import eu.xenit.apix.search.nodes.TermSearchNode;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class SearchNodeJsonParser {
 
-    public SearchSyntaxNode ParseJSON(String json) throws IOException {
-        json = json.replaceAll("'", "\"");
-        ObjectMapper mapper = getObjectMapper();
-        return mapper.readValue(json, SearchSyntaxNode.class);
+    private final ObjectMapper mapper;
+
+    public SearchNodeJsonParser() {
+        mapper = new ObjectMapper();
+        configureObjectMapper();
     }
 
     public ObjectMapper getObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
+        return mapper;
+    }
 
+    public SearchSyntaxNode ParseJSON(String json) throws IOException {
+        json = json.replaceAll("'", "\"");
+        return mapper.readValue(json, SearchSyntaxNode.class);
+    }
+
+    private ObjectMapper configureObjectMapper() {
         mapper.setSubtypeResolver(new CustomSubtypeResolver());
 
         // TODO: improve Type configuration location, use annotation in nodes?
@@ -40,9 +49,7 @@ public class SearchNodeJsonParser {
 
     private ArrayList<String> newArrayList(String... elements) {
         ArrayList<String> ret = new ArrayList<String>();
-        for (String el : elements) {
-            ret.add(el);
-        }
+        Collections.addAll(ret, elements);
 
         return ret;
     }

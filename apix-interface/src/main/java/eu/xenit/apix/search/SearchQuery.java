@@ -13,13 +13,10 @@ import java.util.Locale;
 import java.util.Objects;
 
 /**
- * Represents a search query with search options.
- * query: The query itself without any options.
- * paging: Options related to paging.
- * facets: options related to facets.
- * orderBy: List which represent in which order the results should be returned.
- * consistency: Options related to consistency. Is defaulted by eventual consistency.
- * highlight: Options related to term hit highlighting, similar to the Alfresco 5.2.4 API
+ * Represents a search query with search options. query: The query itself without any options. paging: Options related
+ * to paging. facets: options related to facets. orderBy: List which represent in which order the results should be
+ * returned. consistency: Options related to consistency. Is defaulted by eventual consistency. highlight: Options
+ * related to term hit highlighting, similar to the Alfresco 5.2.4 API
  */
 public class SearchQuery {
 
@@ -88,9 +85,13 @@ public class SearchQuery {
         this.highlight = highlights;
     }
 
-    public StoreRef getWorkspace() { return workspace; }
+    public StoreRef getWorkspace() {
+        return workspace;
+    }
 
-    public void setWorkspace(StoreRef workspace) { this.workspace = workspace; }
+    public void setWorkspace(StoreRef workspace) {
+        this.workspace = workspace;
+    }
 
     public static class PagingOptions {
 
@@ -219,6 +220,7 @@ public class SearchQuery {
 
     // Basically identical to https://docs.alfresco.com/5.2/concepts/search-api-highlight.html
     public static class HighlightOptions {
+
         private String prefix;
         private String postfix;
         private Integer snippetCount;
@@ -243,7 +245,7 @@ public class SearchQuery {
             this.maxAnalyzedCharacters = maxAnalyzedCharacters;
             this.mergeContiguous = mergeContiguous;
             this.usePhraseHighlighter = usePhraseHighlighter;
-            this.fields = fields != null ? fields : Arrays.asList(new HighlightFieldOption());
+            this.fields = fields != null ? fields : List.of(new HighlightFieldOption());
         }
 
         public String getPrefix() {
@@ -350,6 +352,7 @@ public class SearchQuery {
         }
 
         public static class HighlightFieldOption {
+
             public HighlightFieldOption() {
                 this.field = "cm:content";
             }

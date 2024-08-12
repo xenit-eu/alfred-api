@@ -92,10 +92,9 @@ public class Comment {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Comment)) {
+        if (!(o instanceof Comment comment)) {
             return false;
         }
-        Comment comment = (Comment) o;
         return getId().equals(comment.getId()) &&
                 getContent().equals(comment.getContent()) &&
                 Objects.equals(getCreatedBy(), comment.getCreatedBy()) &&

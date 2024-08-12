@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Identifier a single node. Consists of three parts: The space, the store and the guid. This can be seen as pointing to
@@ -58,7 +59,7 @@ public class NodeRef implements Serializable {
 
         NodeRef nodeRef = (NodeRef) o;
 
-        return value != null ? value.equals(nodeRef.value) : nodeRef.value == null;
+        return Objects.equals(value, nodeRef.value);
 
     }
 
