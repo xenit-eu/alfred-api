@@ -29,7 +29,7 @@ ContentData and ContentInputStream. These data objects are used to communicate w
 Alfred Java API without being dependent on Alfresco data types.
 
 Conversion between Alfresco and Alfred API data objects is the responsibility of the 
-`ApixToAlfrescoConversion` service. It is also possible to construct an Alfred API data object by
+`AlfredApiToAlfrescoConversion` service. It is also possible to construct an Alfred API data object by
 passing its string representation to the constructor.
 
 

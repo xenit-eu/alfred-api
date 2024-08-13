@@ -39,15 +39,15 @@ Full documentation can be found at the [project's documentation](https://docs.xe
 * Follow our [coding styleguide and other active procedures](https://xenitsupport.jira.com/wiki/spaces/XEN/pages/624558081/XeniT+Enhancement+Proposals+XEP).
   
 ### Project structure
-* *apix-interface* builds the interface of Alfred API. This part is agnostic of the 
+* *alfred-api-interface* builds the interface of Alfred API. This part is agnostic of the 
 Alfresco version used.
-* *apix-rest* builds the REST API of Alfred API. 
-* *apix-impl* builds the Java code for each version of Alfresco.
+* *alfred-api-rest* builds the REST API of Alfred API. 
+* *alfred-api-impl* builds the Java code for each version of Alfresco.
 * *alfresco* builds the AMP for each Alfresco version that is the main deliverable for Alfred API. The AMP contains
-  the JARs of *apix-interface* and *apix-rest*.
+  the JARs of *alfred-api-interface* and *alfred-api-rest*.
     * *alfresco/xx* contains the correct properties for each Alfresco version.
-* *apix-integrationtests-client* contains the integration tests for each Alfresco version.
-* *apix-integrationtests-server* contains the Remote-JUnit runner for remote class loading. 
+* *alfred-api-integrationtests-client* contains the integration tests for each Alfresco version.
+* *alfred-api-integrationtests-server* contains the Remote-JUnit runner for remote class loading. 
     * uses java serialization and HTTP for communication.
       * We startup a CodeRunnerStandaloneServer, which starts a nanohttpd server, listening on a specific port (4578 by default)
       * Using a static appicationContext to reach all necessary beans.
@@ -59,14 +59,14 @@ Alfresco version used.
 
 The following command starts up all docker containers required for an Alfresco running Alfred API.
 ```bash
-./gradlew :apix-docker:docker-${VERSION}:composeUp --info
+./gradlew :alfred-api-docker:docker-${VERSION}:composeUp --info
 ```
 Where `VERSION` is e.g. `231`.
 
 
 #### Run integration tests
 ```bash
-./gradlew :apix-integrationtests-client:alfresco:${VERSION}:integrationTest
+./gradlew :alfred-api-integrationtests-client:alfresco:${VERSION}:integrationTest
 ```  
 Again, where `VERSION` is e.g. `231`.
 
@@ -74,16 +74,16 @@ However, this starts (and afterwards stops) docker containers. This includes sta
  adding a startup time of several minutes. To circumvent this you also run the test on already running containers with
  for example:
  ```bash
-./gradlew -x composeUp -x composeDown :apix-integrationtests-client:alfresco:231:integrationTest -Pprotocol=http -Phost=localhost -Pport=8074
+./gradlew -x composeUp -x composeDown :alfred-api-integrationtests-client:alfresco:231:integrationTest -Pprotocol=http -Phost=localhost -Pport=8074
 ```
 
 If you only want to run specific tests, you can specify this on the Gradle invocation with a pattern. For example:
  ```bash
-./gradlew  :apix-integrationtests-client:alfresco:231:integrationTest -x composeDown --tests ContentServiceTestJavaApi.TestContentUrlExists
+./gradlew  :alfred-api-integrationtests-client:alfresco:231:integrationTest -x composeDown --tests ContentServiceTestJavaApi.TestContentUrlExists
  ```
 
 #### Run integration tests under debugger
-1. Debugging settings are already added by `apix-docker/${VERSION}/debug-extension.docker-compose.yml`, including a 
+1. Debugging settings are already added by `alfred-api-docker/${VERSION}/debug-extension.docker-compose.yml`, including a 
 portmapping `8000:8000`. This file does not get loaded when running in CI.
 2. Prepare your remote debugger in IntelliJ and set breakpoints where you want in your tests
  (or Alfred API code).

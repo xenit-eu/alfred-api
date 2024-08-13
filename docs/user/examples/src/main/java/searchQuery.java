@@ -1,12 +1,12 @@
 //\ifdef{EXAMPLE_IMPORTS}Imports
 
-import eu.xenit.apix.data.QName;
-import eu.xenit.apix.data.StoreRef;
-import eu.xenit.apix.search.QueryBuilder;
-import eu.xenit.apix.search.SearchQuery;
-import eu.xenit.apix.search.SearchQueryConsistency;
-import eu.xenit.apix.search.nodes.SearchSyntaxNode;
-import eu.xenit.apix.search.visitors.SearchSyntaxPrinter;
+import eu.xenit.alfred.api.data.QName;
+import eu.xenit.alfred.api.data.StoreRef;
+import eu.xenit.alfred.api.search.QueryBuilder;
+import eu.xenit.alfred.api.search.SearchQuery;
+import eu.xenit.alfred.api.search.SearchQueryConsistency;
+import eu.xenit.alfred.api.search.nodes.SearchSyntaxNode;
+import eu.xenit.alfred.api.search.visitors.SearchSyntaxPrinter;
 import java.io.IOException;
 import java.util.Arrays;
 

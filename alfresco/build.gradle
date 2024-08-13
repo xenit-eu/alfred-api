@@ -31,9 +31,9 @@ subprojects {
     }
 
     dependencies {
-        implementation(project(":apix-impl"))
-        implementation(project(":apix-impl:apix-impl-${project.name}"))
-        implementation(project(":apix-rest"))
+        implementation(project(":alfred-api-impl"))
+        implementation(project(":alfred-api-impl:alfred-api-impl-${project.name}"))
+        implementation(project(":alfred-api-rest"))
     }
 
     publishing {
@@ -49,7 +49,7 @@ subprojects {
 
     // Extend amp plugin task:
     // We want to add 'alfresco-global.properties' etc to the module-specific folder in the AMP
-    // (e.g. 'config/module/alfresco/module/apix-impl-61/') without hard-coding project name for each Alfresco version.
+    // (e.g. 'config/module/alfresco/module/alfred-api-impl-61/') without hard-coding project name for each Alfresco version.
     amp {
         archiveBaseName = "alfred-api-${project.name}"
         into("config/alfresco/module/${project.name}") {

@@ -11,7 +11,7 @@ env:
   ORG_GRADLE_PROJECT_sonatype_password: ${{ secrets.SONATYPE_S01_PASSWORD }}
   BRANCH_NAME: ${{ github.ref_name }}
 jobs:
-  apix-interface:
+  alfred-api-interface:
     runs-on: ubuntu-latest
     steps:
       - name: Check out
@@ -30,18 +30,18 @@ jobs:
       - name: Build interface  # Execute before integration testing to catch errors early
         uses: gradle/gradle-build-action@v2.3.0
         with:
-          arguments: :apix-interface:build :apix-interface:javadoc
+          arguments: :alfred-api-interface:build :alfred-api-interface:javadoc
       - name: Unit test REST API
         uses: gradle/gradle-build-action@v2.4.2
         with:
-          arguments: --info :apix-rest:test
+          arguments: --info :alfred-api-rest:test
       - name: Publish
         if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}"
         uses: gradle/gradle-build-action@v2.4.2
         with:
-          arguments: --info -PsigningKeyId=DF8285F0 :apix-interface:publish
+          arguments: --info -PsigningKeyId=DF8285F0 :alfred-api-interface:publish
 
-  apix-impl:
+  alfred-api-impl:
     strategy:
       matrix:
         alfresco_version: [ 231, 232 ]
@@ -66,8 +66,8 @@ jobs:
         with:
           arguments: >-
             --info
-            :apix-impl:apix-impl-${{ matrix.alfresco_version }}:test
-            :apix-integrationtests-client:alfresco:${{ matrix.alfresco_version }}:integrationTest
+            :alfred-api-impl:alfred-api-impl-${{ matrix.alfresco_version }}:test
+            :alfred-api-integrationtests-client:alfresco:${{ matrix.alfresco_version }}:integrationTest
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3.7.6
         if: success() || failure()
