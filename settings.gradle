@@ -1,24 +1,24 @@
-rootProject.name = 'apix'
+rootProject.name = 'alfred-api'
 
-include ':apix-interface'
-include ':apix-impl'
-include ':apix-rest'
+include ':alfred-api-interface'
+include ':alfred-api-impl'
+include ':alfred-api-rest'
 include ':alfresco'
-include ':apix-docker'
-include ':apix-integrationtests-client:model-amp'
-include ':apix-integrationtests-server'
+include ':alfred-api-docker'
+include ':alfred-api-integrationtests-client:model-amp'
+include ':alfred-api-integrationtests-server'
 include ':docs'
 
 
 for (String version : ['23.1', '23.2']) {
     def shortVersion = version.replaceAll('\\.', '')
 
-    include ":apix-impl:apix-impl-$shortVersion"
+    include ":alfred-api-impl:alfred-api-impl-$shortVersion"
     include ":alfresco:$shortVersion"
-    include ":apix-docker:docker-$shortVersion"
-    include ":apix-integrationtests-client:alfresco:$shortVersion"
+    include ":alfred-api-docker:docker-$shortVersion"
+    include ":alfred-api-integrationtests-client:alfresco:$shortVersion"
 
-    project(":apix-impl:apix-impl-$shortVersion").projectDir = "$rootDir/apix-impl/$shortVersion" as File
-    project(":apix-docker:docker-$shortVersion").projectDir = "$rootDir/apix-docker/$shortVersion" as File
+    project(":alfred-api-impl:alfred-api-impl-$shortVersion").projectDir = "$rootDir/alfred-api-impl/$shortVersion" as File
+    project(":alfred-api-docker:docker-$shortVersion").projectDir = "$rootDir/alfred-api-docker/$shortVersion" as File
     project(":alfresco:$shortVersion").projectDir = "$rootDir/alfresco/$shortVersion" as File
 }

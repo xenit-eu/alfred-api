@@ -1,5 +1,5 @@
 # Generated version file
-apix-impl/src/main/java/eu/xenit/alfred/api/Version.java
+alfred-api-impl/src/main/java/eu/xenit/alfred/api/Version.java
 
 target/
 *.iml

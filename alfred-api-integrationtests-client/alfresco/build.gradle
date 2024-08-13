@@ -1,0 +1,78 @@
+def integrationTestsProjectDir = project.projectDir
+allprojects {
+    // Subproject of supported Alfresco versions
+    def subproject_alfresco_version = project.projectDir.name == "alfresco"
+            ? "231" // minimum supported version
+            : project.projectDir.name
+
+    // Following needs to apply to shared (./src) project and version-specific (e.g. ./70) projects.
+    apply plugin: 'idea'
+    apply plugin: 'java-library'
+    apply plugin: 'eu.xenit.alfresco'
+    apply plugin: 'eu.xenit.docker-alfresco'
+    apply from: "${rootProject.projectDir}/alfresco/${subproject_alfresco_version}/overrides.gradle"
+
+    sourceSets {
+        main.java.srcDirs = []
+        main.resources.srcDirs = []
+        integrationTest {
+            java.srcDirs = ["${integrationTestsProjectDir}/src/main/java"]
+            resources.srcDirs = ["${integrationTestsProjectDir}/src/main/resources"]
+            compileClasspath += sourceSets.main.output + configurations.testRuntimeClasspath
+            runtimeClasspath += sourceSets.main.output + configurations.testRuntimeClasspath
+        }
+    }
+
+    configurations {
+        integrationTestImplementation.extendsFrom testImplementation
+        integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
+    }
+
+    task integrationTest(type: Test) {
+        description = 'Runs the integration tests.'
+        group = 'verification'
+        testClassesDirs = sourceSets.integrationTest.output.classesDirs
+        classpath = sourceSets.integrationTest.runtimeClasspath
+        shouldRunAfter test
+    }
+    check.dependsOn integrationTest
+
+    dependencies {
+        alfrescoProvided(project(":alfred-api-rest")) { transitive = false }
+        alfrescoProvided(project(":alfred-api-interface")) { transitive = false }
+        alfrescoProvided(project(":alfred-api-interface")) { transitive = false }
+
+        alfrescoProvided platform("org.alfresco:acs-community-packaging:${alfresco_version}")
+        alfrescoProvided("org.alfresco:alfresco-repository")
+        alfrescoProvided('org.alfresco:alfresco-remote-api')
+        alfrescoProvided('org.alfresco:alfresco-data-model')
+        testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.0.0'
+        testImplementation("org.apache.httpcomponents:fluent-hc:${http_version}") {
+            exclude group: 'commons-logging'
+            exclude group: 'org.apache.httpcomponents', module: 'httpcore'
+        }
+        // Add services used to the integration test fatjar, since we can't access the ones deployed in Alfresco
+        testImplementation(project(":alfred-api-impl:alfred-api-impl-${subproject_alfresco_version}"))
+        // Read in the integration-test-server static ApplicationContext + Helperclasses
+        implementation project(path: ":alfred-api-integrationtests-server")
+    }
+}
+
+subprojects {
+    // Subproject of supported Alfresco versions
+    def projectAlfredApiImpl = project(":alfred-api-impl:alfred-api-impl-${project.projectDir.name}")
+    def projectDocker = project(":alfred-api-docker:docker-${project.projectDir.name}")
+    evaluationDependsOn(projectAlfredApiImpl.path)
+    evaluationDependsOn(projectDocker.path)
+    def assembleTask = projectAlfredApiImpl.tasks.getByName("assemble")
+    def composeUpTask = projectDocker.tasks.getByName("composeUp")
+    def composeDownTask = projectDocker.tasks.getByName("composeDown")
+
+    // Only the integration tests actually need the Docker containers to run. However, they're currently part of the regular test suite.
+    integrationTest {
+        // All defined in alfred-api-docker build. Model-amp is installed.
+        dependsOn assembleTask
+        dependsOn composeUpTask
+        finalizedBy composeDownTask
+    }
+}
