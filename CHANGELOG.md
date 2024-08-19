@@ -20,8 +20,6 @@ The artifact name of `alfred-api-integrationtests` has been changed to `alfred-a
 * [ALFREDAPI-548](https://xenitsupport.jira.com/browse/ALFREDAPI-548): Support Alfresco V23.1 && V23.2, dropping V7.x
 * [ALFREDAPI-556](https://xenitsupport.jira.com/browse/ALFREDAPI-556): Change apix package-names to `eu.xenit.alfred.api`.
 
-## 5.0.4 (Unreleased)
-
 ### Fixed
 * [ALFREDAPI-552](https://xenitsupport.jira.com/browse/ALFREDAPI-552) Make swagger spec Open Api v2 compliant
 
