@@ -1,0 +1,31 @@
+description = 'Xenit Alfred API Java interface'
+
+apply from: "${rootProject.projectDir}/publish.gradle"
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier = 'javadoc'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId 'alfred-api-interface'
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
+
+dependencies {
+    compileOnly "com.fasterxml.jackson.core:jackson-annotations:${jackson_version}"
+    compileOnly "com.fasterxml.jackson.core:jackson-databind:${jackson_version}"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
+}
+

@@ -1,5 +1,7 @@
 # Documentation Alfred API
 
+**Process is automated through GHA. Trigger the appropriate workflow.**
+
 ## Generate website
 
 This directory generates the product documentation website at https://docs.xenit.eu/alfred-api/ 

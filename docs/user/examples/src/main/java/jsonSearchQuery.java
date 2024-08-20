@@ -1,8 +1,8 @@
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.xenit.apix.search.SearchQuery;
-import eu.xenit.apix.search.json.SearchNodeJsonParser;
-import eu.xenit.apix.search.visitors.SearchSyntaxPrinter;
+import eu.xenit.alfred.api.search.SearchQuery;
+import eu.xenit.alfred.api.search.json.SearchNodeJsonParser;
+import eu.xenit.alfred.api.search.visitors.SearchSyntaxPrinter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;

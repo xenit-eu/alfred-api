@@ -11,5 +11,5 @@
         </property>
     </bean>
 
-    <bean class="eu.xenit.apix.SpringConfiguration"/>
+    <bean class="eu.xenit.alfred.api.SpringConfiguration"/>
 </beans>

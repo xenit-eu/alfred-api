@@ -1,0 +1,35 @@
+plugins {
+    id 'java-library'
+    id 'idea'
+    id 'eu.xenit.alfresco' version '1.1.0'
+}
+
+description = 'Xenit Alfred API Rest'
+apply from: "$rootProject.projectDir/alfresco/231/overrides.gradle"
+
+dependencies {
+    implementation platform("org.alfresco:acs-community-packaging:${alfresco_version}")
+    // Alfresco dependency should be removed in the future
+    alfrescoProvided("org.alfresco:alfresco-repository")
+    alfrescoProvided project(':alfred-api-interface')
+    alfrescoProvided('org.alfresco:alfresco-remote-api')
+
+    alfrescoProvided "com.gradecak.alfresco-mvc:alfresco-mvc-rest:${mvc}"
+    alfrescoProvided "com.gradecak.alfresco-mvc:alfresco-mvc-aop:${mvc}"
+    alfrescoProvided "jakarta.servlet:jakarta.servlet-api:6.0.0"
+    // Fix for missing javax.xml.bind library for fasterxml
+    // https://github.com/FasterXML/jackson-modules-base/discussions/239
+    implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+
+    testImplementation(project(':alfred-api-interface')) { transitive = false }
+    testImplementation project(':alfred-api-impl')
+    testImplementation platform("org.alfresco:acs-community-packaging:${alfresco_version}")
+    testImplementation 'org.springframework:spring-core'
+    testImplementation 'org.springframework:spring-test'
+    testImplementation "org.alfresco.surf:spring-webscripts"
+    testImplementation 'org.alfresco:alfresco-repository'
+    testImplementation 'org.alfresco:alfresco-remote-api'
+
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.0.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
+}

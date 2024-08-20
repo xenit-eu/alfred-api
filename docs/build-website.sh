@@ -62,12 +62,12 @@ build_javadoc() {
     local alfredapidir=".."
 
     pushd "$alfredapidir"
-    ./gradlew clean :apix-interface:javadoc
+    ./gradlew :alfred-api-interface:javadoc
     popd
 
     local outputdir="build/website/$productName/"
     mkdir -p "$outputdir"
-    cp -a "$alfredapidir/apix-interface/build/docs/javadoc" $outputdir
+    cp -a "$alfredapidir/alfred-api-interface/build/docs/javadoc" $outputdir
 }
 
 build_swaggerdoc() {

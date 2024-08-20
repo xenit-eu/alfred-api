@@ -29,7 +29,7 @@ ContentData and ContentInputStream. These data objects are used to communicate w
 Alfred Java API without being dependent on Alfresco data types.
 
 Conversion between Alfresco and Alfred API data objects is the responsibility of the 
-`ApixToAlfrescoConversion` service. It is also possible to construct an Alfred API data object by
+`AlfredApiToAlfrescoConversion` service. It is also possible to construct an Alfred API data object by
 passing its string representation to the constructor.
 
 
@@ -480,11 +480,7 @@ Each list element specifies a property on which higlighting needs to be applied.
 When no fields are specified, the call defaults to `cm:content` as field.
 Full documentation can be found on the Alfresco documentation page: 
 
-* [7.0](https://docs.alfresco.com/content-services/7.0/develop/rest-api-guide/searching/#term-highlighting-search)
-* [7.1](https://docs.alfresco.com/content-services/7.1/develop/rest-api-guide/searching/#term-highlighting-search)
-* [7.2](https://docs.alfresco.com/content-services/7.2/develop/rest-api-guide/searching/#term-highlighting-search)
-* [7.3](https://docs.alfresco.com/content-services/7.3/develop/rest-api-guide/searching/#term-highlighting-search)
-* [7.4](https://docs.alfresco.com/content-services/7.4/develop/rest-api-guide/searching/#term-highlighting-search)
+* [23.x](https://docs.alfresco.com/content-services/latest/develop/rest-api-guide/searching/)
 
 ```json
 {
@@ -736,13 +732,10 @@ Indicates unexpected failures.
 ## Supported Alfresco versions
 Currently Alfred API supports the following Alfresco versions:
 
-* 7.0
-* 7.1
-* 7.2
-* 7.3
-* 7.4
+* 23.1
+* 23.2
 
-Alfred API depends on the [Alfresco MVC framework](https://github.com/dgradecak/alfresco-mvc) version `8.0.0`.
+Alfred API depends on the [Alfresco MVC framework](https://github.com/dgradecak/alfresco-mvc) version `9.0.0`.
 Installation depends on the tools that you use to build and install, but below are examples of a few common ways.
 Further details can be found on its [README](https://github.com/dgradecak/alfresco-mvc/blob/master/README.md).
 
@@ -757,9 +750,9 @@ An example when using Gradle and the
 [Alfresco Docker Gradle plugin](https://github.com/xenit-eu/alfresco-docker-gradle-plugin/blob/master/docs/02-plugin-docker-alfresco.md)
 is:
 ```groovy
-alfrescoSM group: 'com.gradecak.alfresco-mvc', name: 'alfresco-mvc-rest', version: '8.0.0'
-alfrescoSM group: 'com.gradecak.alfresco-mvc', name: 'alfresco-mvc-aop', version: '8.0.0'
-alfrescoAmp group: 'eu.xenit.alfred.api', name: 'alfred-api-74', version: '5.0.0'
+alfrescoSM group: 'com.gradecak.alfresco-mvc', name: 'alfresco-mvc-rest', version: '9.0.0'
+alfrescoSM group: 'com.gradecak.alfresco-mvc', name: 'alfresco-mvc-aop', version: '9.0.0'
+alfrescoAmp group: 'eu.xenit.alfred.api', name: 'alfred-api-231', version: '6.0.0'
 ```
 Note above example also installs Alfred API as AMP.
 
@@ -770,8 +763,8 @@ If you install your Alfresco manually, you can download the JARs directly from
 and place them on your Tomcat's classpath.
 
 ```bash
-cp alfresco-mvc-aop-8.0.0.jar /usr/local/tomcat/shared/lib/
-cp alfresco-mvc-rest-8.0.0.jar /usr/local/tomcat/shared/lib/
+cp alfresco-mvc-aop-9.0.0.jar /usr/local/tomcat/shared/lib/
+cp alfresco-mvc-rest-9.0.0.jar /usr/local/tomcat/shared/lib/
 ```
 
 
@@ -782,11 +775,7 @@ The application is available as an Alfresco AMP artifact, which is the preferred
 
 To install the AMP, follow the Alfresco AMP installation guidelines your version of Alfresco: 
 
-* [7.0](https://docs.alfresco.com/content-services/7.0/install/zip/amp/)
-* [7.1](https://docs.alfresco.com/content-services/7.1/install/zip/amp/)
-* [7.2](https://docs.alfresco.com/content-services/7.2/install/zip/amp/)
-* [7.3](https://docs.alfresco.com/content-services/7.3/install/zip/amp/)
-* [7.4](https://docs.alfresco.com/content-services/7.4/install/zip/amp/)
+* [23.x](https://docs.alfresco.com/content-services/latest/install/zip/amp/)
 
 # Contributing
 Alfred API is open source. The code is available from [Github](https://github.com/xenit-eu/alfred-api). Building the artifacts requires
