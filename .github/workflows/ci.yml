@@ -81,5 +81,5 @@ jobs:
         uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: >-
-            --info -PsigningKeyId=DF8285F0
+            --info -PsigningKeyId=CDE3528F
             :alfresco:${{ matrix.alfresco_version }}:publish
