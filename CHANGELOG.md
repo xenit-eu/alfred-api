@@ -1,7 +1,7 @@
 # Alfred API - Changelog
 
 
-## 6.0.0 (2024-07-18)
+## 6.0.0 (2024-08-22)
 From this version onward Dynamic Extensions for integration-testing is replaced by [remote-junit](https://github.com/ruediste/remote-junit)
 as framework to reduce maintenance efforts.
 
