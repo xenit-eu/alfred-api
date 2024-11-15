@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gradecak.alfresco.mvc.annotation.EnableAlfrescoMvcAop;
 import com.gradecak.alfresco.mvc.rest.config.DefaultAlfrescoMvcServletContextConfiguration;
+import eu.xenit.apix.rest.jackson.Jackson2ApixMetadataChangesDeserializer;
 import eu.xenit.apix.rest.jackson.Jackson2ApixNodeRefDeserializer;
 import eu.xenit.apix.rest.jackson.Jackson2ApixNodeRefSerializer;
 import eu.xenit.apix.rest.jackson.Jackson2ApixQnameDeserializer;
@@ -43,6 +44,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -97,6 +99,13 @@ public class AlfredApiRestServletContext extends DefaultAlfrescoMvcServletContex
                 new Jackson2ApixNodeRefDeserializer(),
                 new Jackson2ApixQnameDeserializer()
         );
+    }
+
+    @Override
+    protected void customizeJackson2ObjectMapperBuilder(Jackson2ObjectMapperBuilder builder) {
+//        builder.deserializers(
+//                new Jackson2ApixMetadataChangesDeserializer(builder.build())
+//        );
     }
 
     @Override
