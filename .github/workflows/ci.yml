@@ -61,8 +61,14 @@ jobs:
           registry: private.docker.xenit.eu
           username: ${{ secrets.CLOUDSMITH_USER }}
           password: ${{ secrets.CLOUDSMITH_APIKEY }}
+
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
       - name: Check Docker Compose version
         run: docker-compose version
+
       - name: Build and test
         uses: gradle/gradle-build-action@v2.4.2
         with:
