@@ -496,6 +496,7 @@ public class NodesWebscript1 extends ApixV1Webscript {
         if (contentInputStream == null) {
             return writeNotFoundResponse(nodeRef);
         }
+        logger.error("USING THE NEW TEST GET /content");
         return ResponseEntity.ok()
                 .header("Content-Type", contentInputStream.getMimetype())
                 .body(new InputStreamResource(contentInputStream.getInputStream()));
