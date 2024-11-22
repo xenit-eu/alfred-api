@@ -1,5 +1,7 @@
 # Alfred API - Changelog
 
+* [ALFREDAPI-563](https://xenitsupport.jira.com/browse/ALFREDAPI-563) Fix @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/content") Content-Type
+
 
 ## 6.0.0 (2024-08-22)
 From this version onward Dynamic Extensions for integration-testing is replaced by [remote-junit](https://github.com/ruediste/remote-junit)
