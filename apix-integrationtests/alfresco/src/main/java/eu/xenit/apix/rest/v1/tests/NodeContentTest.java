@@ -28,6 +28,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -78,6 +80,31 @@ public class NodeContentTest extends RestV1BaseTest {
                     }
                 }, false, true);
         assertEquals("This is the content", content);
+
+        String contentHeader = transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    ContentInputStream c = ns.getContent(nodeRef);
+                    return c.getMimetype();
+                }, false, true);
+        assertEquals("text/plain", contentHeader);
+
+        // Test the Content-Header of the set file via GET method.
+        transactionService.getRetryingTransactionHelper()
+                .doInTransaction(() -> {
+                    HttpGet httpGet = new HttpGet(url);
+
+                    try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
+                        assertEquals(200, response.getStatusLine().getStatusCode());
+                        InputStream inputStream = response.getEntity().getContent();
+                        assertEquals("This is the content",
+                                IOUtils.toString(inputStream, Charset.defaultCharset()));
+                        ContentInputStream c = ns.getContent(nodeRef);
+                        assertEquals("text/plain",
+                                c.getMimetype());
+                        inputStream.close();
+                    }
+                    return null;
+                }, false, true);
     }
 
     @Test
