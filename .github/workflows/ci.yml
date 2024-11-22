@@ -81,7 +81,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           detailed_summary: true
       - name: Publish
-#        if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}"
+        if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}"
         uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: >-
