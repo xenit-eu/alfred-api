@@ -509,6 +509,7 @@ public class NodesWebscript1 extends AlfredApiV1Webscript {
             return writeNotFoundResponse(nodeRef);
         }
         return ResponseEntity.ok()
+                .header("Content-Type", contentInputStream.getMimetype())
                 .body(new InputStreamResource(contentInputStream.getInputStream()));
     }
 
