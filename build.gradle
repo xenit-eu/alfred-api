@@ -14,7 +14,7 @@ def static getVersionQualifier(String branch_name) {
 }
 
 ext {
-    versionWithoutQualifier = '6.0.0'
+    versionWithoutQualifier = '6.0.1'
 
     mvc = '9.0.0'
     jackson_version = '2.15.2'
