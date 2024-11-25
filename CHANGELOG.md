@@ -1,5 +1,9 @@
 # Alfred API - Changelog
 
+
+## 6.0.1 (2024-11-25)
+
+### Fixed
 * [ALFREDAPI-563](https://xenitsupport.jira.com/browse/ALFREDAPI-563) Fix @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/content") Content-Type
 
 
