@@ -38,33 +38,24 @@ public class TranslationService implements ITranslationService {
 
     private static final Logger logger = LoggerFactory.getLogger(TranslationService.class);
 
-    @Autowired
     private NamespaceService namespaceService;
-
-    @Autowired
     private DictionaryService alfDictionaryService;
-
-    @Autowired
     private MessageService messageService;
 
-    @Autowired
     private IDictionaryService alfredApiDictionaryservice;
-
-    @Autowired
     private AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion;
 
-    public TranslationService() {
-    }
-
-    public TranslationService(ServiceRegistry serviceRegistry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion,
-            IDictionaryService dictionaryService, MessageService messageService) {
-        this.namespaceService = serviceRegistry.getNamespaceService();
-        this.alfDictionaryService = serviceRegistry.getDictionaryService();
+    @Autowired
+    public TranslationService(ServiceRegistry serviceRegistry,
+            AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion,
+            IDictionaryService dictionaryService) {
         this.alfredApiToAlfrescoConversion = alfredApiToAlfrescoConversion;
         this.alfredApiDictionaryservice = dictionaryService;
-        this.messageService = messageService;
-    }
 
+        this.namespaceService = serviceRegistry.getNamespaceService();
+        this.alfDictionaryService = serviceRegistry.getDictionaryService();
+        this.messageService = serviceRegistry.getMessageService();
+    }
 
     @Override
     public long getTranslationsCheckSum(Locale locale) {
@@ -149,8 +140,6 @@ public class TranslationService implements ITranslationService {
         translations.setAssociation(toValueList(associations));
 
         return translations;
-
-
     }
 
     @Override
@@ -176,7 +165,6 @@ public class TranslationService implements ITranslationService {
                 .equals(ResourceBundleTranslationKey.FeatureValueType.DESCRIPTION)) {
             translationValue.setDescription(translationKey.getValue());
         }
-
     }
 
     private void addPropertyTranslationValue(ResourceBundleTranslationKey translationKey,
@@ -219,7 +207,6 @@ public class TranslationService implements ITranslationService {
         }
 
         return translationValue;
-
     }
 
     private PropertyTranslationValue getPropertyTranslationValueObject(QName qname,
@@ -234,7 +221,6 @@ public class TranslationService implements ITranslationService {
         }
 
         return translationValue;
-
     }
 
     private List<TranslationValue> toValueList(Map<QName, TranslationValue> map) {
@@ -244,7 +230,6 @@ public class TranslationService implements ITranslationService {
     private List<PropertyTranslationValue> toPropertyValueList(Map<QName, PropertyTranslationValue> map) {
         return new ArrayList<PropertyTranslationValue>(map.values());
     }
-
 
     private void addListConstraintsToProperties(MessageLookup messageLookup, Map<QName, PropertyTranslationValue> map) {
         Collection<QName> properties = alfDictionaryService.getAllProperties(null);
@@ -308,9 +293,7 @@ public class TranslationService implements ITranslationService {
             }
 
             PropertyTranslationValue translationValue = getPropertyTranslationValueObject(property, map);
-
             translationValue.setValues(constraintTranslations);
-
         }
     }
 }

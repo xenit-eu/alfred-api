@@ -36,16 +36,13 @@ public class PeopleService implements IPeopleService {
     private PersonService alfrescoPersonService;
     private NodeService nodeService;
     private AuthorityService authorityService;
-    private ServiceRegistry serviceRegistry;
 
     @Autowired
-    public PeopleService(PersonService personService, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion,
-            NodeService nodeService, ServiceRegistry serviceRegistry) {
-        this.alfrescoPersonService = personService;
-        this.nodeService = nodeService;
+    public PeopleService(ServiceRegistry serviceRegistry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
         this.c = alfredApiToAlfrescoConversion;
+        this.alfrescoPersonService = serviceRegistry.getPersonService();
+        this.nodeService = serviceRegistry.getNodeService();
         this.authorityService = serviceRegistry.getAuthorityService();
-        this.serviceRegistry = serviceRegistry;
     }
 
     @Override
