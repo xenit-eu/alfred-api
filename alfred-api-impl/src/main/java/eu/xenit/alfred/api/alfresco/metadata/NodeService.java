@@ -630,10 +630,9 @@ public class NodeService implements INodeService {
             writer.setMimetype(mimeType);
             writer.setEncoding(encoding);
             writer.putContent(inputStream);
-            eu.xenit.alfred.api.data.ContentData result = new eu.xenit.alfred.api.data.ContentData(
+            return new eu.xenit.alfred.api.data.ContentData(
                     writer.getContentUrl(),
                     writer.getMimetype(), writer.getSize(), writer.getEncoding(), writer.getLocale());
-            return result;
         } finally {
             IOUtils.closeQuietly(inputStream);
         }
@@ -718,11 +717,7 @@ public class NodeService implements INodeService {
         HashMap props = new HashMap(2, 1.0F);
         props.put("description", comment);
         props.put("versionType", majorVersion ? VersionType.MAJOR : VersionType.MINOR);
-
-        eu.xenit.alfred.api.data.NodeRef original = c.alfredApi(
-                this.checkoutCheckinService.checkin(c.alfresco(nodeRef), props));
-
-        return original;
+        return c.alfredApi(this.checkoutCheckinService.checkin(c.alfresco(nodeRef), props));
     }
 
     @Override

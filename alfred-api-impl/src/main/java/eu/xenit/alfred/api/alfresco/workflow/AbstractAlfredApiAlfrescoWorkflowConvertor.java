@@ -104,7 +104,7 @@ public abstract class AbstractAlfredApiAlfrescoWorkflowConvertor extends Abstrac
         return integerProperties.contains(prop);
     }
 
-    public AbstractAlfredApiAlfrescoWorkflowConvertor(
+    protected AbstractAlfredApiAlfrescoWorkflowConvertor(
             ServiceRegistry serviceRegistry,
             IPeopleService peopleService,
             AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {

@@ -18,7 +18,7 @@ public abstract class AbstractAlfredApiWorkflowConvertor {
     private IPeopleService peopleService;
     private AuthorityService authorityService;
 
-    public AbstractAlfredApiWorkflowConvertor(ServiceRegistry serviceRegistry, IPeopleService peopleService) {
+    protected AbstractAlfredApiWorkflowConvertor(ServiceRegistry serviceRegistry, IPeopleService peopleService) {
         this.peopleService = peopleService;
         authorityService = serviceRegistry.getAuthorityService();
     }

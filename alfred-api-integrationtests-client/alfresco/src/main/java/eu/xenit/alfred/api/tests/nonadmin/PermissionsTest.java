@@ -91,7 +91,7 @@ public class PermissionsTest extends JavaApiBaseTest {
             alfNodeService.setProperty(nodeForbidden, PROP_QNAME_VERSION_LABEL, PROPERTY_VALUE);
 
         } catch (FileExistsException e) {
-            logger.warn("Test folder already created. Skipping", e);
+            logger.warn("'Forbidden' folder already created. Skipping", e);
         }
 
         try {
@@ -104,7 +104,7 @@ public class PermissionsTest extends JavaApiBaseTest {
             alfNodeService.setProperty(nodeAllowed, PROP_QNAME_VERSION_LABEL, PROPERTY_VALUE);
 
         } catch (FileExistsException e) {
-            logger.warn("Test folder already created. Skipping", e);
+            logger.warn("'Allowed' folder already created. Skipping", e);
         }
     }
 
