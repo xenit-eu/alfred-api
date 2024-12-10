@@ -2,11 +2,12 @@ package eu.xenit.alfred.api.tests.search;
 
 import static org.alfresco.repo.version.VersionModel.PROP_QNAME_VERSION_LABEL;
 
+import eu.xenit.alfred.api.node.INodeService;
+import eu.xenit.alfred.api.node.NodeMetadata;
 import eu.xenit.alfred.api.search.ISearchService;
 import eu.xenit.alfred.api.search.QueryBuilder;
 import eu.xenit.alfred.api.search.SearchQuery;
 import eu.xenit.alfred.api.search.SearchQueryResult;
-import eu.xenit.alfred.api.search.nodes.SearchSyntaxNode;
 import eu.xenit.alfred.api.tests.JavaApiBaseTest;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -16,13 +17,13 @@ import org.alfresco.repo.security.authentication.AuthenticationException;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.model.FileExistsException;
 import org.alfresco.service.cmr.model.FileInfo;
+import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.AuthorityType;
 import org.alfresco.service.cmr.security.MutableAuthenticationService;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.cmr.security.PersonService;
-
 import org.alfresco.service.namespace.QName;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -41,7 +42,8 @@ public class PermissionsTest extends JavaApiBaseTest {
     private static final String PROPERTY_VALUE = "ComeFindMeJos";
 
     // Alfred API services
-    private ISearchService searchService;
+    private ISearchService apixSearchService;
+    private INodeService apixNodeService;
 
     // Alfresco services
     private NodeService alfNodeService;
@@ -50,8 +52,13 @@ public class PermissionsTest extends JavaApiBaseTest {
     private PersonService alfPersonService;
     private MutableAuthenticationService alfAuthenticationService;
 
+    private NodeRef nodeForbidden;
+    private NodeRef nodeAllowed;
+
     public PermissionsTest() {
-        searchService = getBean(ISearchService.class);
+        apixSearchService = getBean(ISearchService.class);
+        apixNodeService = getBean(INodeService.class);
+
         alfNodeService = getBean("NodeService", NodeService.class);
         alfPermissionService = getBean("PermissionService", PermissionService.class);
         alfAuthorityService = getBean("AuthorityService", AuthorityService.class);
@@ -67,17 +74,15 @@ public class PermissionsTest extends JavaApiBaseTest {
         } catch (FileExistsException e) {
             logger.warn("Test folder already created. Skipping (" + e.getMessage() + ")");
         }
-        //permissionService.setInheritParentPermissions(getMainTestFolder(), false);
-
-        // Add users and groups
-        createUserAndGroupsWithoutRights();
+        createUserAndGroupsWithLimitedRights();
 
         // Set up folders with group permissions
         try {
             FileInfo folderForbidden = createTestFolder(getMainTestFolder(), "Forbidden");
             alfPermissionService.setInheritParentPermissions(folderForbidden.getNodeRef(), false);
-            FileInfo info = createTestNode(folderForbidden.getNodeRef(), "ForbiddenDocument");
-            alfNodeService.setProperty(info.getNodeRef(), PROP_QNAME_VERSION_LABEL, PROPERTY_VALUE);
+            FileInfo documentForbidden = createTestNode(folderForbidden.getNodeRef(), "ForbiddenDocument");
+            nodeForbidden = documentForbidden.getNodeRef();
+            alfNodeService.setProperty(nodeForbidden, PROP_QNAME_VERSION_LABEL, PROPERTY_VALUE);
 
         } catch (FileExistsException e) {
             logger.warn("Test folder already created. Skipping (" + e.getMessage() + ")");
@@ -88,8 +93,9 @@ public class PermissionsTest extends JavaApiBaseTest {
             alfPermissionService.setInheritParentPermissions(folderAllowed.getNodeRef(), false);
             alfPermissionService.setPermission(
                     folderAllowed.getNodeRef(), GROUPID, PermissionService.COORDINATOR, true);
-            FileInfo info = createTestNode(folderAllowed.getNodeRef(), "AllowedDocument");
-            alfNodeService.setProperty(info.getNodeRef(), PROP_QNAME_VERSION_LABEL, PROPERTY_VALUE);
+            FileInfo documentAllowed = createTestNode(folderAllowed.getNodeRef(), "AllowedDocument");
+            nodeAllowed = documentAllowed.getNodeRef();
+            alfNodeService.setProperty(nodeAllowed, PROP_QNAME_VERSION_LABEL, PROPERTY_VALUE);
 
         } catch (FileExistsException e) {
             logger.warn("Test folder already created. Skipping (" + e.getMessage() + ")");
@@ -98,12 +104,12 @@ public class PermissionsTest extends JavaApiBaseTest {
 
     @AfterClass
     public void tearDownSuite() {
-        //AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-        //personService.deletePerson(USERNAME_JOS);
-        //cleanUp();
+        AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        alfPersonService.deletePerson(USERNAME_NORIGHTS_JOS);
+        cleanUp();
     }
 
-    private void createUserAndGroupsWithoutRights() {
+    private void createUserAndGroupsWithLimitedRights() {
         try {
             alfAuthenticationService.createAuthentication(USERNAME_NORIGHTS_JOS, "foobar".toCharArray());
             Map<QName, Serializable> userProperties = new HashMap<>();
@@ -124,79 +130,29 @@ public class PermissionsTest extends JavaApiBaseTest {
 
     @Test
     public void testSearch() {
-        logger.error("WIM: Search SANITY"); // REMOVE ME
-
-        // Add users and groups
-        createUserAndGroupsWithoutRights();
-
-        // Set up folders with group permissions
-        try {
-            FileInfo folderForbidden = createTestFolder(getMainTestFolder(), "Forbidden");
-            alfPermissionService.setInheritParentPermissions(folderForbidden.getNodeRef(), false);
-            FileInfo info = createTestNode(folderForbidden.getNodeRef(), "ForbiddenDocument");
-            alfNodeService.setProperty(info.getNodeRef(), PROP_QNAME_VERSION_LABEL, PROPERTY_VALUE);
-
-        } catch (FileExistsException e) {
-            logger.warn("Test folder already created. Skipping (" + e.getMessage() + ")");
-        }
-
-        try {
-            FileInfo folderAllowed = createTestFolder(getMainTestFolder(), "Allowed");
-            alfPermissionService.setInheritParentPermissions(folderAllowed.getNodeRef(), false);
-            alfPermissionService.setPermission(
-                    folderAllowed.getNodeRef(), GROUPID, PermissionService.COORDINATOR, true);
-            FileInfo info = createTestNode(folderAllowed.getNodeRef(), "AllowedDocument");
-            alfNodeService.setProperty(info.getNodeRef(), PROP_QNAME_VERSION_LABEL, PROPERTY_VALUE);
-
-        } catch (FileExistsException e) {
-            logger.warn("Test folder already created. Skipping (" + e.getMessage() + ")");
-        }
-
-        // Switch to user without rights
+        // Switch to non-admin user
         AuthenticationUtil.setFullyAuthenticatedUser(USERNAME_NORIGHTS_JOS);
-        logger.error("WIM: auth f user: " + AuthenticationUtil.getFullyAuthenticatedUser()); //// REMOVEME
 
-        // Perform search
-        SearchSyntaxNode queryNode = new QueryBuilder()
+        SearchQuery query = new SearchQuery();
+        query.setQuery(new QueryBuilder()
                 .startAnd()
                 .term("path", "/app:company_home/cm:" + mainTestFolderName + "//*") // x2 slash means: recurse
                 .term("type", "cm:content")
                 .end()
-                .create();
-
-        SearchQuery query = new SearchQuery();
-        query.setQuery(queryNode);
-        SearchQueryResult result = searchService.query(query);
-
-        logger.error("WIM: r:: " + result); //// REMOVEME
+                .create());
+        SearchQueryResult result = apixSearchService.query(query);
         Assert.assertEquals(1, result.totalResultCount);
-
-        logger.error("WIM: Your father would be proud, Fox"); // REMOVE ME
     }
 
 
     @Test
-    public void testNode() {
-        logger.error("WIM: Node SANITY"); // REMOVE ME
-
-        // Switch to user without rights
+    public void testGetNodeMetadata() {
+        // Switch to non-admin user
         AuthenticationUtil.setFullyAuthenticatedUser(USERNAME_NORIGHTS_JOS);
-        logger.error("WIM: auth f user: " + AuthenticationUtil.getFullyAuthenticatedUser()); //// REMOVEME
 
-        // Perform search
-        SearchSyntaxNode queryNode = new QueryBuilder()
-                .startAnd()
-                .term("path", "/app:company_home/cm:" + mainTestFolderName + "//*") // x2 slash means: recurse
-                .term("type", "cm:content")
-                .end()
-                .create();
-
-        SearchQuery query = new SearchQuery();
-        query.setQuery(queryNode);
-        SearchQueryResult result = searchService.query(query);
-
-        logger.error("WIM: r:: " + result); //// REMOVEME
-        Assert.assertEquals(1, result.totalResultCount);
+        NodeMetadata result = apixNodeService.getMetadata(new eu.xenit.alfred.api.data.NodeRef(nodeAllowed.toString()));
+        logger.error("WIM: r:: " + result.getProperties()); //// REMOVEME
+        Assert.assertFalse(result.getProperties().isEmpty());
 
         logger.error("WIM: Your father would be proud, Fox"); // REMOVE ME
     }
