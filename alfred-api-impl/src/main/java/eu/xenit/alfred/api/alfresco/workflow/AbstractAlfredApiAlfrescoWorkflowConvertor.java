@@ -13,6 +13,7 @@ import java.util.Map;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.i18n.MessageService;
 import org.alfresco.repo.workflow.WorkflowModel;
+import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.dictionary.ConstraintDefinition;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -26,7 +27,6 @@ import org.alfresco.util.ISO8601DateFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 public abstract class AbstractAlfredApiAlfrescoWorkflowConvertor extends AbstractAlfredApiWorkflowConvertor {
 
@@ -79,16 +79,10 @@ public abstract class AbstractAlfredApiAlfrescoWorkflowConvertor extends Abstrac
         add(IWorkflowService.ALFRESCO_TRANSITIONS);
         add(IWorkflowService.ALFRESCO_WORKFLOW_ID);
     }};
-    @Autowired
+
     protected AlfredApiToAlfrescoConversion c;
-    @Autowired
-    @Qualifier("WorkflowService")
     protected WorkflowService workflowService;
-    @Autowired
-    @Qualifier("MessageService")
     private MessageService messageService;
-    @Autowired
-    @Qualifier("NamespaceService")
     private NamespaceService namespaceService;
 
     protected static void setOwner(final WorkflowService ws, final String taskID, final String userName) {
@@ -108,6 +102,15 @@ public abstract class AbstractAlfredApiAlfrescoWorkflowConvertor extends Abstrac
 
     private static boolean IsIntProperty(String prop) {
         return integerProperties.contains(prop);
+    }
+
+    @Autowired
+    public AbstractAlfredApiAlfrescoWorkflowConvertor(ServiceRegistry serviceRegistry,
+            AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
+        c = alfredApiToAlfrescoConversion;
+        workflowService = serviceRegistry.getWorkflowService();
+        messageService = serviceRegistry.getMessageService();
+        namespaceService = serviceRegistry.getNamespaceService();
     }
 
     protected void assertCanModify(String id) {

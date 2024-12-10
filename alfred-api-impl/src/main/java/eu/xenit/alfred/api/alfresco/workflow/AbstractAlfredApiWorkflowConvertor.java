@@ -6,6 +6,7 @@ import eu.xenit.alfred.api.workflow.model.ITaskOrWorkflow;
 import eu.xenit.alfred.api.workflow.model.WorkflowOrTaskChanges;
 import java.io.Serializable;
 import java.util.Map;
+import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.namespace.QName;
 import org.slf4j.Logger;
@@ -15,12 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class AbstractAlfredApiWorkflowConvertor {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractAlfredApiWorkflowConvertor.class);
-
-    @Autowired
     private IPeopleService peopleService;
+    private AuthorityService authorityService;
 
     @Autowired
-    private AuthorityService authorityService;
+    public AbstractAlfredApiWorkflowConvertor(ServiceRegistry serviceRegistry, IPeopleService peopleService) {
+        this.peopleService = peopleService;
+        authorityService = serviceRegistry.getAuthorityService();
+    }
 
     protected static void PutOnMapIfNotNull(Map<String, Serializable> map, String property, Serializable value) {
         if (value != null) {
