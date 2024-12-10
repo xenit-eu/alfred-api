@@ -30,11 +30,8 @@ import org.alfresco.service.cmr.workflow.WorkflowService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 
-@Service
+
 public class WorkflowServiceActivitiImpl implements IWorkflowService, InitializingBean {
 
     private final Logger logger = LoggerFactory.getLogger(WorkflowServiceActivitiImpl.class);
@@ -46,14 +43,12 @@ public class WorkflowServiceActivitiImpl implements IWorkflowService, Initializi
     private AuthenticationService authenticationService;
     private WorkflowService workflowService;
 
-    @Autowired
     public WorkflowServiceActivitiImpl(
             ServiceRegistry serviceRegistry,
             AlfredApiToAlfrescoConversion c,
             AbstractAlfredApiQueryConverter alfredApiWfProcQueryConverter,
             AbstractAlfredApiQueryConverter alfredApiWfTaskQueryConverter,
             IPeopleService peopleService,
-            @Qualifier("eu.xenit.alfred.api.alfresco.workflow.activiti.ActivitiQueryConverterFactory")
             AbstractQueryConverterFactory activitiQueryConverterFactory) {
         this.c = c;
         this.peopleService = peopleService;

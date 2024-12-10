@@ -1,7 +1,9 @@
 package eu.xenit.alfred.api.alfresco.workflow.alfresco;
 
+import eu.xenit.alfred.api.alfresco.AlfredApiToAlfrescoConversion;
 import eu.xenit.alfred.api.alfresco.workflow.AbstractAlfredApiAlfrescoWorkflowConvertor;
 import eu.xenit.alfred.api.alfresco.workflow.AbstractAlfredApiWorkflowConvertor;
+import eu.xenit.alfred.api.people.IPeopleService;
 import eu.xenit.alfred.api.workflow.model.ITaskOrWorkflow;
 import eu.xenit.alfred.api.workflow.model.Task;
 import eu.xenit.alfred.api.workflow.model.Workflow;
@@ -38,8 +40,11 @@ public class AlfrescoProcessInstanceWorkflowConvertor extends AbstractAlfredApiA
     @Autowired
     public AlfrescoProcessInstanceWorkflowConvertor(
             ServiceRegistry serviceRegistry,
+            IPeopleService peopleService,
+            AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion,
             @Qualifier("eu.xenit.alfred.api.alfresco.workflow.alfresco.AlfrescoWorkflowTaskWorkflowConvertor")
             AbstractAlfredApiWorkflowConvertor taskConvertor) {
+        super(serviceRegistry, peopleService, alfredApiToAlfrescoConversion);
         personService = serviceRegistry.getPersonService();
         this.taskConvertor = taskConvertor;
     }

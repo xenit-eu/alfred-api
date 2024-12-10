@@ -1,6 +1,7 @@
 package eu.xenit.alfred.api.alfresco.workflow;
 
 import eu.xenit.alfred.api.alfresco.AlfredApiToAlfrescoConversion;
+import eu.xenit.alfred.api.people.IPeopleService;
 import eu.xenit.alfred.api.workflow.IWorkflowService;
 import eu.xenit.alfred.api.workflow.model.WorkflowOrTaskChanges;
 import java.io.Serializable;
@@ -26,7 +27,6 @@ import org.alfresco.service.namespace.QName;
 import org.alfresco.util.ISO8601DateFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractAlfredApiAlfrescoWorkflowConvertor extends AbstractAlfredApiWorkflowConvertor {
 
@@ -104,9 +104,11 @@ public abstract class AbstractAlfredApiAlfrescoWorkflowConvertor extends Abstrac
         return integerProperties.contains(prop);
     }
 
-    @Autowired
-    public AbstractAlfredApiAlfrescoWorkflowConvertor(ServiceRegistry serviceRegistry,
+    public AbstractAlfredApiAlfrescoWorkflowConvertor(
+            ServiceRegistry serviceRegistry,
+            IPeopleService peopleService,
             AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
+        super(serviceRegistry, peopleService);
         c = alfredApiToAlfrescoConversion;
         workflowService = serviceRegistry.getWorkflowService();
         messageService = serviceRegistry.getMessageService();

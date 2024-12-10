@@ -11,7 +11,6 @@ import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.namespace.QName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractAlfredApiWorkflowConvertor {
 
@@ -19,7 +18,6 @@ public abstract class AbstractAlfredApiWorkflowConvertor {
     private IPeopleService peopleService;
     private AuthorityService authorityService;
 
-    @Autowired
     public AbstractAlfredApiWorkflowConvertor(ServiceRegistry serviceRegistry, IPeopleService peopleService) {
         this.peopleService = peopleService;
         authorityService = serviceRegistry.getAuthorityService();
