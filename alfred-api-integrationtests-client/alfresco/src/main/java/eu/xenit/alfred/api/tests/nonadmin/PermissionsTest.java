@@ -28,10 +28,8 @@ import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.namespace.QName;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,6 +88,7 @@ public class PermissionsTest extends JavaApiBaseTest {
             FileInfo documentForbidden = createTestNode(folderForbidden.getNodeRef(), "ForbiddenDocument");
             nodeForbidden = documentForbidden.getNodeRef();
             alfNodeService.setProperty(nodeForbidden, PROP_QNAME_VERSION_LABEL, PROPERTY_VALUE);
+
         } catch (FileExistsException e) {
             logger.warn("Test folder already created. Skipping (" + e.getMessage() + ")");
         }
@@ -102,6 +101,7 @@ public class PermissionsTest extends JavaApiBaseTest {
             FileInfo documentAllowed = createTestNode(folderAllowed.getNodeRef(), "AllowedDocument");
             nodeAllowed = documentAllowed.getNodeRef();
             alfNodeService.setProperty(nodeAllowed, PROP_QNAME_VERSION_LABEL, PROPERTY_VALUE);
+
         } catch (FileExistsException e) {
             logger.warn("Test folder already created. Skipping (" + e.getMessage() + ")");
         }
@@ -110,6 +110,7 @@ public class PermissionsTest extends JavaApiBaseTest {
     @After
     public void teardown() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        alfPersonService.deletePerson(USERNAME_NORIGHTS_JOS);
         cleanUp();
     }
 
@@ -167,8 +168,7 @@ public class PermissionsTest extends JavaApiBaseTest {
         try {
             apixNodeService.getMetadata(new eu.xenit.alfred.api.data.NodeRef(nodeForbidden.toString()));
             Assert.fail("Expected AccessDeniedException");
-        }
-        catch (AccessDeniedException e) {
+        } catch (AccessDeniedException e) {
         }
     }
 
