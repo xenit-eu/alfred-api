@@ -46,16 +46,12 @@ import org.alfresco.service.cmr.repository.MimetypeService;
 import org.alfresco.service.cmr.repository.MimetypeServiceAware;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
-import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.security.AccessStatus;
-import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.cmr.version.VersionType;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
-import org.alfresco.util.TempFileProvider;
-import org.apache.chemistry.opencmis.commons.spi.AclService;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,10 +62,8 @@ import org.springframework.stereotype.Service;
 @Service("eu.xenit.alfred.api.alfresco.metadata.NodeService")
 public class NodeService implements INodeService {
 
-    private final static String NAMESPACE_BEGIN = "" + '{';
     private final static Logger logger = LoggerFactory.getLogger(NodeService.class);
     private AlfredApiToAlfrescoConversion c;
-    private NamespaceService namespaceService;
     private ServiceRegistry serviceRegistry;
     private org.alfresco.service.cmr.repository.NodeService nodeService;
     private PermissionService permissionService;
@@ -78,14 +72,10 @@ public class NodeService implements INodeService {
     private FileFolderService fileFolderService;
     private CheckOutCheckInService checkoutCheckinService;
     private LockService lockService;
-    private AuthenticationService authenticationService;
-    private SearchService searchService;
-    private AclService aclService;
     private ContentService contentService;
     private MimetypeService mimetypeService;
     private org.alfresco.repo.forum.CommentService commentService;
     private AlfrescoPropertyConvertor propertyConvertor;
-    private TempFileProvider tempFileProvider;
     private Repository repository;
 
     @Autowired
@@ -98,19 +88,12 @@ public class NodeService implements INodeService {
         dictionaryService = serviceRegistry.getDictionaryService();
         copyService = serviceRegistry.getCopyService();
         nodeService = serviceRegistry.getNodeService();
-        namespaceService = serviceRegistry.getNamespaceService();
         fileFolderService = serviceRegistry.getFileFolderService();
         checkoutCheckinService = serviceRegistry.getCheckOutCheckInService();
         lockService = serviceRegistry.getLockService();
-        authenticationService = serviceRegistry.getAuthenticationService();
-        searchService = serviceRegistry.getSearchService();
         contentService = serviceRegistry.getContentService();
         propertyConvertor = new AlfrescoPropertyConvertor(serviceRegistry, alfredApiToAlfrescoConversion);
         mimetypeService = serviceRegistry.getMimetypeService();
-    }
-
-    public ServiceRegistry getServiceRegistry() {
-        return serviceRegistry;
     }
 
     public List<NodeMetadata> getMetadata(List<eu.xenit.alfred.api.data.NodeRef> noderefs) {
