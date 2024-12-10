@@ -7,6 +7,7 @@ import eu.xenit.alfred.api.node.NodeMetadata;
 import eu.xenit.alfred.api.search.ISearchService;
 import eu.xenit.alfred.api.search.QueryBuilder;
 import eu.xenit.alfred.api.search.SearchQuery;
+import eu.xenit.alfred.api.search.SearchQueryConsistency;
 import eu.xenit.alfred.api.search.SearchQueryResult;
 import eu.xenit.alfred.api.tests.JavaApiBaseTest;
 import java.io.Serializable;
@@ -77,7 +78,7 @@ public class PermissionsTest extends JavaApiBaseTest {
         try {
             createMainTestFolder(repository.getCompanyHome());
         } catch (FileExistsException e) {
-            logger.warn("Test folder already created. Skipping (" + e.getMessage() + ")");
+            logger.warn("Test folder already created. Skipping", e);
         }
         createUserAndGroupsWithLimitedRights();
 
@@ -90,7 +91,7 @@ public class PermissionsTest extends JavaApiBaseTest {
             alfNodeService.setProperty(nodeForbidden, PROP_QNAME_VERSION_LABEL, PROPERTY_VALUE);
 
         } catch (FileExistsException e) {
-            logger.warn("Test folder already created. Skipping (" + e.getMessage() + ")");
+            logger.warn("Test folder already created. Skipping", e);
         }
 
         try {
@@ -103,14 +104,13 @@ public class PermissionsTest extends JavaApiBaseTest {
             alfNodeService.setProperty(nodeAllowed, PROP_QNAME_VERSION_LABEL, PROPERTY_VALUE);
 
         } catch (FileExistsException e) {
-            logger.warn("Test folder already created. Skipping (" + e.getMessage() + ")");
+            logger.warn("Test folder already created. Skipping", e);
         }
     }
 
     @After
     public void teardown() {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
-        alfPersonService.deletePerson(USERNAME_NORIGHTS_JOS);
         cleanUp();
     }
 
@@ -126,7 +126,7 @@ public class PermissionsTest extends JavaApiBaseTest {
             alfPersonService.createPerson(userProperties);
             logger.info("User " + USERNAME_NORIGHTS_JOS + " successfully created");
         } catch (AuthenticationException e) {
-            logger.warn("User already created. Skipping (" + e.getMessage() + ")");
+            logger.warn("User already created. Skipping", e);
         }
 
         try {
@@ -134,7 +134,7 @@ public class PermissionsTest extends JavaApiBaseTest {
             alfAuthorityService.addAuthority(GROUPID, USERNAME_NORIGHTS_JOS);
             logger.info("Group " + GROUPNAME + " successfully created");
         } catch (DuplicateChildNodeNameException e) {
-            logger.warn("Group already created. Skipping (" + e.getMessage() + ")");
+            logger.warn("Group already created. Skipping", e);
         }
     }
 
@@ -145,15 +145,14 @@ public class PermissionsTest extends JavaApiBaseTest {
 
         SearchQuery query = new SearchQuery();
         query.setQuery(new QueryBuilder()
-                .startAnd()
-                .term("path", "/app:company_home/cm:" + mainTestFolderName + "//*") // x2 slash means: recurse
-                .term("type", "cm:content")
-                .end()
+                .property(PROP_QNAME_VERSION_LABEL.toString(), PROPERTY_VALUE, true)
                 .create());
+        query.setConsistency(SearchQueryConsistency.TRANSACTIONAL);
         SearchQueryResult result = apixSearchService.query(query);
-        Assert.assertEquals(1, result.totalResultCount);
-    }
 
+        Assert.assertEquals(1, result.totalResultCount);
+        Assert.assertEquals(nodeAllowed.toString(), result.getNoderefs().get(0));
+    }
 
     @Test
     public void testGetNodeMetadata() {
@@ -171,6 +170,5 @@ public class PermissionsTest extends JavaApiBaseTest {
         } catch (AccessDeniedException e) {
         }
     }
-
 
 }
