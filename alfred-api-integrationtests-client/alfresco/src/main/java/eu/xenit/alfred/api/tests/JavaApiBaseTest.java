@@ -28,7 +28,7 @@ public abstract class JavaApiBaseTest extends BaseApplicationContextTest {
             ALFRED_API_TESTCM_PREFIX + ":" + ALFRED_API_TESTCM_PROP_SEARCHSERVICELIMITTEST_SHORTNAME;
 
     private static final Logger logger = LoggerFactory.getLogger(JavaApiBaseTest.class);
-    private static final String mainTestFolderName = "AlfredApiMainTestFolder";
+    protected static final String mainTestFolderName = "AlfredApiMainTestFolder";
 
 
     protected NodeRef getNodeAtPath(String path) {
