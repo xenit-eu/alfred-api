@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
@@ -30,10 +31,9 @@ public class AlfrescoPropertyConvertor {
     private AlfredApiToAlfrescoConversion c;
     private DictionaryService dictionaryService;
 
-
     @Autowired
-    public AlfrescoPropertyConvertor(DictionaryService dictionaryService, AlfredApiToAlfrescoConversion c) {
-        this.dictionaryService = dictionaryService;
+    public AlfrescoPropertyConvertor(ServiceRegistry registry, AlfredApiToAlfrescoConversion c) {
+        this.dictionaryService = registry.getDictionaryService();
         this.c = c;
     }
 

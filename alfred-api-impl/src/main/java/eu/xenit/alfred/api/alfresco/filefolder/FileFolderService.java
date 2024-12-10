@@ -11,12 +11,9 @@ import java.util.List;
 import org.alfresco.model.ContentModel;
 import org.alfresco.rest.framework.core.exceptions.InvalidArgumentException;
 import org.alfresco.service.ServiceRegistry;
-import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
-import org.alfresco.service.cmr.repository.ContentService;
-import org.alfresco.service.cmr.repository.MimetypeService;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.Path;
 import org.alfresco.service.cmr.security.PermissionService;
@@ -38,19 +35,14 @@ public class FileFolderService implements IFileFolderService {
     private PermissionService permissionService;
     private NamespaceService nameSpaceService;
     private org.alfresco.service.cmr.model.FileFolderService fileFolderService;
-    private MimetypeService mimetypeService;
-    private ContentService contentService;
-    private DictionaryService dictionaryService;
 
     @Autowired
-    public FileFolderService(ServiceRegistry serviceRegistry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
+    public FileFolderService(ServiceRegistry serviceRegistry,
+            AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
         this.nodeService = serviceRegistry.getNodeService();
         this.nameSpaceService = serviceRegistry.getNamespaceService();
         this.permissionService = serviceRegistry.getPermissionService();
-        this.mimetypeService = serviceRegistry.getMimetypeService();
-        this.contentService = serviceRegistry.getContentService();
         this.fileFolderService = serviceRegistry.getFileFolderService();
-        this.dictionaryService = serviceRegistry.getDictionaryService();
 
         this.c = alfredApiToAlfrescoConversion;
     }
