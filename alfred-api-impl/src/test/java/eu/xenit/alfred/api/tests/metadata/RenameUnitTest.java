@@ -78,7 +78,7 @@ public class RenameUnitTest {
         MetadataChanges metadataChanges = new MetadataChanges(null, aspectsToAdd, aspectsToRemove, propertiesToSet);
 
         eu.xenit.alfred.api.alfresco.metadata.NodeService alfredApiNodeService = new eu.xenit.alfred.api.alfresco.metadata.NodeService(
-                serviceRegistry, alfredApiAlfrescoConverter);
+                serviceRegistry, alfredApiAlfrescoConverter, null);
         alfredApiNodeService.setMetadata(nodeRef, metadataChanges);
 
         //We have to make sure that the rename method of the file folder service was called once.

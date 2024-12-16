@@ -46,16 +46,12 @@ import org.alfresco.service.cmr.repository.MimetypeService;
 import org.alfresco.service.cmr.repository.MimetypeServiceAware;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
-import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.security.AccessStatus;
-import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.cmr.version.VersionType;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
-import org.alfresco.util.TempFileProvider;
-import org.apache.chemistry.opencmis.commons.spi.AclService;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,18 +59,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-/**
- * Created by mhgam on 23/11/2015.
- */
 @Service("eu.xenit.alfred.api.alfresco.metadata.NodeService")
 public class NodeService implements INodeService {
 
-    private final static String NAMESPACE_BEGIN = "" + '{';
     private final static Logger logger = LoggerFactory.getLogger(NodeService.class);
     private AlfredApiToAlfrescoConversion c;
-    @Autowired
-    private NamespaceService namespaceService;
-    @Autowired
     private ServiceRegistry serviceRegistry;
     private org.alfresco.service.cmr.repository.NodeService nodeService;
     private PermissionService permissionService;
@@ -83,61 +72,27 @@ public class NodeService implements INodeService {
     private FileFolderService fileFolderService;
     private CheckOutCheckInService checkoutCheckinService;
     private LockService lockService;
-    private AuthenticationService authenticationService;
-    private SearchService searchService;
-    private AclService aclService;
     private ContentService contentService;
     private MimetypeService mimetypeService;
     private org.alfresco.repo.forum.CommentService commentService;
     private AlfrescoPropertyConvertor propertyConvertor;
-    private TempFileProvider tempFileProvider;
-
-    @Autowired
     private Repository repository;
 
-    public NodeService() {
-    }
-
-    public NodeService(ServiceRegistry serviceRegistry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
-        this.c = alfredApiToAlfrescoConversion;
-        this.serviceRegistry = serviceRegistry;
-        InitializeServices(serviceRegistry, alfredApiToAlfrescoConversion);
-    }
-
     @Autowired
-    public void setC(AlfredApiToAlfrescoConversion c) {
-        this.c = c;
-        if (this.serviceRegistry != null) {
-            InitializeServices(serviceRegistry, c);
-        }
-    }
-
-    public ServiceRegistry getServiceRegistry() {
-        return serviceRegistry;
-    }
-
-    @Autowired
-    public void setServiceRegistry(ServiceRegistry serviceRegistry) {
+    public NodeService(ServiceRegistry serviceRegistry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion,
+            Repository repository) {
+        c = alfredApiToAlfrescoConversion;
         this.serviceRegistry = serviceRegistry;
-        if (this.c != null) {
-            InitializeServices(serviceRegistry, c);
-        }
-    }
-
-    private void InitializeServices(ServiceRegistry serviceRegistry,
-            AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
+        this.repository = repository;
         permissionService = serviceRegistry.getPermissionService();
         dictionaryService = serviceRegistry.getDictionaryService();
         copyService = serviceRegistry.getCopyService();
         nodeService = serviceRegistry.getNodeService();
-        namespaceService = serviceRegistry.getNamespaceService();
         fileFolderService = serviceRegistry.getFileFolderService();
         checkoutCheckinService = serviceRegistry.getCheckOutCheckInService();
         lockService = serviceRegistry.getLockService();
-        authenticationService = serviceRegistry.getAuthenticationService();
-        searchService = serviceRegistry.getSearchService();
         contentService = serviceRegistry.getContentService();
-        propertyConvertor = new AlfrescoPropertyConvertor(dictionaryService, alfredApiToAlfrescoConversion);
+        propertyConvertor = new AlfrescoPropertyConvertor(serviceRegistry, alfredApiToAlfrescoConversion);
         mimetypeService = serviceRegistry.getMimetypeService();
     }
 
@@ -146,10 +101,7 @@ public class NodeService implements INodeService {
         for (eu.xenit.alfred.api.data.NodeRef node : noderefs) {
             nodeMetadatas.add(getMetadata(node));
         }
-
         return nodeMetadatas;
-
-//        return noderefs.stream().map(x -> getMetadata(x)).collect(Collectors.toList());
     }
 
     public NodeMetadata getMetadata(eu.xenit.alfred.api.data.NodeRef noderef) {
@@ -367,7 +319,6 @@ public class NodeService implements INodeService {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -416,13 +367,13 @@ public class NodeService implements INodeService {
             return new ArrayList<>();
         }
         return nodeService.getSourceAssocs(c.alfresco(ref), RegexQNamePattern.MATCH_ALL)
-                    .stream()
-                    .map(alfPeerAssoc ->
-                            new NodeAssociation(
-                                    c.alfredApi(alfPeerAssoc.getSourceRef()),
-                                    ref,
-                                    c.alfredApi(alfPeerAssoc.getTypeQName())))
-                    .collect(Collectors.toList());
+                .stream()
+                .map(alfPeerAssoc ->
+                        new NodeAssociation(
+                                c.alfredApi(alfPeerAssoc.getSourceRef()),
+                                ref,
+                                c.alfredApi(alfPeerAssoc.getTypeQName())))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -497,10 +448,7 @@ public class NodeService implements INodeService {
     }
 
     private Map<QName, Serializable> toAlfrescoPropertyMap(Map<eu.xenit.alfred.api.data.QName, String[]> props) {
-        //(Map.Entry<String, String[]>)
-
         Map<QName, Serializable> alfProps = new HashMap<>(props.size());
-
         for (Map.Entry<eu.xenit.alfred.api.data.QName, String[]> entry : props.entrySet()) {
             Serializable value;
 
@@ -518,33 +466,15 @@ public class NodeService implements INodeService {
 
             alfProps.put(c.alfresco(entry.getKey()), value);
         }
-
-//        return props.entrySet().stream()
-//                .collect(Collectors.<Map.Entry<String, String[]>, QName, Serializable>toMap(
-//                        e -> toAlfrescoQName(e.getKey()),
-//                        e -> {
-//                            if (e.getValue() == null) return null;
-//                            if (e.getValue().length == 0) return null;
-//                            else if (e.getValue().length == 1) return e.getValue()[0];
-//
-//                            new UnsupportedOperationException("Multivalued properties not supported yet!");
-//                            return null;
-//                        }));
-
         return alfProps;
     }
 
     private Set<QName> toAlfrescoQNameSet(eu.xenit.alfred.api.data.QName[] aspectsToAdd) {
         Set<QName> qnames = new HashSet<>(aspectsToAdd.length);
-
         for (eu.xenit.alfred.api.data.QName aspect : aspectsToAdd) {
-            //qnames.add(QName.createQName(aspect));
             qnames.add(c.alfresco(aspect));
         }
-
         return qnames;
-
-//        return Arrays.stream(aspectsToAdd).map(s -> QName.createQName(s)).collect(Collectors.toSet());
     }
 
     @Override
@@ -553,7 +483,7 @@ public class NodeService implements INodeService {
         NodeRef copyRef = this.copyService.copyAndRename(c.alfresco(source),
                 c.alfresco(destination),
                 ContentModel.ASSOC_CONTAINS,
-                (QName) null, deepCopy);
+                null, deepCopy);
         return c.alfredApi(copyRef);
     }
 
@@ -611,7 +541,7 @@ public class NodeService implements INodeService {
                     QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, QName.createValidLocalName(name)),
                     c.alfresco(type),
                     toAlfrescoPropertyMap(properties));
-            
+
             MetadataChanges aspects = new MetadataChanges();
             aspects.setAspectsToAdd(aspectsToAdd);
             aspects.setAspectsToRemove(aspectsToRemove);
@@ -631,7 +561,8 @@ public class NodeService implements INodeService {
     @Override
     public eu.xenit.alfred.api.data.NodeRef createNode(eu.xenit.alfred.api.data.NodeRef parent, String fileName,
             String contentType, MetadataChanges metadata, InputStream content) {
-        eu.xenit.alfred.api.data.NodeRef resultNode = createNode(parent, fileName, new eu.xenit.alfred.api.data.QName(contentType));
+        eu.xenit.alfred.api.data.NodeRef resultNode = createNode(parent, fileName,
+                new eu.xenit.alfred.api.data.QName(contentType));
         setContent(resultNode, content, fileName);
         if (metadata != null) {
             setMetadata(resultNode, metadata);
@@ -671,7 +602,6 @@ public class NodeService implements INodeService {
         this.nodeService.setProperty(c.alfresco(node), ContentModel.PROP_CONTENT, alfContentData);
     }
 
-
     @Override
     public ContentInputStream getContent(eu.xenit.alfred.api.data.NodeRef nodeRef) {
         final ContentReader reader;
@@ -693,15 +623,16 @@ public class NodeService implements INodeService {
     }
 
     @Override
-    public eu.xenit.alfred.api.data.ContentData createContent(InputStream inputStream, String mimeType, String encoding) {
+    public eu.xenit.alfred.api.data.ContentData createContent(InputStream inputStream, String mimeType,
+            String encoding) {
         try {
             ContentWriter writer = this.contentService.getWriter(null, ContentModel.PROP_CONTENT, false);
             writer.setMimetype(mimeType);
             writer.setEncoding(encoding);
             writer.putContent(inputStream);
-            eu.xenit.alfred.api.data.ContentData result = new eu.xenit.alfred.api.data.ContentData(writer.getContentUrl(),
+            return new eu.xenit.alfred.api.data.ContentData(
+                    writer.getContentUrl(),
                     writer.getMimetype(), writer.getSize(), writer.getEncoding(), writer.getLocale());
-            return result;
         } finally {
             IOUtils.closeQuietly(inputStream);
         }
@@ -713,7 +644,7 @@ public class NodeService implements INodeService {
         try {
             ContentWriter writer = contentService.getWriter(null, ContentModel.PROP_CONTENT, false);
             if (writer instanceof MimetypeServiceAware) {
-                ((MimetypeServiceAware) writer).setMimetypeService(getServiceRegistry().getMimetypeService());
+                ((MimetypeServiceAware) writer).setMimetypeService(mimetypeService);
             }
             //guessMimetype places a ContentStreamListener on ContentWriter and waits for the input to be written.
             //Afterwards, makes a mime type guess based on file extension and on content.
@@ -786,10 +717,7 @@ public class NodeService implements INodeService {
         HashMap props = new HashMap(2, 1.0F);
         props.put("description", comment);
         props.put("versionType", majorVersion ? VersionType.MAJOR : VersionType.MINOR);
-
-        eu.xenit.alfred.api.data.NodeRef original = c.alfredApi(this.checkoutCheckinService.checkin(c.alfresco(nodeRef), props));
-
-        return original;
+        return c.alfredApi(this.checkoutCheckinService.checkin(c.alfresco(nodeRef), props));
     }
 
     @Override

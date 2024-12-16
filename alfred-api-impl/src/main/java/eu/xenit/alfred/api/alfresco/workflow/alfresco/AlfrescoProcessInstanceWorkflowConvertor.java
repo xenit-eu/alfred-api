@@ -1,7 +1,9 @@
 package eu.xenit.alfred.api.alfresco.workflow.alfresco;
 
+import eu.xenit.alfred.api.alfresco.AlfredApiToAlfrescoConversion;
 import eu.xenit.alfred.api.alfresco.workflow.AbstractAlfredApiAlfrescoWorkflowConvertor;
 import eu.xenit.alfred.api.alfresco.workflow.AbstractAlfredApiWorkflowConvertor;
+import eu.xenit.alfred.api.people.IPeopleService;
 import eu.xenit.alfred.api.workflow.model.ITaskOrWorkflow;
 import eu.xenit.alfred.api.workflow.model.Task;
 import eu.xenit.alfred.api.workflow.model.Workflow;
@@ -13,6 +15,7 @@ import java.util.Map;
 import java.util.Random;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.workflow.WorkflowModel;
+import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.workflow.WorkflowDefinition;
 import org.alfresco.service.cmr.workflow.WorkflowInstance;
@@ -30,11 +33,21 @@ public class AlfrescoProcessInstanceWorkflowConvertor extends AbstractAlfredApiA
 
     private static final Logger logger = LoggerFactory.getLogger(AlfrescoProcessInstanceWorkflowConvertor.class);
     private static final Random random = new Random();
-    @Autowired
+
     protected PersonService personService;
-    @Autowired
-    @Qualifier("eu.xenit.alfred.api.alfresco.workflow.alfresco.AlfrescoWorkflowTaskWorkflowConvertor")
     protected AbstractAlfredApiWorkflowConvertor taskConvertor;
+
+    @Autowired
+    public AlfrescoProcessInstanceWorkflowConvertor(
+            ServiceRegistry serviceRegistry,
+            IPeopleService peopleService,
+            AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion,
+            @Qualifier("eu.xenit.alfred.api.alfresco.workflow.alfresco.AlfrescoWorkflowTaskWorkflowConvertor")
+            AbstractAlfredApiWorkflowConvertor taskConvertor) {
+        super(serviceRegistry, peopleService, alfredApiToAlfrescoConversion);
+        personService = serviceRegistry.getPersonService();
+        this.taskConvertor = taskConvertor;
+    }
 
     public <T> String getId(T instance) {
         return ((WorkflowInstance) instance).getId();
@@ -103,7 +116,6 @@ public class AlfrescoProcessInstanceWorkflowConvertor extends AbstractAlfredApiA
             variables.put(WorkflowModel.ASSOC_ASSIGNEE, this.personService.getPerson(username));
             this.workflowService.startWorkflow(d.getId(), variables);
         }
-
     }
 
     public void end(String taskID, String transitionID) {

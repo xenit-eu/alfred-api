@@ -2,9 +2,11 @@ package eu.xenit.alfred.api.alfresco.workflow.activiti;
 
 import eu.xenit.alfred.api.alfresco.workflow.AbstractAlfredApiWorkflowConvertor;
 import eu.xenit.alfred.api.alfresco.workflow.WorkflowConverterFactory;
+import eu.xenit.alfred.api.people.IPeopleService;
 import eu.xenit.alfred.api.workflow.model.ITaskOrWorkflow;
 import eu.xenit.alfred.api.workflow.model.WorkflowOrTaskChanges;
 import org.activiti.engine.task.Task;
+import org.alfresco.service.ServiceRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -14,9 +16,16 @@ public class ActivitiWorkflowTaskWorkflowConvertor extends AbstractAlfredApiWork
 
     public static String ACTIVITI_PREFIX = "activiti$";
 
-    @Qualifier("eu.xenit.alfred.api.alfresco.workflow.alfresco.AlfrescoInstanceConverterFactory")
-    @Autowired
     protected WorkflowConverterFactory alfrescoWorkflowConverterFactory;
+
+    @Autowired
+    public ActivitiWorkflowTaskWorkflowConvertor(
+            ServiceRegistry serviceRegistry,
+            IPeopleService peopleService,
+            @Qualifier("eu.xenit.alfred.api.alfresco.workflow.alfresco.AlfrescoInstanceConverterFactory") WorkflowConverterFactory workflowConverterFactory) {
+        super(serviceRegistry, peopleService);
+        alfrescoWorkflowConverterFactory = workflowConverterFactory;
+    }
 
     private AbstractAlfredApiWorkflowConvertor getConvertor() {
         return this.alfrescoWorkflowConverterFactory.getTaskInstanceConvertor();

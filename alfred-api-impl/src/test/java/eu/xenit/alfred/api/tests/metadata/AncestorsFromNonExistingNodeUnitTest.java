@@ -36,7 +36,7 @@ public class AncestorsFromNonExistingNodeUnitTest extends AncestorsBaseUnitTest 
         Assertions.assertThrows(InvalidNodeRefException.class,
 ()->{
             eu.xenit.alfred.api.alfresco.metadata.NodeService alfredApiNodeService = new eu.xenit.alfred.api.alfresco.metadata.NodeService(
-                    serviceRegistry, alfredApiAlfrescoConverter);
+                    serviceRegistry, alfredApiAlfrescoConverter, null);
             NodeRef rootRef = new NodeRef(testNode3.toString());
             NodeRef testNode = new NodeRef(testNode1.toString());
 

@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.CRC32;
+import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.dictionary.ModelDefinition;
 import org.alfresco.service.cmr.dictionary.NamespaceDefinition;
 import org.alfresco.service.namespace.NamespaceService;
@@ -38,23 +39,25 @@ import org.springframework.stereotype.Component;
 public class DictionaryService implements IDictionaryService {
 
     private static final Logger logger = LoggerFactory.getLogger(DictionaryService.class);
-    @Autowired
+
     private AlfredApiToAlfrescoConversion c;
-    @Autowired
-    private org.alfresco.service.cmr.dictionary.DictionaryService dictionaryService;
-
-    @Autowired
     private IPropertyService propertyService;
-
-    @Autowired
     private ITypeService typeService;
-
-    @Autowired
     private IAspectService aspectService;
 
-    @Autowired
+    private org.alfresco.service.cmr.dictionary.DictionaryService dictionaryService;
     private NamespaceService namespaceService;
 
+    @Autowired
+    public DictionaryService(ServiceRegistry registry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion,
+            IPropertyService propertyService, ITypeService typeService, IAspectService aspectService) {
+        dictionaryService = registry.getDictionaryService();
+        namespaceService = registry.getNamespaceService();
+        c = alfredApiToAlfrescoConversion;
+        this.propertyService = propertyService;
+        this.typeService = typeService;
+        this.aspectService = aspectService;
+    }
 
     public Namespaces getNamespaces() {
         Map<String, Namespace> ret = new HashMap<>();

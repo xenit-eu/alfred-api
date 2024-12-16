@@ -20,7 +20,7 @@ public class AlfrescoPropertyConvertorTest extends JavaApiBaseTest {
         String propertyName = "{http://www.alfresco.org/model/content/smartfolder/1.0}system-template-location";
         String propertyValue = "Over darrr";
 
-        AlfrescoPropertyConvertor convertor = new AlfrescoPropertyConvertor(serviceRegistry.getDictionaryService(), c);
+        AlfrescoPropertyConvertor convertor = new AlfrescoPropertyConvertor(serviceRegistry, c);
         Pair<eu.xenit.alfred.api.data.QName, List<String>> result = convertor.toModelPropertyValue(
                 QName.createQName(propertyName),
                 propertyValue);

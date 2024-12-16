@@ -1,7 +1,10 @@
 package eu.xenit.alfred.api.alfresco.workflow.alfresco;
 
+import eu.xenit.alfred.api.alfresco.AlfredApiToAlfrescoConversion;
 import eu.xenit.alfred.api.alfresco.workflow.AbstractAlfredApiAlfrescoWorkflowConvertor;
+import eu.xenit.alfred.api.alfresco.workflow.AbstractAlfredApiWorkflowConvertor;
 import eu.xenit.alfred.api.alfresco.workflow.activiti.ActivitiWorkflowTaskWorkflowConvertor;
+import eu.xenit.alfred.api.people.IPeopleService;
 import eu.xenit.alfred.api.workflow.IWorkflowService;
 import eu.xenit.alfred.api.workflow.model.ITaskOrWorkflow;
 import eu.xenit.alfred.api.workflow.model.Task;
@@ -14,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.workflow.WorkflowModel;
+import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.workflow.WorkflowTask;
 import org.alfresco.service.cmr.workflow.WorkflowTaskDefinition;
@@ -21,12 +25,22 @@ import org.alfresco.service.cmr.workflow.WorkflowTransition;
 import org.alfresco.service.namespace.QName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component("eu.xenit.alfred.api.alfresco.workflow.alfresco.AlfrescoWorkflowTaskWorkflowConvertor")
 public class AlfrescoWorkflowTaskWorkflowConvertor extends AbstractAlfredApiAlfrescoWorkflowConvertor {
 
     private static final Logger logger = LoggerFactory.getLogger(AlfrescoWorkflowTaskWorkflowConvertor.class);
+
+    @Autowired
+    public AlfrescoWorkflowTaskWorkflowConvertor(
+            ServiceRegistry serviceRegistry,
+            IPeopleService peopleService,
+            AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
+        super(serviceRegistry, peopleService, alfredApiToAlfrescoConversion);
+    }
 
     public <T> String getId(T task) {
         return ((WorkflowTask) task).getId();

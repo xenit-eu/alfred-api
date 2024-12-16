@@ -1,14 +1,14 @@
 package eu.xenit.alfred.api.tests.translations;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import eu.xenit.alfred.api.alfresco.translation.TranslationService;
 import org.alfresco.repo.i18n.MessageService;
 import org.alfresco.service.ServiceRegistry;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.Test;
 
 public class TranslationsServiceUnitTest {
 
@@ -28,21 +28,21 @@ public class TranslationsServiceUnitTest {
 
     @Test
     public void TestGetTranslatedMessage_GetMessageFromMessageService() {
-        TranslationService ts = new TranslationService(serviceRegistryMock, null, null, messageServiceMock);
+        TranslationService ts = new TranslationService(serviceRegistryMock, null, null);
         Assertions.assertEquals(facetBucketMonthLabel, ts.getMessageTranslation(facetBucketMonthLabel));
         Assertions.assertNotNull(ts.getMessageTranslation(facetBucketMonthLabel));
     }
 
     @Test
     public void TestGetTranslatedMessage_NullMessageService() {
-        TranslationService ts = new TranslationService(serviceRegistryMock, null, null, null);
+        TranslationService ts = new TranslationService(serviceRegistryMock, null, null);
         Assertions.assertEquals(facetBucketMonthLabel, ts.getMessageTranslation(facetBucketMonthLabel));
         Assertions.assertNotNull(ts.getMessageTranslation(facetBucketMonthLabel));
     }
 
     @Test
     public void TestGetTranslatedMessage_NullParameter() {
-        TranslationService ts = new TranslationService(serviceRegistryMock, null, null, messageServiceMock);
+        TranslationService ts = new TranslationService(serviceRegistryMock, null, null);
         Assertions.assertNull(ts.getMessageTranslation(null));
     }
 }

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +24,8 @@ public class AspectService implements IAspectService {
     private AlfredApiToAlfrescoConversion c;
 
     @Autowired
-    public AspectService(DictionaryService dictionaryService, AlfredApiToAlfrescoConversion c) {
-        this.dictionaryService = dictionaryService;
+    public AspectService(ServiceRegistry registry, AlfredApiToAlfrescoConversion c) {
+        this.dictionaryService = registry.getDictionaryService();
         this.c = c;
     }
 
