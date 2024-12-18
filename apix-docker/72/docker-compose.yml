@@ -2,7 +2,7 @@ version: '2'
 
 services:
   alfresco-core:
-    image: ${DOCKER_IMAGE}
+    image: ${DOCKER_IMAGE:-private.docker.xenit.eu/alfresco-enterprise/alfresco-repository-enterprise:7.2}
     ports:
       - "${DOCKER_IP}:8080:8080"
     volumes:

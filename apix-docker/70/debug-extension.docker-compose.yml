@@ -6,6 +6,7 @@ services:
     environment:
       - DEBUG=true
       - SHARE_HOST=alfresco-share
+      - GLOBAL_eu.xenit.apix.integrationtest.bootstrap=true
   alfresco-share:
     image: hub.xenit.eu/public/alfresco-share-community:7.0.0
     ports:
