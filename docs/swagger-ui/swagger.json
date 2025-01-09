@@ -620,7 +620,7 @@
           {
             "name": "metadata",
             "in": "formData",
-            "description": "Metadata for this file",
+            "description": "Metadata changes for this file. If used, the content type of this parameter (*not* of the request) needs to be set to *'application/json'*. E.g.: https://curl.se/docs/manpage.html#-F",
             "required": false,
             "type": "string"
           },
@@ -641,6 +641,9 @@
           },
           "403": {
             "description": "Not Authorized"
+          },
+          "415": {
+            "description": "Incorrect content type"
           }
         }
       }
