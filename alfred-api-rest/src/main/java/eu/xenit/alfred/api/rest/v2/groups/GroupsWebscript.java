@@ -13,6 +13,9 @@ import java.util.List;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @AlfrescoAuthentication(AuthenticationType.USER)
 @RestController
-public class GroupsWebscript extends AlfredApiV2Webscript {
+public class GroupsWebscript extends AlfredApiV2Webscript implements ApplicationContextAware {
 
     private static final Logger logger = LoggerFactory.getLogger(GroupsWebscript.class);
     private final IPeopleService personService;
@@ -143,6 +146,18 @@ public class GroupsWebscript extends AlfredApiV2Webscript {
                 logger.debug("Adding {} as child to {}", newbie, parentGroup);
                 personService.AddToParentGroup(parentGroup, newbie);
             }
+        }
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        //displayAllBeans(applicationContext);
+    }
+
+    public static void displayAllBeans(ApplicationContext applicationContext) {
+        String[] allBeanNames = applicationContext.getBeanDefinitionNames();
+        for(String beanName : allBeanNames) {
+            logger.error("bean name " + beanName);
         }
     }
 }

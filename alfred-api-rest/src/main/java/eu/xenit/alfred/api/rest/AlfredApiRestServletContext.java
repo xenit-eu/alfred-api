@@ -37,6 +37,8 @@ import eu.xenit.alfred.api.rest.v2.nodes.NodesWebscriptV2;
 import eu.xenit.alfred.api.rest.v2.people.PeopleWebscript;
 import eu.xenit.alfred.api.search.json.SearchNodeJsonParser;
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.List;
 import org.alfresco.rest.framework.jacksonextensions.RestJsonModule;
@@ -135,4 +137,6 @@ public class AlfredApiRestServletContext extends DefaultAlfrescoMvcServletContex
             }
         };
     }
+
+
 }
