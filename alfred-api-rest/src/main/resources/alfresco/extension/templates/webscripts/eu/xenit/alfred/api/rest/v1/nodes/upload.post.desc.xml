@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Upload a document</shortname>
+    <description>Upload script for Alfred API</description>
+    <url>/apix/v1/nodes/upload</url>
+    <authentication>user</authentication>
+    <format default="json">extension</format>
+    <transaction>none</transaction>
+</webscript>
