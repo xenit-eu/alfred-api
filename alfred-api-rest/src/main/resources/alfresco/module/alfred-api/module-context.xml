@@ -4,4 +4,13 @@
         xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
     <bean class="eu.xenit.alfred.api.rest.SpringConfig"/>
+
+    <bean id="webscript.eu.xenit.alfred.api.rest.v1.nodes.upload.post"
+          class="eu.xenit.alfred.api.rest.v1.nodes.UploadWebscript">
+        <constructor-arg name="serviceRegistry" ref="ServiceRegistry"/>
+        <constructor-arg name="nodeService" ref="eu.xenit.alfred.api.alfresco.metadata.NodeService"/>
+        <constructor-arg name="permissionService" ref="eu.xenit.alfred.api.permissions.IPermissionService"/>
+        <constructor-arg name="fileFolderService" ref="eu.xenit.alfred.api.filefolder.IFileFolderService"/>
+        <constructor-arg name="alfrescoRestJsonModule" ref="restJsonModule"/>
+    </bean>
 </beans>
