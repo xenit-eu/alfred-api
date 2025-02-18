@@ -743,6 +743,11 @@ Further details can be found on its [README](https://github.com/dgradecak/alfres
 [Dynamic Extensions For Alfresco](https://github.com/xenit-eu/dynamic-extensions-for-alfresco).
 Since version 5.0.0, however, Dynamic Extensions is no longer needed.)
 
+For the `/upload` REST endpoint to work correctly, the Tomcat server running Alfresco needs to have
+[casual multipart parsing](https://tomcat.apache.org/tomcat-8.5-doc/config/context.html#Common_Attributes) enabled.
+If you are using the [Xenit Alfresco base image](https://github.com/xenit-eu/docker-alfresco/), this can be done by
+setting `TOMCAT_ALLOW_CASUAL_MULTIPART_PARSING=true`.
+
 
 ### Install with Gradle
 
