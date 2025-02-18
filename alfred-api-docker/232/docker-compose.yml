@@ -1,5 +1,3 @@
-version: '2'
-
 services:
   alfresco-core:
     image: ${DOCKER_IMAGE:-image_not_set}
