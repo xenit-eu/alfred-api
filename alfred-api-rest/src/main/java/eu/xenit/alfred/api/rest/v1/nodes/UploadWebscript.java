@@ -10,6 +10,7 @@ import eu.xenit.alfred.api.permissions.IPermissionService;
 import eu.xenit.alfred.api.rest.jackson.ObjectMapperFactory;
 import eu.xenit.alfred.api.rest.v1.AlfredApiV1Webscript;
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.rest.framework.jacksonextensions.RestJsonModule;
 import org.alfresco.service.ServiceRegistry;
@@ -72,6 +73,15 @@ public class UploadWebscript extends AbstractWebScript {
         } catch (IOException e) {
             res.setStatus(Status.STATUS_INTERNAL_SERVER_ERROR);
             res.getWriter().write(e.getMessage());
+        } catch (AccessDeniedException e) {
+            logger.debug("Not Authorized", e);
+            res.setStatus(Status.STATUS_FORBIDDEN);
+            res.getWriter().write("Not authorised to execute this operation");
+        } catch (FileExistsException e) {
+            String message = "File already exists";
+            logger.debug(message, e);
+            res.setStatus(Status.STATUS_BAD_REQUEST);
+            res.getWriter().write(message);
         }
     }
 
