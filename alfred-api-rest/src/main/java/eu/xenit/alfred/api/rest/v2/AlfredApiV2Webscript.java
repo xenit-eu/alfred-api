@@ -26,9 +26,9 @@ public class AlfredApiV2Webscript extends AlfredApiV1Webscript {
 
     private static final Logger logger = LoggerFactory.getLogger(AlfredApiV2Webscript.class);
 
-    protected List<NodeInfo> nodeRefToNodeInfo(NodeInfoRequest nodeInfoRequest, IFileFolderService fileFolderService,
+    public static List<NodeInfo> nodeRefToNodeInfo(NodeInfoRequest nodeInfoRequest, IFileFolderService fileFolderService,
             INodeService nodeService, IPermissionService permissionService) {
-        List<NodeRef> nodeRefs = nodeInfoRequest.getNoderefs().stream().map(NodeRef::new).collect(Collectors.toList());
+        List<NodeRef> nodeRefs = nodeInfoRequest.getNoderefs().stream().map(NodeRef::new).toList();
 
         return nodeRefs.stream().filter(nodeRef -> {
                     boolean hasPermission = permissionService.hasPermission(nodeRef, IPermissionService.READ);
@@ -58,7 +58,7 @@ public class AlfredApiV2Webscript extends AlfredApiV1Webscript {
                 }).collect(Collectors.toList());
     }
 
-    private Map<String, PermissionValue> getNodePermissions(NodeInfoRequest nodeInfoRequest,
+    private static Map<String, PermissionValue> getNodePermissions(NodeInfoRequest nodeInfoRequest,
             IPermissionService permissionService, NodeRef nodeRef) {
         logger.debug("start getPermissions");
         Map<String, PermissionValue> permissions = null;
@@ -69,7 +69,7 @@ public class AlfredApiV2Webscript extends AlfredApiV1Webscript {
         return permissions;
     }
 
-    private NodeMetadata getNodeMetadata(NodeInfoRequest nodeInfoRequest, INodeService nodeService, NodeRef nodeRef) {
+    private static NodeMetadata getNodeMetadata(NodeInfoRequest nodeInfoRequest, INodeService nodeService, NodeRef nodeRef) {
         logger.debug("start getMetadata");
         NodeMetadata nodeMetadata = null;
         if (nodeInfoRequest.getRetrieveMetadata()) {
@@ -79,7 +79,7 @@ public class AlfredApiV2Webscript extends AlfredApiV1Webscript {
         return nodeMetadata;
     }
 
-    private NodePath getNodePath(NodeInfoRequest nodeInfoRequest, IFileFolderService fileFolderService,
+    private static NodePath getNodePath(NodeInfoRequest nodeInfoRequest, IFileFolderService fileFolderService,
             NodeRef nodeRef) {
         logger.debug("start getPath");
         NodePath path = null;
@@ -90,7 +90,7 @@ public class AlfredApiV2Webscript extends AlfredApiV1Webscript {
         return path;
     }
 
-    private NodeAssociations getNodeAssociations(NodeInfoRequest nodeInfoRequest, INodeService nodeService,
+    private static NodeAssociations getNodeAssociations(NodeInfoRequest nodeInfoRequest, INodeService nodeService,
             NodeRef nodeRef) {
         logger.debug("start getAssociations");
         NodeAssociations associations = null;
