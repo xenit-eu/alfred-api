@@ -41,6 +41,28 @@ public class UploadFileTest extends RestV1BaseTest {
         this.parentNodeRef = initNodeRefArray.get(RestV1BaseTest.TESTFOLDER_NAME);
     }
 
+    /**
+     * DOCKER-462
+     * ALFREDAPI-568
+     *
+     * Ensure the standard Alfresco upload api keeps working.
+     */
+    @Test
+    public void testUploadFileThroughAlfresco() throws IOException {
+        String url = "http://admin:admin@localhost:8080/alfresco/s/api/upload";
+        HttpEntity entity = MultipartEntityBuilder.create()
+                .addTextBody("destination", parentNodeRef.toString())
+                .addTextBody("filename", LOCAL_TESTFILE_NAME)
+                .addBinaryBody("filedata", createTestFile(LOCAL_TESTFILE_NAME))
+                .build();
+
+        try (CloseableHttpResponse response = doPost(url, entity)) {
+            String resultString = EntityUtils.toString(response.getEntity());
+            logger.debug(" resultString: " + resultString);
+            assertEquals(200, response.getStatusLine().getStatusCode());
+        }
+    }
+
     @Test
     public void testUploadFile() throws IOException {
         String url = createUrl(null, null);
