@@ -9,6 +9,8 @@
 
 ### Fixed
 * [ALFREDAPI-563](https://xenitsupport.jira.com/browse/ALFREDAPI-563) Fix @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/content") Content-Type
+* [ALFREDAPI-568](https://xenitsupport.jira.com/browse/ALFREDAPI-568) Make Alfred API work with new Tomcat base image
+environment variable for casual multipart parsing
 
 ### Removed
 
