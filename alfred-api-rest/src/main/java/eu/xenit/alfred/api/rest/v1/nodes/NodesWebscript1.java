@@ -514,22 +514,6 @@ public class NodesWebscript1 extends AlfredApiV1Webscript {
     }
 
     @AlfrescoTransaction
-    @PutMapping(value = "/v1/nodes/{space}/{store}/{guid}/content")
-    public ResponseEntity<Void> setContent(@PathVariable String space, @PathVariable String store,
-            @PathVariable String guid, @RequestPart final MultipartFile file) {
-
-        final NodeRef finalDestination = this.createNodeRef(space, store, guid);
-        RetryingTransactionHelper transactionHelper = serviceRegistry.getRetryingTransactionHelper();
-        transactionHelper.doInTransaction(() -> {
-            nodeService
-                    .setContent(finalDestination, file != null ? file.getInputStream() : null,
-                            file != null ? file.getOriginalFilename() : null);
-            return null;
-        }, false, true);
-        return ResponseEntity.ok().build();
-    }
-
-    @AlfrescoTransaction
     @DeleteMapping(value = "/v1/nodes/{space}/{store}/{guid}/content")
     public ResponseEntity<Void> deleteContent(@PathVariable String space, @PathVariable String store,
             @PathVariable String guid) {
