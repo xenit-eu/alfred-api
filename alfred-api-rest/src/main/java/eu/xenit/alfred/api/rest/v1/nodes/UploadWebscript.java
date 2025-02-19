@@ -21,10 +21,12 @@ import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 import org.springframework.extensions.webscripts.servlet.FormData;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+@Component("webscript.eu.xenit.alfred.api.rest.v1.nodes.upload.post")
 public class UploadWebscript extends AbstractWebScript {
     private final static Logger logger = LoggerFactory.getLogger(UploadWebscript.class);
 
