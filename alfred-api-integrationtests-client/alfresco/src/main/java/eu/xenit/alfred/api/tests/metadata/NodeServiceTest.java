@@ -78,7 +78,8 @@ public class NodeServiceTest extends JavaApiBaseTest {
         versionService = serviceRegistry.getVersionService();
         repository = getBean(Repository.class);
         copyService = serviceRegistry.getCopyService();
-        roots = serviceRegistry.getNodeService().getAllRootNodes(alfStoreRef);
+        AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        roots = alfrescoNodeService.getAllRootNodes(alfStoreRef);
     }
 
     @Before
@@ -267,17 +268,6 @@ public class NodeServiceTest extends JavaApiBaseTest {
 
         assertTrue(metadatas.getProperties().containsKey(c.alfredApi(ContentModel.PROP_NAME)));
     }
-
-    private Boolean nodeIsInMetaList(NodeRef node, List<NodeMetadata> metadatas) {
-        for (NodeMetadata metadata : metadatas) {
-            if (metadata.getId().equals(node.toString())) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
 
     //@Test
     public void TestLoadMetadata() {
