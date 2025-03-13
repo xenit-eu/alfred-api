@@ -4,5 +4,5 @@ ext {
     alfresco_version = '23.3.0'
     alfresco_min_version = "23.3.0"
     //Not setting alfresco_max_version here to make it easier to test on next Alfresco version (only for latest version)
-    alfresco_max_version = "null" // explicit null to overwrite properties from other projects
+    alfresco_max_version = "23.3.99" // explicit null to overwrite properties from other projects
 }

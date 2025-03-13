@@ -22,6 +22,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service("eu.xenit.alfred.api.comments.CommentService")
@@ -36,7 +37,7 @@ public class CommentService implements ICommentService {
     protected AlfredApiToAlfrescoConversion alfredApiConverter;
 
     @Autowired
-    public CommentService(org.alfresco.repo.forum.CommentService commentService, IContentService contentService,
+    public CommentService(@Qualifier("CommentService") org.alfresco.repo.forum.CommentService commentService, IContentService contentService,
             INodeService nodeService, IPermissionService permissionService, AlfredApiToAlfrescoConversion alfredApiConverter) {
         this.commentService = commentService;
 
