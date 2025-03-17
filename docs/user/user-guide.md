@@ -783,7 +783,7 @@ The application is available as an Alfresco AMP artifact, which is the preferred
 To install the AMP, follow the Alfresco AMP installation guidelines your version of Alfresco: 
 
 * [23.2 and lower](https://docs.alfresco.com/content-services/latest/install/zip/amp/)
-* [23.3 and higher](https://support.hyland.com/r/Alfresco/Alfresco-Content-Services/23.3/Alfresco-Content-Services/Install/Install-with-zip)
+* [23.3 and higher](https://support.hyland.com/r/Alfresco/Alfresco-Content-Services/23.3/Alfresco-Content-Services/Install/Install-with-zip/Install-Alfresco-Module-Package)
 
 # Contributing
 Alfred API is open source. The code is available from [Github](https://github.com/xenit-eu/alfred-api). Building the artifacts requires
