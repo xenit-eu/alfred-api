@@ -734,6 +734,8 @@ Currently Alfred API supports the following Alfresco versions:
 
 * 23.1
 * 23.2
+* 23.3
+* 23.4
 
 Alfred API depends on the [Alfresco MVC framework](https://github.com/dgradecak/alfresco-mvc) version `9.0.0`.
 Installation depends on the tools that you use to build and install, but below are examples of a few common ways.
@@ -780,7 +782,8 @@ The application is available as an Alfresco AMP artifact, which is the preferred
 
 To install the AMP, follow the Alfresco AMP installation guidelines your version of Alfresco: 
 
-* [23.x](https://docs.alfresco.com/content-services/latest/install/zip/amp/)
+* [23.2 and lower](https://docs.alfresco.com/content-services/latest/install/zip/amp/)
+* [23.3 and higher](https://support.hyland.com/r/Alfresco/Alfresco-Content-Services/23.3/Alfresco-Content-Services/Install/Install-with-zip)
 
 # Contributing
 Alfred API is open source. The code is available from [Github](https://github.com/xenit-eu/alfred-api). Building the artifacts requires
