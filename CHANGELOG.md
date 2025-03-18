@@ -2,8 +2,8 @@
 
 
 ## 6.0.1 (UNRELEASED)
-
 ### Added
+[ALFREDAPI-548](https://xenitsupport.jira.com/browse/ALFREDAPI-569): Support Alfresco V23.3 && V23.4,
 
 ### Changed
 

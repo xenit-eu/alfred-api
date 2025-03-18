@@ -1,0 +1,8 @@
+dependencies {
+    baseAlfrescoWar platform("org.alfresco:acs-packaging:23.3.0")
+    baseAlfrescoWar 'org.alfresco:content-services@war'
+}
+
+dockerAlfresco {
+    baseImage = 'private.docker.xenit.eu/alfresco-enterprise/alfresco-repository-enterprise:23.3.0.1'
+}
