@@ -1,9 +1,9 @@
 package eu.xenit.alfred.api.rest.v1;
 
 
-import eu.xenit.alfred.api.filefolder.NodePath;
 import eu.xenit.alfred.api.data.NodeRef;
 import eu.xenit.alfred.api.filefolder.IFileFolderService;
+import eu.xenit.alfred.api.filefolder.NodePath;
 import eu.xenit.alfred.api.node.ChildParentAssociation;
 import eu.xenit.alfred.api.node.INodeService;
 import eu.xenit.alfred.api.node.NodeAssociation;
@@ -13,13 +13,13 @@ import eu.xenit.alfred.api.permissions.IPermissionService;
 import eu.xenit.alfred.api.permissions.PermissionValue;
 import eu.xenit.alfred.api.rest.v1.nodes.NodeInfo;
 import eu.xenit.alfred.api.rest.v1.nodes.NodeInfoRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class AlfredApiV1Webscript {
 
@@ -33,13 +33,13 @@ public class AlfredApiV1Webscript {
         return new NodeRef(space, store, guid);
     }
 
-    protected List<NodeInfo> nodeRefToNodeInfo(NodeInfoRequest nodeInfoRequest,
+    public static List<NodeInfo> nodeRefToNodeInfo(NodeInfoRequest nodeInfoRequest,
             IFileFolderService fileFolderService,
             INodeService nodeService,
             IPermissionService permissionService
     ) {
         List<NodeInfo> nodeInfoList = new ArrayList<>();
-        List<NodeRef> nodeRefs = nodeInfoRequest.getNoderefs().stream().map(NodeRef::new).collect(Collectors.toList());
+        List<NodeRef> nodeRefs = nodeInfoRequest.getNoderefs().stream().map(NodeRef::new).toList();
         for (NodeRef nodeRef : nodeRefs) {
             NodeInfo nodeInfo = nodeRefToNodeInfo(nodeRef,
                     fileFolderService,
@@ -63,14 +63,14 @@ public class AlfredApiV1Webscript {
         return nodeInfoList;
     }
 
-    protected NodeInfo nodeRefToNodeInfo(NodeRef nodeRef, IFileFolderService fileFolderService,
+    public static NodeInfo nodeRefToNodeInfo(NodeRef nodeRef, IFileFolderService fileFolderService,
             INodeService nodeService, IPermissionService permissionService) {
         return nodeRefToNodeInfo(nodeRef, fileFolderService, nodeService, permissionService,
                 true, true, true, true,
                 true, true, true, true);
     }
 
-    protected NodeInfo nodeRefToNodeInfo(NodeRef nodeRef,
+    public static NodeInfo nodeRefToNodeInfo(NodeRef nodeRef,
             IFileFolderService fileFolderService,
             INodeService nodeService,
             IPermissionService permissionService,

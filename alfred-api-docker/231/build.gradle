@@ -6,3 +6,12 @@ dependencies {
 dockerAlfresco {
     baseImage = 'private.docker.xenit.eu/alfresco-enterprise/alfresco-repository-enterprise:23.1.0.1'
 }
+
+// -- Add your local image to test Share with reproduce ALFREDAPI-568
+//buildDockerImage {
+//    pull = false
+//}
+//
+//dockerAlfresco {
+//    baseImage = 'b433a1095ccd'
+//}
