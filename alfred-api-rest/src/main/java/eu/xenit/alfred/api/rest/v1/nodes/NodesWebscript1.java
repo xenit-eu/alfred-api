@@ -290,7 +290,7 @@ public class NodesWebscript1 extends AlfredApiV1Webscript {
             @PathVariable String guid) {
         try {
             // This method will return a null result if user has insufficient permissions
-            NodeInfo nodeInfo = this.nodeRefToNodeInfo(
+            NodeInfo nodeInfo = AlfredApiV1Webscript.nodeRefToNodeInfo(
                     this.createNodeRef(space, store, guid),
                     this.fileFolderService, this.nodeService, this.permissionService
             );
@@ -312,7 +312,7 @@ public class NodesWebscript1 extends AlfredApiV1Webscript {
     @AlfrescoTransaction
     @PostMapping(value = "/v1/nodes/nodeInfo")
     public ResponseEntity<Object> getAllInfoOfNodes(@RequestBody final NodeInfoRequest nodeInfoRequest) {
-        List<NodeInfo> nodeInfoList = this.nodeRefToNodeInfo(nodeInfoRequest,
+        List<NodeInfo> nodeInfoList = AlfredApiV1Webscript.nodeRefToNodeInfo(nodeInfoRequest,
                 this.fileFolderService,
                 this.nodeService,
                 this.permissionService
@@ -397,7 +397,7 @@ public class NodesWebscript1 extends AlfredApiV1Webscript {
             }
             NodeRef resultRef = new NodeRef(resultObject.toString());
 
-            NodeInfo nodeInfo = this
+            NodeInfo nodeInfo = AlfredApiV1Webscript
                     .nodeRefToNodeInfo(resultRef, this.fileFolderService, this.nodeService, this.permissionService);
 
             return writeJsonResponse(nodeInfo);
@@ -514,22 +514,6 @@ public class NodesWebscript1 extends AlfredApiV1Webscript {
     }
 
     @AlfrescoTransaction
-    @PutMapping(value = "/v1/nodes/{space}/{store}/{guid}/content")
-    public ResponseEntity<Void> setContent(@PathVariable String space, @PathVariable String store,
-            @PathVariable String guid, @RequestPart final MultipartFile file) {
-
-        final NodeRef finalDestination = this.createNodeRef(space, store, guid);
-        RetryingTransactionHelper transactionHelper = serviceRegistry.getRetryingTransactionHelper();
-        transactionHelper.doInTransaction(() -> {
-            nodeService
-                    .setContent(finalDestination, file != null ? file.getInputStream() : null,
-                            file != null ? file.getOriginalFilename() : null);
-            return null;
-        }, false, true);
-        return ResponseEntity.ok().build();
-    }
-
-    @AlfrescoTransaction
     @DeleteMapping(value = "/v1/nodes/{space}/{store}/{guid}/content")
     public ResponseEntity<Void> deleteContent(@PathVariable String space, @PathVariable String store,
             @PathVariable String guid) {
@@ -551,51 +535,6 @@ public class NodesWebscript1 extends AlfredApiV1Webscript {
                         this.createNodeRef(space, store, guid)
                 )
         );
-    }
-
-    @AlfrescoTransaction
-    @PostMapping(value = "/v1/nodes/upload")
-    public ResponseEntity<NodeInfo> uploadNode(
-            @RequestParam(required = false) String type,
-            @RequestParam(required = false) String parent,
-            @RequestParam(required = false) Boolean extractMetadata,
-            @RequestPart(required = false) MetadataChanges metadata,
-            @RequestPart final MultipartFile file) {
-        RetryingTransactionHelper transactionHelper = serviceRegistry.getRetryingTransactionHelper();
-
-        // Note the difference between:
-        //  * metadata        = The metadata the user annotates the file with.
-        //  * extractMetadata = Whether the users wants metadata automatically extracted from the file.
-        // Both setting metadata and extracting metadata are optional.
-        // They can happen (or not) independently from each other.
-        type = type == null ? ContentModel.TYPE_CONTENT.toString() : type;
-        extractMetadata = Boolean.TRUE.equals(extractMetadata);
-
-        if (file == null) {
-            throw new IllegalArgumentException("Content must be supplied as a multipart 'file' field");
-        }
-        if (parent == null) {
-            throw new IllegalArgumentException("Must supply a 'parent' field");
-        }
-
-        final String finalParent = parent;
-        final String finalType = type;
-        final MetadataChanges finalMetadata = metadata;
-        final Boolean finalExtractMetadata = extractMetadata;
-        NodeRef resultRef;
-        try {
-            resultRef = transactionHelper
-                    .doInTransaction(() -> createNodeForUpload(finalParent, file, finalType, finalMetadata,
-                            finalExtractMetadata), false, true);
-        } catch (org.alfresco.service.cmr.model.FileExistsException fileExistsException) {
-            throw new FileExistsException(
-                    null,
-                    new NodeRef(fileExistsException.getParentNodeRef().toString()),
-                    fileExistsException.getName());
-        }
-        NodeInfo nodeInfo = this
-                .nodeRefToNodeInfo(resultRef, fileFolderService, nodeService, permissionService);
-        return writeJsonResponse(nodeInfo);
     }
 
     public NodeRef createNodeForUpload(String finalParent,

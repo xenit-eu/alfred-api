@@ -1,9 +1,9 @@
-package eu.xenit.alfred.api.rest.v1.tests.temp;
+package eu.xenit.alfred.api.rest.v1.tests;
 
 import static org.junit.Assert.assertEquals;
 
 import eu.xenit.alfred.api.data.NodeRef;
-import eu.xenit.alfred.api.rest.v1.tests.RestV1BaseTest;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,6 +21,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -39,6 +40,29 @@ public class UploadFileTest extends RestV1BaseTest {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
         initNodeRefArray = init();
         this.parentNodeRef = initNodeRefArray.get(RestV1BaseTest.TESTFOLDER_NAME);
+    }
+
+    /**
+     * DOCKER-462
+     * ALFREDAPI-568
+     *
+     * Ensure the standard Alfresco upload api keeps working.
+     */
+    @Test
+    public void testUploadFileThroughAlfresco() throws IOException {
+        String testFile = "alfresco.txt";
+        String url = "http://admin:admin@localhost:8080/alfresco/s/api/upload";
+        HttpEntity entity = MultipartEntityBuilder.create()
+                .addTextBody("destination", parentNodeRef.toString())
+                .addTextBody("filename", testFile)
+                .addBinaryBody("filedata", createTestFile(testFile))
+                .build();
+
+        try (CloseableHttpResponse response = doPost(url, entity)) {
+            String resultString = EntityUtils.toString(response.getEntity());
+            logger.debug(" resultString: " + resultString);
+            assertEquals(200, response.getStatusLine().getStatusCode());
+        }
     }
 
     @Test
@@ -127,8 +151,7 @@ public class UploadFileTest extends RestV1BaseTest {
     private File createTestFile(String pathName) throws IOException {
         File result = new File(pathName);
 
-        Boolean newFileCreated;
-        newFileCreated = result.createNewFile();
+        boolean newFileCreated = result.createNewFile();
         if (newFileCreated) {
             logger.debug(" Created new file. ");
         } else {
@@ -139,5 +162,10 @@ public class UploadFileTest extends RestV1BaseTest {
         writer.println(contentString);
         writer.close();
         return result;
+    }
+
+    @After
+    public void cleanUp() {
+        this.removeMainTestFolder();
     }
 }

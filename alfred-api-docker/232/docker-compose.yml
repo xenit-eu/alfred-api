@@ -10,7 +10,7 @@ services:
     environment:
       - SOLR_HOST=solr
       - TERM=xterm
-      - TOMCAT_ALLOW_CASUAL_MULTIPART_PARSING=true
+      - TOMCAT_ALLOW_CASUAL_MULTIPART_PARSING=false
       - GLOBAL_messaging.broker.url=failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true
       - GLOBAL_localTransform.core-aio.url=http://transform-core-aio:8090/
   solr:
