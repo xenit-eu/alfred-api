@@ -8,6 +8,13 @@
             https://www.springframework.org/schema/context/spring-context.xsd">
     <bean class="eu.xenit.alfred.api.rest.SpringConfig"/>
 
+    <!--
+    [ALFREDAPI-568] The webscripts for uploading and setting content were replaced by "classic" Alfresco webscripts
+    so they don't use Alfresco MVC anymore. These webscripts are eu.xenit.alfred.api.rest.v1.nodes.UploadWebscript and
+    eu.xenit.alfred.api.rest.v1.nodes.SetNodeContentWebscript. Normally you would have to create a Spring object for
+    your webscript in this module-context.xml file. However, it is also possible to add the "@component" annotation to
+    those webscripts. This line was added to make sure those webscripts are picked up by Spring.
+    -->
     <context:component-scan base-package="eu.xenit.alfred.api.rest.v1.nodes"/>
 
 </beans>
