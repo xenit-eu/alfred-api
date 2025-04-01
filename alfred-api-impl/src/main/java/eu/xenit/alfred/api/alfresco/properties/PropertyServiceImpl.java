@@ -14,6 +14,7 @@ import java.util.List;
 import org.alfresco.repo.dictionary.Facetable;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.i18n.MessageService;
+import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.dictionary.ConstraintDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
@@ -34,11 +35,10 @@ public class PropertyServiceImpl implements IPropertyService {
     protected AlfredApiToAlfrescoConversion c;
 
     @Autowired
-    public PropertyServiceImpl(DictionaryService dictionaryService, AlfredApiToAlfrescoConversion c,
-            MessageService messageService) {
-        this.dictionaryService = dictionaryService;
+    public PropertyServiceImpl(ServiceRegistry serviceRegistry, AlfredApiToAlfrescoConversion c) {
         this.c = c;
-        this.messageService = messageService;
+        dictionaryService = serviceRegistry.getDictionaryService();
+        messageService = serviceRegistry.getMessageService();
     }
 
     public PropertyIndexOptions GetPropertyIndexOptions(PropertyDefinition definition) {

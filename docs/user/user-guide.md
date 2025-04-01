@@ -734,6 +734,8 @@ Currently Alfred API supports the following Alfresco versions:
 
 * 23.1
 * 23.2
+* 23.3
+* 23.4
 
 Alfred API depends on the [Alfresco MVC framework](https://github.com/dgradecak/alfresco-mvc) version `9.0.0`.
 Installation depends on the tools that you use to build and install, but below are examples of a few common ways.
@@ -742,6 +744,11 @@ Further details can be found on its [README](https://github.com/dgradecak/alfres
 (Note that previous versions of Alfred API needed
 [Dynamic Extensions For Alfresco](https://github.com/xenit-eu/dynamic-extensions-for-alfresco).
 Since version 5.0.0, however, Dynamic Extensions is no longer needed.)
+
+For the `/upload` REST endpoint to work correctly, the Tomcat server running Alfresco needs to have
+[casual multipart parsing](https://tomcat.apache.org/tomcat-8.5-doc/config/context.html#Common_Attributes) enabled.
+If you are using the [Xenit Alfresco base image](https://github.com/xenit-eu/docker-alfresco/), this can be done by
+setting `TOMCAT_ALLOW_CASUAL_MULTIPART_PARSING=true`.
 
 
 ### Install with Gradle
@@ -775,7 +782,8 @@ The application is available as an Alfresco AMP artifact, which is the preferred
 
 To install the AMP, follow the Alfresco AMP installation guidelines your version of Alfresco: 
 
-* [23.x](https://docs.alfresco.com/content-services/latest/install/zip/amp/)
+* [23.2 and lower](https://docs.alfresco.com/content-services/latest/install/zip/amp/)
+* [23.3 and higher](https://support.hyland.com/r/Alfresco/Alfresco-Content-Services/23.3/Alfresco-Content-Services/Install/Install-with-zip/Install-Alfresco-Module-Package)
 
 # Contributing
 Alfred API is open source. The code is available from [Github](https://github.com/xenit-eu/alfred-api). Building the artifacts requires

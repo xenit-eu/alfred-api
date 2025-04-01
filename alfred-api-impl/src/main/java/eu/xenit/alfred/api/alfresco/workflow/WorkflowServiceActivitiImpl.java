@@ -22,42 +22,42 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.InitializingBean;
+import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.workflow.WorkflowPath;
 import org.alfresco.service.cmr.workflow.WorkflowService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.InitializingBean;
 
-@Service
+
 public class WorkflowServiceActivitiImpl implements IWorkflowService, InitializingBean {
 
     private final Logger logger = LoggerFactory.getLogger(WorkflowServiceActivitiImpl.class);
-
-    @Autowired
-    private IPeopleService peopleService;
-
-    @Autowired
-    private AuthenticationService authenticationService;
-
-    @Autowired
     private AlfredApiToAlfrescoConversion c;
-
-    @Qualifier("eu.xenit.alfred.api.alfresco.workflow.activiti.ActivitiQueryConverterFactory")
-    @Autowired
+    private IPeopleService peopleService;
     private AbstractQueryConverterFactory activitiQueryConverterFactory;
-
     private AbstractAlfredApiQueryConverter alfredApiWfTaskQueryConverter;
-
     private AbstractAlfredApiQueryConverter alfredApiWfProcQueryConverter;
-
-    @Autowired
-    @Qualifier("WorkflowService")
+    private AuthenticationService authenticationService;
     private WorkflowService workflowService;
+
+    public WorkflowServiceActivitiImpl(
+            ServiceRegistry serviceRegistry,
+            AlfredApiToAlfrescoConversion c,
+            AbstractAlfredApiQueryConverter alfredApiWfProcQueryConverter,
+            AbstractAlfredApiQueryConverter alfredApiWfTaskQueryConverter,
+            IPeopleService peopleService,
+            AbstractQueryConverterFactory activitiQueryConverterFactory) {
+        this.c = c;
+        this.peopleService = peopleService;
+        this.activitiQueryConverterFactory = activitiQueryConverterFactory;
+        this.alfredApiWfProcQueryConverter = alfredApiWfProcQueryConverter;
+        this.alfredApiWfTaskQueryConverter = alfredApiWfTaskQueryConverter;
+        authenticationService = serviceRegistry.getAuthenticationService();
+        workflowService = serviceRegistry.getWorkflowService();
+    }
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -159,7 +159,8 @@ public class WorkflowServiceActivitiImpl implements IWorkflowService, Initializi
         return this.fetch(searchQuery, this.alfredApiWfTaskQueryConverter);
     }
 
-    private TaskOrWorkflowSearchResult fetch(TaskSearchQuery searchQuery, AbstractAlfredApiQueryConverter queryConverter) {
+    private TaskOrWorkflowSearchResult fetch(TaskSearchQuery searchQuery,
+            AbstractAlfredApiQueryConverter queryConverter) {
         logger.debug("fetch Filters size: " + searchQuery.filters.size());
         List result = TaskSearchQuery.QueryScope.MyPooledTasks == searchQuery.scope
                 ? fetchMyPooledTasks(searchQuery, queryConverter)
@@ -174,7 +175,8 @@ public class WorkflowServiceActivitiImpl implements IWorkflowService, Initializi
                         searchQuery.paging);
     }
 
-    private <T> List<T> fetchMyPooledTasks(TaskSearchQuery searchQuery, AbstractAlfredApiQueryConverter queryConverter) {
+    private <T> List<T> fetchMyPooledTasks(TaskSearchQuery searchQuery,
+            AbstractAlfredApiQueryConverter queryConverter) {
         List<T> result = new ArrayList<>();
 
         List<IQueryFilter> otherFilters = new ArrayList<>();
@@ -286,6 +288,7 @@ public class WorkflowServiceActivitiImpl implements IWorkflowService, Initializi
             return false;
         }
         String v = (String) value;
-        return v.matches("(workspace|archive|user|system)://((Spaces|version2|lightWeightVersion|alfrescoUser)Store|system)/.*");
+        return v.matches(
+                "(workspace|archive|user|system)://((Spaces|version2|lightWeightVersion|alfrescoUser)Store|system)/.*");
     }
 }

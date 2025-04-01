@@ -33,3 +33,7 @@ dependencies {
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.0.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
 }
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-parameters"
+}

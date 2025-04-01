@@ -65,8 +65,8 @@ public class SetMetadataUnitTest {
         when(serviceRegistryMock.getDictionaryService()).thenReturn(dictionaryServiceMock);
 
         //Initialization of nodeService
-        nodeService = new eu.xenit.alfred.api.alfresco.metadata.NodeService(serviceRegistryMock,
-                alfredApiAlfrescoConverter);
+        nodeService = new eu.xenit.alfred.api.alfresco.metadata.NodeService(
+                serviceRegistryMock, alfredApiAlfrescoConverter, null);
     }
 
     private NodeService initNodeServiceMock() {
@@ -207,11 +207,13 @@ public class SetMetadataUnitTest {
         Set<QName> targetTypeSet = new HashSet<>();
         targetTypeSet.add(targetType);
 
-        MetadataChanges changes = new MetadataChanges(alfredApiAlfrescoConverter.alfredApiQNames(targetTypeSet).iterator().next()
+        MetadataChanges changes = new MetadataChanges(
+                alfredApiAlfrescoConverter.alfredApiQNames(targetTypeSet).iterator().next()
                 , true, null, null, null);
         Set<NodeRef> testNodeRefSet = new HashSet<>();
         testNodeRefSet.add(testNodeRef);
-        eu.xenit.alfred.api.data.NodeRef alfredApiTestNodeRef = alfredApiAlfrescoConverter.alfredApiNodeRefs(testNodeRefSet).iterator()
+        eu.xenit.alfred.api.data.NodeRef alfredApiTestNodeRef = alfredApiAlfrescoConverter.alfredApiNodeRefs(
+                        testNodeRefSet).iterator()
                 .next();
         eu.xenit.alfred.api.alfresco.metadata.NodeService nodeServiceSpy = spy(nodeService);
         nodeServiceSpy.setMetadata(alfredApiTestNodeRef, changes);
@@ -232,11 +234,13 @@ public class SetMetadataUnitTest {
         targetTypeSet.add(targetType);
         eu.xenit.alfred.api.data.QName[] aspectsToAdd = new eu.xenit.alfred.api.data.QName[1];
         aspectsToAdd[0] = new eu.xenit.alfred.api.data.QName(ASPECT4);
-        MetadataChanges changes = new MetadataChanges(alfredApiAlfrescoConverter.alfredApiQNames(targetTypeSet).iterator().next()
+        MetadataChanges changes = new MetadataChanges(
+                alfredApiAlfrescoConverter.alfredApiQNames(targetTypeSet).iterator().next()
                 , true, aspectsToAdd, null, null);
         Set<NodeRef> testNodeRefSet = new HashSet<>();
         testNodeRefSet.add(testNodeRef);
-        eu.xenit.alfred.api.data.NodeRef alfredApiTestNodeRef = alfredApiAlfrescoConverter.alfredApiNodeRefs(testNodeRefSet).iterator()
+        eu.xenit.alfred.api.data.NodeRef alfredApiTestNodeRef = alfredApiAlfrescoConverter.alfredApiNodeRefs(
+                        testNodeRefSet).iterator()
                 .next();
         nodeService.setMetadata(alfredApiTestNodeRef, changes);
 
@@ -256,18 +260,21 @@ public class SetMetadataUnitTest {
         targetTypeSet.add(targetType);
         eu.xenit.alfred.api.data.QName[] aspectsToAdd = new eu.xenit.alfred.api.data.QName[1];
         aspectsToAdd[0] = new eu.xenit.alfred.api.data.QName(ASPECT3);
-        MetadataChanges changes = new MetadataChanges(alfredApiAlfrescoConverter.alfredApiQNames(targetTypeSet).iterator().next()
+        MetadataChanges changes = new MetadataChanges(
+                alfredApiAlfrescoConverter.alfredApiQNames(targetTypeSet).iterator().next()
                 , true, aspectsToAdd, null, null);
         Set<NodeRef> testNodeRefSet = new HashSet<>();
         testNodeRefSet.add(testNodeRef);
-        eu.xenit.alfred.api.data.NodeRef alfredApiTestNodeRef = alfredApiAlfrescoConverter.alfredApiNodeRefs(testNodeRefSet).iterator()
+        eu.xenit.alfred.api.data.NodeRef alfredApiTestNodeRef = alfredApiAlfrescoConverter.alfredApiNodeRefs(
+                        testNodeRefSet).iterator()
                 .next();
         nodeService.setMetadata(alfredApiTestNodeRef, changes);
 
         InOrder inOrder = inOrder(nodeServiceAlfrescoMock);
         inOrder.verify(nodeServiceAlfrescoMock).setType(eq(testNodeRef), eq(targetType));
         inOrder.verify(nodeServiceAlfrescoMock).removeAspect(eq(testNodeRef), eq(QName.createQName(ASPECT3)));
-        inOrder.verify(nodeServiceAlfrescoMock).addAspect(eq(testNodeRef), eq(QName.createQName(ASPECT3)), any(Map.class));
+        inOrder.verify(nodeServiceAlfrescoMock)
+                .addAspect(eq(testNodeRef), eq(QName.createQName(ASPECT3)), any(Map.class));
     }
 
     @Test
@@ -278,11 +285,13 @@ public class SetMetadataUnitTest {
         QName targetType = initialTypeDef.getParentName();
         Set<QName> targetTypeSet = new HashSet<>();
         targetTypeSet.add(targetType);
-        MetadataChanges changes = new MetadataChanges(alfredApiAlfrescoConverter.alfredApiQNames(targetTypeSet).iterator().next()
+        MetadataChanges changes = new MetadataChanges(
+                alfredApiAlfrescoConverter.alfredApiQNames(targetTypeSet).iterator().next()
                 , false, null, null, null);
         Set<NodeRef> testNodeRefSet = new HashSet<>();
         testNodeRefSet.add(testNodeRef);
-        eu.xenit.alfred.api.data.NodeRef alfredApiTestNodeRef = alfredApiAlfrescoConverter.alfredApiNodeRefs(testNodeRefSet).iterator()
+        eu.xenit.alfred.api.data.NodeRef alfredApiTestNodeRef = alfredApiAlfrescoConverter.alfredApiNodeRefs(
+                        testNodeRefSet).iterator()
                 .next();
         eu.xenit.alfred.api.alfresco.metadata.NodeService nodeServiceSpy = spy(nodeService);
         nodeServiceSpy.setMetadata(alfredApiTestNodeRef, changes);

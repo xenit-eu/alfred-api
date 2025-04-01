@@ -42,7 +42,7 @@ public class AncestorsFromNodeUnitTest extends AncestorsBaseUnitTest {
         NodeService alfrescoNodeService = serviceRegistry.getNodeService();
 
         eu.xenit.alfred.api.alfresco.metadata.NodeService alfredApiNodeService = new eu.xenit.alfred.api.alfresco.metadata.NodeService(
-                serviceRegistry, alfredApiAlfrescoConverter);
+                serviceRegistry, alfredApiAlfrescoConverter, null);
         NodeRef rootRef = new NodeRef(testNode3.toString());
         NodeRef testNode = new NodeRef(testNode1.toString());
         List<NodeRef> ancestors = alfredApiNodeService.getAncestors(testNode, rootRef);

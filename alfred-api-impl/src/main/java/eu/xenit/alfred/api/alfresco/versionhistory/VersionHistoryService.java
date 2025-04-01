@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.version.VersionType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,22 +23,20 @@ public class VersionHistoryService implements IVersionHistoryService {
 
     private AlfredApiToAlfrescoConversion c;
     private org.alfresco.service.cmr.version.VersionService alfrescoVersionHistoryService;
-    private NodeService nodeService;
 
     @Autowired
-    public VersionHistoryService(org.alfresco.service.cmr.version.VersionService versionService,
-            AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion, NodeService nodeService) {
-        this.alfrescoVersionHistoryService = versionService;
-        this.nodeService = nodeService;
-        this.c = alfredApiToAlfrescoConversion;
+    public VersionHistoryService(ServiceRegistry serviceRegistry,
+            AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
+        c = alfredApiToAlfrescoConversion;
+        alfrescoVersionHistoryService = serviceRegistry.getVersionService();
     }
 
     @Override
     public VersionHistory GetVersionHistory(NodeRef nodeRef) {
         org.alfresco.service.cmr.version.VersionHistory v = alfrescoVersionHistoryService
                 .getVersionHistory(c.alfresco(nodeRef));
-        if (v == null) //If no versionhistory, no versionhistory is returned.
-        {
+        // If no versionhistory, no versionhistory is returned.
+        if (v == null) {
             return null;
         }
         Collection<org.alfresco.service.cmr.version.Version> versions = v.getAllVersions();
@@ -61,10 +59,8 @@ public class VersionHistoryService implements IVersionHistoryService {
                                 Version.VersionType.MINOR :
                                 Version.VersionType.UNKNOWN);
 
-        Version ret =
-                new Version(modifier, modified, versionLabel, description, vType,
-                        c.alfredApi(version.getFrozenStateNodeRef()));
-        return ret;
+        return new Version(modifier, modified, versionLabel, description, vType,
+                c.alfredApi(version.getFrozenStateNodeRef()));
     }
 
     @Override
@@ -116,5 +112,3 @@ public class VersionHistoryService implements IVersionHistoryService {
         alfrescoVersionHistoryService.revert(alfNode, alfVersion, false);
     }
 }
-
-

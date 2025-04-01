@@ -1,5 +1,18 @@
 # Alfred API - Changelog
 
+## 6.1.0 (2025-04-01)
+### Added
+[ALFREDAPI-548](https://xenitsupport.jira.com/browse/ALFREDAPI-569): Support Alfresco V23.3 && V23.4,
+
+### Fixed
+* [ALFREDAPI-568](https://xenitsupport.jira.com/browse/ALFREDAPI-568) Make Alfred API work with new Tomcat base image
+  environment variable for casual multipart parsing
+* [ALFREDAPI-568](https://xenitsupport.jira.com/browse/ALFREDAPI-568) Separated upload to native Alfresco webscript as a workaround to broken multipart upload with Alfresco MVC
+
+## 6.0.1 (2024-11-25)
+
+### Fixed
+* [ALFREDAPI-563](https://xenitsupport.jira.com/browse/ALFREDAPI-563) Fix @GetMapping(value = "/v1/nodes/{space}/{store}/{guid}/content") Content-Type
 
 ## 6.0.0 (2024-08-22)
 From this version onward Dynamic Extensions for integration-testing is replaced by [remote-junit](https://github.com/ruediste/remote-junit)

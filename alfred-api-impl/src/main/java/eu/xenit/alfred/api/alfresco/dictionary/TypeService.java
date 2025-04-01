@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.namespace.NamespaceException;
 import org.slf4j.Logger;
@@ -24,9 +25,9 @@ public class TypeService implements ITypeService {
     private AlfredApiToAlfrescoConversion c;
 
     @Autowired
-    public TypeService(DictionaryService dictionaryService, AlfredApiToAlfrescoConversion c) {
-        this.dictionaryService = dictionaryService;
-        this.c = c;
+    public TypeService(ServiceRegistry registry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
+        dictionaryService = registry.getDictionaryService();
+        c = alfredApiToAlfrescoConversion;
     }
 
     @Override

@@ -23,18 +23,12 @@ import org.springframework.stereotype.Service;
 @Service("eu.xenit.alfred.api.categories.ICategoryService")
 public class CategoryService implements ICategoryService {
 
-    @Autowired
     private AlfredApiToAlfrescoConversion c;
-    @Autowired
     private NodeService nodeService;
-    @Autowired
     private org.alfresco.service.cmr.search.CategoryService categoryService;
-    @Autowired
     private NamespaceService namespaceService;
 
-    public CategoryService() {
-    }
-
+    @Autowired
     public CategoryService(ServiceRegistry registry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
         nodeService = registry.getNodeService();
         categoryService = registry.getCategoryService();

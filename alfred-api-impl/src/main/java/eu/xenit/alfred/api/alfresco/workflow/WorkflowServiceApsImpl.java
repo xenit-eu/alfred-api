@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import eu.xenit.alfred.api.alfresco.AlfredApiSpringConfiguration;
 import eu.xenit.alfred.api.alfresco.workflow.aps.ApsFormDefinition;
 import eu.xenit.alfred.api.alfresco.workflow.aps.ApsFormField;
 import eu.xenit.alfred.api.data.QName;
@@ -26,7 +25,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -36,22 +37,21 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
 public class WorkflowServiceApsImpl implements IWorkflowService {
-
-    @Autowired
-    private AlfredApiSpringConfiguration configuration;
 
     private static final String APS_REST_DEFAULT_BASE_URL = "http://process-service:8080/activiti-app/api";
     private static final String APS_REST_DEFAULT_USERNAME = "admin";
     private static final String APS_REST_DEFAULT_PASSWORD = "admin";
     private final Logger logger = LoggerFactory.getLogger(WorkflowServiceApsImpl.class);
+
+    private final Properties properties;
+
+    public WorkflowServiceApsImpl(Properties properties) {
+        this.properties = properties;
+    }
 
     private HttpEntity doHttp(HttpUriRequest request) {
         HttpClient httpClient = new DefaultHttpClient();
@@ -108,9 +108,7 @@ public class WorkflowServiceApsImpl implements IWorkflowService {
             def.version = node.get("version").asText();
             list.add(def);
         }
-
         return list;
-
     }
 
     @Override
@@ -281,6 +279,7 @@ public class WorkflowServiceApsImpl implements IWorkflowService {
      * Helper class for representing an APS process variable, serializes nicely to the json that APS expects.
      */
     private static class ApsVarRepresentation {
+
         // Class names recognized by APS
         private final static Set<String> knownClasses = new HashSet<>(Arrays.asList(
                 "string", "integer", "boolean", "double", "date"));
@@ -306,23 +305,24 @@ public class WorkflowServiceApsImpl implements IWorkflowService {
     }
 
     private String getApsRestBaseUrl() {
-        if (configuration == null || configuration.getProperties() == null) {
+        if (properties == null) {
             return APS_REST_DEFAULT_BASE_URL;
         }
-        return configuration.getProperties().getProperty("aps.rest.base_url", APS_REST_DEFAULT_BASE_URL);
+        return properties.getProperty("aps.rest.base_url", APS_REST_DEFAULT_BASE_URL);
     }
+
     private String getApsRestUsername() {
-        if (configuration == null || configuration.getProperties() == null) {
+        if (properties == null) {
             return APS_REST_DEFAULT_USERNAME;
         }
-        return configuration.getProperties().getProperty("aps.rest.username", APS_REST_DEFAULT_USERNAME);
+        return properties.getProperty("aps.rest.username", APS_REST_DEFAULT_USERNAME);
     }
 
     private String getApsRestPassword() {
-        if (configuration == null || configuration.getProperties() == null) {
+        if (properties == null) {
             return APS_REST_DEFAULT_PASSWORD;
         }
-        return configuration.getProperties().getProperty("aps.rest.password", APS_REST_DEFAULT_PASSWORD);
+        return properties.getProperty("aps.rest.password", APS_REST_DEFAULT_PASSWORD);
     }
 
     private String getApsAuthorization() {

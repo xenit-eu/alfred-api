@@ -44,7 +44,7 @@ jobs:
   alfred-api-impl:
     strategy:
       matrix:
-        alfresco_version: [ 231, 232 ]
+        alfresco_version: [ 231, 232, 233, 234 ]
       fail-fast: false
     runs-on: ubuntu-latest
     steps:

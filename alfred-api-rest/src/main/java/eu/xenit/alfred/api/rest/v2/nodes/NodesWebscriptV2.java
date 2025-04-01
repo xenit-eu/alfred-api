@@ -9,18 +9,14 @@ import eu.xenit.alfred.api.node.INodeService;
 import eu.xenit.alfred.api.node.MetadataChanges;
 import eu.xenit.alfred.api.permissions.IPermissionService;
 import eu.xenit.alfred.api.permissions.PermissionValue;
+import eu.xenit.alfred.api.rest.v1.AlfredApiV1Webscript;
 import eu.xenit.alfred.api.rest.v1.nodes.CreateNodeOptions;
 import eu.xenit.alfred.api.rest.v1.nodes.NodeInfo;
 import eu.xenit.alfred.api.rest.v1.nodes.NodeInfoRequest;
 import eu.xenit.alfred.api.rest.v2.AlfredApiV2Webscript;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.alfresco.service.ServiceRegistry;
 import org.apache.http.HttpStatus;
 import org.json.JSONException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,11 +24,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
 @AlfrescoAuthentication
 @RestController
 public class NodesWebscriptV2 extends AlfredApiV2Webscript {
-
-    private static final Logger logger = LoggerFactory.getLogger(NodesWebscriptV2.class);
 
     private final INodeService nodeService;
 
@@ -57,7 +55,7 @@ public class NodesWebscriptV2 extends AlfredApiV2Webscript {
             @PathVariable String guid) {
         NodeRef nodeRef = this.createNodeRef(space, store, guid);
 
-        NodeInfo nodeInfo = this
+        NodeInfo nodeInfo = AlfredApiV1Webscript
                 .nodeRefToNodeInfo(nodeRef, this.fileFolderService, this.nodeService, this.permissionService);
 
         return writeJsonResponse(nodeInfo);
@@ -67,7 +65,7 @@ public class NodesWebscriptV2 extends AlfredApiV2Webscript {
     @PostMapping(value = "/v2/nodes/nodeInfo")
     public ResponseEntity<List<NodeInfo>> getAllInfos(@RequestBody final NodeInfoRequest nodeInfoRequest)
             throws JSONException {
-        List<NodeInfo> nodeInfoList = this.nodeRefToNodeInfo(
+        List<NodeInfo> nodeInfoList = AlfredApiV1Webscript.nodeRefToNodeInfo(
                 nodeInfoRequest,
                 this.fileFolderService,
                 this.nodeService,
@@ -144,7 +142,7 @@ public class NodesWebscriptV2 extends AlfredApiV2Webscript {
 
         NodeRef resultRef = new NodeRef(resultObject.toString());
 
-        NodeInfo nodeInfo = this
+        NodeInfo nodeInfo = AlfredApiV1Webscript
                 .nodeRefToNodeInfo(resultRef, this.fileFolderService, this.nodeService, this.permissionService);
 
         return writeJsonResponse(nodeInfo);
