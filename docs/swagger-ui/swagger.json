@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "description": "This is the swagger specification for Alfred REST API\n\nExamples can be found at: https://docs.xenit.eu/alfred-api",
-    "version": "5.0.3",
+    "version": "6.1.0",
     "title": "Alfred REST Api",
     "contact": {
       "name": "XeniT",
