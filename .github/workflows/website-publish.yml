@@ -29,7 +29,7 @@ jobs:
         run: ./gradlew :docs:buildWebsiteScript --info
       - name: Upload website artifact
         if: success()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: website-alfred-api.tar.gz
           path: /home/runner/work/alfred-api/docs/build/website-*.tar.gz
