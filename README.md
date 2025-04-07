@@ -38,6 +38,21 @@ Full documentation can be found at the [project's documentation](https://docs.xe
 * Avoid `this.` prefix for consistency (unless the scope is ambiguous).
 * Follow our [coding styleguide and other active procedures](https://xenitsupport.jira.com/wiki/spaces/XEN/pages/624558081/XeniT+Enhancement+Proposals+XEP).
   
+      
+### Branching
+This repo follows a feature branching strategy, with a release branch.
+
+In a normal situation, the only long-lived branches to exist are:
+* `master`
+* `release` (which should always be able to be fast-forwarded to `master`)
+
+Besides that short-lived feature/bugfix branches can exist that are merged ASAP into `master`.
+
+### Releasing
+When making a release please follow https://xenitsupport.jira.com/wiki/spaces/APIX/pages/665190440/Release+procedure.
+
+
+
 ### Project structure
 * *alfred-api-interface* builds the interface of Alfred API. This part is agnostic of the 
 Alfresco version used.
@@ -56,7 +71,6 @@ Alfresco version used.
 ### How to
 
 #### Run
-
 The following command starts up all docker containers required for an Alfresco running Alfred API.
 ```bash
 ./gradlew :alfred-api-docker:docker-${VERSION}:composeUp --info
