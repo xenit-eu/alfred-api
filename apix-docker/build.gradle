@@ -18,6 +18,7 @@ subprojects {
         alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-aop:${mvc}"
         alfrescoSM files(jar)
         alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${subproject_alfresco_version}:${de_version}@amp"
+        alfrescoAmp "org.orderofthebee.support-tools:support-tools-repo:1.2.2.0:amp@amp"
     }
 
     dockerCompose {
