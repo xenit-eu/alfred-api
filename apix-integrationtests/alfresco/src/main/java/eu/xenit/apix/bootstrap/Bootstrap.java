@@ -18,6 +18,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+
+/**
+Class to create a node at startup with a human readable name, that is consistent accross restarts.
+Intended to be used in debugging sessions by humans. Automated tests should not rely upon this and create their own nodes.
+
+Creation can be enabled/disabled with the global property `eu.xenit.apix.integrationtest.bootstrap.enabled`. Behaviour of parseBoolean should ensure this defaults to false if property not set.
+
+Class is located in IntegrationTest project as to not be included in released artifacts
+*/
 @Component
 public class Bootstrap implements InitializingBean {
 
