@@ -23,7 +23,6 @@ ext {
     jackson_version = '2.8.3'
     care4alfVersion = '2.3.0'
     http_version = '4.3.4' // Used by integration tests
-    ootbee_version = '1.2.2.0' // Used in docker image for testing
 }
 
 subprojects {
