@@ -13,7 +13,9 @@ dependencies {
     alfrescoProvided("org.alfresco:alfresco-repository")
     alfrescoProvided project(':alfred-api-interface')
     alfrescoProvided('org.alfresco:alfresco-remote-api')
-    implementation("javax.xml.bind:jaxb-api:2.2.12")
+    // Fix for missing javax.xml.bind library for fasterxml
+    // https://github.com/FasterXML/jackson-modules-base/discussions/239
+    implementation("javax.xml.bind:jaxb-api:2.3.1")
 
     alfrescoProvided "com.gradecak.alfresco-mvc:alfresco-mvc-rest:${mvc}"
     alfrescoProvided "com.gradecak.alfresco-mvc:alfresco-mvc-aop:${mvc}"
