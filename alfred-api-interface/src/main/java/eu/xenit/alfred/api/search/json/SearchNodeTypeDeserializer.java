@@ -85,17 +85,17 @@ public class SearchNodeTypeDeserializer
             throws IOException {
         // 02-Aug-2013, tatu: May need to use native type ids
         if (jp.canReadTypeId()) {
-            return _deserializeWithNativeTypeId(jp, ctxt);
+            return _deserializeWithNativeTypeId(jp, ctxt, jp.getTypeId());
         }
 
         // first, sanity checks
         if (jp.getCurrentToken() != JsonToken.START_OBJECT) {
-            throw ctxt.wrongTokenException(jp, JsonToken.START_OBJECT,
+            throw ctxt.wrongTokenException(jp, baseType() ,JsonToken.START_OBJECT,
                     "need JSON Object to contain As.WRAPPER_OBJECT type information for class " + baseTypeName());
         }
         // should always get field name, but just in case...
         if (jp.nextToken() != JsonToken.FIELD_NAME) {
-            throw ctxt.wrongTokenException(jp, JsonToken.FIELD_NAME,
+            throw ctxt.wrongTokenException(jp, baseType(),JsonToken.FIELD_NAME,
                     "need JSON String that contains type id (for subtype of " + baseTypeName() + ")");
         }
         final String typeId = jp.getText();
@@ -121,7 +121,7 @@ public class SearchNodeTypeDeserializer
 
         // And then need the closing END_OBJECT
         if (jp.nextToken() != JsonToken.END_OBJECT) {
-            throw ctxt.wrongTokenException(jp, JsonToken.END_OBJECT,
+            throw ctxt.wrongTokenException(jp, baseType(),JsonToken.END_OBJECT,
                     "expected closing END_OBJECT after type information and deserialized value");
         }
         return value;

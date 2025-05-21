@@ -17,7 +17,7 @@ ext {
     versionWithoutQualifier = '6.0.1'
 
     mvc = '9.0.0'
-    jackson_version = '2.15.2'
+    jackson_version = '2.19.0'
     http_version = '4.5.13' // Used by integration tests
 }
 
