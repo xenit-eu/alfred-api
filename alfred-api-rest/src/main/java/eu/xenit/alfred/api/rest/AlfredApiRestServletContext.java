@@ -1,11 +1,15 @@
 package eu.xenit.alfred.api.rest;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.gradecak.alfresco.mvc.annotation.EnableAlfrescoMvcAop;
 import com.gradecak.alfresco.mvc.rest.config.DefaultAlfrescoMvcServletContextConfiguration;
+import eu.xenit.alfred.api.data.NodeRef;
+import eu.xenit.alfred.api.data.QName;
 import eu.xenit.alfred.api.rest.jackson.Jackson2AlfredApiNodeRefDeserializer;
 import eu.xenit.alfred.api.rest.jackson.Jackson2AlfredApiNodeRefSerializer;
 import eu.xenit.alfred.api.rest.jackson.Jackson2AlfredApiQnameDeserializer;
@@ -115,9 +119,26 @@ public class AlfredApiRestServletContext extends DefaultAlfrescoMvcServletContex
     @Override
     public ObjectMapper objectMapper() {
         ObjectMapper om = new SearchNodeJsonParser().getObjectMapper();
-        om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        jackson2ObjectMapperBuilder().configure(om);
-        return om;
+        return configureObjectMapper(om);
+    }
+
+    public ObjectMapper configureObjectMapper(ObjectMapper objectMapper) {
+
+        // Basic configuration
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        objectMapper.setDateFormat(dateFormat());
+
+        RestJsonModule alfrescoRestJsonModule = new RestJsonModule();
+        alfrescoRestJsonModule.addSerializer(NodeRef.class, new Jackson2AlfredApiNodeRefSerializer());
+        alfrescoRestJsonModule.addSerializer(QName.class, new Jackson2AlfredApiQnameSerializer());
+        alfrescoRestJsonModule.addDeserializer(NodeRef.class, new Jackson2AlfredApiNodeRefDeserializer());
+        alfrescoRestJsonModule.addDeserializer(QName.class, new Jackson2AlfredApiQnameDeserializer());
+
+        objectMapper.registerModule(alfrescoRestJsonModule);
+
+        return objectMapper;
     }
 
     @Override

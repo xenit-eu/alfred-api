@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.xenit.alfred.api.data.NodeRef;
+import eu.xenit.alfred.api.data.QName;
 import eu.xenit.alfred.api.search.json.SearchNodeJsonParser;
 import org.alfresco.rest.framework.jacksonextensions.RestJsonModule;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -16,6 +18,35 @@ import java.util.List;
 import java.util.TimeZone;
 
 public class ObjectMapperFactory {
+    public static ObjectMapper getNewObjectMapper2(RestJsonModule alfrescoRestJsonModule) {
+        ObjectMapper om = new SearchNodeJsonParser().getObjectMapper(); // optional, remove if you want pure manual setup
+
+        om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        // Configure features manually
+        om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        om.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+
+        // Set date format
+        om.setDateFormat(dateFormat());
+
+        // Register custom serializers and deserializers manually
+        com.fasterxml.jackson.databind.module.SimpleModule customModule = new com.fasterxml.jackson.databind.module.SimpleModule();
+        customModule.addSerializer(NodeRef.class, new Jackson2AlfredApiNodeRefSerializer());
+        customModule.addSerializer(QName.class, new Jackson2AlfredApiQnameSerializer());
+        customModule.addDeserializer(NodeRef.class, new Jackson2AlfredApiNodeRefDeserializer());
+        customModule.addDeserializer(QName.class, new Jackson2AlfredApiQnameDeserializer());
+        om.registerModule(customModule);
+
+        // Register alfresco RestJsonModule if present
+        if (alfrescoRestJsonModule != null) {
+            om.registerModule(alfrescoRestJsonModule);
+        }
+
+        return om;
+    }
+
+
     public static ObjectMapper getNewObjectMapper(RestJsonModule alfrescoRestJsonModule) {
         ObjectMapper om = new SearchNodeJsonParser().getObjectMapper();
         om.setSerializationInclusion(JsonInclude.Include.NON_NULL);

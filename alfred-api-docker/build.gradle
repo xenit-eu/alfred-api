@@ -19,6 +19,7 @@ subprojects {
         // Read the model in for running the integration tests.
         alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-rest:${mvc}"
         alfrescoSM "com.gradecak.alfresco-mvc:alfresco-mvc-aop:${mvc}"
+        alfrescoAmp files("${project.projectDir}/amps")
         alfrescoSM files(jar)
     }
 
@@ -31,6 +32,12 @@ subprojects {
             if (project.file(extraComposeFile).exists()) {
                 useComposeFiles.add(extraComposeFile)
             }
+        }
+    }
+
+    createDockerFile {
+        afterEvaluate {
+            smartCopy("${project.projectDir}/alfred-desktop/config/config.js", "/usr/local/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/extension/templates/webscripts/eu/xenit/config/config.js")
         }
     }
 }

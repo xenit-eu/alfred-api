@@ -51,7 +51,7 @@ public class UploadWebscript extends AbstractWebScript {
         this.nodeService = nodeService;
         this.permissionService = permissionService;
         this.fileFolderService = fileFolderService;
-        this.objectMapper = ObjectMapperFactory.getNewObjectMapper(alfrescoRestJsonModule);
+        this.objectMapper = ObjectMapperFactory.getNewObjectMapper2(alfrescoRestJsonModule);
     }
 
     @Override
