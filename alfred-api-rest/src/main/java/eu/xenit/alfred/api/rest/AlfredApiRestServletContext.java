@@ -1,19 +1,15 @@
 package eu.xenit.alfred.api.rest;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.gradecak.alfresco.mvc.annotation.EnableAlfrescoMvcAop;
 import com.gradecak.alfresco.mvc.rest.config.DefaultAlfrescoMvcServletContextConfiguration;
-import eu.xenit.alfred.api.data.NodeRef;
-import eu.xenit.alfred.api.data.QName;
 import eu.xenit.alfred.api.rest.jackson.Jackson2AlfredApiNodeRefDeserializer;
 import eu.xenit.alfred.api.rest.jackson.Jackson2AlfredApiNodeRefSerializer;
 import eu.xenit.alfred.api.rest.jackson.Jackson2AlfredApiQnameDeserializer;
 import eu.xenit.alfred.api.rest.jackson.Jackson2AlfredApiQnameSerializer;
+import eu.xenit.alfred.api.rest.jackson.ObjectMapperFactory;
 import eu.xenit.alfred.api.rest.staging.workflow.WorkflowWebscript;
 import eu.xenit.alfred.api.rest.v0.categories.ClassificationGetWebscript;
 import eu.xenit.alfred.api.rest.v0.dictionary.DictionaryServiceChecksumWebscript;
@@ -39,7 +35,6 @@ import eu.xenit.alfred.api.rest.v1.workingcopies.WorkingcopiesWebscript1;
 import eu.xenit.alfred.api.rest.v2.groups.GroupsWebscript;
 import eu.xenit.alfred.api.rest.v2.nodes.NodesWebscriptV2;
 import eu.xenit.alfred.api.rest.v2.people.PeopleWebscript;
-import eu.xenit.alfred.api.search.json.SearchNodeJsonParser;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
@@ -47,11 +42,13 @@ import org.alfresco.rest.framework.jacksonextensions.RestJsonModule;
 import org.alfresco.service.namespace.NamespaceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -78,7 +75,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
         NodesWebscript1.class,
         PropertiesWebScript1.class,
         PeopleWebscript1.class,
-        PeopleWebscript1.class,
         PeopleWebscript.class,
         SearchWebScript1.class,
         SearchWebScript0.class,
@@ -92,6 +88,9 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class AlfredApiRestServletContext extends DefaultAlfrescoMvcServletContextConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(AlfredApiRestServletContext.class);
+
+    @Autowired
+    private RestJsonModule alfrescoRestJsonModule;
 
     public AlfredApiRestServletContext(RestJsonModule alfrescoRestJsonModule, NamespaceService namespaceService) {
         super(alfrescoRestJsonModule, namespaceService);
@@ -118,27 +117,7 @@ public class AlfredApiRestServletContext extends DefaultAlfrescoMvcServletContex
     @Primary
     @Override
     public ObjectMapper objectMapper() {
-        ObjectMapper om = new SearchNodeJsonParser().getObjectMapper();
-        return configureObjectMapper(om);
-    }
-
-    public ObjectMapper configureObjectMapper(ObjectMapper objectMapper) {
-
-        // Basic configuration
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        objectMapper.setDateFormat(dateFormat());
-
-        RestJsonModule alfrescoRestJsonModule = new RestJsonModule();
-        alfrescoRestJsonModule.addSerializer(NodeRef.class, new Jackson2AlfredApiNodeRefSerializer());
-        alfrescoRestJsonModule.addSerializer(QName.class, new Jackson2AlfredApiQnameSerializer());
-        alfrescoRestJsonModule.addDeserializer(NodeRef.class, new Jackson2AlfredApiNodeRefDeserializer());
-        alfrescoRestJsonModule.addDeserializer(QName.class, new Jackson2AlfredApiQnameDeserializer());
-
-        objectMapper.registerModule(alfrescoRestJsonModule);
-
-        return objectMapper;
+        return ObjectMapperFactory.getNewObjectMapper(this.alfrescoRestJsonModule);
     }
 
     @Override
