@@ -5,24 +5,20 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.xenit.alfred.api.data.NodeRef;
-import eu.xenit.alfred.api.data.QName;
 import eu.xenit.alfred.api.search.json.SearchNodeJsonParser;
-import org.alfresco.rest.framework.jacksonextensions.RestJsonModule;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
+import org.alfresco.rest.framework.jacksonextensions.RestJsonModule;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 public class ObjectMapperFactory {
     public static ObjectMapper getNewObjectMapper(RestJsonModule alfrescoRestJsonModule) {
         ObjectMapper om = new SearchNodeJsonParser().getObjectMapper();
         om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        Jackson2ObjectMapperBuilder builder = jackson2ObjectMapperBuilder(alfrescoRestJsonModule);
-        builder.configure(om);
+        jackson2ObjectMapperBuilder(alfrescoRestJsonModule).configure(om);
         return om;
     }
 
