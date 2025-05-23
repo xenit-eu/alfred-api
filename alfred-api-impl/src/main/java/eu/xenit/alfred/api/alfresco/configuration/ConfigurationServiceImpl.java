@@ -113,7 +113,6 @@ public class ConfigurationServiceImpl implements ConfigurationService {
                     Object parsedContent = null;
                     if (mimetype.equals("text/x-yaml") || name.endsWith(".yaml") || name.endsWith(".yml")) {
                         ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
-                        yamlMapper.findAndRegisterModules();
                         parsedContent = yamlMapper.readValue(configStream.getInputStream(), Object.class);
                     } else if (mimetype.equals("application/json") || name.endsWith(".json")) {
                         parsedContent = jsonMapper.readValue(configStream.getInputStream(), Object.class);
