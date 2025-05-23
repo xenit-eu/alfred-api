@@ -8,6 +8,9 @@
 * [ALFREDAPI-568](https://xenitsupport.jira.com/browse/ALFREDAPI-568) Make Alfred API work with new Tomcat base image
   environment variable for casual multipart parsing
 * [ALFREDAPI-568](https://xenitsupport.jira.com/browse/ALFREDAPI-568) Separated upload to native Alfresco webscript as a workaround to broken multipart upload with Alfresco MVC
+* [ALFREDAPI-572](https://xenitsupport.jira.com/browse/ALFREDAPI-572) Removed dependencies that caused warnings of 
+being overwritten (jaxb-api, javax.activation-api)
+
 
 ## 6.0.1 (2024-11-25)
 
