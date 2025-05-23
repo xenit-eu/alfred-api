@@ -11,30 +11,24 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
-import org.alfresco.rest.framework.jacksonextensions.RestJsonModule;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 public class ObjectMapperFactory {
-    public static ObjectMapper getNewObjectMapper(RestJsonModule alfrescoRestJsonModule) {
+
+    public static ObjectMapper getNewObjectMapper() {
         ObjectMapper om = new SearchNodeJsonParser().getObjectMapper();
         om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        jackson2ObjectMapperBuilder(alfrescoRestJsonModule).configure(om);
+        jackson2ObjectMapperBuilder().configure(om);
         return om;
     }
 
-    private static Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder(RestJsonModule alfrescoRestJsonModule) {
-        Jackson2ObjectMapperBuilder builder = Jackson2ObjectMapperBuilder.json().failOnEmptyBeans(false)
+    private static Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder() {
+        return Jackson2ObjectMapperBuilder.json().failOnEmptyBeans(false)
                 .failOnUnknownProperties(false).dateFormat(dateFormat())
                 .serializers(customJsonSerilizers().toArray(new JsonSerializer[0]))
                 .deserializers(customJsonDeserializers().toArray(new JsonDeserializer[0]))
                 .featuresToEnable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                 .findModulesViaServiceLoader(false);
-
-        if (alfrescoRestJsonModule != null) {
-            builder.modules(alfrescoRestJsonModule);
-        }
-
-        return builder;
     }
 
     private static DateFormat dateFormat() {

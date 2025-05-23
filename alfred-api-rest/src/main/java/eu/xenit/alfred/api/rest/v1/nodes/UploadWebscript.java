@@ -9,6 +9,8 @@ import eu.xenit.alfred.api.node.MetadataChanges;
 import eu.xenit.alfred.api.permissions.IPermissionService;
 import eu.xenit.alfred.api.rest.jackson.ObjectMapperFactory;
 import eu.xenit.alfred.api.rest.v1.AlfredApiV1Webscript;
+import java.io.IOException;
+import java.io.InputStream;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
@@ -22,9 +24,6 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 import org.springframework.extensions.webscripts.servlet.FormData;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 @Component("webscript.eu.xenit.alfred.api.rest.v1.nodes.upload.post")
 public class UploadWebscript extends AbstractWebScript {
@@ -45,13 +44,12 @@ public class UploadWebscript extends AbstractWebScript {
     public UploadWebscript(ServiceRegistry serviceRegistry,
                            INodeService nodeService,
                            IPermissionService permissionService,
-                           IFileFolderService fileFolderService,
-                           RestJsonModule alfrescoRestJsonModule) {
+                           IFileFolderService fileFolderService) {
         this.serviceRegistry = serviceRegistry;
         this.nodeService = nodeService;
         this.permissionService = permissionService;
         this.fileFolderService = fileFolderService;
-        this.objectMapper = ObjectMapperFactory.getNewObjectMapper(alfrescoRestJsonModule);
+        this.objectMapper = ObjectMapperFactory.getNewObjectMapper();
     }
 
     @Override
