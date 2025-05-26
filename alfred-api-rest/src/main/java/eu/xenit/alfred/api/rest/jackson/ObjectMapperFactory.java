@@ -6,36 +6,29 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.xenit.alfred.api.search.json.SearchNodeJsonParser;
-import org.alfresco.rest.framework.jacksonextensions.RestJsonModule;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 public class ObjectMapperFactory {
-    public static ObjectMapper getNewObjectMapper(RestJsonModule alfrescoRestJsonModule) {
+
+    public static ObjectMapper getNewObjectMapper() {
         ObjectMapper om = new SearchNodeJsonParser().getObjectMapper();
         om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        jackson2ObjectMapperBuilder(alfrescoRestJsonModule).configure(om);
+        jackson2ObjectMapperBuilder().configure(om);
         return om;
     }
 
-    private static Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder(RestJsonModule alfrescoRestJsonModule) {
-        Jackson2ObjectMapperBuilder builder = Jackson2ObjectMapperBuilder.json().failOnEmptyBeans(false)
+    private static Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder() {
+        return Jackson2ObjectMapperBuilder.json().failOnEmptyBeans(false)
                 .failOnUnknownProperties(false).dateFormat(dateFormat())
                 .serializers(customJsonSerilizers().toArray(new JsonSerializer[0]))
                 .deserializers(customJsonDeserializers().toArray(new JsonDeserializer[0]))
                 .featuresToEnable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-                .findModulesViaServiceLoader(true);
-
-        if (alfrescoRestJsonModule != null) {
-            builder.modulesToInstall(alfrescoRestJsonModule);
-        }
-
-        return builder;
+                .findModulesViaServiceLoader(false);
     }
 
     private static DateFormat dateFormat() {
