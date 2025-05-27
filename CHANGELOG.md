@@ -2,7 +2,8 @@
 
 ## 6.1.0 (2025-04-01)
 ### Added
-[ALFREDAPI-548](https://xenitsupport.jira.com/browse/ALFREDAPI-569): Support Alfresco V23.3 && V23.4,
+* [ALFREDAPI-548](https://xenitsupport.jira.com/browse/ALFREDAPI-569): Support Alfresco V23.3 && V23.4
+* [ALFREDAPI-576](https://xenitsupport.jira.com/browse/ALFREDAPI-576): Support Alfresco V25.1
 
 ### Fixed
 * [ALFREDAPI-568](https://xenitsupport.jira.com/browse/ALFREDAPI-568) Make Alfred API work with new Tomcat base image
