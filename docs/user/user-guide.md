@@ -736,6 +736,7 @@ Currently Alfred API supports the following Alfresco versions:
 * 23.2
 * 23.3
 * 23.4
+* 25.1
 
 Alfred API depends on the [Alfresco MVC framework](https://github.com/dgradecak/alfresco-mvc) version `9.0.0`.
 Installation depends on the tools that you use to build and install, but below are examples of a few common ways.
