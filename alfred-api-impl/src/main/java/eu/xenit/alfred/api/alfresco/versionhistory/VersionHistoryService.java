@@ -16,6 +16,7 @@ import java.util.Map;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.version.VersionType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service("eu.xenit.alfred.api.versionhistory.VersionHistoryService")
@@ -25,7 +26,7 @@ public class VersionHistoryService implements IVersionHistoryService {
     private org.alfresco.service.cmr.version.VersionService alfrescoVersionHistoryService;
 
     @Autowired
-    public VersionHistoryService(ServiceRegistry serviceRegistry,
+    public VersionHistoryService(@Qualifier("ServiceRegistry") ServiceRegistry serviceRegistry,
             AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
         c = alfredApiToAlfrescoConversion;
         alfrescoVersionHistoryService = serviceRegistry.getVersionService();

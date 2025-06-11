@@ -36,6 +36,7 @@ public class AlfrescoWorkflowTaskWorkflowConvertor extends AbstractAlfredApiAlfr
 
     @Autowired
     public AlfrescoWorkflowTaskWorkflowConvertor(
+            @Qualifier("ServiceRegistry")
             ServiceRegistry serviceRegistry,
             IPeopleService peopleService,
             AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {

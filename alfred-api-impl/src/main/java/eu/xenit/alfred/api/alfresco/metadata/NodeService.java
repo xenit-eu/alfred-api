@@ -56,6 +56,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 
@@ -79,7 +80,7 @@ public class NodeService implements INodeService {
     private Repository repository;
 
     @Autowired
-    public NodeService(ServiceRegistry serviceRegistry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion,
+    public NodeService(@Qualifier("ServiceRegistry") ServiceRegistry serviceRegistry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion,
             Repository repository) {
         c = alfredApiToAlfrescoConversion;
         this.serviceRegistry = serviceRegistry;

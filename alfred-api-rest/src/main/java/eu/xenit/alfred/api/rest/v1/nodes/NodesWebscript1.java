@@ -35,6 +35,7 @@ import org.alfresco.service.cmr.security.PermissionService;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -68,7 +69,7 @@ public class NodesWebscript1 extends AlfredApiV1Webscript {
 
     public NodesWebscript1(INodeService nodeService, IPermissionService permissionService,
             IFileFolderService fileFolderService, ICommentService commentService,
-            ServiceRegistry serviceRegistry) {
+            @Qualifier("ServiceRegistry") ServiceRegistry serviceRegistry) {
         this.nodeService = nodeService;
         this.permissionService = permissionService;
         this.fileFolderService = fileFolderService;
