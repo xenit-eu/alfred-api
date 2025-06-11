@@ -14,6 +14,7 @@ import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component("eu.xenit.alfred.api.dictionary.aspects.IAspectService")
@@ -24,7 +25,7 @@ public class AspectService implements IAspectService {
     private AlfredApiToAlfrescoConversion c;
 
     @Autowired
-    public AspectService(ServiceRegistry registry, AlfredApiToAlfrescoConversion c) {
+    public AspectService(@Qualifier("ServiceRegistry") ServiceRegistry registry, AlfredApiToAlfrescoConversion c) {
         this.dictionaryService = registry.getDictionaryService();
         this.c = c;
     }

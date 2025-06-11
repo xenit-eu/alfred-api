@@ -18,6 +18,7 @@ import org.alfresco.rest.framework.jacksonextensions.RestJsonModule;
 import org.alfresco.service.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptRequest;
@@ -41,7 +42,7 @@ public class UploadWebscript extends AbstractWebScript {
 
     private final ObjectMapper objectMapper;
 
-    public UploadWebscript(ServiceRegistry serviceRegistry,
+    public UploadWebscript(@Qualifier("ServiceRegistry") ServiceRegistry serviceRegistry,
                            INodeService nodeService,
                            IPermissionService permissionService,
                            IFileFolderService fileFolderService) {

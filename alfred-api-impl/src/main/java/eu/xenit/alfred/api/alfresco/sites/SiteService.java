@@ -14,6 +14,7 @@ import org.alfresco.service.cmr.site.SiteInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service("eu.xenit.alfred.api.alfresco.sites.SiteService")
@@ -30,7 +31,7 @@ public class SiteService implements ISiteService {
     private ServiceRegistry serviceRegistry;
 
     @Autowired
-    public SiteService(ServiceRegistry serviceRegistry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
+    public SiteService(@Qualifier("ServiceRegistry") ServiceRegistry serviceRegistry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
         this.serviceRegistry = serviceRegistry;
         c = alfredApiToAlfrescoConversion;
     }

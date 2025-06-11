@@ -23,6 +23,7 @@ import org.alfresco.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +39,7 @@ public class PeopleService implements IPeopleService {
     private AuthorityService authorityService;
 
     @Autowired
-    public PeopleService(ServiceRegistry serviceRegistry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
+    public PeopleService(@Qualifier("ServiceRegistry") ServiceRegistry serviceRegistry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
         this.c = alfredApiToAlfrescoConversion;
         this.alfrescoPersonService = serviceRegistry.getPersonService();
         this.nodeService = serviceRegistry.getNodeService();

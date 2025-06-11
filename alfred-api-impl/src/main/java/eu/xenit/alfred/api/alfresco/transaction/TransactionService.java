@@ -5,12 +5,14 @@ import java.util.concurrent.Callable;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.ServiceRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service("eu.xenit.alfred.api.alfresco.transaction.TransactionService")
 public class TransactionService implements ITransactionService {
 
     @Autowired
+    @Qualifier("ServiceRegistry")
     private ServiceRegistry serviceRegistry;
 
     @Override
