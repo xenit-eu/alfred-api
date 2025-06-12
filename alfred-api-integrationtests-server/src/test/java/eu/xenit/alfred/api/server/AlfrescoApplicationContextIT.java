@@ -26,7 +26,7 @@ public class AlfrescoApplicationContextIT {
     public void setUp() {
         this.testApplicationContext = Server.getApplicationContext();
         try {
-            serviceRegistry = testApplicationContext.getBean(ServiceRegistry.class);
+            serviceRegistry = testApplicationContext.getBean("ServiceRegistry", ServiceRegistry.class);
             nodeService = serviceRegistry.getNodeService();
 
             if (logger.isTraceEnabled()) {

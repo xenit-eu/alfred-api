@@ -14,7 +14,6 @@ import java.io.InputStream;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
-import org.alfresco.rest.framework.jacksonextensions.RestJsonModule;
 import org.alfresco.service.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +31,7 @@ public class UploadWebscript extends AbstractWebScript {
 
     private static final String MULTIPART_FORMDATA = "multipart/form-data";
 
+    @Qualifier("ServiceRegistry")
     private final ServiceRegistry serviceRegistry;
 
     private final INodeService nodeService;
