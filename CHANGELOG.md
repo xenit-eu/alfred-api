@@ -1,5 +1,9 @@
 # Alfred API - Changelog
 
+## 6.1.1 (unreleased)
+### Fixed
+* [ALFREDAPI-578](https://xenitsupport.jira.com/browse/ALFREDAPI-578): Added Qualifiers to Conflicting beans with Governance Services
+
 ## 6.1.0 (2025-04-01)
 ### Added
 * [ALFREDAPI-548](https://xenitsupport.jira.com/browse/ALFREDAPI-569): Support Alfresco V23.3 && V23.4

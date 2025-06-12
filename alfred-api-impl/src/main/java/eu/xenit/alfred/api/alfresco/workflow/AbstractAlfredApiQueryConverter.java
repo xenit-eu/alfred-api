@@ -15,12 +15,14 @@ import org.alfresco.service.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 public abstract class AbstractAlfredApiQueryConverter {
 
     private final Logger logger = LoggerFactory.getLogger(AbstractAlfredApiQueryConverter.class);
 
     @Autowired
+    @Qualifier("ServiceRegistry")
     private ServiceRegistry serviceRegistry;
     @Autowired
     private IPeopleService peopleService;

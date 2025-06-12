@@ -15,6 +15,7 @@ import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,7 +39,7 @@ public class SitesWebscript1 extends AlfredApiV1Webscript {
 
     public SitesWebscript1(INodeService nodeService, IPermissionService permissionService,
             IFileFolderService fileFolderService, ISiteService siteService,
-            ServiceRegistry serviceRegistry) {
+            @Qualifier("ServiceRegistry") ServiceRegistry serviceRegistry) {
         this.nodeService = nodeService;
         this.permissionService = permissionService;
         this.fileFolderService = fileFolderService;

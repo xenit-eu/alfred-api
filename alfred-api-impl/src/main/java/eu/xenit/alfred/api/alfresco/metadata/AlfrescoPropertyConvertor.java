@@ -21,6 +21,7 @@ import org.alfresco.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 
@@ -32,7 +33,7 @@ public class AlfrescoPropertyConvertor {
     private DictionaryService dictionaryService;
 
     @Autowired
-    public AlfrescoPropertyConvertor(ServiceRegistry registry, AlfredApiToAlfrescoConversion c) {
+    public AlfrescoPropertyConvertor(@Qualifier("ServiceRegistry") ServiceRegistry registry, AlfredApiToAlfrescoConversion c) {
         this.dictionaryService = registry.getDictionaryService();
         this.c = c;
     }

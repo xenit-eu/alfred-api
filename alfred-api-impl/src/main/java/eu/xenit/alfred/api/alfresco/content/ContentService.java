@@ -9,6 +9,7 @@ import java.io.InputStream;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.ServiceRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component("eu.xenit.alfred.api.content.IContentService")
@@ -20,7 +21,7 @@ public class ContentService implements IContentService {
     private org.alfresco.service.cmr.repository.ContentService alfContentService;
 
     @Autowired
-    public ContentService(ServiceRegistry serviceRegistry) {
+    public ContentService(@Qualifier("ServiceRegistry") ServiceRegistry serviceRegistry) {
         alfContentService = serviceRegistry.getContentService();
     }
 

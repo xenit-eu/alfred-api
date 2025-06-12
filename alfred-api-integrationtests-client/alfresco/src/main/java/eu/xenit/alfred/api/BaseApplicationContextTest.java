@@ -31,7 +31,7 @@ public abstract class BaseApplicationContextTest {
     public BaseApplicationContextTest() {
         // initialise the static application-context
         testApplicationContext = Server.getApplicationContext();
-        serviceRegistry = getBean(ServiceRegistry.class);
+        serviceRegistry = getBean("ServiceRegistry", ServiceRegistry.class);
         c = getBean(AlfredApiToAlfrescoConversion.class);
         repository = getBean(Repository.class);
         transactionService = getBean(TransactionService.class);

@@ -18,6 +18,7 @@ import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service("eu.xenit.alfred.api.categories.ICategoryService")
@@ -29,7 +30,7 @@ public class CategoryService implements ICategoryService {
     private NamespaceService namespaceService;
 
     @Autowired
-    public CategoryService(ServiceRegistry registry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
+    public CategoryService(@Qualifier("ServiceRegistry") ServiceRegistry registry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
         nodeService = registry.getNodeService();
         categoryService = registry.getCategoryService();
         namespaceService = registry.getNamespaceService();

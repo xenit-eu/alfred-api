@@ -39,7 +39,7 @@ public class AlfrescoProcessInstanceWorkflowConvertor extends AbstractAlfredApiA
 
     @Autowired
     public AlfrescoProcessInstanceWorkflowConvertor(
-            ServiceRegistry serviceRegistry,
+            @Qualifier("ServiceRegistry") ServiceRegistry serviceRegistry,
             IPeopleService peopleService,
             AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion,
             @Qualifier("eu.xenit.alfred.api.alfresco.workflow.alfresco.AlfrescoWorkflowTaskWorkflowConvertor")

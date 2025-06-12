@@ -42,6 +42,7 @@ import org.alfresco.rest.framework.jacksonextensions.RestJsonModule;
 import org.alfresco.service.namespace.NamespaceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -87,7 +88,7 @@ public class AlfredApiRestServletContext extends DefaultAlfrescoMvcServletContex
 
     private static final Logger log = LoggerFactory.getLogger(AlfredApiRestServletContext.class);
 
-    public AlfredApiRestServletContext(RestJsonModule alfrescoRestJsonModule, NamespaceService namespaceService) {
+    public AlfredApiRestServletContext(@Qualifier("restJsonModule") RestJsonModule alfrescoRestJsonModule, NamespaceService namespaceService) {
         super(alfrescoRestJsonModule, namespaceService);
     }
 

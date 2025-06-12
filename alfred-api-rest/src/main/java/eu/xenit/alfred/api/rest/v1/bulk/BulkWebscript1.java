@@ -40,7 +40,7 @@ public class BulkWebscript1 extends AlfredApiV1Webscript {
     final ObjectMapper mapper = new ObjectMapper();
     private final DispatcherWebscript dispatcherWebscript;
 
-    public BulkWebscript1(ServiceRegistry serviceRegistry,
+    public BulkWebscript1(@Qualifier("ServiceRegistry") ServiceRegistry serviceRegistry,
             @Qualifier("alfred.api") DispatcherWebscript dispatcherWebscript) {
         this.serviceRegistry = serviceRegistry;
         this.dispatcherWebscript = dispatcherWebscript;
