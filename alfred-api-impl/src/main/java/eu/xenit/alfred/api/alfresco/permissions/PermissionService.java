@@ -26,6 +26,7 @@ import org.alfresco.service.cmr.security.AccessStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -57,7 +58,7 @@ public class PermissionService implements IPermissionService {
     private Map<String, PermissionValue> fullControlPermissions = new HashMap<String, PermissionValue>();
 
     @Autowired
-    public PermissionService(ServiceRegistry serviceRegistry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
+    public PermissionService(@Qualifier("ServiceRegistry") ServiceRegistry serviceRegistry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
         this.permissionService = serviceRegistry.getPermissionService();
         for (String permissionString : this.permissionStrings) {
             this.fullControlPermissions.put(permissionString, PermissionValue.ALLOW);

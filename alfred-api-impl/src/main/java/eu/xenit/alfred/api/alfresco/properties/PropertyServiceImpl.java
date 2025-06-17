@@ -21,6 +21,7 @@ import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +36,7 @@ public class PropertyServiceImpl implements IPropertyService {
     protected AlfredApiToAlfrescoConversion c;
 
     @Autowired
-    public PropertyServiceImpl(ServiceRegistry serviceRegistry, AlfredApiToAlfrescoConversion c) {
+    public PropertyServiceImpl(@Qualifier("ServiceRegistry") ServiceRegistry serviceRegistry, AlfredApiToAlfrescoConversion c) {
         this.c = c;
         dictionaryService = serviceRegistry.getDictionaryService();
         messageService = serviceRegistry.getMessageService();

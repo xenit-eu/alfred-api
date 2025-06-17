@@ -29,6 +29,7 @@ import org.alfresco.service.namespace.QName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
@@ -49,7 +50,7 @@ public class DictionaryService implements IDictionaryService {
     private NamespaceService namespaceService;
 
     @Autowired
-    public DictionaryService(ServiceRegistry registry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion,
+    public DictionaryService(@Qualifier("ServiceRegistry") ServiceRegistry registry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion,
             IPropertyService propertyService, ITypeService typeService, IAspectService aspectService) {
         dictionaryService = registry.getDictionaryService();
         namespaceService = registry.getNamespaceService();

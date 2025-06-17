@@ -7,6 +7,7 @@ import org.alfresco.service.cmr.workflow.WorkflowService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -30,7 +31,7 @@ public class WIPServiceImpl implements IWIPService {
     }
 
     @Autowired
-    public void setServiceRegistry(ServiceRegistry serviceRegistry) {
+    public void setServiceRegistry(@Qualifier("ServiceRegistry") ServiceRegistry serviceRegistry) {
         this.serviceRegistry = serviceRegistry;
         wf = serviceRegistry.getWorkflowService();
     }

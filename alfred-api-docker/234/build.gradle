@@ -1,6 +1,8 @@
 dependencies {
     baseAlfrescoWar platform("org.alfresco:acs-packaging:23.4.0")
     baseAlfrescoWar 'org.alfresco:content-services@war'
+
+    testImplementation(alfrescoAmp('org.alfresco:alfresco-governance-services-enterprise-repo:23.4.2.2@amp'))
 }
 
 dockerAlfresco {

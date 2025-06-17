@@ -39,6 +39,7 @@ import org.alfresco.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 // Note: To *temporarily* get working syntax highlighting and IDE features in this file: change the root
@@ -57,7 +58,7 @@ public class SearchFacetsServiceImpl implements SearchFacetsService {
     // This file might give inspection error due to being 5.x specific.
     // Intellij can't handle this file being reused in different libs.
     @Autowired
-    public SearchFacetsServiceImpl(ServiceRegistry serviceRegistry, SolrFacetService solrFacetsService,
+    public SearchFacetsServiceImpl(@Qualifier("ServiceRegistry") ServiceRegistry serviceRegistry, SolrFacetService solrFacetsService,
             ITranslationService translationService) {
         facetService = solrFacetsService;
         this.translationService = translationService;

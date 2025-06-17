@@ -22,6 +22,7 @@ import org.alfresco.service.namespace.QName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component("eu.xenit.alfred.api.filefolder.IFileFolderService")
@@ -37,7 +38,7 @@ public class FileFolderService implements IFileFolderService {
     private org.alfresco.service.cmr.model.FileFolderService fileFolderService;
 
     @Autowired
-    public FileFolderService(ServiceRegistry serviceRegistry,
+    public FileFolderService(@Qualifier("ServiceRegistry") ServiceRegistry serviceRegistry,
             AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
         this.nodeService = serviceRegistry.getNodeService();
         this.nameSpaceService = serviceRegistry.getNamespaceService();

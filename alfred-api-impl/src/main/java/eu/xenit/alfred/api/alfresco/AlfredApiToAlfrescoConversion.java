@@ -16,6 +16,7 @@ import org.alfresco.service.namespace.QName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 
@@ -28,7 +29,7 @@ public class AlfredApiToAlfrescoConversion {
     private NamespaceService namespaceService;
 
     @Autowired
-    public AlfredApiToAlfrescoConversion(ServiceRegistry serviceRegistry) {
+    public AlfredApiToAlfrescoConversion(@Qualifier("ServiceRegistry") ServiceRegistry serviceRegistry) {
         this.namespaceService = serviceRegistry.getNamespaceService();
     }
 
