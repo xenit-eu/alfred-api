@@ -6,9 +6,9 @@ cd "$scriptPath"
 MARKDOWNTOPDF_VERSION=v1.1.4
 MARKDOWNTOWEBSITE_VERSION=1.0.5
 
-MARKDOWNTOPDF_IMAGE="private.docker.xenit.eu/xenit-markdowntopdf:$MARKDOWNTOPDF_VERSION"
-MARKDOWN_SPLITTER_IMAGE="private.docker.xenit.eu/customer/xenit/xenit-manuals-markdown-splitter:$MARKDOWNTOWEBSITE_VERSION"
-MANUALS_HUGO_GENERATOR_IMAGE="private.docker.xenit.eu/customer/xenit/xenit-manuals-hugo-generator:$MARKDOWNTOWEBSITE_VERSION"
+MARKDOWNTOPDF_IMAGE="docker.xenit.eu/internal/xenit-markdowntopdf:$MARKDOWNTOPDF_VERSION"
+MARKDOWN_SPLITTER_IMAGE="docker.xenit.eu/internal/xenit-manuals-markdown-splitter:$MARKDOWNTOWEBSITE_VERSION"
+MANUALS_HUGO_GENERATOR_IMAGE="docker.xenit.eu/internal/xenit-manuals-hugo-generator:$MARKDOWNTOWEBSITE_VERSION"
 
 WEIGHT=0
 

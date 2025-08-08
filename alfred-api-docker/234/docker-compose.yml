@@ -14,7 +14,7 @@ services:
       - GLOBAL_messaging.broker.url=failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true
       - GLOBAL_localTransform.core-aio.url=http://transform-core-aio:8090/
   solr:
-    image: private.docker.xenit.eu/alfresco-enterprise/alfresco-solr6:2.0.9.1
+    image: docker.xenit.eu/alfresco-enterprise/alfresco-solr6:2.0.9.1
     volumes:
       - solr:/opt/alfresco/alf_data
     restart: unless-stopped
