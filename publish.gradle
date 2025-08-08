@@ -44,10 +44,3 @@ publishing {
         }
     }
 }
-
-signing {
-    required { !version.toString().endsWith("SNAPSHOT") }
-    // This needs to be changed once Gradle is upgraded to https://github.com/xenit-eu/xenit-java-logging/blob/master/publish.gradle#L54
-    useInMemoryPgpKeys(findProperty("signingKeyId"),findProperty("signingKey"), findProperty("signingPassword"))
-    sign publishing.publications
-}
