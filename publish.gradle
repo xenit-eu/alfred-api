@@ -1,5 +1,6 @@
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
+apply plugin: 'eu.xenit.enterprise-conventions.oss'
 
 publishing {
     publications {
@@ -30,24 +31,11 @@ publishing {
             }
         }
     }
-
-    repositories {
-        maven {
-            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-            url = version.toString().endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-
-            credentials {
-                username = project.findProperty('sonatype_username')
-                password = project.findProperty('sonatype_password')
-            }
-        }
-    }
 }
 
 signing {
     required { !version.toString().endsWith("SNAPSHOT") }
     // This needs to be changed once Gradle is upgraded to https://github.com/xenit-eu/xenit-java-logging/blob/master/publish.gradle#L54
-    useInMemoryPgpKeys(findProperty("signingKeyId"),findProperty("signingKey"), findProperty("signingPassword"))
+    useInMemoryPgpKeys(findProperty("signingKeyId"), findProperty("signingKey"), findProperty("signingPassword"))
     sign publishing.publications
 }
