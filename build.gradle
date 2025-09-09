@@ -22,7 +22,7 @@ ext {
     http_version = '4.5.13' // Used by integration tests
 }
 
-subprojects {
+allprojects {
     apply plugin: 'java'
 
     group = 'eu.xenit.alfred.api'
