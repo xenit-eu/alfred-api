@@ -3,6 +3,7 @@
 ## 6.1.1 (unreleased)
 ### Fixed
 * [ALFREDAPI-578](https://xenitsupport.jira.com/browse/ALFREDAPI-578): Added Qualifiers to Conflicting beans with Governance Services
+* [ALFREDAPI-582](https://xenitsupport.jira.com/browse/ALFREDAPI-582): Migrate from Cloudsmith to Harbor
 
 ## 6.1.0 (2025-04-01)
 ### Added
