@@ -1,18 +1,14 @@
 package eu.xenit.alfred.api.tests.search;
 
-import static org.junit.Assert.assertTrue;
-
 import eu.xenit.alfred.api.search.FacetSearchResult;
 import eu.xenit.alfred.api.search.QueryBuilder;
 import eu.xenit.alfred.api.search.SearchQuery;
 import eu.xenit.alfred.api.search.SearchQuery.FacetOptions;
 import eu.xenit.alfred.api.search.SearchQueryResult;
 import eu.xenit.alfred.api.search.nodes.SearchSyntaxNode;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.search.impl.solr.facet.SolrFacetProperties;
+import org.alfresco.repo.search.impl.solr.facet.SolrFacetService;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.namespace.QName;
 import org.junit.Assert;
@@ -21,9 +17,15 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.Assert.assertTrue;
+
 /**
  * NOTICE:
- *
+ * <p>
  * This class contains tests with facets that were only supported from Alfresco 5+.
  */
 public class SearchServiceFacetsTest extends SearchServiceTest {
@@ -31,9 +33,12 @@ public class SearchServiceFacetsTest extends SearchServiceTest {
     private static final String ADMIN_USER_NAME = "admin";
     private static final Logger logger = LoggerFactory.getLogger(SearchServiceFacetsTest.class);
 
+    private SolrFacetService facetService;
+
 
     @Before
     public void Setup() {
+        facetService = getBean(SolrFacetService.class);
         AuthenticationUtil.setFullyAuthenticatedUser(ADMIN_USER_NAME);
     }
 

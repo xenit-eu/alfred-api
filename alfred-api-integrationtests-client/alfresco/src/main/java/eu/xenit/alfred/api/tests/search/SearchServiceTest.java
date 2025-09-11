@@ -1,8 +1,5 @@
 package eu.xenit.alfred.api.tests.search;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import eu.xenit.alfred.api.search.FacetSearchResult;
 import eu.xenit.alfred.api.search.ISearchService;
 import eu.xenit.alfred.api.search.QueryBuilder;
@@ -12,12 +9,7 @@ import eu.xenit.alfred.api.search.SearchQueryResult;
 import eu.xenit.alfred.api.search.nodes.SearchSyntaxNode;
 import eu.xenit.alfred.api.tests.JavaApiBaseTest;
 import eu.xenit.alfred.api.util.SolrTestHelperImpl;
-import java.io.Serializable;
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.search.impl.solr.facet.SolrFacetService;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.service.cmr.model.FileInfo;
@@ -34,11 +26,18 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public abstract class SearchServiceTest extends JavaApiBaseTest {
 
     private static final String LONG_MAX_VALUE = String.valueOf(Long.MAX_VALUE);
-    private static final String LONG_MAX_VALUE_PLUS_ONE = new BigInteger(LONG_MAX_VALUE).add(new BigInteger("1"))
-            .toString();
+    private static final String LONG_MAX_VALUE_PLUS_ONE = new BigInteger(LONG_MAX_VALUE).add(new BigInteger("1")).toString();
 
     private static final Logger logger = LoggerFactory.getLogger(SearchServiceTest.class);
     private static final String ADMIN_USER_NAME = "admin";
@@ -47,14 +46,12 @@ public abstract class SearchServiceTest extends JavaApiBaseTest {
     protected NodeService nodeService;
     protected NamespacePrefixResolver namespacePrefixResolver;
     protected SolrTestHelperImpl solrHelper;
-    protected SolrFacetService facetService;
 
     public SearchServiceTest() {
         searchService = getBean(ISearchService.class);
         nodeService = serviceRegistry.getNodeService();
         namespacePrefixResolver = getBean("namespaceService", NamespacePrefixResolver.class);
         solrHelper = getBean(SolrTestHelperImpl.class);
-        facetService = getBean(SolrFacetService.class);
     }
 
     @Before
@@ -365,7 +362,7 @@ public abstract class SearchServiceTest extends JavaApiBaseTest {
         SearchSyntaxNode node =
                 new QueryBuilder()
                         .startOr()
-                        .property("{http://www.alfresco.org/model/system/1.0}node-dbid", LONG_MAX_VALUE)
+                        .property("{http://www.alfresco.org/model/content/1.0}emailFeedId", LONG_MAX_VALUE)
                         .end()
                         .create();
         SearchQuery searchQuery = new SearchQuery();
@@ -378,7 +375,7 @@ public abstract class SearchServiceTest extends JavaApiBaseTest {
         SearchSyntaxNode node =
                 new QueryBuilder()
                         .startOr()
-                        .property("{http://www.alfresco.org/model/system/1.0}node-dbid", LONG_MAX_VALUE_PLUS_ONE)
+                        .property("{http://www.alfresco.org/model/content/1.0}emailFeedId", LONG_MAX_VALUE_PLUS_ONE)
                         .end()
                         .create();
         SearchQuery searchQuery = new SearchQuery();
