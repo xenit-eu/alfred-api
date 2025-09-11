@@ -2,7 +2,7 @@ services:
   alfresco-core:
     image: ${DOCKER_IMAGE:-image_not_set}
     ports:
-      - "${DOCKER_IP}:8080:8080"
+      - "8080:8080"
       - "4578:4578" # coderunner-server
     volumes:
       - alfresco:/opt/alfresco/alf_data
@@ -11,6 +11,8 @@ services:
       - TERM=xterm
       - TOMCAT_ALLOW_CASUAL_MULTIPART_PARSING=false
       - GLOBAL_messaging.broker.url=failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true
+      - GLOBAL_transform.service.enabled=true
+      - GLOBAL_transform.service.url=http://transform-router:8095/
       - GLOBAL_localTransform.core-aio.url=http://transform-core-aio:8090/
       - GLOBAL_sfs.url=http://shared-file-store:8099/
       - GLOBAL_index.subsystem.name=elasticsearch
@@ -33,12 +35,38 @@ services:
       retries: 5
       start_period: 30s
 
+  kibana:
+    image: kibana:7.17.28
+    mem_limit: 256m
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
   elasticsearch-live-indexing:
     image: quay.io/alfresco/alfresco-elasticsearch-live-indexing
     environment:
       SPRING_ELASTICSEARCH_REST_URIS: http://elasticsearch:9200
       SPRING_ACTIVEMQ_BROKERURL: nio://activemq:61616
       ALFRESCO_SHAREDFILESTORE_BASEURL: http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/
+
+  elasticsearch-reindexing:
+     image: quay.io/alfresco/alfresco-elasticsearch-reindexing:4.2.0
+     environment:
+       SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql:5432/alfresco
+       SPRING_DATASOURCE_USER: alfresco
+       SPRING_DATASOURCE_PASSWORD: admin
+       SPRING_ELASTICSEARCH_REST_URIS: http://elasticsearch:9200
+
+       # Unsure which of below variables is actually used
+       BROKER_URL: nio://activemq:61616
+       SPRING_ACTIVEMQ_BROKER_URL: nio://activemq:61616
+
+       ALFRESCO_SHAREDFILESTORE_BASEURL: http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/
+       ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL: http://transform-router:8095/transform/config
+       ALFRESCO_REINDEX_PREFIXESFILE: "file:/opt/reindex.prefixes-file.json"
+     volumes:
+       - ./reindex.prefixes-file.json:/opt/reindex.prefixes-file.json:ro
 
   postgresql:
     image: postgres:15
@@ -59,6 +87,17 @@ services:
     environment:
       JAVA_OPTS: " -Xms256m -Xmx512m"
       ACTIVEMQ_URL: "nio://activemq:61616"
+
+  # Only needed for Elasticsearch content indexing
+  transform-router:
+    image: quay.io/alfresco/alfresco-transform-router:4.1.7
+    environment:
+      - JAVA_OPTS=-Xms256m -Xmx512m
+      - ACTIVEMQ_URL=tcp://activemq:61616
+      - FILE_STORE_URL=http://shared-file-store:80/alfresco/api/-default-/private/sfs/versions/1/file
+      - LOG_LEVEL=INFO
+    depends_on:
+      - activemq
 
   shared-file-store:
     image: quay.io/alfresco/alfresco-shared-file-store:3.0.0
