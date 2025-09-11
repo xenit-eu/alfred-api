@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.service.cmr.model.FileFolderService;
@@ -15,6 +16,7 @@ import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.SearchService;
+import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -37,21 +39,15 @@ public abstract class JavaApiBaseTest extends BaseApplicationContextTest {
         if ("/app:company_home".equals(path)) {
             return repository.getCompanyHome();
         }
-        SearchService searchService = serviceRegistry.getSearchService();
-        StoreRef storeRef = StoreRef.STORE_REF_WORKSPACE_SPACESSTORE;
-        String query = "PATH:'" + path + "'";
-        logger.warn("Query" + query);
-        ResultSet resultSet = searchService.query(storeRef, SearchService.LANGUAGE_FTS_ALFRESCO, query);
-        NodeRef companyHomeNodeRef = null;
-        try {
-            if (resultSet.length() == 0) {
-                throw new RuntimeException("Didn't find node at: " + path);
-            }
-            companyHomeNodeRef = resultSet.getNodeRef(0);
-        } finally {
-            resultSet.close();
+
+        NamespacePrefixResolver namespacePrefixResolver = serviceRegistry.getNamespaceService();
+        logger.error("WIM debug path={}", path); // REMOVE ME
+        List<NodeRef> results = serviceRegistry.getSearchService().selectNodes(
+                repository.getCompanyHome(), path, null, namespacePrefixResolver, false);
+        if (results.isEmpty()) {
+            throw new RuntimeException("Didn't find node at: " + path);
         }
-        return companyHomeNodeRef;
+        return results.getFirst();
     }
 
     protected NodeRef getMainTestFolder() {
