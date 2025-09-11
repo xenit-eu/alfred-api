@@ -24,6 +24,7 @@ subprojects {
 
     dockerCompose {
         useComposeFiles = ['docker-compose.yml']
+        tcpPortsToIgnoreWhenWaiting = [ 8000 ] // Don't get stuck when a debugger is attached
         // Don't use the dev compose file during CI builds
         if (!ci.isCi()) {
             // Allow the dev compose file to be deleted
