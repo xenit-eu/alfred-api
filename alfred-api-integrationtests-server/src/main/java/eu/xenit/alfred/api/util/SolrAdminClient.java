@@ -3,6 +3,7 @@ package eu.xenit.alfred.api.util;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+
 import org.alfresco.repo.management.subsystems.SwitchableApplicationContextFactory;
 import org.alfresco.repo.search.impl.solr.SolrAdminHTTPClient;
 import org.json.JSONException;
@@ -57,13 +58,8 @@ public class SolrAdminClient {
     }
 
     public long getLastTransactionId() {
-        try {
-            return getSolrSummaryJson()
-                    .getJSONObject("alfresco")
-                    .getLong("Id for last TX in index");
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return -1;
-        }
+        return getSolrSummaryJson()
+                .getJSONObject("alfresco")
+                .getLong("Id for last TX in index");
     }
 }
