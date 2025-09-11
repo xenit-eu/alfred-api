@@ -55,7 +55,7 @@ public class SolrTestHelperImpl implements SolrTestHelper {
             logger.debug("alf transaction: {}, solr transaction: {}", alfTransaction, solrTransaction);
             return alfTransaction <= solrTransaction;
         } catch (Exception e) {
-            logger.error("Failed to determine if Solr is synced", e);
+            logger.warn("Failed to determine if Solr is synced: {}", e.getMessage());
             return false;
         }
     }
