@@ -62,21 +62,6 @@ public class PermissionServiceTest extends JavaApiBaseTest {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
     }
 
-    public NodeRef getNodeAtPath(String path) {
-        StoreRef storeRef = StoreRef.STORE_REF_WORKSPACE_SPACESSTORE;
-        ResultSet rs = searchService.query(storeRef, SearchService.LANGUAGE_XPATH, path);
-        NodeRef companyHomeNodeRef = null;
-        try {
-            if (rs.length() == 0) {
-                throw new RuntimeException("Didn't find node at: " + path);
-            }
-            companyHomeNodeRef = rs.getNodeRef(0);
-        } finally {
-            rs.close();
-        }
-        return companyHomeNodeRef;
-    }
-
     @Test
     public void testGetPermissions() {
         try {
