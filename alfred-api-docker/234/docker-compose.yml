@@ -23,6 +23,7 @@ services:
     image: elasticsearch:7.17.28
     environment:
       - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
     volumes:
       - elasticsearch:/usr/share/elasticsearch/data
     healthcheck:
