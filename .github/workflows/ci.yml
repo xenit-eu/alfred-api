@@ -36,7 +36,7 @@ jobs:
         with:
           arguments: --info :alfred-api-rest:test
       - name: Publish
-        if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}"
+        if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}
         uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: --info -PsigningKeyId=CDE3528F :alfred-api-interface:publish
