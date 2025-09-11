@@ -67,7 +67,7 @@ public class PermissionServiceTest extends JavaApiBaseTest {
         try {
             solrHelper.waitForTransactionSync();
         } catch (InterruptedException e) {
-            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+            Assert.fail(String.format("Interrupted while awaiting solr synced state. Exception: %s", e));
         }
         cleanUp();
 
@@ -99,7 +99,7 @@ public class PermissionServiceTest extends JavaApiBaseTest {
         try {
             solrHelper.waitForTransactionSync();
         } catch (InterruptedException e) {
-            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+            Assert.fail(String.format("Interrupted while awaiting solr synced state. Exception: %s", e));
         }
         cleanUp();
 
@@ -109,7 +109,7 @@ public class PermissionServiceTest extends JavaApiBaseTest {
         try {
             solrHelper.waitForTransactionSync();
         } catch (InterruptedException e) {
-            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+            Assert.fail(String.format("Interrupted while awaiting solr synced state. Exception: %s", e));
         }
 
         try {
@@ -132,7 +132,7 @@ public class PermissionServiceTest extends JavaApiBaseTest {
         try {
             solrHelper.waitForTransactionSync();
         } catch (InterruptedException e) {
-            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+            Assert.fail(String.format("Interrupted while awaiting solr synced state. Exception: %s", e));
         }
         cleanUp();
 
@@ -143,7 +143,7 @@ public class PermissionServiceTest extends JavaApiBaseTest {
         try {
             solrHelper.waitForTransactionSync();
         } catch (InterruptedException e) {
-            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+            Assert.fail(String.format("Interrupted while awaiting solr synced state. Exception: %s", e));
         }
 
         try {

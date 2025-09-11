@@ -68,7 +68,7 @@ public class FileFolderServiceTest extends JavaApiBaseTest {
         try {
             solrHelper.waitForTransactionSync();
         } catch (InterruptedException e) {
-            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+            Assert.fail(String.format("Interrupted while awaiting solr synced state. Exception: %s", e));
         }
         this.cleanUp();
         NodeRef companyHomeNodeRef = this.getNodeAtPath("/app:company_home");
@@ -91,7 +91,7 @@ public class FileFolderServiceTest extends JavaApiBaseTest {
         try {
             solrHelper.waitForTransactionSync();
         } catch (InterruptedException e) {
-            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+            Assert.fail(String.format("Interrupted while awaiting solr synced state. Exception: %s", e));
         }
         NodeRef companyHomeNodeRef = this.getNodeAtPath("/app:company_home");
         this.cleanUp();
@@ -101,7 +101,7 @@ public class FileFolderServiceTest extends JavaApiBaseTest {
         try {
             solrHelper.waitForTransactionSync();
         } catch (InterruptedException e) {
-            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+            Assert.fail(String.format("Interrupted while awaiting solr synced state. Exception: %s", e));
         }
         String qNamePath = this.service.getPath(c.alfredApi(testNode.getNodeRef())).getQnamePath();
         logger.debug("QNamePath: " + qNamePath);
