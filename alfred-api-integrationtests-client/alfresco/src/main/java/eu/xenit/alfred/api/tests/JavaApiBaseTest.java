@@ -1,10 +1,12 @@
 package eu.xenit.alfred.api.tests;
 
 import eu.xenit.alfred.api.BaseApplicationContextTest;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+
 import org.alfresco.model.ContentModel;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
@@ -37,7 +39,9 @@ public abstract class JavaApiBaseTest extends BaseApplicationContextTest {
         }
         SearchService searchService = serviceRegistry.getSearchService();
         StoreRef storeRef = StoreRef.STORE_REF_WORKSPACE_SPACESSTORE;
-        ResultSet resultSet = searchService.query(storeRef, SearchService.LANGUAGE_XPATH, path);
+        String query = "PATH:'" + path + "'";
+        logger.warn("Query" + query);
+        ResultSet resultSet = searchService.query(storeRef, SearchService.LANGUAGE_FTS_ALFRESCO, query);
         NodeRef companyHomeNodeRef = null;
         try {
             if (resultSet.length() == 0) {
