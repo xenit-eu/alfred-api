@@ -62,27 +62,13 @@ public class FileFolderServiceTest extends JavaApiBaseTest {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
     }
 
-    public NodeRef getNodeAtPath(String path) {
-        StoreRef storeRef = StoreRef.STORE_REF_WORKSPACE_SPACESSTORE;
-        ResultSet rs = searchService.query(storeRef, SearchService.LANGUAGE_XPATH, path);
-        NodeRef companyHomeNodeRef = null;
-        try {
-            if (rs.length() == 0) {
-                throw new RuntimeException("Didn't find node at: " + path);
-            }
-            companyHomeNodeRef = rs.getNodeRef(0);
-        } finally {
-            rs.close();
-        }
-        return companyHomeNodeRef;
-    }
 
     @Test
     public void TestGetDisplayPath() {
         try {
             solrHelper.waitForTransactionSync();
         } catch (InterruptedException e) {
-            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+            Assert.fail(String.format("Interrupted while awaiting solr synced state. Exception: %s", e));
         }
         this.cleanUp();
         NodeRef companyHomeNodeRef = this.getNodeAtPath("/app:company_home");
@@ -105,7 +91,7 @@ public class FileFolderServiceTest extends JavaApiBaseTest {
         try {
             solrHelper.waitForTransactionSync();
         } catch (InterruptedException e) {
-            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+            Assert.fail(String.format("Interrupted while awaiting solr synced state. Exception: %s", e));
         }
         NodeRef companyHomeNodeRef = this.getNodeAtPath("/app:company_home");
         this.cleanUp();
@@ -115,7 +101,7 @@ public class FileFolderServiceTest extends JavaApiBaseTest {
         try {
             solrHelper.waitForTransactionSync();
         } catch (InterruptedException e) {
-            Assert.fail(String.format("Interupted while awaiting solr synced state. Exception: %s", e));
+            Assert.fail(String.format("Interrupted while awaiting solr synced state. Exception: %s", e));
         }
         String qNamePath = this.service.getPath(c.alfredApi(testNode.getNodeRef())).getQnamePath();
         logger.debug("QNamePath: " + qNamePath);
