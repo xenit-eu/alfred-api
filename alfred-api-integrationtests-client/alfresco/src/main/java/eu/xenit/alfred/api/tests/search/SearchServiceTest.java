@@ -375,7 +375,7 @@ public abstract class SearchServiceTest extends JavaApiBaseTest {
         SearchSyntaxNode node =
                 new QueryBuilder()
                         .startOr()
-                        .property("{http://www.alfresco.org/model/system/1.0}node-dbid", LONG_MAX_VALUE)
+                        .property("{http://www.alfresco.org/model/system/1.0}node-dbid", LONG_MAX_VALUE_PLUS_ONE)
                         .end()
                         .create();
         SearchQuery searchQuery = new SearchQuery();
