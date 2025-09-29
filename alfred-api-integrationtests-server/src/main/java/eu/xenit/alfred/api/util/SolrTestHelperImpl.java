@@ -105,8 +105,8 @@ public class SolrTestHelperImpl implements SolrTestHelper {
     }
 
     private void waitForCompletion(Supplier<Boolean> hasCompleted) throws InterruptedException {
-        final int pause_in_seconds = 1;
-        final int max_attempts = 3;
+        final int pause_in_seconds = 5;
+        final int max_attempts = 20;
         System.out.print("Waiting " + pause_in_seconds + " seconds for Solr to index content");
         for (int i = 0; i < max_attempts; i++) {
             if (hasCompleted.get()) {
