@@ -1,5 +1,6 @@
 package eu.xenit.alfred.api.tests.search;
 
+import eu.xenit.alfred.api.alfresco.search.SearchService;
 import eu.xenit.alfred.api.search.FacetSearchResult;
 import eu.xenit.alfred.api.search.QueryBuilder;
 import eu.xenit.alfred.api.search.SearchQuery;
@@ -35,15 +36,30 @@ public class SearchServiceFacetsTest extends SearchServiceTest {
 
     private SolrFacetService facetService;
 
+    // For some reason (I think the remote test runner), we cannot use Hamcrest 'Assume'.
+    // That's why build a poor man's 'Assume' here.
+    private boolean skipTests = false;
 
     @Before
-    public void Setup() {
+    public void setup() {
         facetService = getBean(SolrFacetService.class);
+
+        // Only execute these tests if we are using Solr.
+        // Bucketed facets don't work OOTB in the same way on ElasticSearch as Solr
+        String searchSubsystem = getBean(SearchService.class).getSearchSubsystem();
+        if (searchSubsystem.equals("elasticsearch")) {
+            skipTests = true;
+            logger.warn("Skipping SearchServiceFacetsTest because bucketed facets are unsupported under ElasticSearch");
+        }
         AuthenticationUtil.setFullyAuthenticatedUser(ADMIN_USER_NAME);
     }
 
     @Test
     public void TestGetWithFacetsIncludesCustomFilterFacets() throws InterruptedException {
+        if (skipTests) {
+            return;
+        }
+
         solrHelper.waitForTransactionSync();
         // Add a new facet filter
         String newFacetFilterId = "test_filter";
@@ -93,6 +109,10 @@ public class SearchServiceFacetsTest extends SearchServiceTest {
 
     @Test
     public void TestGetBucketedFacets() throws InterruptedException {
+        if (skipTests) {
+            return;
+        }
+
         solrHelper.waitForTransactionSync();
         // Query that should return default facets
         // There are 6 default facets: mimetype, modifier, creator, created, modified and size
