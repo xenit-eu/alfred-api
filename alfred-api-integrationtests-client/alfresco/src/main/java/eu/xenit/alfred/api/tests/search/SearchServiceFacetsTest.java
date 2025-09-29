@@ -52,21 +52,22 @@ public class SearchServiceFacetsTest extends SearchServiceTest {
         // Therefore we create a filter facet based on a property of which we are sure already exists on docs.
         QName facetQName = ContentModel.PROP_LOCALE;
 
-        SolrFacetProperties newFacet = new SolrFacetProperties.Builder()
-                .filterID(newFacetFilterId)
-                .facetQName(facetQName)
-                .displayName("Wot if me nan woz fat")
-                .displayControl("Simple Filter")
-                .maxFilters(10)
-                .hitThreshold(1)
-                .minFilterValueLength(1)
-                .sortBy("ASCENDING")
-                .scope("ALL")
-                .isEnabled(true)
-                .isDefault(true)
-                .build();
-        logger.debug("SolrFacetProperties newFacet = {}", newFacet);
-        facetService.createFacetNode(newFacet);
+        if (facetService.getFacet(newFacetFilterId) == null) {
+            SolrFacetProperties newFacet = new SolrFacetProperties.Builder()
+                    .filterID(newFacetFilterId)
+                    .facetQName(facetQName)
+                    .displayName("Wot if me nan woz fat")
+                    .displayControl("Simple Filter")
+                    .maxFilters(10)
+                    .hitThreshold(1)
+                    .minFilterValueLength(1)
+                    .sortBy("ASCENDING")
+                    .scope("ALL")
+                    .isEnabled(true)
+                    .isDefault(true)
+                    .build();
+            facetService.createFacetNode(newFacet);
+        }
 
         // Perform search query
         SearchSyntaxNode node = new QueryBuilder().term("type", "cm:content").create();
