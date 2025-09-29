@@ -383,6 +383,8 @@ Options to page through the search results by setting a skipcount and a page siz
 
 Options to enable facets. This will return facet results as configured on the server.
 The Alfresco `limit` and `minCount` parameters are not implemented.
+When using ElasticSearch as a backend (Alfresco Enterprise Search), bucketed facets (e.g. on `cm:created`) do not work
+out of the box, so they also are not returned via Alfred API.
 
 **Note:** facets with 0 hits are not returned in the result
 ```json
