@@ -10,26 +10,25 @@ import eu.xenit.alfred.api.search.nodes.SearchSyntaxNode;
 import eu.xenit.alfred.api.search.nodes.TermSearchNode;
 import eu.xenit.alfred.api.search.visitors.BaseSearchSyntaxNodeVisitor;
 import eu.xenit.alfred.api.utils.StringUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by Michiel Huygen on 12/11/2015.
- */
 public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
 
     private static final String DUMMY = "_dummy_:_miss_";
 
     private StringBuilder builder = new StringBuilder();
     private HashMap<String, String> termToFtsTerm = new HashMap<>();
+    private final SearchService searchService;
     private final PropertyTypeCheckService propertyTypeCheckService;
 
     public FtsNodeVisitor() {
-        this(null);
+        this(null, null);
     }
 
-    public FtsNodeVisitor(PropertyService propertyService) {
+    public FtsNodeVisitor(SearchService searchService, PropertyService propertyService) {
         termToFtsTerm.put("type", "TYPE");
         termToFtsTerm.put("aspect", "ASPECT");
         termToFtsTerm.put("noderef", "ID");
@@ -42,8 +41,8 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
         termToFtsTerm.put("isnull", "ISNULL");
         termToFtsTerm.put("isnotnull", "ISNOTNULL");
         termToFtsTerm.put("exists", "EXISTS");
+        this.searchService = searchService;
         this.propertyTypeCheckService = new PropertyTypeCheckService(propertyService);
-        //termToFtsTerm.put("","");
     }
 
 
@@ -62,13 +61,11 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
             return visit(n.getChildren().get(0));
         }
 
-        //String s = ;
         List<String> children = new ArrayList<>(n.getChildren().size());
         for (SearchSyntaxNode node : n.getChildren()) {
             children.add(visit(node));
         }
 
-//        String s = String.join(" " + n.getOperator() + " ", n.getChildren().stream().map(el -> visit(el)).collect(Collectors.toList()));
         String s = StringUtils.join(" " + n.getOperator() + " ", children);
         builder.setLength(0);
         builder.append('(');
@@ -80,9 +77,14 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
 
     @Override
     public String visit(PropertySearchNode n) {
-        if (!propertyTypeCheckService.fitsType(n)) {
-            return DUMMY;
+        // This is only needed for Solr6. It actually breaks ElasticSearch since it throws on unknown properties
+        // See also https://xenitsupport.jira.com/browse/ALFREDAPI-427
+        if (searchService != null && "solr6".equals(searchService.getSearchSubsystem())) {
+            if (!propertyTypeCheckService.fitsType(n)) {
+                return DUMMY;
+            }
         }
+
         builder.setLength(0);
         if (n.isExact()) {
             builder.append('=');
@@ -106,10 +108,8 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
 
     @Override
     public String visit(TermSearchNode n) {
-
-        if (n.getTerm() == "all") {
+        if (n.getTerm().equals("all")) {
             String escaped = ftsEscape(n.getValue());
-
             return String.format(
                     "(TEXT:\"%s\" OR cm:name:\"%s\" OR cm:author:\"%s\" OR cm:creator:\"%s\" OR cm:modifier:\"%s\")",
                     escaped,
@@ -117,7 +117,6 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
                     escaped,
                     escaped,
                     escaped);
-
         }
 
         builder.setLength(0);
@@ -128,7 +127,6 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
         builder.append('"');
         return builder.toString();
     }
-
 
     public String toFts(RangeValue n) {
         if (n.getStart() == null && n.getEnd() == null) {
@@ -146,7 +144,6 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
         return '(' + start + ".." + end + ')';
     }
 
-
     @Override
     public String visit(InvertSearchNode invertSearchNode) {
         return "NOT " + visit(invertSearchNode.getTarget()) + "";
@@ -159,7 +156,6 @@ public class FtsNodeVisitor extends BaseSearchSyntaxNodeVisitor<String> {
         }
 
         return termToFtsTerm.get(term);
-
     }
 
     public String ftsEscape(String value) {
