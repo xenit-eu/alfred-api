@@ -1,6 +1,10 @@
 # Alfred API - Changelog
 
 ## 6.1.1 (unreleased)
+
+### Added
+* [ALFREDAPI-581](https://xenitsupport.jira.com/browse/ALFREDAPI-581): Support ElasticSearch (Alfresco Enterprise Search)
+
 ### Fixed
 * [ALFREDAPI-578](https://xenitsupport.jira.com/browse/ALFREDAPI-578): Added Qualifiers to Conflicting beans with Governance Services
 * [ALFREDAPI-582](https://xenitsupport.jira.com/browse/ALFREDAPI-582): Migrate from Cloudsmith to Harbor
