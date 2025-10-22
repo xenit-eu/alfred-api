@@ -85,7 +85,7 @@ public class FtsNodeVisitorTest {
 
     private String convertToFtsTerm(String alfredApiTerm) {
         PropertyService propertyService = new PropertyServiceStub(propertyToDataType);
-        FtsNodeVisitor ftsnodeVisitor = new FtsNodeVisitor(propertyService);
+        FtsNodeVisitor ftsnodeVisitor = new FtsNodeVisitor(null, propertyService);
         TermSearchNode searchNode = new TermSearchNode(alfredApiTerm, "prefix:test_prop");
 
         return ftsnodeVisitor.visit(searchNode);
@@ -107,7 +107,7 @@ public class FtsNodeVisitorTest {
 
     private String toFts(SearchSyntaxNode node, PropertyService propertyService) {
         logger.debug(SearchSyntaxPrinter.Print(node));
-        FtsNodeVisitor visitor = new FtsNodeVisitor(propertyService);
+        FtsNodeVisitor visitor = new FtsNodeVisitor(null, propertyService);
         String ret = visitor.visit(node);
 
         logger.debug(ret);

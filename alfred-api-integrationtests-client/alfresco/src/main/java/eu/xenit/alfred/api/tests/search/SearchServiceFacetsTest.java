@@ -1,18 +1,15 @@
 package eu.xenit.alfred.api.tests.search;
 
-import static org.junit.Assert.assertTrue;
-
+import eu.xenit.alfred.api.alfresco.search.SearchService;
 import eu.xenit.alfred.api.search.FacetSearchResult;
 import eu.xenit.alfred.api.search.QueryBuilder;
 import eu.xenit.alfred.api.search.SearchQuery;
 import eu.xenit.alfred.api.search.SearchQuery.FacetOptions;
 import eu.xenit.alfred.api.search.SearchQueryResult;
 import eu.xenit.alfred.api.search.nodes.SearchSyntaxNode;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.search.impl.solr.facet.SolrFacetProperties;
+import org.alfresco.repo.search.impl.solr.facet.SolrFacetService;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.namespace.QName;
 import org.junit.Assert;
@@ -21,9 +18,15 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.Assert.assertTrue;
+
 /**
  * NOTICE:
- *
+ * <p>
  * This class contains tests with facets that were only supported from Alfresco 5+.
  */
 public class SearchServiceFacetsTest extends SearchServiceTest {
@@ -31,14 +34,32 @@ public class SearchServiceFacetsTest extends SearchServiceTest {
     private static final String ADMIN_USER_NAME = "admin";
     private static final Logger logger = LoggerFactory.getLogger(SearchServiceFacetsTest.class);
 
+    private SolrFacetService facetService;
+
+    // For some reason (I think the remote test runner), we cannot use Hamcrest 'Assume'.
+    // That's why build a poor man's 'Assume' here.
+    private boolean skipTests = false;
 
     @Before
-    public void Setup() {
+    public void setup() {
+        facetService = getBean(SolrFacetService.class);
+
+        // Only execute these tests if we are using Solr.
+        // Bucketed facets don't work OOTB in the same way on ElasticSearch as Solr
+        String searchSubsystem = getBean(SearchService.class).getSearchSubsystem();
+        if (searchSubsystem.equals("elasticsearch")) {
+            skipTests = true;
+            logger.warn("Skipping SearchServiceFacetsTest because bucketed facets are unsupported under ElasticSearch");
+        }
         AuthenticationUtil.setFullyAuthenticatedUser(ADMIN_USER_NAME);
     }
 
     @Test
     public void TestGetWithFacetsIncludesCustomFilterFacets() throws InterruptedException {
+        if (skipTests) {
+            return;
+        }
+
         solrHelper.waitForTransactionSync();
         // Add a new facet filter
         String newFacetFilterId = "test_filter";
@@ -47,21 +68,22 @@ public class SearchServiceFacetsTest extends SearchServiceTest {
         // Therefore we create a filter facet based on a property of which we are sure already exists on docs.
         QName facetQName = ContentModel.PROP_LOCALE;
 
-        SolrFacetProperties newFacet = new SolrFacetProperties.Builder()
-                .filterID(newFacetFilterId)
-                .facetQName(facetQName)
-                .displayName("Wot if me nan woz fat")
-                .displayControl("Simple Filter")
-                .maxFilters(10)
-                .hitThreshold(1)
-                .minFilterValueLength(1)
-                .sortBy("ASCENDING")
-                .scope("ALL")
-                .isEnabled(true)
-                .isDefault(true)
-                .build();
-        logger.debug("SolrFacetProperties newFacet = {}", newFacet);
-        facetService.createFacetNode(newFacet);
+        if (facetService.getFacet(newFacetFilterId) == null) {
+            SolrFacetProperties newFacet = new SolrFacetProperties.Builder()
+                    .filterID(newFacetFilterId)
+                    .facetQName(facetQName)
+                    .displayName("Wot if me nan woz fat")
+                    .displayControl("Simple Filter")
+                    .maxFilters(10)
+                    .hitThreshold(1)
+                    .minFilterValueLength(1)
+                    .sortBy("ASCENDING")
+                    .scope("ALL")
+                    .isEnabled(true)
+                    .isDefault(true)
+                    .build();
+            facetService.createFacetNode(newFacet);
+        }
 
         // Perform search query
         SearchSyntaxNode node = new QueryBuilder().term("type", "cm:content").create();
@@ -87,6 +109,10 @@ public class SearchServiceFacetsTest extends SearchServiceTest {
 
     @Test
     public void TestGetBucketedFacets() throws InterruptedException {
+        if (skipTests) {
+            return;
+        }
+
         solrHelper.waitForTransactionSync();
         // Query that should return default facets
         // There are 6 default facets: mimetype, modifier, creator, created, modified and size
