@@ -1,5 +1,12 @@
 # Alfred API - Changelog
 
+## 6.1.2 (unreleased)
+
+### Added
+
+### Fixed
+
+
 ## 6.1.1 (2025-11-23)
 
 ### Added
