@@ -33,9 +33,7 @@ publishing {
     }
 }
 
-signing {
-    required { !version.toString().endsWith("SNAPSHOT") }
-    // This needs to be changed once Gradle is upgraded to https://github.com/xenit-eu/xenit-java-logging/blob/master/publish.gradle#L54
-    useInMemoryPgpKeys(findProperty("signingKeyId"), findProperty("signingKey"), findProperty("signingPassword"))
-    sign publishing.publications
+// Make check task always include the Maven Central requirements check
+tasks.named('check').configure {
+    dependsOn('checkMavenCentralRequirements')
 }

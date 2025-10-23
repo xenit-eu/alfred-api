@@ -5,8 +5,8 @@ on:
 env:
   ALFRESCO_NEXUS_USERNAME: ${{ secrets.ALFRESCO_NEXUS_USERNAME }}
   ALFRESCO_NEXUS_PASSWORD: ${{ secrets.ALFRESCO_NEXUS_PASSWORD }}
-  ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVEN_CENTRAL_GPG_KEY }}
-  ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVEN_CENTRAL_GPG_PASSWORD }}
+  SIGNING_PRIVATE_KEY: ${{ secrets.MAVEN_CENTRAL_GPG_KEY }}
+  SIGNING_PASSWORD: ${{ secrets.MAVEN_CENTRAL_GPG_PASSWORD }}
   ORG_GRADLE_PROJECT_mavenCentralPublishUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
   ORG_GRADLE_PROJECT_mavenCentralPublishPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
   BRANCH_NAME: ${{ github.ref_name }}
@@ -27,19 +27,15 @@ jobs:
           registry: docker.xenit.eu
           username: ${{ secrets.HARBOR_USER }}
           password: ${{ secrets.HARBOR_PASSWORD }}
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
       - name: Build interface  # Execute before integration testing to catch errors early
-        uses: gradle/gradle-build-action@v2.3.0
-        with:
-          arguments: :alfred-api-interface:build :alfred-api-interface:javadoc
+        run: ./gradlew :alfred-api-interface:build :alfred-api-interface:javadoc
       - name: Unit test REST API
-        uses: gradle/gradle-build-action@v2.4.2
-        with:
-          arguments: --info :alfred-api-rest:test
+        run: ./gradlew --info :alfred-api-rest:test
       - name: Publish
         if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}
-        uses: gradle/gradle-build-action@v2.4.2
-        with:
-          arguments: --info -PsigningKeyId=CDE3528F :alfred-api-interface:publish
+        run: ./gradlew :alfred-api-interface:publish
 
   alfred-api-impl:
     strategy:
@@ -61,10 +57,10 @@ jobs:
           registry: docker.xenit.eu
           username: ${{ secrets.HARBOR_USER }}
           password: ${{ secrets.HARBOR_PASSWORD }}
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
       - name: Build and test
-        uses: gradle/gradle-build-action@v2.4.2
-        with:
-          arguments: >-
+        run: ./gradlew >-
             --info
             :alfred-api-impl:alfred-api-impl-${{ matrix.alfresco_version }}:test
             :alfred-api-integrationtests-client:alfresco:${{ matrix.alfresco_version }}:integrationTest
@@ -78,8 +74,4 @@ jobs:
           detailed_summary: true
       - name: Publish
         if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}
-        uses: gradle/gradle-build-action@v2.4.2
-        with:
-          arguments: >-
-            --info -PsigningKeyId=CDE3528F
-            :alfresco:${{ matrix.alfresco_version }}:publish
+        run: ./gradlew :alfresco:${{ matrix.alfresco_version }}:publish
