@@ -1,6 +1,6 @@
 # Alfred API - Changelog
 
-## 6.1.1 (unreleased)
+## 6.1.1 (2025-11-23)
 
 ### Added
 * [ALFREDAPI-581](https://xenitsupport.jira.com/browse/ALFREDAPI-581): Support ElasticSearch (Alfresco Enterprise Search)
