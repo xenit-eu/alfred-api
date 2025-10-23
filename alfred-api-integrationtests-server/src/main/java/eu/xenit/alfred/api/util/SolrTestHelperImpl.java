@@ -2,6 +2,7 @@ package eu.xenit.alfred.api.util;
 
 import java.util.Properties;
 import java.util.function.Supplier;
+
 import org.alfresco.repo.management.subsystems.SwitchableApplicationContextFactory;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -31,8 +32,6 @@ public class SolrTestHelperImpl implements SolrTestHelper {
     private final AlfrescoServerInfo alfrescoServerInfo;
     protected SolrAdminClient solrAdminClient;
 
-    private static final int MAX_ATTEMPTS = 20;
-
     public SolrTestHelperImpl(
             @Qualifier("global-properties") Properties globalProperties,
             @Qualifier("Search") SwitchableApplicationContextFactory searchSubSystem,
@@ -50,10 +49,15 @@ public class SolrTestHelperImpl implements SolrTestHelper {
      */
     @Override
     public boolean areTransactionsSynced() {
-        long alfTransaction = alfrescoServerInfo.getAlfTransactionIdDAO();
-        long solrTransaction = solrAdminClient.getLastTransactionId();
-        logger.debug("alf transaction: {}, solr transaction: {}", alfTransaction, solrTransaction);
-        return alfTransaction <= solrTransaction;
+        try {
+            long alfTransaction = alfrescoServerInfo.getAlfTransactionIdDAO();
+            long solrTransaction = solrAdminClient.getLastTransactionId();
+            logger.debug("alf transaction: {}, solr transaction: {}", alfTransaction, solrTransaction);
+            return alfTransaction <= solrTransaction;
+        } catch (Exception e) {
+            logger.warn("Failed to determine if Solr is synced: {}", e.getMessage());
+            return false;
+        }
     }
 
     /**
@@ -101,16 +105,17 @@ public class SolrTestHelperImpl implements SolrTestHelper {
     }
 
     private void waitForCompletion(Supplier<Boolean> hasCompleted) throws InterruptedException {
-        System.out.print("Waiting 5 seconds for Solr to index content");
-        for (int i = 0; i < MAX_ATTEMPTS; i++) {
+        final int pause_in_seconds = 5;
+        final int max_attempts = 20;
+        logger.info("Waiting " + pause_in_seconds + " seconds for Solr to index content");
+        for (int i = 0; i < max_attempts; i++) {
             if (hasCompleted.get()) {
                 return;
             }
-            for (int j = 0; j < 5; j++) {
-                System.out.print("..." + ((i * 5) + j + 1));
+            for (int j = 0; j < pause_in_seconds; j++) {
+                logger.info("..." + ((i * pause_in_seconds) + j));
                 Thread.sleep(1000);
             }
-            System.out.println();
         }
     }
 

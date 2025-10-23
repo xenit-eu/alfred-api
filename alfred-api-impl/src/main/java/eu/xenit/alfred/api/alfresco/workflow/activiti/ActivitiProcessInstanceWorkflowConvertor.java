@@ -18,6 +18,7 @@ public class ActivitiProcessInstanceWorkflowConvertor extends AbstractAlfredApiW
 
     @Autowired
     public ActivitiProcessInstanceWorkflowConvertor(
+            @Qualifier("ServiceRegistry")
             ServiceRegistry serviceRegistry,
             IPeopleService peopleService,
             @Qualifier("eu.xenit.alfred.api.alfresco.workflow.alfresco.AlfrescoInstanceConverterFactory") WorkflowConverterFactory workflowConverterFactory) {

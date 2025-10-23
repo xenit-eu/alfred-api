@@ -22,6 +22,8 @@ import eu.xenit.alfred.api.search.SearchQuery.PagingOptions;
 import eu.xenit.alfred.api.search.SearchQueryConsistency;
 import eu.xenit.alfred.api.search.nodes.SearchSyntaxNode;
 import java.util.ArrayList;
+import java.util.Properties;
+
 import org.alfresco.model.ContentModel;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.StoreRef;
@@ -217,7 +219,7 @@ public class SearchServiceUnitTest {
         PropertyService propertyService = mock(PropertyService.class);
         when(propertyService.GetPropertyDefinition(any(QName.class))).thenReturn(propertyDefinition);
 
-        return new SearchService(serviceRegistry.getSearchService(), facetService, c, propertyService);
+        return new SearchService(serviceRegistry.getSearchService(), new Properties(), facetService, c, propertyService);
     }
 
     private SearchService buildAlfredApiSearchServiceWithMocks(StoreRef store) {

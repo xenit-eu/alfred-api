@@ -17,6 +17,7 @@ import eu.xenit.alfred.api.rest.v2.AlfredApiV2Webscript;
 import org.alfresco.service.ServiceRegistry;
 import org.apache.http.HttpStatus;
 import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,7 +42,7 @@ public class NodesWebscriptV2 extends AlfredApiV2Webscript {
     private final ServiceRegistry serviceRegistry;
 
     public NodesWebscriptV2(INodeService nodeService, IPermissionService permissionService,
-            IFileFolderService fileFolderService, ServiceRegistry serviceRegistry) {
+            IFileFolderService fileFolderService, @Qualifier("ServiceRegistry") ServiceRegistry serviceRegistry) {
         this.nodeService = nodeService;
         this.permissionService = permissionService;
         this.fileFolderService = fileFolderService;

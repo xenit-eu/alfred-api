@@ -1,13 +1,27 @@
 # Alfred API - Changelog
 
+## 6.1.1 (2025-11-23)
+
+### Added
+* [ALFREDAPI-581](https://xenitsupport.jira.com/browse/ALFREDAPI-581): Support ElasticSearch (Alfresco Enterprise Search)
+
+### Fixed
+* [ALFREDAPI-578](https://xenitsupport.jira.com/browse/ALFREDAPI-578): Added Qualifiers to Conflicting beans with Governance Services
+* [ALFREDAPI-582](https://xenitsupport.jira.com/browse/ALFREDAPI-582): Migrate from Cloudsmith to Harbor
+* [ALFREDAPI-583](https://xenitsupport.jira.com/browse/ALFREDAPI-583): Fixed conditional step in publishing alfred-api-interface
+
 ## 6.1.0 (2025-04-01)
 ### Added
-[ALFREDAPI-548](https://xenitsupport.jira.com/browse/ALFREDAPI-569): Support Alfresco V23.3 && V23.4,
+* [ALFREDAPI-548](https://xenitsupport.jira.com/browse/ALFREDAPI-569): Support Alfresco V23.3 && V23.4
+* [ALFREDAPI-576](https://xenitsupport.jira.com/browse/ALFREDAPI-576): Support Alfresco V25.1
 
 ### Fixed
 * [ALFREDAPI-568](https://xenitsupport.jira.com/browse/ALFREDAPI-568) Make Alfred API work with new Tomcat base image
   environment variable for casual multipart parsing
 * [ALFREDAPI-568](https://xenitsupport.jira.com/browse/ALFREDAPI-568) Separated upload to native Alfresco webscript as a workaround to broken multipart upload with Alfresco MVC
+* [ALFREDAPI-572](https://xenitsupport.jira.com/browse/ALFREDAPI-572) Removed dependencies that caused warnings of 
+being overwritten (jaxb-api, javax.activation-api)
+
 
 ## 6.0.1 (2024-11-25)
 

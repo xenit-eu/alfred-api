@@ -7,6 +7,7 @@ import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptRequest;
@@ -25,7 +26,7 @@ public class SetNodeContentWebscript extends AbstractWebScript {
 
     private final INodeService nodeService;
 
-    public SetNodeContentWebscript(ServiceRegistry serviceRegistry,
+    public SetNodeContentWebscript(@Qualifier("ServiceRegistry") ServiceRegistry serviceRegistry,
                                    INodeService nodeService) {
         this.serviceRegistry = serviceRegistry;
         this.nodeService = nodeService;

@@ -1,21 +1,20 @@
 package eu.xenit.alfred.api.tests;
 
 import eu.xenit.alfred.api.BaseApplicationContextTest;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
 import org.alfresco.model.ContentModel;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
-import org.alfresco.service.cmr.repository.StoreRef;
-import org.alfresco.service.cmr.search.ResultSet;
-import org.alfresco.service.cmr.search.SearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Configuration
 public abstract class JavaApiBaseTest extends BaseApplicationContextTest {
@@ -32,22 +31,17 @@ public abstract class JavaApiBaseTest extends BaseApplicationContextTest {
 
 
     protected NodeRef getNodeAtPath(String path) {
+        NodeRef root = repository.getCompanyHome();
         if ("/app:company_home".equals(path)) {
-            return repository.getCompanyHome();
+            return root;
         }
-        SearchService searchService = serviceRegistry.getSearchService();
-        StoreRef storeRef = StoreRef.STORE_REF_WORKSPACE_SPACESSTORE;
-        ResultSet resultSet = searchService.query(storeRef, SearchService.LANGUAGE_XPATH, path);
-        NodeRef companyHomeNodeRef = null;
-        try {
-            if (resultSet.length() == 0) {
-                throw new RuntimeException("Didn't find node at: " + path);
-            }
-            companyHomeNodeRef = resultSet.getNodeRef(0);
-        } finally {
-            resultSet.close();
+
+        List<NodeRef> results = serviceRegistry.getSearchService().selectNodes(
+                root, path, null, serviceRegistry.getNamespaceService(), false);
+        if (results.isEmpty()) {
+            throw new RuntimeException("Didn't find node at: " + path);
         }
-        return companyHomeNodeRef;
+        return results.get(0);
     }
 
     protected NodeRef getMainTestFolder() {

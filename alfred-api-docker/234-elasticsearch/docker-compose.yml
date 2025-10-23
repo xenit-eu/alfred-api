@@ -1,0 +1,166 @@
+services:
+  alfresco-core:
+    image: ${DOCKER_IMAGE:-image_not_set}
+    ports:
+      - "8080:8080"
+      - "4578:4578" # coderunner-server
+    volumes:
+      - alfresco:/opt/alfresco/alf_data
+    restart: unless-stopped
+    environment:
+      - TERM=xterm
+      - TOMCAT_ALLOW_CASUAL_MULTIPART_PARSING=false
+      - GLOBAL_messaging.broker.url=failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true
+      - GLOBAL_transform.service.enabled=true
+      - GLOBAL_transform.service.url=http://transform-router:8095/
+      - GLOBAL_localTransform.core-aio.url=http://transform-core-aio:8090/
+      - GLOBAL_sfs.url=http://shared-file-store:8099/
+      - GLOBAL_index.subsystem.name=elasticsearch
+      - GLOBAL_elasticsearch.host=elasticsearch
+      - GLOBAL_elasticsearch.createIndexIfNotExists=true
+      - GLOBAL_elasticsearch.index.locale=en
+      - GLOBAL_file.encoding=utf-8
+    healthcheck:
+      test: [ 'CMD', 'curl', '--silent', '--fail' , 'http://localhost:8080/alfresco' ]
+      start_period: 60s
+      interval: 15s
+      timeout: 15s
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      activemq:
+        condition: service_healthy
+
+  elasticsearch:
+    image: elasticsearch:7.17.28
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -s -X GET http://localhost:9200/_cluster/health?pretty | grep status | grep -q '\\(green\\|yellow\\)'" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  kibana:
+    image: kibana:7.17.28
+    mem_limit: 256m
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+  elasticsearch-live-indexing:
+    image: quay.io/alfresco/alfresco-elasticsearch-live-indexing:4.2.0
+    environment:
+      SPRING_ELASTICSEARCH_REST_URIS: http://elasticsearch:9200
+      SPRING_ACTIVEMQ_BROKERURL: nio://activemq:61616
+      ALFRESCO_SHAREDFILESTORE_BASEURL: http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/
+      ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL: http://transform-router:8095/transform/config
+    depends_on:
+      alfresco-core:
+        condition: service_healthy
+
+  elasticsearch-reindexing:
+     image: quay.io/alfresco/alfresco-elasticsearch-reindexing:4.2.0
+     environment:
+
+       SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql:5432/alfresco
+       SPRING_DATASOURCE_USER: alfresco
+       SPRING_DATASOURCE_PASSWORD: admin
+       SPRING_ELASTICSEARCH_REST_URIS: http://elasticsearch:9200
+
+       # Unsure which of below variables is actually used
+       BROKER_URL: nio://activemq:61616
+       SPRING_ACTIVEMQ_BROKER_URL: nio://activemq:61616
+       # then wat is:   -spring.activemq.broker-url="tcp://localhost:61616?jms.useAsyncSend=true"
+
+       ALFRESCO_REINDEX_METADATAINDEXINGENABLED: 'true'
+       ALFRESCO_REINDEX_PATHINDEXINGENABLED: 'true'
+       ALFRESCO_REINDEX_CONTENTINDEXINGENABLED: 'true'
+
+       ALFRESCO_SHAREDFILESTORE_BASEURL: http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/
+       ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL: http://transform-router:8095/transform/config
+       ALFRESCO_REINDEX_PREFIXESFILE: "file:/opt/reindex.prefixes-file.json"
+     volumes:
+       - ./reindex.prefixes-file.json:/opt/reindex.prefixes-file.json:ro
+     depends_on:
+       alfresco-core:
+           condition: service_healthy
+       transform-router:
+           condition: service_healthy
+
+  postgresql:
+    image: postgres:15
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=alfresco
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=alfresco
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $$POSTGRES_DB -U $$POSTGRES_USER" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  activemq:
+    image: alfresco/alfresco-activemq:5.18-jre17-rockylinux8
+    mem_limit: 1g
+    healthcheck:
+      test: [ "CMD", "/opt/activemq/bin/activemq", "query", "--objname", "type=Broker,brokerName=*,service=Health", "|", "grep", "Good" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  transform-core-aio:
+    image: alfresco/alfresco-transform-core-aio:5.1.0
+    environment:
+      JAVA_OPTS: " -Xms256m -Xmx512m"
+      ACTIVEMQ_URL: "nio://activemq:61616"
+      FILE_STORE_URL: "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
+
+  # Only needed for Elasticsearch content indexing
+  transform-router:
+    image: quay.io/alfresco/alfresco-transform-router:4.1.7
+    environment:
+      - JAVA_OPTS=-Xms256m -Xmx512m
+      - CORE_AIO_URL=http://transform-core-aio:8090
+      - ACTIVEMQ_URL=tcp://activemq:61616
+      - FILE_STORE_URL=http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file
+      - LOG_LEVEL=INFO
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8095/actuator/health"]
+      interval: 10s
+      timeout: 2s
+      retries: 3
+      start_period: 20s
+    depends_on:
+      activemq:
+        condition: service_healthy
+      shared-file-store:
+        condition: service_healthy
+
+  shared-file-store:
+    image: quay.io/alfresco/alfresco-shared-file-store:3.0.0
+    environment:
+      JAVA_OPTS: " -Xms256m -Xmx512m"
+      scheduler.content.age.millis: 86400000
+      scheduler.cleanup.interval: 86400000
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8099/ready" ]
+      interval: 20s
+      timeout: 2s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  alfresco:
+  elasticsearch:
+  postgres:

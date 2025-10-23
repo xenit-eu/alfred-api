@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.stream.Collectors;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.FieldHighlightParameters;
@@ -31,23 +32,41 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+
 @Service("eu.xenit.alfred.api.search.SearchService")
 public class SearchService implements ISearchService {
 
     public static final int MAX_ITEMS_DEFAULT = 1000;
     private static final Logger logger = LoggerFactory.getLogger(SearchService.class);
+
+    protected Properties globalProperties;
     protected SearchFacetsService facetService;
     protected AlfredApiToAlfrescoConversion c;
     protected org.alfresco.service.cmr.search.SearchService searchService;
     protected PropertyService propertyService;
 
     @Autowired
-    public SearchService(@Qualifier("SearchService") org.alfresco.service.cmr.search.SearchService searchService, SearchFacetsService facetService,
-            AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion, PropertyService propertyService) {
+    public SearchService(
+            @Qualifier("SearchService") org.alfresco.service.cmr.search.SearchService searchService,
+            @Qualifier("global-properties") Properties globalProperties,
+            SearchFacetsService facetService,
+            AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion,
+            PropertyService propertyService) {
         this.searchService = searchService;
+        this.globalProperties = globalProperties;
         this.facetService = facetService;
         this.c = alfredApiToAlfrescoConversion;
         this.propertyService = propertyService;
+    }
+
+    public String getSearchSubsystem() {
+        // Possible values (at the time of writing):
+        //  - noindex
+        //  - solr
+        //  - solr4
+        //  - solr6
+        //  - elasticsearch
+        return globalProperties.getProperty("index.subsystem.name");
     }
 
     public org.alfresco.service.cmr.search.SearchService getSearchService() {
@@ -67,7 +86,7 @@ public class SearchService implements ISearchService {
     }
 
     public String toFtsQuery(SearchQuery q) {
-        FtsNodeVisitor ftsNodeVisitor = new FtsNodeVisitor(propertyService);
+        FtsNodeVisitor ftsNodeVisitor = new FtsNodeVisitor(this, propertyService);
         return ftsNodeVisitor.visit(q.getQuery());
     }
 
@@ -90,8 +109,8 @@ public class SearchService implements ISearchService {
         // see also: https://issues.apache.org/jira/browse/SOLR-3513
         // Fixed in Solr 6.4. Probably in earlier versions too, but cannot find the exact fix version.
         final long SOLR_BUG_MAX = 2147483647L;
-        if((long)argSkipCount + (long)maxItems > SOLR_BUG_MAX) {
-            maxItems = (int)SOLR_BUG_MAX - argSkipCount;
+        if ((long) argSkipCount + (long) maxItems > SOLR_BUG_MAX) {
+            maxItems = (int) SOLR_BUG_MAX - argSkipCount;
         }
 
         // TODO: correctly implement skip and limit, now just manually limiting
@@ -140,7 +159,8 @@ public class SearchService implements ISearchService {
                 if (propertyService.GetPropertyDefinition(property).isMultiValued()) {
                     multivaluePropertiesInOrderBy.add(property);
                     continue;
-                };
+                }
+                ;
                 SortDefinition sortDefinition = new SortDefinition(SortType.FIELD, "@" + alfProperty.toString(),
                         ascending);
                 if (alfProperty.getNamespaceURI().isEmpty()) {

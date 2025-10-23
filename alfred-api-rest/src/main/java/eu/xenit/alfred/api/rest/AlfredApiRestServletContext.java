@@ -1,6 +1,5 @@
 package eu.xenit.alfred.api.rest;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,6 +9,7 @@ import eu.xenit.alfred.api.rest.jackson.Jackson2AlfredApiNodeRefDeserializer;
 import eu.xenit.alfred.api.rest.jackson.Jackson2AlfredApiNodeRefSerializer;
 import eu.xenit.alfred.api.rest.jackson.Jackson2AlfredApiQnameDeserializer;
 import eu.xenit.alfred.api.rest.jackson.Jackson2AlfredApiQnameSerializer;
+import eu.xenit.alfred.api.rest.jackson.ObjectMapperFactory;
 import eu.xenit.alfred.api.rest.staging.workflow.WorkflowWebscript;
 import eu.xenit.alfred.api.rest.v0.categories.ClassificationGetWebscript;
 import eu.xenit.alfred.api.rest.v0.dictionary.DictionaryServiceChecksumWebscript;
@@ -35,7 +35,6 @@ import eu.xenit.alfred.api.rest.v1.workingcopies.WorkingcopiesWebscript1;
 import eu.xenit.alfred.api.rest.v2.groups.GroupsWebscript;
 import eu.xenit.alfred.api.rest.v2.nodes.NodesWebscriptV2;
 import eu.xenit.alfred.api.rest.v2.people.PeopleWebscript;
-import eu.xenit.alfred.api.search.json.SearchNodeJsonParser;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
@@ -43,6 +42,7 @@ import org.alfresco.rest.framework.jacksonextensions.RestJsonModule;
 import org.alfresco.service.namespace.NamespaceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -74,7 +74,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
         NodesWebscript1.class,
         PropertiesWebScript1.class,
         PeopleWebscript1.class,
-        PeopleWebscript1.class,
         PeopleWebscript.class,
         SearchWebScript1.class,
         SearchWebScript0.class,
@@ -89,7 +88,7 @@ public class AlfredApiRestServletContext extends DefaultAlfrescoMvcServletContex
 
     private static final Logger log = LoggerFactory.getLogger(AlfredApiRestServletContext.class);
 
-    public AlfredApiRestServletContext(RestJsonModule alfrescoRestJsonModule, NamespaceService namespaceService) {
+    public AlfredApiRestServletContext(@Qualifier("restJsonModule") RestJsonModule alfrescoRestJsonModule, NamespaceService namespaceService) {
         super(alfrescoRestJsonModule, namespaceService);
     }
 
@@ -109,15 +108,11 @@ public class AlfredApiRestServletContext extends DefaultAlfrescoMvcServletContex
         );
     }
 
-
     @Bean
     @Primary
     @Override
     public ObjectMapper objectMapper() {
-        ObjectMapper om = new SearchNodeJsonParser().getObjectMapper();
-        om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        jackson2ObjectMapperBuilder().configure(om);
-        return om;
+        return ObjectMapperFactory.getNewObjectMapper();
     }
 
     @Override

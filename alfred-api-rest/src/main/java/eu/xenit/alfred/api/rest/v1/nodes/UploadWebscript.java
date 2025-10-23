@@ -9,13 +9,15 @@ import eu.xenit.alfred.api.node.MetadataChanges;
 import eu.xenit.alfred.api.permissions.IPermissionService;
 import eu.xenit.alfred.api.rest.jackson.ObjectMapperFactory;
 import eu.xenit.alfred.api.rest.v1.AlfredApiV1Webscript;
+import java.io.IOException;
+import java.io.InputStream;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
-import org.alfresco.rest.framework.jacksonextensions.RestJsonModule;
 import org.alfresco.service.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptRequest;
@@ -23,15 +25,13 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
 import org.springframework.extensions.webscripts.servlet.FormData;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 @Component("webscript.eu.xenit.alfred.api.rest.v1.nodes.upload.post")
 public class UploadWebscript extends AbstractWebScript {
     private final static Logger logger = LoggerFactory.getLogger(UploadWebscript.class);
 
     private static final String MULTIPART_FORMDATA = "multipart/form-data";
 
+    @Qualifier("ServiceRegistry")
     private final ServiceRegistry serviceRegistry;
 
     private final INodeService nodeService;
@@ -42,16 +42,15 @@ public class UploadWebscript extends AbstractWebScript {
 
     private final ObjectMapper objectMapper;
 
-    public UploadWebscript(ServiceRegistry serviceRegistry,
+    public UploadWebscript(@Qualifier("ServiceRegistry") ServiceRegistry serviceRegistry,
                            INodeService nodeService,
                            IPermissionService permissionService,
-                           IFileFolderService fileFolderService,
-                           RestJsonModule alfrescoRestJsonModule) {
+                           IFileFolderService fileFolderService) {
         this.serviceRegistry = serviceRegistry;
         this.nodeService = nodeService;
         this.permissionService = permissionService;
         this.fileFolderService = fileFolderService;
-        this.objectMapper = ObjectMapperFactory.getNewObjectMapper(alfrescoRestJsonModule);
+        this.objectMapper = ObjectMapperFactory.getNewObjectMapper();
     }
 
     @Override

@@ -51,6 +51,7 @@ public class AlfredApiSpringConfiguration {
     @Bean(name = "eu.xenit.alfred.api.workflow.IWorkflowService")
     @DependsOn("global-properties")
     public IWorkflowService workflowService(
+            @Qualifier("ServiceRegistry")
             ServiceRegistry serviceRegistry,
             AlfredApiToAlfrescoConversion c,
             @Qualifier("eu.xenit.alfred.api.alfresco.workflow.activiti.AlfredApiActivitiWorkflowProcessQueryConverter")

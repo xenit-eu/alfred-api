@@ -12,12 +12,12 @@ jobs:
     steps:
       - name: Check out
         uses: actions/checkout@v4
-      - name: Login to Docker
-        uses: docker/login-action@v2
+      - name: Login to Xenit Harbor
+        uses: docker/login-action@v3
         with:
-          registry: private.docker.xenit.eu
-          username: ${{ secrets.CLOUDSMITH_USER }}
-          password: ${{ secrets.CLOUDSMITH_APIKEY }}
+          registry: docker.xenit.eu
+          username: ${{ secrets.HARBOR_USER }}
+          password: ${{ secrets.HARBOR_PASSWORD }}
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -29,7 +29,7 @@ jobs:
         run: ./gradlew :docs:buildWebsiteScript --info
       - name: Upload website artifact
         if: success()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: website-alfred-api.tar.gz
           path: /home/runner/work/alfred-api/docs/build/website-*.tar.gz

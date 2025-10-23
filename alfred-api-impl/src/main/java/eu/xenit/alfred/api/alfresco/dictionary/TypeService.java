@@ -15,6 +15,7 @@ import org.alfresco.service.namespace.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component("eu.xenit.alfred.api.dictionary.types.ITypeService")
@@ -25,7 +26,7 @@ public class TypeService implements ITypeService {
     private AlfredApiToAlfrescoConversion c;
 
     @Autowired
-    public TypeService(ServiceRegistry registry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
+    public TypeService(@Qualifier("ServiceRegistry") ServiceRegistry registry, AlfredApiToAlfrescoConversion alfredApiToAlfrescoConversion) {
         dictionaryService = registry.getDictionaryService();
         c = alfredApiToAlfrescoConversion;
     }

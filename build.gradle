@@ -5,6 +5,7 @@ plugins {
     id 'eu.xenit.alfresco' version '1.1.0' apply false
     id 'eu.xenit.docker-alfresco' version '5.5.0' apply false
     id 'eu.xenit.docker-compose' version '5.5.0' apply false
+    id 'eu.xenit.enterprise-conventions.oss' version '0.6.1'
 }
 
 def static getVersionQualifier(String branch_name) {
@@ -14,14 +15,14 @@ def static getVersionQualifier(String branch_name) {
 }
 
 ext {
-    versionWithoutQualifier = '6.1.0'
+    versionWithoutQualifier = '6.1.1'
 
     mvc = '9.0.0'
     jackson_version = '2.15.2'
     http_version = '4.5.13' // Used by integration tests
 }
 
-subprojects {
+allprojects {
     apply plugin: 'java'
 
     group = 'eu.xenit.alfred.api'
