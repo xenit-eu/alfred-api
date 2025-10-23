@@ -27,19 +27,15 @@ jobs:
           registry: docker.xenit.eu
           username: ${{ secrets.HARBOR_USER }}
           password: ${{ secrets.HARBOR_PASSWORD }}
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
       - name: Build interface  # Execute before integration testing to catch errors early
-        uses: gradle/gradle-build-action@v2.3.0
-        with:
-          arguments: :alfred-api-interface:build :alfred-api-interface:javadoc
+        run: ./gradlew :alfred-api-interface:build :alfred-api-interface:javadoc
       - name: Unit test REST API
-        uses: gradle/gradle-build-action@v2.4.2
-        with:
-          arguments: --info :alfred-api-rest:test
+        run: ./gradlew --info :alfred-api-rest:test
       - name: Publish
         if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}
-        uses: gradle/gradle-build-action@v2.4.2
-        with:
-          arguments: :alfred-api-interface:publish
+        run: ./gradlew :alfred-api-interface:publish
 
   alfred-api-impl:
     strategy:
@@ -61,10 +57,10 @@ jobs:
           registry: docker.xenit.eu
           username: ${{ secrets.HARBOR_USER }}
           password: ${{ secrets.HARBOR_PASSWORD }}
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
       - name: Build and test
-        uses: gradle/gradle-build-action@v2.4.2
-        with:
-          arguments: >-
+        run: ./gradlew >-
             --info
             :alfred-api-impl:alfred-api-impl-${{ matrix.alfresco_version }}:test
             :alfred-api-integrationtests-client:alfresco:${{ matrix.alfresco_version }}:integrationTest
@@ -78,6 +74,4 @@ jobs:
           detailed_summary: true
       - name: Publish
         if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}
-        uses: gradle/gradle-build-action@v2.4.2
-        with:
-          arguments: :alfresco:${{ matrix.alfresco_version }}:publish
+        run: ./gradlew :alfresco:${{ matrix.alfresco_version }}:publish
