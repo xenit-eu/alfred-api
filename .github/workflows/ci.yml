@@ -35,7 +35,7 @@ jobs:
         run: ./gradlew --info :alfred-api-rest:test
       - name: Publish
         if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}
-        run: ./gradlew :alfred-api-interface:publish
+        run: ./gradlew --info :alfred-api-interface:publish
 
   alfred-api-impl:
     strategy:
@@ -74,4 +74,4 @@ jobs:
           detailed_summary: true
       - name: Publish
         if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}
-        run: ./gradlew :alfresco:${{ matrix.alfresco_version }}:publish
+        run: ./gradlew --info :alfresco:${{ matrix.alfresco_version }}:publish
