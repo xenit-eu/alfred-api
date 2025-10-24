@@ -103,7 +103,7 @@ allprojects {
 
         testCompile group: 'org.mockito', name: 'mockito-core', version: '2.25.1'
         testCompile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
-        testCompile group: 'eu.xenit.testing', name: 'integration-testing', version: '1.1.0'
+//        testCompile group: 'eu.xenit.testing', name: 'integration-testing', version: '1.1.0'
     }
 
     task generateVersionFile(type: Task) {

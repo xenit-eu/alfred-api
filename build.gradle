@@ -24,7 +24,7 @@ def getVersionQualifier(String branch_name) {
     // We've tried replacing the '-' with at '.', but that breaks maven-style dependency resolution.
     // We consider correct dependency resolution of snapshots a more important feature than DE, so we opt for the '-'
     // Dynamic extensions bundles of snapshots are therefore broken.
-    return '-SNAPSHOT'
+    return ''
 }
 
 buildscript {

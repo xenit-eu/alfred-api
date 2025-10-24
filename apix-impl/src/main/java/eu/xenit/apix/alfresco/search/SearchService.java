@@ -231,11 +231,15 @@ public class SearchService implements ISearchService {
     }
 
     protected SearchQueryResult processResults(ResultSet rs, SearchQuery postQuery, SearchParameters searchParameters) {
+        logger.debug("Processing search results");
         SearchQueryResult results = new SearchQueryResult();
 
         int count = 0;
         int maxItems = getSearchMaxItems(searchParameters);
+        logger.debug("maxItems = " + maxItems);
+        logger.debug("[");
         for (ResultSetRow row : rs) {
+            logger.debug("noderef = " + row.getNodeRef());
             results.addResult(c.apix(row.getNodeRef()));
             ++count;
             // maxItems < 0 means unlimited
@@ -244,6 +248,7 @@ public class SearchService implements ISearchService {
                 break;
             }
         }
+        logger.debug("]");
         results.setTotalResultCount(rs.getNumberFound());
 
         // Store facet results in output-model (if present)
@@ -260,7 +265,8 @@ public class SearchService implements ISearchService {
                                 .collect(Collectors.toList())
                 ));
         results.setHighlights(new Highlights(highlightResults));
-
+        logger.debug("Query result set: " + results);
+        logger.debug("Processing search results done");
         return results;
     }
 

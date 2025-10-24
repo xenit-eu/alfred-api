@@ -66,6 +66,7 @@ public class SearchWebScript0 {
         ObjectMapper mapper = new ObjectMapper();
         com.fasterxml.jackson.databind.ObjectWriter wr = mapper.writerWithType(SearchQueryResult.class);
         String retStr = wr.writeValueAsString(result);
+        logger.debug("retStr: " + retStr);
 
         webScriptResponse.setContentType("json");
         webScriptResponse.getWriter().write(retStr);

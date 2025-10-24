@@ -147,6 +147,7 @@ public class SearchWebScript1 extends ApixV1Webscript {
         SearchQueryResult result = null;
         try {
             result = service.query(m.readValue(stream, SearchQuery.class));
+            logger.debug("search webscript result: " + result.toString());
             writeJsonResponse(webScriptResponse, result);
         } catch (IllegalArgumentException illegalArgumentException) {
             webScriptResponse.setStatus(400);
