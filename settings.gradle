@@ -1,3 +1,7 @@
+plugins {
+    id 'eu.xenit.enterprise-conventions.oss' version '0.6.2'
+}
+
 rootProject.name = 'alfred-api'
 
 include ':alfred-api-interface'
@@ -8,7 +12,6 @@ include ':alfred-api-docker'
 include ':alfred-api-integrationtests-client:model-amp'
 include ':alfred-api-integrationtests-server'
 include ':docs'
-
 
 for (String version : ['23.1', '23.2', '23.3', '23.4', '25.1']) {
     def shortVersion = version.replaceAll('\\.', '')
