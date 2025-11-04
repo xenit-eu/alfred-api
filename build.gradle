@@ -5,7 +5,6 @@ plugins {
     id 'eu.xenit.alfresco' version '1.1.0' apply false
     id 'eu.xenit.docker-alfresco' version '5.5.0' apply false
     id 'eu.xenit.docker-compose' version '5.5.0' apply false
-    id 'eu.xenit.enterprise-conventions.oss' version '0.6.2'
 }
 
 def static getVersionQualifier(String branch_name) {
@@ -20,6 +19,30 @@ ext {
     mvc = '9.0.0'
     jackson_version = '2.15.2'
     http_version = '4.5.13' // Used by integration tests
+}
+
+// See https://jreleaser.org/guide/latest/reference/deploy/maven/maven-central.html for syntax
+jreleaser {
+    deploy {
+        maven {
+            mavenCentral {
+                release {
+                    // Add an override for each artifact we want to publish, because we want to
+                    // disable requirements checking for each of them.
+                    ['interface', '231', '232', '233', '234', '251'].each { suffix ->
+                        artifactOverride {
+                            // Match artifact by artifactId
+                            artifactId = "alfred-api-${suffix}"
+                            verifyPom = false
+                            jar = false
+                            sourceJar = false
+                            javadocJar = false
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 allprojects {
