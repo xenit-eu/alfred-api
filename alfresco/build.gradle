@@ -44,7 +44,6 @@ subprojects {
             }
         }
     }
-
     project.tasks.jar.enabled = false
 
     // Extend amp plugin task:
@@ -61,9 +60,5 @@ subprojects {
         into("config/alfresco/module/${project.name}/messages") {
             from("${rootProject.projectDir}/src/config/messages/")
         }
-    }
-
-    afterEvaluate {
-        signMavenPublication.dependsOn amp
     }
 }
