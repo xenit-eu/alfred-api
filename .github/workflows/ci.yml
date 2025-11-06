@@ -10,8 +10,9 @@ env:
   ORG_GRADLE_PROJECT_mavenCentralPublishUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
   ORG_GRADLE_PROJECT_mavenCentralPublishPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
   BRANCH_NAME: ${{ github.ref_name }}
+
 jobs:
-  alfred-api-interface:
+  test-interface:
     runs-on: ubuntu-latest
     steps:
       - name: Check out
@@ -29,15 +30,12 @@ jobs:
           password: ${{ secrets.HARBOR_PASSWORD }}
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
-      - name: Build interface  # Execute before integration testing to catch errors early
+      - name: Build interface  # Execute before integration testing to catch errors early in the build
         run: ./gradlew :alfred-api-interface:build :alfred-api-interface:javadoc
       - name: Unit test REST API
         run: ./gradlew --info :alfred-api-rest:test
-      - name: Publish
-        if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}
-        run: ./gradlew --info :alfred-api-interface:publish
 
-  alfred-api-impl:
+  test-impl:
     strategy:
       matrix:
         alfresco_version: [ 231, 232, 233, 234, 251 ]
@@ -72,6 +70,26 @@ jobs:
           report_paths: '**/build/test-results/**/TEST-*.xml'
           github_token: ${{ secrets.GITHUB_TOKEN }}
           detailed_summary: true
-      - name: Publish
-        if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}
-        run: ./gradlew --info :alfresco:${{ matrix.alfresco_version }}:publish
+
+  publish:
+    if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}
+    needs: [test-interface, test-impl]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 21
+          distribution: temurin
+      - name: Login to Xenit Harbor
+        uses: docker/login-action@v3
+        with:
+          registry: docker.xenit.eu
+          username: ${{ secrets.HARBOR_USER }}
+          password: ${{ secrets.HARBOR_PASSWORD }}
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+      - name: Publish interface JAR and impl AMPs
+        run: ./gradlew --info publish
