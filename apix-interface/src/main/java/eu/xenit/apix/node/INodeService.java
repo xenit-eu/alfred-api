@@ -135,6 +135,8 @@ public interface INodeService {
     /**
      * Creation of a node giving the list of properties as well as the type. To be used when using a custom type has
      * required properties.
+     * Note: Passing {http://www.alfresco.org/model/system/1.0}node-uuid as property allows to override the UUID
+     * to workspace://SpacesStore/{value}.
      *
      * @param parent      The parent node of the new node.
      * @param properties  list of properties to add to node.
@@ -147,6 +149,8 @@ public interface INodeService {
     /**
      * Creation of a node giving the list of properties as well as the type. To be used when using a custom type has
      * required properties.
+     * Note: Passing {http://www.alfresco.org/model/system/1.0}node-uuid as property allows to override the UUID
+     * to workspace://SpacesStore/{value}.
      *
      * @param parent      The parent node of the new node.
      * @param properties  list of properties to add to node.
