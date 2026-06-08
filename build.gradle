@@ -49,7 +49,7 @@ jreleaser {
     }
 }
 
-subprojects {
+allprojects {
     apply plugin: 'java'
 
     group = 'eu.xenit.alfred.api'
