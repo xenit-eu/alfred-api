@@ -46,7 +46,9 @@ allprojects {
         testImplementation 'org.alfresco:alfresco-repository'
         testImplementation 'org.alfresco:alfresco-remote-api'
         testImplementation 'org.alfresco:alfresco-data-model'
-        testImplementation 'org.mockito:mockito-core'
+        // Mockito 3.x (from Alfresco 7.0/7.1/7.2 BOM) has a circular static init bug on Java 17+.
+        // Pin to 4.x which fixes it (same version range ACS 7.3/7.4 already ship).
+        testImplementation 'org.mockito:mockito-core:4.11.0'
     }
 
     tasks.named('compileJava').configure {
