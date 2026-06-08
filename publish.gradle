@@ -30,24 +30,9 @@ publishing {
             }
         }
     }
-
-    repositories {
-        maven {
-            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-
-            credentials {
-                username = project.findProperty('sonatype_username')
-                password = project.findProperty('sonatype_password')
-            }
-        }
-    }
 }
 
-signing {
-    required { !version.toString().endsWith("SNAPSHOT") }
-    // This needs to be changed once Gradle is upgraded to https://github.com/xenit-eu/xenit-java-logging/blob/master/publish.gradle#L54
-    useInMemoryPgpKeys(findProperty("signingKey"), findProperty("signingPassword"))
-    sign publishing.publications
+// Make check task always include the Maven Central requirements check
+tasks.named('check').configure {
+    dependsOn('checkMavenCentralRequirements')
 }
