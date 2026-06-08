@@ -34,7 +34,7 @@ jobs:
       - name: Unit test REST API
         run: ./gradlew --info :apix-rest-v1:test
       - name: Publish
-        if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}"
+        if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/release') }}
         run: ./gradlew --info :apix-interface:publish
 
   apix-impl:
