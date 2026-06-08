@@ -3,7 +3,7 @@
 ## 5.1.0 (unreleased)
 
 ### Added
-* [ALFREDAPI-585](https://xenitsupport.jira.com/browse/ALFREDAPI-585): Add possibility to pass id when creating a document (Java API)
+* [ALFREDAPI-585](https://xenitsupport.jira.com/browse/ALFREDAPI-585): Test possibility to pass id when creating a document (Java API)
 
 
 ## 5.0.4 (2024-11-22)
