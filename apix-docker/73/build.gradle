@@ -4,5 +4,5 @@ dependencies {
 }
 
 dockerAlfresco {
-    baseImage = 'private.docker.xenit.eu/alfresco-enterprise/alfresco-repository-enterprise:7.3.1.2'
+    baseImage = 'docker.xenit.eu/alfresco-enterprise/alfresco-repository-enterprise:7.3.1.2'
 }
