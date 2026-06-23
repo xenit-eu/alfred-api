@@ -25,7 +25,31 @@ ext {
     http_version = '4.3.4' // Used by integration tests
 }
 
-subprojects {
+// See https://jreleaser.org/guide/latest/reference/deploy/maven/maven-central.html for syntax
+jreleaser {
+    deploy {
+        maven {
+            mavenCentral {
+                release {
+                    // Add an override for each artifact we want to publish, because we want to
+                    // disable requirements checking for each of them.
+                    ['interface', 'impl-70', 'impl-71', 'impl-72', 'impl-73', 'impl-74'].each { suffix ->
+                        artifactOverride {
+                            // Match artifact by artifactId
+                            artifactId = "apix-${suffix}"
+                            verifyPom = false
+                            jar = false
+                            sourceJar = false
+                            javadocJar = false
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+allprojects {
     apply plugin: 'java'
 
     group = 'eu.xenit.alfred.api'

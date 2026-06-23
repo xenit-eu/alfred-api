@@ -1,12 +1,5 @@
 package eu.xenit.apix.tests.metadata;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import eu.xenit.apix.alfresco.ApixToAlfrescoConversion;
 import eu.xenit.apix.categories.ICategoryService;
 import eu.xenit.apix.data.ContentInputStream;
@@ -16,19 +9,6 @@ import eu.xenit.apix.node.MetadataChanges;
 import eu.xenit.apix.node.NodeAssociation;
 import eu.xenit.apix.node.NodeMetadata;
 import eu.xenit.apix.tests.BaseTest;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.domain.node.ContentDataWithId;
 import org.alfresco.repo.model.Repository;
@@ -57,6 +37,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 public class NodeServiceTest extends BaseTest {
@@ -658,8 +659,7 @@ public class NodeServiceTest extends BaseTest {
             assertNotNull("the cm:name property could not be found", testProperties.get(ContentModel.PROP_NAME));
             assertNotNull("", testProperties.get(c.alfresco(documentStatusQname)));
             assertTrue(alfrescoNodeService.hasAspect(c.alfresco(createdNodeRef), ContentModel.ASPECT_TEMPORARY));
-        }
-        finally {
+        } finally {
             this.cleanUp();
         }
     }
@@ -793,7 +793,7 @@ public class NodeServiceTest extends BaseTest {
     }
 
     @Test
-    public void testTextFileUploadWithMimeGuess() throws IOException{
+    public void testTextFileUploadWithMimeGuess() throws IOException {
         cleanUp();
         NodeRef companyHomeNodeRef = repository.getCompanyHome();
         FileInfo mainTestFolder = createMainTestFolder(companyHomeNodeRef);
@@ -803,7 +803,7 @@ public class NodeServiceTest extends BaseTest {
             eu.xenit.apix.data.ContentData contentData = service.createContentWithMimetypeGuess(inputStream,
                     testTextFile.getName(),
                     "UTF-8");
-            assertEquals(contentData.getEncoding(),"UTF-8");
+            assertEquals(contentData.getEncoding(), "UTF-8");
             assertEquals(TEXT_MIMETYPE, contentData.getMimetype());
         } finally {
             removeTestNode(mainTestFolder.getNodeRef());
@@ -846,5 +846,36 @@ public class NodeServiceTest extends BaseTest {
         assertEquals(
                 service.getRootNode(apixStoreRef).toString(),
                 alfrescoNodeService.getRootNode(alfStoreRef).toString());
+    }
+
+    // https://xenitsupport.jira.com/browse/ALFREDAPI-585: Needed for Ethias ContentGrid migration rollback
+    @Test
+    public void testCreateNodeWithId() {
+        NodeRef companyHomeRef = repository.getCompanyHome();
+        FileInfo mainTestFolder = createMainTestFolder(companyHomeRef);
+        FileInfo testFolder = createTestFolder(mainTestFolder.getNodeRef(), "testfolder");
+        try {
+            // Constraint: UUID passed must be <= 50 characters (otherwise IllegalArgumentException)
+            String desiredId = "Blond hair. Don't care";
+            String desiredName = "testos nodos";
+
+            Map<eu.xenit.apix.data.QName, String[]> properties = new HashMap<>();
+            properties.put(c.apix(ContentModel.PROP_NODE_UUID), new String[]{desiredId});
+            properties.put(c.apix(ContentModel.PROP_NAME), new String[]{desiredName});
+
+            eu.xenit.apix.data.NodeRef created = service.createNode(
+                    c.apix(testFolder.getNodeRef()),
+                    properties,
+                    c.apix(ContentModel.TYPE_CONTENT),
+                    null // contentData
+            );
+
+            logger.warn("Created node with NodeRef='{}'", created);
+
+            assertEquals(desiredId, created.getGuid());
+            assertEquals(desiredName, alfrescoNodeService.getProperty(c.alfresco(created), ContentModel.PROP_NAME));
+        } finally {
+            removeTestNode(mainTestFolder.getNodeRef());
+        }
     }
 }
