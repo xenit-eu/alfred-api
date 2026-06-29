@@ -3,9 +3,11 @@
 ## 6.1.3 (unreleased)
 
 ### Added
+* [ALFREDAPI-586](https://xenitsupport.jira.com/browse/ALFREDAPI-586): Support Alfresco V25.3
 
 ### Fixed
 * [ALFREDAPI-587](https://xenitsupport.jira.com/browse/ALFREDAPI-587): Remove non-existant Swagger endpoints from documentation.
+
 
 ## 6.1.2 (2025-11-06)
 
