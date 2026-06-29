@@ -29,7 +29,7 @@ jreleaser {
                 release {
                     // Add an override for each artifact we want to publish, because we want to
                     // disable requirements checking for each of them.
-                    ['interface', '231', '232', '233', '234', '251'].each { suffix ->
+                    ['interface', '231', '232', '233', '234', '251', '253'].each { suffix ->
                         artifactOverride {
                             // Match artifact by artifactId
                             artifactId = "alfred-api-${suffix}"
