@@ -3,7 +3,7 @@
   "info": {
     "description": "This is the swagger specification for Alfred REST API\n\nExamples can be found at: https://docs.xenit.eu/alfred-api",
     "version": "6.1.3",
-    "title": "Alfred REST Api",
+    "title": "Alfred REST API",
     "contact": {
       "name": "XeniT",
       "url": "http://www.xenit.eu",
@@ -35,10 +35,6 @@
     {
       "name": "Dictionary",
       "description": "Retrieves Dictionary information"
-    },
-    {
-      "name": "Documentation",
-      "description": "Access API Documentation"
     },
     {
       "name": "General",
@@ -492,39 +488,6 @@
           },
           "404": {
             "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/v1/docs/swagger.json": {
-      "get": {
-        "tags": [
-          "Documentation"
-        ],
-        "summary": "The Swagger Spec for Alfred API",
-        "description": "",
-        "operationId": "v1.getDocumentation",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/v1/docs/ui": {
-      "get": {
-        "tags": [
-          "Documentation"
-        ],
-        "summary": "Shows this swagger spec in a user interface",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Swagger UI interface",
-            "schema": {
-              "type": "file"
-            }
           }
         }
       }
