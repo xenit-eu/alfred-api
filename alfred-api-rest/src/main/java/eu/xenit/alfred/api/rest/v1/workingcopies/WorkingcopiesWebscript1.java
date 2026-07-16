@@ -74,12 +74,10 @@ public class WorkingcopiesWebscript1 extends AlfredApiV1Webscript {
             NodeRef originalRef = nodeService.getWorkingCopySource(workingCopyRef);
             return writeJsonResponse(new NoderefResult(originalRef));
         }
-
         return respondDoesNotExist(workingCopyRef);
     }
 
     private ResponseEntity<?> respondDoesNotExist(NodeRef nodeRef) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(String.format(String.format("%s does not exist.", nodeRef)));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("%s does not exist.", nodeRef));
     }
 }

@@ -5,7 +5,7 @@
 ### Added
 
 ### Fixed
-
+* [ALFREDAPI-587](https://xenitsupport.jira.com/browse/ALFREDAPI-587): Remove non-existant Swagger endpoints from documentation.
 
 ## 6.1.2 (2025-11-06)
 
