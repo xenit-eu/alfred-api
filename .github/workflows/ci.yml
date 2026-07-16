@@ -38,7 +38,7 @@ jobs:
   test-impl:
     strategy:
       matrix:
-        alfresco_version: [ 231, 232, 233, 234, 251 ]
+        alfresco_version: [ 231, 232, 233, 234, 251, 253 ]
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
