@@ -4,6 +4,7 @@ import eu.xenit.alfred.api.categories.Category;
 import eu.xenit.alfred.api.categories.ICategoryService;
 import eu.xenit.alfred.api.data.QName;
 import eu.xenit.alfred.api.tests.JavaApiBaseTest;
+import eu.xenit.alfred.api.util.SolrTestHelperImpl;
 import java.util.ArrayList;
 import java.util.List;
 import org.alfresco.model.ContentModel;
@@ -24,15 +25,20 @@ public class CategoryServiceTest extends JavaApiBaseTest {
 
     private QName generalClassifiableQName;
     private final ICategoryService categoryService;
+    private final SolrTestHelperImpl solrHelper;
 
     public CategoryServiceTest() {
         categoryService = getBean(ICategoryService.class);
+        solrHelper = getBean(SolrTestHelperImpl.class);
     }
 
     @Before
-    public void Setup() {
+    public void Setup() throws InterruptedException {
         AuthenticationUtil.setFullyAuthenticatedUser(ADMIN_USER_NAME);
         generalClassifiableQName = c.alfredApi(ContentModel.ASPECT_GEN_CLASSIFIABLE);
+        // Alfresco's category lookups are search-index queries; a freshly started environment may not have indexed
+        // the bootstrap categories yet.
+        solrHelper.waitForTransactionSync();
     }
 
     /**

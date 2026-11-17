@@ -11,7 +11,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.xenit.alfred.api.categories.Category;
 import eu.xenit.alfred.api.categories.ICategoryService;
 import eu.xenit.alfred.api.data.QName;
+import eu.xenit.alfred.api.util.SolrTestHelperImpl;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -32,9 +34,18 @@ public class CategoriesTest extends RestV1BaseTest {
 
     private static final String GENERAL_CLASSIFIABLE = "cm:generalclassifiable";
 
+    private final SolrTestHelperImpl solrHelper;
+
+    public CategoriesTest() {
+        solrHelper = getBean(SolrTestHelperImpl.class);
+    }
+
     @Before
-    public void setup() {
+    public void setup() throws InterruptedException {
         AuthenticationUtil.setAdminUserAsFullyAuthenticatedUser();
+        // Alfresco's category lookups are search-index queries; a freshly started environment may not have indexed
+        // the bootstrap categories yet.
+        solrHelper.waitForTransactionSync();
     }
 
     @Test
@@ -43,9 +54,13 @@ public class CategoriesTest extends RestV1BaseTest {
         HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
         byte[] body = EntityUtils.toByteArray(httpResponse.getEntity());
 
-        assertEquals(200, httpResponse.getStatusLine().getStatusCode());
+        // On failure, include the body: Alfresco's error response carries the server-side exception message.
+        assertEquals("Unexpected status, response body: " + new String(body, StandardCharsets.UTF_8),
+                200, httpResponse.getStatusLine().getStatusCode());
         // Same headers as the original Alfresco MVC implementation: no charset parameter, explicit no-cache.
-        assertEquals("application/json", httpResponse.getFirstHeader("Content-Type").getValue());
+        Header contentType = httpResponse.getFirstHeader("Content-Type");
+        assertNotNull("Response has no Content-Type header", contentType);
+        assertEquals("application/json", contentType.getValue());
         Header[] cacheControl = httpResponse.getHeaders("Cache-Control");
         assertEquals(1, cacheControl.length);
         assertEquals("no-cache", cacheControl[0].getValue());
@@ -58,7 +73,7 @@ public class CategoriesTest extends RestV1BaseTest {
 
         JsonNode categories = root.get("categories");
         assertTrue("'categories' should be an array", categories.isArray());
-        assertTrue("'categories' should not be empty", categories.size() > 0);
+        assertFalse("'categories' should not be empty", categories.isEmpty());
         for (JsonNode category : categories) {
             assertCategoryShape(category);
         }
@@ -71,7 +86,7 @@ public class CategoriesTest extends RestV1BaseTest {
         JsonNode regions = findByName(categories, "Regions");
         assertNotNull("Expected root category 'Regions'", regions);
         JsonNode regionChildren = regions.get("subcategories");
-        assertTrue("'Regions' should have subcategories", regionChildren.size() > 0);
+        assertFalse("'Regions' should have subcategories", regionChildren.isEmpty());
         for (JsonNode child : regionChildren) {
             assertCategoryShape(child);
         }
