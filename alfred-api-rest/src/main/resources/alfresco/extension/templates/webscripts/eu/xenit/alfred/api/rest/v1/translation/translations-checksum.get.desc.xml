@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get translations checksum</shortname>
+    <description>Returns the checksum of the translations for the specified locale</description>
+    <url>/apix/v1/translations/{locale}/checksum</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>
