@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get version</shortname>
+    <description>Returns the Alfred API version</description>
+    <url>/apix/v1/version</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction>none</transaction>
+</webscript>

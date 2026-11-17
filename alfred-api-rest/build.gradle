@@ -29,6 +29,14 @@ dependencies {
 
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.0.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
+    // Without an engine and useJUnitPlatform(), Gradle silently executes none of the JUnit 5 tests in this module.
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.9.1'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging { events "PASSED", "FAILED", "SKIPPED" }
 }
 
 tasks.withType(JavaCompile) {

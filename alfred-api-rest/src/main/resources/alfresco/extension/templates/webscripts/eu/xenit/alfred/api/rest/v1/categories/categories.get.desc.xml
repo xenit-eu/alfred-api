@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get categories for an aspect</shortname>
+    <description>Returns the categories associated with the specified Alfresco aspect</description>
+    <url>/apix/v1/category/aspect/{qname}</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>
