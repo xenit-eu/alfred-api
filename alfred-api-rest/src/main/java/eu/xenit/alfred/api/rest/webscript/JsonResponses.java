@@ -3,6 +3,7 @@ package eu.xenit.alfred.api.rest.webscript;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.xenit.alfred.api.rest.jackson.ObjectMapperFactory;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 
@@ -29,6 +30,17 @@ public final class JsonResponses {
     public static void writeEmpty(WebScriptResponse res) {
         res.setStatus(Status.STATUS_OK);
         res.setHeader("Cache-Control", "no-cache");
+    }
+
+    /**
+     * Writes a plain-text response, like Alfresco MVC did for a {@code ResponseEntity<String>} body (for example error
+     * messages).
+     */
+    public static void writeText(WebScriptResponse res, int status, String message) throws IOException {
+        res.setStatus(status);
+        res.setContentType("text/plain;charset=UTF-8");
+        res.setHeader("Cache-Control", "no-cache");
+        res.getOutputStream().write(message.getBytes(StandardCharsets.UTF_8));
     }
 
     public static void writeJson(WebScriptResponse res, int status, Object body) throws IOException {

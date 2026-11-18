@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Check out a node</shortname>
+    <description>Checks out a node and returns the working copy. Body: {original, destinationFolder (optional)}</description>
+    <url>/apix/v1/workingcopies</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction>required</transaction>
+</webscript>

@@ -96,6 +96,10 @@ class WebScriptRegistrationTest {
                 "eu.xenit.alfred.api.rest.v1.versionhistory.VersionHistoryDeleteWebScript",
                 "eu.xenit.alfred.api.rest.v1.versionhistory.VersionRevertWebScript",
                 "eu.xenit.alfred.api.rest.v1.versionhistory.VersionDeleteWebScript",
+                "eu.xenit.alfred.api.rest.v1.workingcopies.WorkingCopyCreateWebScript",
+                "eu.xenit.alfred.api.rest.v1.workingcopies.WorkingCopyCheckinWebScript",
+                "eu.xenit.alfred.api.rest.v1.workingcopies.WorkingCopyCancelWebScript",
+                "eu.xenit.alfred.api.rest.v1.workingcopies.WorkingCopyOriginalWebScript",
                 "eu.xenit.alfred.api.rest.v1.nodes.UploadWebscript",
                 "eu.xenit.alfred.api.rest.v1.nodes.SetNodeContentWebscript")) {
             assertTrue(discovered.contains(expected), "Expected to discover " + expected + " in " + discovered);

@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Check in a working copy</shortname>
+    <description>Checks in a working copy and returns the original node. Body: {comment, majorVersion}</description>
+    <url>/apix/v1/workingcopies/{space}/{store}/{guid}/checkin</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction>required</transaction>
+</webscript>

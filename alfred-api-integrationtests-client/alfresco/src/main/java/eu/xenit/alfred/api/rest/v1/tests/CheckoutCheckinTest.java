@@ -119,6 +119,19 @@ public class CheckoutCheckinTest extends RestV1BaseTest {
                 }, false, true);
     }
 
+    @Test
+    public void testGetWorkingCopySourceOfMissingNode() throws IOException {
+        String missingGuid = "00000000-0000-0000-0000-000000000000";
+        String url = makeWorkingCopiesUrl("workspace", "SpacesStore", missingGuid, "/original", "admin", "admin");
+
+        org.apache.http.HttpResponse response = org.apache.http.client.fluent.Request.Get(url)
+                .execute().returnResponse();
+
+        assertEquals(404, response.getStatusLine().getStatusCode());
+        assertEquals("workspace://SpacesStore/" + missingGuid + " does not exist.",
+                org.apache.http.util.EntityUtils.toString(response.getEntity()));
+    }
+
     @After
     public void cleanUp() {
         this.removeMainTestFolder();

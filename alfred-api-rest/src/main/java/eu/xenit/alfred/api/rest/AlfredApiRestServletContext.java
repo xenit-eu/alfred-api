@@ -21,7 +21,6 @@ import eu.xenit.alfred.api.rest.v1.properties.PropertiesWebScript1;
 import eu.xenit.alfred.api.rest.v1.search.SearchWebScript1;
 import eu.xenit.alfred.api.rest.v1.sites.SitesWebscript1;
 import eu.xenit.alfred.api.rest.v1.temp.WIPWebscript;
-import eu.xenit.alfred.api.rest.v1.workingcopies.WorkingcopiesWebscript1;
 import eu.xenit.alfred.api.rest.v2.nodes.NodesWebscriptV2;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
@@ -56,7 +55,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
         SearchWebScript1.class,
         SearchWebScript0.class,
         SitesWebscript1.class,
-        WorkingcopiesWebscript1.class,
         WorkflowWebscript.class,
         WIPWebscript.class
 })
