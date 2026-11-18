@@ -1,4 +1,4 @@
-package eu.xenit.alfred.api.rest;
+package eu.xenit.alfred.api.rest.webscript;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -10,7 +10,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-import eu.xenit.alfred.api.rest.webscript.JsonResponses;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

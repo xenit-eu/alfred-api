@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get property definition</shortname>
+    <description>Returns the definition of a property, identified by a short or full QName</description>
+    <url>/apix/v1/dictionary/properties/{qname}</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>

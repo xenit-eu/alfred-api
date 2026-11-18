@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get namespaces</shortname>
+    <description>Returns all namespaces registered in the data dictionary</description>
+    <url>/apix/v1/dictionary/namespaces</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>

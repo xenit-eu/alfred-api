@@ -1,4 +1,4 @@
-package eu.xenit.alfred.api.rest;
+package eu.xenit.alfred.api.rest.v1.version;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

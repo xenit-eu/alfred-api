@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get aspects</shortname>
+    <description>Returns all aspect definitions in the data dictionary</description>
+    <url>/apix/v1/dictionary/aspects</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>

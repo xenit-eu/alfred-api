@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get properties</shortname>
+    <description>Returns all property definitions in the data dictionary</description>
+    <url>/apix/v1/dictionary/properties</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>

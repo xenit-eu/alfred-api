@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get type definition</shortname>
+    <description>Returns the definition of a type, identified by a short or full QName</description>
+    <url>/apix/v1/dictionary/types/{qname}</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>

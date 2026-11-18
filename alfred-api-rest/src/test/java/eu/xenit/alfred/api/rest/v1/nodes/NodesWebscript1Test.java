@@ -1,4 +1,4 @@
-package eu.xenit.alfred.api.rest;
+package eu.xenit.alfred.api.rest.v1.nodes;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 import eu.xenit.alfred.api.alfresco.metadata.NodeService;
 import eu.xenit.alfred.api.data.NodeRef;
 import eu.xenit.alfred.api.node.INodeService;
-import eu.xenit.alfred.api.rest.v1.nodes.NodesWebscript1;
 import java.io.IOException;
 import java.io.InputStream;
 import org.junit.jupiter.api.Test;

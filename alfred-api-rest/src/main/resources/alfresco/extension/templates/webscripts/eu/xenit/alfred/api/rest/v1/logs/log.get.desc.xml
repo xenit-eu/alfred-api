@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get server log</shortname>
+    <description>Returns the last lines of the Tomcat log as plain text (admin only)</description>
+    <url>/apix/v1/tmp/log</url>
+    <authentication>admin</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>

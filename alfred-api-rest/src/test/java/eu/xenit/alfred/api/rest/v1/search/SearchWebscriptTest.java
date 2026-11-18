@@ -1,4 +1,4 @@
-package eu.xenit.alfred.api.rest;
+package eu.xenit.alfred.api.rest.v1.search;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.xenit.alfred.api.search.SearchQuery;

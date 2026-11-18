@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get type definitions</shortname>
+    <description>Returns the subtypes of a parent type (default sys:base)</description>
+    <url>/apix/v1/dictionary/types</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>

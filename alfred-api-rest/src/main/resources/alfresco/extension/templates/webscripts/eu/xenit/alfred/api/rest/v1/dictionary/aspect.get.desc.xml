@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get aspect definition</shortname>
+    <description>Returns the definition of an aspect, identified by a short or full QName</description>
+    <url>/apix/v1/dictionary/aspects/{qname}</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>

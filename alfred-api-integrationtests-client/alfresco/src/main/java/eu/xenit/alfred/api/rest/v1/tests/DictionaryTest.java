@@ -274,6 +274,44 @@ public class DictionaryTest extends RestV1BaseTest {
         }
     }
 
+    @Test
+    public void testPropertiesAndAspectsListsGet() throws IOException, InterruptedException {
+        assertListEndpoint("properties");
+        assertListEndpoint("aspects");
+    }
+
+    @Test
+    public void missingPropertyAndAspect_status_404() throws IOException, InterruptedException {
+        for (String dictionaryType : new String[]{"properties", "aspects"}) {
+            HttpResponse<String> response = get("/apix/v1/dictionary/" + dictionaryType + "/cm:foobar");
+            assertEquals(dictionaryType, 404, response.statusCode());
+            assertTrue("404 should have an empty body", response.body().isEmpty());
+            assertFalse("404 should have no Content-Type", response.headers().firstValue("Content-Type").isPresent());
+            assertEquals("no-cache", response.headers().firstValue("Cache-Control").orElse(null));
+        }
+    }
+
+    private void assertListEndpoint(String dictionaryType) throws IOException, InterruptedException {
+        HttpResponse<String> response = get("/apix/v1/dictionary/" + dictionaryType);
+        assertEquals(dictionaryType, 200, response.statusCode());
+        assertEquals("application/json", response.headers().firstValue("Content-Type").orElse(null));
+        assertEquals("no-cache", response.headers().firstValue("Cache-Control").orElse(null));
+        JsonNode list = new ObjectMapper().readTree(response.body()).get(dictionaryType);
+        assertNotNull("Response should contain '" + dictionaryType + "'", list);
+        assertTrue(list.isArray());
+        assertFalse(list.isEmpty());
+        assertTrue(list.get(0).has("name"));
+    }
+
+    private HttpResponse<String> get(String path) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(makeAlfrescoBaseurlAdmin() + path))
+                .header("Authorization", "Basic " + encodedAuth)
+                .GET()
+                .build();
+        return HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+    }
+
     public void assertMandatoryAspects(JSONObject jsonObject, String expectedMandatoryAspect) {
         try {
             JSONArray jsonArray = jsonObject.getJSONArray("mandatoryAspects");
