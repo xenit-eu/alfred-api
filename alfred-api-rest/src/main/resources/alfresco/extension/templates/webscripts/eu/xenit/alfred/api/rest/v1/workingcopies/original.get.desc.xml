@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get working copy source</shortname>
+    <description>Returns the original node of a working copy</description>
+    <url>/apix/v1/workingcopies/{space}/{store}/{guid}/original</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>

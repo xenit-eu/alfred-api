@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Cancel a checkout</shortname>
+    <description>Cancels the checkout of a working copy and returns the original node</description>
+    <url>/apix/v1/workingcopies/{space}/{store}/{guid}</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction>required</transaction>
+</webscript>
