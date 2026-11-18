@@ -25,7 +25,6 @@ import eu.xenit.alfred.api.rest.v1.properties.PropertiesWebScript1;
 import eu.xenit.alfred.api.rest.v1.search.SearchWebScript1;
 import eu.xenit.alfred.api.rest.v1.sites.SitesWebscript1;
 import eu.xenit.alfred.api.rest.v1.temp.WIPWebscript;
-import eu.xenit.alfred.api.rest.v1.versionhistory.VersionHistoryWebScript1;
 import eu.xenit.alfred.api.rest.v1.workingcopies.WorkingcopiesWebscript1;
 import eu.xenit.alfred.api.rest.v2.groups.GroupsWebscript;
 import eu.xenit.alfred.api.rest.v2.nodes.NodesWebscriptV2;
@@ -69,7 +68,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
         SearchWebScript1.class,
         SearchWebScript0.class,
         SitesWebscript1.class,
-        VersionHistoryWebScript1.class,
         WorkingcopiesWebscript1.class,
         WorkflowWebscript.class,
         WIPWebscript.class

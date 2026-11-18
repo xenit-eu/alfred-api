@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Delete version history</shortname>
+    <description>Deletes the version history of a node. A new history starts with the next version change</description>
+    <url>/apix/v1/versionhistory/{space}/{store}/{guid}</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction>required</transaction>
+</webscript>

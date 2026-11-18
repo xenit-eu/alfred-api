@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get root version</shortname>
+    <description>Returns the first version of a node</description>
+    <url>/apix/v1/versionhistory/{space}/{store}/{guid}/root</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>
