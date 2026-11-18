@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Delete version</shortname>
+    <description>Deletes the version with the given label from the history of a node</description>
+    <url>/apix/v1/versionhistory/{space}/{store}/{guid}/versions/{label}</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction>required</transaction>
+</webscript>

@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get version history</shortname>
+    <description>Returns all versions of a node, most recent first</description>
+    <url>/apix/v1/versionhistory/{space}/{store}/{guid}/versions</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>

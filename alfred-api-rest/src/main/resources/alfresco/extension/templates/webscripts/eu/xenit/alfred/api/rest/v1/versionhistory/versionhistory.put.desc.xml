@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Enable versioning</shortname>
+    <description>Enables versioning on a node, with optional autoVersion, autoVersionOnUpdateProps and initialVersion options</description>
+    <url>/apix/v1/versionhistory/{space}/{store}/{guid}</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction>required</transaction>
+</webscript>

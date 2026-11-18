@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Revert to version</shortname>
+    <description>Reverts a node to the version with the given label</description>
+    <url>/apix/v1/versionhistory/{space}/{store}/{guid}/versions/{label}/revert</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction>required</transaction>
+</webscript>

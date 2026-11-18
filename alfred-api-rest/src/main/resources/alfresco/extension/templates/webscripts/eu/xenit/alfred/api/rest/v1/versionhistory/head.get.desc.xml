@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get head version</shortname>
+    <description>Returns the most recent version of a node</description>
+    <url>/apix/v1/versionhistory/{space}/{store}/{guid}/head</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>

@@ -22,6 +22,15 @@ public final class JsonResponses {
         writeJson(res, Status.STATUS_OK, body);
     }
 
+    /**
+     * Writes a 200 response without a body, like Alfresco MVC did for {@code ResponseEntity.ok().build()} and for a
+     * {@code null} response body.
+     */
+    public static void writeEmpty(WebScriptResponse res) {
+        res.setStatus(Status.STATUS_OK);
+        res.setHeader("Cache-Control", "no-cache");
+    }
+
     public static void writeJson(WebScriptResponse res, int status, Object body) throws IOException {
         // Serialize first, so nothing is written to the response if serialization fails. Jackson produces UTF-8
         // bytes; writing bytes avoids the servlet writer, whose default charset is container-dependent.
