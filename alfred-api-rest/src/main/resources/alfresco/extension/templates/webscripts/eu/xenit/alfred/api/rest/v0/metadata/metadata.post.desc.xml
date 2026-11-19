@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Update node metadata (v0)</shortname>
+    <description>Applies v0 metadata changes to the node given by the nodeRef parameter and returns its v0 metadata</description>
+    <url>/apix/eu/xenit/metadata</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction>required</transaction>
+</webscript>

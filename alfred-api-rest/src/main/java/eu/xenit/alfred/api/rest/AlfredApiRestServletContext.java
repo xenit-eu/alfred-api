@@ -13,9 +13,6 @@ import eu.xenit.alfred.api.rest.jackson.ObjectMapperFactory;
 import eu.xenit.alfred.api.rest.staging.workflow.WorkflowWebscript;
 import eu.xenit.alfred.api.rest.v0.categories.ClassificationGetWebscript;
 import eu.xenit.alfred.api.rest.v0.dictionary.DictionaryServiceChecksumWebscript;
-import eu.xenit.alfred.api.rest.v0.metadata.MetadataBulkWebscript;
-import eu.xenit.alfred.api.rest.v0.metadata.MetadataGetWebscript;
-import eu.xenit.alfred.api.rest.v0.metadata.MetadataPostWebscript;
 import eu.xenit.alfred.api.rest.v0.search.SearchWebScript0;
 import eu.xenit.alfred.api.rest.v1.bulk.BulkWebscript1;
 import eu.xenit.alfred.api.rest.v1.configuration.ConfigurationWebscript1;
@@ -59,9 +56,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
         ClassificationGetWebscript.class,
         DictionaryServiceChecksumWebscript.class,
         GroupsWebscript.class,
-        MetadataPostWebscript.class,
-        MetadataBulkWebscript.class,
-        MetadataGetWebscript.class,
         NodesWebscriptV2.class,
         NodesWebscript1.class,
         PropertiesWebScript1.class,

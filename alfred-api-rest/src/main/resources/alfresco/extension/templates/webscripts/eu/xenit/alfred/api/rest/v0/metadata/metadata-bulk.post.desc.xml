@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get metadata of several nodes (v0)</shortname>
+    <description>Returns the v0 metadata of every node in the JSON array request body</description>
+    <url>/apix/eu/xenit/metadata/bulk</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction>required</transaction>
+</webscript>

@@ -62,6 +62,17 @@ class WebScriptRegistrationTest {
         // Guards against the scan silently finding nothing, which would make the test above pass vacuously.
         Set<String> discovered = discoverWebScripts();
         for (String expected : List.of(
+                "eu.xenit.alfred.api.rest.v0.metadata.NodeMetadataGetWebScript",
+                "eu.xenit.alfred.api.rest.v0.metadata.NodeMetadataPostWebScript",
+                "eu.xenit.alfred.api.rest.v0.metadata.NodeMetadataBulkWebScript",
+                "eu.xenit.alfred.api.rest.v1.dictionary.DictionaryNamespacesWebScript",
+                "eu.xenit.alfred.api.rest.v1.dictionary.DictionaryPropertiesWebScript",
+                "eu.xenit.alfred.api.rest.v1.dictionary.DictionaryPropertyWebScript",
+                "eu.xenit.alfred.api.rest.v1.dictionary.DictionaryTypesWebScript",
+                "eu.xenit.alfred.api.rest.v1.dictionary.DictionaryTypeWebScript",
+                "eu.xenit.alfred.api.rest.v1.dictionary.DictionaryAspectsWebScript",
+                "eu.xenit.alfred.api.rest.v1.dictionary.DictionaryAspectWebScript",
+                "eu.xenit.alfred.api.rest.v1.logs.LogWebScript",
                 "eu.xenit.alfred.api.rest.v1.version.VersionWebScript",
                 "eu.xenit.alfred.api.rest.v1.categories.CategoriesWebScript",
                 "eu.xenit.alfred.api.rest.v1.nodes.UploadWebscript",

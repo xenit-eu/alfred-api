@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get node metadata (v0)</shortname>
+    <description>Returns the v0 metadata of the node given by the nodeRef parameter</description>
+    <url>/apix/eu/xenit/metadata</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>
