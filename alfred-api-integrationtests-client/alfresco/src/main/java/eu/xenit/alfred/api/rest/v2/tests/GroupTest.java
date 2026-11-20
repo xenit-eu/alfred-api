@@ -1,7 +1,9 @@
 package eu.xenit.alfred.api.rest.v2.tests;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.xenit.alfred.api.people.Person;
+import eu.xenit.alfred.api.rest.RestCall;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.namespace.QName;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPut;
@@ -37,6 +40,9 @@ public class GroupTest extends RestV2BaseTest {
 
     private final String groupName = "GroupTestGroup";
     private final String groupIdentifier = "GROUP_" + groupName;
+    private final String subgroupName = "GroupTestSubgroup";
+    private final String subgroupIdentifier = "GROUP_" + subgroupName;
+    private final String unknownGroup = "GROUP_GroupTestUnknown";
 
     private final PersonService alfrescoPersonService;
     private final AuthorityService alfrescoAuthorityService;
@@ -102,6 +108,9 @@ public class GroupTest extends RestV2BaseTest {
                         if (self.alfrescoAuthorityService.authorityExists(groupIdentifier)) {
                             self.alfrescoAuthorityService.deleteAuthority(groupIdentifier);
                         }
+                        if (self.alfrescoAuthorityService.authorityExists(subgroupIdentifier)) {
+                            self.alfrescoAuthorityService.deleteAuthority(subgroupIdentifier);
+                        }
                         return null;
                     }
                 }, false, true);
@@ -113,6 +122,9 @@ public class GroupTest extends RestV2BaseTest {
                     @Override
                     public Object execute() throws Throwable {
                         self.alfrescoAuthorityService.createAuthority(AuthorityType.GROUP, groupName);
+                        self.alfrescoAuthorityService.createAuthority(AuthorityType.GROUP, subgroupName);
+                        // A non-admin user that can log in (createUser also sets a password).
+                        createUser(USERWITHOUTRIGHTS, USERWITHOUTRIGHTS, USERWITHOUTRIGHTS, USERWITHOUTRIGHTS_EMAIL);
                         return null;
                     }
                 }, false, true);
@@ -179,7 +191,7 @@ public class GroupTest extends RestV2BaseTest {
                 ContentType.APPLICATION_JSON));
 
         CloseableHttpResponse respTwo = client.execute(put);
-        Assert.assertEquals(200, respOne.getStatusLine().getStatusCode());
+        Assert.assertEquals(200, respTwo.getStatusLine().getStatusCode());
 
         // Verify results
 
@@ -217,7 +229,7 @@ public class GroupTest extends RestV2BaseTest {
         // Replace first user with itself (aka run put again)
 
         CloseableHttpResponse respTwo = client.execute(put);
-        Assert.assertEquals(200, respOne.getStatusLine().getStatusCode());
+        Assert.assertEquals(200, respTwo.getStatusLine().getStatusCode());
 
         // Verify results
 
@@ -255,7 +267,7 @@ public class GroupTest extends RestV2BaseTest {
                 ContentType.APPLICATION_JSON));
 
         CloseableHttpResponse respTwo = client.execute(put);
-        Assert.assertEquals(200, respOne.getStatusLine().getStatusCode());
+        Assert.assertEquals(200, respTwo.getStatusLine().getStatusCode());
 
         // Verify results
 
@@ -296,7 +308,7 @@ public class GroupTest extends RestV2BaseTest {
         put.setEntity(new StringEntity("{\"users\":[]}", ContentType.APPLICATION_JSON));
 
         CloseableHttpResponse respTwo = client.execute(put);
-        Assert.assertEquals(200, respOne.getStatusLine().getStatusCode());
+        Assert.assertEquals(200, respTwo.getStatusLine().getStatusCode());
 
         // Verify results
 
@@ -306,5 +318,94 @@ public class GroupTest extends RestV2BaseTest {
         System.out.println(result);
         Person[] persons = new ObjectMapper().readValue(result, Person[].class);
         Assert.assertEquals(0, persons.length);
+    }
+
+    @Test
+    public void testListGroups() throws IOException {
+        JsonNode groups = RestCall.assertJson(RestCall.get(createAlfredApiUrl("/groups")));
+        List<String> identifiers = new ArrayList<>();
+        groups.forEach(group -> identifiers.add(group.get("identifier").asText()));
+        Assert.assertTrue(identifiers.contains(groupIdentifier));
+        Assert.assertTrue(identifiers.contains(subgroupIdentifier));
+    }
+
+    @Test
+    public void testImmediateParameter() throws IOException {
+        for (String query : new String[]{"", "?immediate=true", "?immediate=yes", "?immediate=false"}) {
+            RestCall.assertJson(RestCall.get(createAlfredApiUrl("/groups/%s/people", groupIdentifier) + query));
+            RestCall.assertJson(RestCall.get(createAlfredApiUrl("/groups/%s/groups", groupIdentifier) + query));
+        }
+        Assert.assertEquals(HttpStatus.SC_BAD_REQUEST,
+                RestCall.get(createAlfredApiUrl("/groups/%s/people?immediate=abc", groupIdentifier)).status());
+        Assert.assertEquals(HttpStatus.SC_BAD_REQUEST,
+                RestCall.get(createAlfredApiUrl("/groups/%s/groups?immediate=abc", groupIdentifier)).status());
+    }
+
+    @Test
+    public void testUnknownGroup() throws IOException {
+        String message = "Group " + unknownGroup + " does not exist";
+        RestCall.assertText(RestCall.get(createAlfredApiUrl("/groups/%s/people", unknownGroup)),
+                HttpStatus.SC_NOT_FOUND, message);
+        RestCall.assertText(RestCall.get(createAlfredApiUrl("/groups/%s/groups", unknownGroup)),
+                HttpStatus.SC_NOT_FOUND, message);
+        RestCall.assertText(RestCall.put(createAlfredApiUrl("/groups/%s/people", unknownGroup),
+                ContentType.APPLICATION_JSON, "{\"users\":[]}"), HttpStatus.SC_NOT_FOUND, message);
+        RestCall.assertText(RestCall.put(createAlfredApiUrl("/groups/%s/groups", unknownGroup),
+                ContentType.APPLICATION_JSON, "{\"subgroups\":[]}"), HttpStatus.SC_NOT_FOUND, message);
+    }
+
+    @Test
+    public void testSetAndClearSubgroups() throws IOException {
+        String putUrl = createAlfredApiUrl("/groups/%s/groups", groupIdentifier);
+        String getUrl = createAlfredApiUrl("/groups/%s/groups?immediate=true", groupIdentifier);
+
+        assertEmptyOk(RestCall.put(putUrl, ContentType.APPLICATION_JSON,
+                String.format("{\"subgroups\":[\"%s\"]}", subgroupIdentifier)));
+        JsonNode subgroups = RestCall.assertJson(RestCall.get(getUrl));
+        Assert.assertEquals(1, subgroups.size());
+        Assert.assertEquals(subgroupIdentifier, subgroups.get(0).get("identifier").asText());
+
+        assertEmptyOk(RestCall.put(putUrl, ContentType.APPLICATION_JSON, "{\"subgroups\":[]}"));
+        Assert.assertEquals(0, RestCall.assertJson(RestCall.get(getUrl)).size());
+    }
+
+    @Test
+    public void testPutBodyErrors() throws IOException {
+        String putUrl = createAlfredApiUrl("/groups/%s/people", groupIdentifier);
+        Assert.assertEquals(HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE,
+                RestCall.put(putUrl, ContentType.TEXT_PLAIN, "{\"users\":[]}").status());
+        Assert.assertEquals(HttpStatus.SC_BAD_REQUEST,
+                RestCall.put(putUrl, ContentType.APPLICATION_JSON, "{").status());
+        // Existing behaviour, deliberately preserved: a body without the "users" field fails with a 500.
+        Assert.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                RestCall.put(putUrl, ContentType.APPLICATION_JSON, "{}").status());
+    }
+
+    @Test
+    public void testNonAdminCannotChangeMembership() throws IOException {
+        String membersUrl = createAlfredApiUrl("/groups/%s/people?immediate=true", groupIdentifier);
+        // Give the group a member, so the attempt below would both remove and add a member if it were allowed.
+        Assert.assertEquals(200, RestCall.put(createAlfredApiUrl("/groups/%s/people", groupIdentifier),
+                ContentType.APPLICATION_JSON, String.format("{\"users\":[\"%s\"]}", userNames[0])).status());
+        JsonNode membersBefore = RestCall.assertJson(RestCall.get(membersUrl));
+
+        String putUrl = makeAlfrescoBaseurl(USERWITHOUTRIGHTS, USERWITHOUTRIGHTS)
+                + "/apix/v2/groups/" + groupIdentifier + "/people";
+        // Alfresco denies the change and rolls back; the API reports that as a 500, as before the migration.
+        Assert.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, RestCall.put(putUrl, ContentType.APPLICATION_JSON,
+                String.format("{\"users\":[\"%s\"]}", userNames[1])).status());
+
+        Assert.assertEquals(membersBefore, RestCall.assertJson(RestCall.get(membersUrl)));
+    }
+
+    @Test
+    public void testAnonymousIsUnauthorized() throws IOException {
+        Assert.assertEquals(HttpStatus.SC_UNAUTHORIZED, RestCall.get(makeAlfrescoBaseurl() + "/apix/v2/groups").status());
+    }
+
+    private static void assertEmptyOk(RestCall.Result result) {
+        Assert.assertEquals("Unexpected status, response body: " + result.text(), 200, result.status());
+        Assert.assertEquals(0, result.body().length);
+        Assert.assertEquals("no-cache", result.cacheControl());
     }
 }

@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Set users of a group</shortname>
+    <description>Replaces the direct users of the group with the users in the request body</description>
+    <url>/apix/v2/groups/{name}/people</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction>required</transaction>
+</webscript>

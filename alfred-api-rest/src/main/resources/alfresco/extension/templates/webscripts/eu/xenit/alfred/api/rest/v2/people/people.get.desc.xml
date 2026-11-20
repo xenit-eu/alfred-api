@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>List people</shortname>
+    <description>Returns all people</description>
+    <url>/apix/v2/people</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>

@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get person by username</shortname>
+    <description>Returns the person with the userName parameter (-me- is the current user)</description>
+    <url>/apix/v1/people</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>

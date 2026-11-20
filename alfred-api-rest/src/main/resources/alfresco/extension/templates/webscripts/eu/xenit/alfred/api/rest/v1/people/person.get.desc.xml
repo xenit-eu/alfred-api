@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get person by node reference</shortname>
+    <description>Returns the person stored in the given person node</description>
+    <url>/apix/v1/people/{space}/{store}/{guid}</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>

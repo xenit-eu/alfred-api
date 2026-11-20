@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import eu.xenit.alfred.api.data.NodeRef;
 import eu.xenit.alfred.api.node.INodeService;
 import eu.xenit.alfred.api.permissions.IPermissionService;
+import eu.xenit.alfred.api.rest.webscript.JsonRequests;
 import eu.xenit.alfred.api.rest.webscript.JsonResponses;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class NodeMetadataBulkWebScript extends AbstractWebScript {
 
     @Override
     public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
-        List<NodeRef> nodeRefs = MetadataRequests.readBody(req, NODE_REFS);
+        List<NodeRef> nodeRefs = JsonRequests.readBody(req, NODE_REFS);
         List<NodeMetadataV0> metadatas = new ArrayList<>();
         for (NodeRef nodeRef : nodeRefs) {
             metadatas.add(NodeMetadataV0.FromV1(nodeService.getMetadata(nodeRef), permissionService));

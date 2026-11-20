@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get users of a group</shortname>
+    <description>Returns the users in the group (all nested members unless immediate is true)</description>
+    <url>/apix/v2/groups/{name}/people</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>

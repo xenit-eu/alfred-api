@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get groups of a person</shortname>
+    <description>Returns the names of the groups that contain the given user</description>
+    <url>/apix/v2/people/containergroups/{name}</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>

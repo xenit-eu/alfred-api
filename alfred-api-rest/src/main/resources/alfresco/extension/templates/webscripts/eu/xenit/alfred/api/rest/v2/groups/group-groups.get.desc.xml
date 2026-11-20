@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get subgroups of a group</shortname>
+    <description>Returns the subgroups of the group (all nested subgroups unless immediate is true)</description>
+    <url>/apix/v2/groups/{name}/groups</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>

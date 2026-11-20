@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Set subgroups of a group</shortname>
+    <description>Replaces the direct subgroups of the group with the subgroups in the request body</description>
+    <url>/apix/v2/groups/{name}/groups</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction>required</transaction>
+</webscript>

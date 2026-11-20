@@ -1,7 +1,9 @@
 package eu.xenit.alfred.api.rest.v1.tests;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.xenit.alfred.api.data.NodeRef;
+import eu.xenit.alfred.api.rest.RestCall;
 import eu.xenit.alfred.api.people.Person;
 import java.io.IOException;
 import java.io.Serializable;
@@ -92,12 +94,36 @@ public class PeopleTest extends RestV1BaseTest {
 
     @Test
     public void testGetNonExistentPerson() throws IOException {
-        final String userName = "NonexistentUsername";
-        String url = createAlfredApiUrl("/people/%s", userName);
+        // The username lookup is /v1/people?userName=... (/v1/people/{userName} is not a route).
+        RestCall.assertText(RestCall.get(createAlfredApiUrl("/people?userName=%s", "NonexistentUsername")),
+                HttpStatus.SC_NOT_FOUND, "User NonexistentUsername does not exist");
+    }
 
-        HttpResponse httpResponse = Request.Get(url).execute().returnResponse();
-        Assert.assertEquals(httpResponse.getStatusLine().getStatusCode(), HttpStatus.SC_NOT_FOUND);
+    @Test
+    public void testGetPersonByUserName() throws IOException {
+        JsonNode person = RestCall.assertJson(RestCall.get(createAlfredApiUrl("/people?userName=%s", "admin")));
+        Assert.assertEquals("admin", person.get("userName").asText());
+        Assert.assertTrue(person.get("nodeRef").asText().startsWith("workspace://SpacesStore/"));
+    }
 
+    @Test
+    public void testMissingOrEmptyUserName() throws IOException {
+        Assert.assertEquals(HttpStatus.SC_BAD_REQUEST, RestCall.get(createAlfredApiUrl("/people")).status());
+        RestCall.assertText(RestCall.get(createAlfredApiUrl("/people?userName=")),
+                HttpStatus.SC_BAD_REQUEST, "Username cannot be null or empty");
+    }
+
+    @Test
+    public void testGetPersonWithUnknownNodeRef() throws IOException {
+        String guid = "00000000-0000-0000-0000-000000000000";
+        RestCall.assertText(RestCall.get(createAlfredApiUrl("/people/workspace/SpacesStore/%s", guid)),
+                HttpStatus.SC_NOT_FOUND, "User with NodeRef=workspace://SpacesStore/" + guid + " does not exist");
+    }
+
+    @Test
+    public void testAnonymousIsUnauthorized() throws IOException {
+        Assert.assertEquals(HttpStatus.SC_UNAUTHORIZED,
+                RestCall.get(makeAlfrescoBaseurl() + "/apix/v1/people?userName=admin").status());
     }
 
     @Test

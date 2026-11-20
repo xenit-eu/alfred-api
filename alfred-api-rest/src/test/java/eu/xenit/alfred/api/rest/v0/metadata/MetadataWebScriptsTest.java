@@ -55,41 +55,7 @@ class MetadataWebScriptsTest {
         assertEquals("", MetadataRequests.nodeRef(req).getValue());
     }
 
-    // --- request body: Spring's @RequestBody content-type and readability rules.
-
-    @Test
-    void onlyJsonContentTypesAreAccepted() {
-        MetadataRequests.requireJsonContentType("application/json");
-        MetadataRequests.requireJsonContentType("application/json;charset=UTF-8");
-        MetadataRequests.requireJsonContentType("application/vnd.example+json");
-        for (String unsupported : new String[]{null, "", "text/plain", "application/x-www-form-urlencoded", "%%%"}) {
-            WebScriptException e = assertThrows(WebScriptException.class,
-                    () -> MetadataRequests.requireJsonContentType(unsupported), unsupported);
-            assertEquals(415, e.getStatus(), unsupported);
-        }
-    }
-
-    @Test
-    void missingOrUnreadableBodyIsBadRequest() {
-        for (String body : new String[]{"", "{", "null"}) {
-            WebScriptRequest req = postRequest("application/json", body);
-            WebScriptException e = assertThrows(WebScriptException.class,
-                    () -> MetadataRequests.readBody(req, MetadataChangesV0.class), body);
-            assertEquals(400, e.getStatus(), body);
-        }
-    }
-
-    @Test
-    void bodyIsDecodedAsUtf8AndUnknownFieldsAreIgnored() throws IOException {
-        WebScriptRequest req = postRequest("application/json",
-                "{\"unknown\":1,\"propertiesToSet\":{\"cm:description\":[\"Alle Empfänger – Україна\"]}}");
-
-        MetadataChangesV0 changes = MetadataRequests.readBody(req, MetadataChangesV0.class);
-
-        assertEquals("Alle Empfänger – Україна", changes.getPropertiesToSet().get("cm:description")[0]);
-    }
-
-    // --- the three web scripts.
+    // --- the three web scripts (request-body rules are covered by JsonRequestsTest).
 
     @Test
     void getReturnsV0MetadataForTheNodeRefParameter() throws IOException {

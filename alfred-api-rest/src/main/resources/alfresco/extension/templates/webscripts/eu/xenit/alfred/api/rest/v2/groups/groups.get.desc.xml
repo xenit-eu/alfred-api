@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>List groups</shortname>
+    <description>Returns all groups</description>
+    <url>/apix/v2/groups</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>
