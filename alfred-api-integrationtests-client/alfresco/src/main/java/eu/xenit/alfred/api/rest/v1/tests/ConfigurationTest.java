@@ -219,6 +219,37 @@ public class ConfigurationTest extends RestV1BaseTest {
         }
     }
 
+    @Test
+    public void testConfigurationGetJsonpWithCallback() throws IOException, JSONException {
+        HttpResponse response = Request.Get(makeBasePath() + "&format=js&callback=handleConfig")
+                .execute()
+                .returnResponse();
+        String body = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        assertEquals("application/js", response.getFirstHeader(CONTENT_TYPE).getValue());
+        assertTrue(body, body.startsWith("handleConfig(") && body.endsWith(")"));
+
+        String json = body.substring("handleConfig(".length(), body.length() - 1);
+        assertEquals(4, new JSONObject(json).getJSONArray("files").length());
+    }
+
+    @Test
+    public void testConfigurationBadRequest() throws IOException {
+        HttpResponse missingParameter = Request.Get(makeAlfrescoBaseurlAdmin() + "/apix/v1/configuration")
+                .execute()
+                .returnResponse();
+        assertEquals(400, missingParameter.getStatusLine().getStatusCode());
+
+        HttpResponse missingFolder = Request.Get(makeBasePath() + "/doesNotExist")
+                .execute()
+                .returnResponse();
+        String body = EntityUtils.toString(missingFolder.getEntity(), StandardCharsets.UTF_8);
+        assertEquals(400, missingFolder.getStatusLine().getStatusCode());
+        assertTrue(missingFolder.getFirstHeader(CONTENT_TYPE).getValue().startsWith("text/plain"));
+        assertTrue(body, body.contains("doesn't exist"));
+    }
+
     @After
     public void cleanUp() {
         RetryingTransactionHelper.RetryingTransactionCallback<Object> txnWork = () -> {

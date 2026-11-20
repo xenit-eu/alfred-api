@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get configuration files</shortname>
+    <description>Returns the configuration files in a directory of the data dictionary, as JSON or, with format=js or Accept: application/js, as JSONP</description>
+    <url>/apix/v1/configuration?searchDirectory={searchDirectory}&amp;fields={fields?}&amp;filter.name={filter.name?}&amp;callback={callback?}</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>

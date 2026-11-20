@@ -87,6 +87,7 @@ class WebScriptRegistrationTest {
                 "eu.xenit.alfred.api.rest.v1.logs.LogWebScript",
                 "eu.xenit.alfred.api.rest.v1.version.VersionWebScript",
                 "eu.xenit.alfred.api.rest.v1.categories.CategoriesWebScript",
+                "eu.xenit.alfred.api.rest.v1.configuration.ConfigurationWebScript",
                 "eu.xenit.alfred.api.rest.v1.translation.TranslationsWebScript",
                 "eu.xenit.alfred.api.rest.v1.translation.TranslationChecksumWebScript",
                 "eu.xenit.alfred.api.rest.v1.versionhistory.VersionHistoryGetWebScript",

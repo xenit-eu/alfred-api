@@ -43,6 +43,17 @@ public final class JsonResponses {
         res.getOutputStream().write(message.getBytes(StandardCharsets.UTF_8));
     }
 
+    /**
+     * Writes a 200 JavaScript response (for example JSONP), like Alfresco MVC did for a {@code ResponseEntity<String>}
+     * with content type {@code application/js}: no charset parameter, UTF-8 body.
+     */
+    public static void writeJavaScript(WebScriptResponse res, String script) throws IOException {
+        res.setStatus(Status.STATUS_OK);
+        res.setContentType("application/js");
+        res.setHeader("Cache-Control", "no-cache");
+        res.getOutputStream().write(script.getBytes(StandardCharsets.UTF_8));
+    }
+
     public static void writeJson(WebScriptResponse res, int status, Object body) throws IOException {
         // Serialize first, so nothing is written to the response if serialization fails. Jackson produces UTF-8
         // bytes; writing bytes avoids the servlet writer, whose default charset is container-dependent.
