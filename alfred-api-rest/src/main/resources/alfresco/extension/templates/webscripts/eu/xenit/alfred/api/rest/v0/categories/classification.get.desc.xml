@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get classification categories (v0)</shortname>
+    <description>Returns the category tree of the specified aspect as a JSON array</description>
+    <url>/apix/classification/{aspectQName}</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>

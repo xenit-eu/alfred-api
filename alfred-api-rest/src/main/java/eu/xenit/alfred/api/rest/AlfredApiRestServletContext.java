@@ -11,7 +11,6 @@ import eu.xenit.alfred.api.rest.jackson.Jackson2AlfredApiQnameDeserializer;
 import eu.xenit.alfred.api.rest.jackson.Jackson2AlfredApiQnameSerializer;
 import eu.xenit.alfred.api.rest.jackson.ObjectMapperFactory;
 import eu.xenit.alfred.api.rest.staging.workflow.WorkflowWebscript;
-import eu.xenit.alfred.api.rest.v0.categories.ClassificationGetWebscript;
 import eu.xenit.alfred.api.rest.v0.dictionary.DictionaryServiceChecksumWebscript;
 import eu.xenit.alfred.api.rest.v0.search.SearchWebScript0;
 import eu.xenit.alfred.api.rest.v1.bulk.BulkWebscript1;
@@ -45,7 +44,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @ComponentScan(basePackages = {"eu.xenit.alfred.api"})
 @EnableAlfrescoMvcAop(basePackageClasses = {
         BulkWebscript1.class,
-        ClassificationGetWebscript.class,
         DictionaryServiceChecksumWebscript.class,
         NodesWebscriptV2.class,
         NodesWebscript1.class,
