@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Search (v0)</shortname>
+    <description>Runs a v0 search query; facet names in the result are prefixed with "@"</description>
+    <url>/apix/eu/xenit/search</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction>required</transaction>
+</webscript>

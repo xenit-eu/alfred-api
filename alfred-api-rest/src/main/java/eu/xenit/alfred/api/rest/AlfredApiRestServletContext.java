@@ -11,7 +11,6 @@ import eu.xenit.alfred.api.rest.jackson.Jackson2AlfredApiQnameDeserializer;
 import eu.xenit.alfred.api.rest.jackson.Jackson2AlfredApiQnameSerializer;
 import eu.xenit.alfred.api.rest.jackson.ObjectMapperFactory;
 import eu.xenit.alfred.api.rest.staging.workflow.WorkflowWebscript;
-import eu.xenit.alfred.api.rest.v0.search.SearchWebScript0;
 import eu.xenit.alfred.api.rest.v1.bulk.BulkWebscript1;
 import eu.xenit.alfred.api.rest.v1.nodes.NodesWebscript1;
 import eu.xenit.alfred.api.rest.v1.properties.PropertiesWebScript1;
@@ -47,7 +46,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
         NodesWebscript1.class,
         PropertiesWebScript1.class,
         SearchWebScript1.class,
-        SearchWebScript0.class,
         SitesWebscript1.class,
         WorkflowWebscript.class,
         WIPWebscript.class
