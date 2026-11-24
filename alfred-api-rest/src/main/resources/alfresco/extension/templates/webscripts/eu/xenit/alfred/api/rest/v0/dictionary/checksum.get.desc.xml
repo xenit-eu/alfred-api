@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get dictionary checksum (v0)</shortname>
+    <description>Returns the checksum of the content model</description>
+    <url>/apix/dictionary/checksum</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+</webscript>
