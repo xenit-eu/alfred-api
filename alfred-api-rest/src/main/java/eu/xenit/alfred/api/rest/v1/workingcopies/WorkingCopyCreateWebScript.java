@@ -2,6 +2,7 @@ package eu.xenit.alfred.api.rest.v1.workingcopies;
 
 import eu.xenit.alfred.api.data.NodeRef;
 import eu.xenit.alfred.api.node.INodeService;
+import eu.xenit.alfred.api.rest.webscript.JsonRequests;
 import eu.xenit.alfred.api.rest.webscript.JsonResponses;
 import java.io.IOException;
 import org.springframework.extensions.webscripts.AbstractWebScript;
@@ -20,7 +21,7 @@ public class WorkingCopyCreateWebScript extends AbstractWebScript {
 
     @Override
     public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
-        CheckoutBody checkoutBody = WorkingCopyRequests.readBody(req, CheckoutBody.class);
+        CheckoutBody checkoutBody = JsonRequests.readBody(req, CheckoutBody.class);
         NodeRef originalRef = checkoutBody.getOriginal();
         NodeRef destinationRef = checkoutBody.getDestinationFolder();
 

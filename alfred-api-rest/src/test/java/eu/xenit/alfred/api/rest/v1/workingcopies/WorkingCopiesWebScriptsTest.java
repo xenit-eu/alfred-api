@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 
 import eu.xenit.alfred.api.data.NodeRef;
 import eu.xenit.alfred.api.node.INodeService;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -164,16 +165,13 @@ class WorkingCopiesWebScriptsTest {
         return req;
     }
 
-    /** A request whose body is {@code body}; {@code null} means the request has no body. */
+    /** A JSON request whose body is {@code body}; {@code null} means the request has no body. */
     private static WebScriptRequest requestWithBody(String body) {
         WebScriptRequest req = mock(WebScriptRequest.class);
+        when(req.getContentType()).thenReturn("application/json");
         if (body != null) {
             Content content = mock(Content.class);
-            try {
-                when(content.getContent()).thenReturn(body);
-            } catch (IOException e) {
-                throw new AssertionError(e);
-            }
+            when(content.getInputStream()).thenReturn(new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8)));
             when(req.getContent()).thenReturn(content);
         }
         return req;

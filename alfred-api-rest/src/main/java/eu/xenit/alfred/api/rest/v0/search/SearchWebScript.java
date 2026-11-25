@@ -1,6 +1,6 @@
 package eu.xenit.alfred.api.rest.v0.search;
 
-//import eu.xenit.alfred.api.rest.webscript.JsonRequests;
+import eu.xenit.alfred.api.rest.webscript.JsonRequests;
 import eu.xenit.alfred.api.rest.webscript.JsonResponses;
 import eu.xenit.alfred.api.search.FacetSearchResult;
 import eu.xenit.alfred.api.search.ISearchService;
@@ -29,13 +29,13 @@ public class SearchWebScript extends AbstractWebScript {
 
     @Override
     public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
-//        SearchQueryV0 query = JsonRequests.readBody(req, SearchQueryV0.class);
-//        logger.debug("query: {}", query);
-//
-//        SearchQueryResult result = searchService.query(query.toV1());
-//        for (FacetSearchResult facet : result.getFacets()) {
-//            facet.setName("@" + facet.getName());
-//        }
-//        JsonResponses.writeJson(res, result);
+        SearchQueryV0 query = JsonRequests.readBody(req, SearchQueryV0.class);
+        logger.debug("query: {}", query);
+
+        SearchQueryResult result = searchService.query(query.toV1());
+        for (FacetSearchResult facet : result.getFacets()) {
+            facet.setName("@" + facet.getName());
+        }
+        JsonResponses.writeJson(res, result);
     }
 }

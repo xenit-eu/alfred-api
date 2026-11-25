@@ -14,6 +14,7 @@ import eu.xenit.alfred.api.search.FacetSearchResult;
 import eu.xenit.alfred.api.search.ISearchService;
 import eu.xenit.alfred.api.search.SearchQuery;
 import eu.xenit.alfred.api.search.SearchQueryResult;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -69,12 +70,13 @@ class SearchWebScriptTest {
         verifyNoInteractions(searchService);
     }
 
-    /** A request whose body is {@code body}; {@code null} means the request has no body. */
+    /** A JSON request whose body is {@code body}; {@code null} means the request has no body. */
     private static WebScriptRequest requestWithBody(String body) throws IOException {
         WebScriptRequest req = mock(WebScriptRequest.class);
+        when(req.getContentType()).thenReturn("application/json");
         if (body != null) {
             Content content = mock(Content.class);
-            when(content.getContent()).thenReturn(body);
+            when(content.getInputStream()).thenReturn(new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8)));
             when(req.getContent()).thenReturn(content);
         }
         return req;

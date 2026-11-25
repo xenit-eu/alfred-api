@@ -2,6 +2,7 @@ package eu.xenit.alfred.api.rest.v1.workingcopies;
 
 import eu.xenit.alfred.api.data.NodeRef;
 import eu.xenit.alfred.api.node.INodeService;
+import eu.xenit.alfred.api.rest.webscript.JsonRequests;
 import eu.xenit.alfred.api.rest.webscript.JsonResponses;
 import java.io.IOException;
 import org.springframework.extensions.webscripts.AbstractWebScript;
@@ -21,7 +22,7 @@ public class WorkingCopyCheckinWebScript extends AbstractWebScript {
     @Override
     public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
         NodeRef workingCopyRef = WorkingCopyRequests.nodeRef(req);
-        CheckinBody checkinBody = WorkingCopyRequests.readBody(req, CheckinBody.class);
+        CheckinBody checkinBody = JsonRequests.readBody(req, CheckinBody.class);
 
         if (!nodeService.exists(workingCopyRef)) {
             WorkingCopyRequests.writeDoesNotExist(res, workingCopyRef);
