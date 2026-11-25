@@ -13,7 +13,6 @@ import eu.xenit.alfred.api.rest.jackson.ObjectMapperFactory;
 import eu.xenit.alfred.api.rest.staging.workflow.WorkflowWebscript;
 import eu.xenit.alfred.api.rest.v1.bulk.BulkWebscript1;
 import eu.xenit.alfred.api.rest.v1.nodes.NodesWebscript1;
-import eu.xenit.alfred.api.rest.v1.properties.PropertiesWebScript1;
 import eu.xenit.alfred.api.rest.v1.search.SearchWebScript1;
 import eu.xenit.alfred.api.rest.v1.sites.SitesWebscript1;
 import eu.xenit.alfred.api.rest.v1.temp.WIPWebscript;
@@ -44,7 +43,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
         BulkWebscript1.class,
         NodesWebscriptV2.class,
         NodesWebscript1.class,
-        PropertiesWebScript1.class,
         SearchWebScript1.class,
         SitesWebscript1.class,
         WorkflowWebscript.class,

@@ -1,0 +1,9 @@
+<webscript>
+    <shortname>Get property definition (deprecated)</shortname>
+    <description>Returns the definition of a property. Deprecated: use /apix/v1/dictionary/properties/{qname}</description>
+    <url>/apix/v1/properties/{qname}?qnameWithSlash={qnameWithSlash?}</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction allow="readonly">required</transaction>
+    <lifecycle>deprecated</lifecycle>
+</webscript>
