@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Bulk</shortname>
+    <description>Performs multiple Alfred API v1 requests in a single call; each sub-request runs in its own transaction</description>
+    <url>/apix/v1/bulk</url>
+    <authentication>user</authentication>
+    <format default="json">argument</format>
+    <transaction>none</transaction>
+</webscript>

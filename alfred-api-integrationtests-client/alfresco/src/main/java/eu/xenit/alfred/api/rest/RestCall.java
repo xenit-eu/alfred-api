@@ -31,6 +31,10 @@ public final class RestCall {
         return execute(Request.Put(url).bodyString(body, contentType));
     }
 
+    public static Result post(String url, ContentType contentType, String body) throws IOException {
+        return execute(Request.Post(url).bodyString(body, contentType));
+    }
+
     private static Result execute(Request request) throws IOException {
         HttpResponse response = request.execute().returnResponse();
         byte[] body = response.getEntity() == null ? new byte[0] : EntityUtils.toByteArray(response.getEntity());

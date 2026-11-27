@@ -87,6 +87,7 @@ class WebScriptRegistrationTest {
                 "eu.xenit.alfred.api.rest.v1.logs.LogWebScript",
                 "eu.xenit.alfred.api.rest.v1.version.VersionWebScript",
                 "eu.xenit.alfred.api.rest.v1.categories.CategoriesWebScript",
+                "eu.xenit.alfred.api.rest.v1.bulk.BulkWebScript",
                 "eu.xenit.alfred.api.rest.v1.nodes.UploadWebscript",
                 "eu.xenit.alfred.api.rest.v1.nodes.SetNodeContentWebscript")) {
             assertTrue(discovered.contains(expected), "Expected to discover " + expected + " in " + discovered);

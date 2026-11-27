@@ -1,7 +1,5 @@
 package eu.xenit.alfred.api.rest.v1.bulk.request;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletInputStream;
 import java.io.ByteArrayInputStream;
@@ -10,12 +8,10 @@ import java.io.InputStream;
 
 public class IntermediateContent extends ServletInputStream {
 
-    IntermediateContent(Object body) throws JsonProcessingException {
-        mapper = new ObjectMapper();
-        delegate = new ByteArrayInputStream(mapper.writeValueAsBytes(body));
+    IntermediateContent(byte[] body) {
+        delegate = new ByteArrayInputStream(body);
     }
 
-    final ObjectMapper mapper;
     final InputStream delegate;
 
     @Override

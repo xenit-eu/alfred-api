@@ -10,7 +10,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.xenit.alfred.api.data.NodeRef;
 import eu.xenit.alfred.api.node.ChildParentAssociation;
 import eu.xenit.alfred.api.node.INodeService;
+import eu.xenit.alfred.api.rest.RestCall;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import org.alfresco.model.ContentModel;
@@ -29,7 +32,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,47 +99,22 @@ public class BulkTest extends RestV1BaseTest {
         }
     }
 
-    @Ignore
     @Test
-    // @Deprecated(since = "Deprecated since Oct 2015, use DictionaryWebScript1 instead")
-    public void testUrlEncode() throws IOException, JSONException {
-        HashMap<String, NodeRef> initializedNodeRefs = init();
-        List<ChildParentAssociation> parentAssociations = this.nodeService
-                .getParentAssociations(initializedNodeRefs.get(RestV1BaseTest.TESTFILE_NAME));
-        final ChildParentAssociation primaryParentAssoc = parentAssociations.get(0);
-        assertTrue(primaryParentAssoc.isPrimary());
-        NodeRef parentRef = primaryParentAssoc.getTarget();
-        String url = makeBulkUrl();
-
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost(url);
-        String firstGetUrl = "/properties/%7Bhttp://www.alfresco.org/model/content/1.0%7Dname";
-        String secondGetUrl = "/properties/" + ContentModel.PROP_OWNER;
-        String thirdGetUrl = "/properties/%7Bhttp%3A%2F%2Fwww.alfresco.org%2Fmodel%2Fcontent%2F1.0%7Dname";
-
-        StringEntity entity = new StringEntity(json(String.format(
+    public void testUrlEncode() throws IOException {
+        // A QName in the path, sent with its braces, slashes and colon encoded to different degrees. The web script
+        // runtime decodes the path once, as for a direct request.
+        String name = "{http://www.alfresco.org/model/content/1.0}name";
+        JsonNode results = bulk(makeBulkUrl(), json(String.format(
                 "[{'url':'%s','method':'get'},{'url':'%s','method':'get'},{'url':'%s','method':'get'}]",
-                firstGetUrl, secondGetUrl, thirdGetUrl)), "UTF-8");
-        entity.setContentType("application/json");
-        httpPost.setEntity(entity);
-        try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
-            String result = EntityUtils.toString(response.getEntity());
-            logger.debug(" Result bulk metadata get: " + result);
-            assertEquals(200, response.getStatusLine().getStatusCode());
-            JSONArray jsonArray = new JSONArray(result);
-            logger.debug(" json object 0: " + jsonArray.get(0));
-            logger.debug(" json object 1: " + jsonArray.get(1));
-            logger.debug(" json object 2: " + jsonArray.get(2));
-            JSONObject jsonObject0 = (JSONObject) jsonArray.get(0);
-            JSONObject jsonObject1 = (JSONObject) jsonArray.get(1);
-            JSONObject jsonObject2 = (JSONObject) jsonArray.get(2);
-            logger.debug(" statusCode object 0: " + jsonObjectGetStringFromInt(jsonObject0, "statusCode"));
-            logger.debug(" statusCode object 1: " + jsonObjectGetStringFromInt(jsonObject1, "statusCode"));
-            logger.debug(" statusCode object 2: " + jsonObjectGetStringFromInt(jsonObject2, "statusCode"));
-            assertEquals("200", jsonObjectGetStringFromInt(jsonObject0, "statusCode"));
-            assertEquals("200", jsonObjectGetStringFromInt(jsonObject1, "statusCode"));
-            assertEquals("200", jsonObjectGetStringFromInt(jsonObject2, "statusCode"));
-        }
+                "/dictionary/properties/%7Bhttp://www.alfresco.org/model/content/1.0%7Dname",
+                "/dictionary/properties/" + ContentModel.PROP_OWNER,
+                "/dictionary/properties/%7Bhttp%3A%2F%2Fwww.alfresco.org%2Fmodel%2Fcontent%2F1.0%7Dname")));
+
+        assertEquals(3, results.size());
+        assertEquals(name, assertSubResult(results.get(0), 200).get("body").get("name").asText());
+        assertEquals(ContentModel.PROP_OWNER.toString(),
+                assertSubResult(results.get(1), 200).get("body").get("name").asText());
+        assertEquals(name, assertSubResult(results.get(2), 200).get("body").get("name").asText());
     }
 
     private String removePrefixAndAuthenticate(String fullUrl) {
@@ -375,6 +352,135 @@ public class BulkTest extends RestV1BaseTest {
                         return null;
                     }
                 });
+    }
+
+    @Test
+    public void testNativeEndpointsReturnTheSameAsDirectRequests() throws IOException {
+        String[] urls = {"/version", "/people?userName=admin", "/dictionary/namespaces"};
+        JsonNode results = bulk(makeBulkUrl(), json(String.format(
+                "[{'url':'%s','method':'get'},{'url':'%s','method':'get'},{'url':'%s','method':'get'}]",
+                (Object[]) urls)));
+
+        assertEquals(urls.length, results.size());
+        for (int i = 0; i < urls.length; i++) {
+            JsonNode direct = RestCall.assertJson(RestCall.get(makeAlfrescoBaseurlAdmin() + "/apix/v1" + urls[i]));
+            JsonNode result = assertSubResult(results.get(i), 200);
+            assertEquals(urls[i], direct, result.get("body"));
+            // The direct response's headers; bulk adds the charset it decodes the body in, as before.
+            assertEquals("application/json;charset=UTF-8", result.get("headers").get("Content-Type").asText());
+            assertEquals("no-cache", result.get("headers").get("Cache-Control").asText());
+        }
+    }
+
+    @Test
+    public void testQueryParametersAreTakenFromTheSubRequestUrl() throws IOException {
+        // Parameters of the bulk URL itself are not passed on to the sub-requests.
+        JsonNode results = bulk(makeBulkUrl() + "?userName=admin",
+                json("[{'url':'/people','method':'get'},{'url':'/people?userName=-me-','method':'get'}]"));
+
+        assertSubResult(results.get(0), 400);
+        assertEquals("admin", assertSubResult(results.get(1), 200).get("body").get("userName").asText());
+    }
+
+    @Test
+    public void testSubRequestsRunAsTheBulkCaller() throws IOException {
+        init(); // creates the non-admin user
+        String meUrl = json("[{'url':'/people?userName=-me-','method':'get'}]");
+        String adminTicket = authenticationService.getCurrentTicket();
+
+        // A ticket on a sub-request URL is ignored: the sub-request runs as the bulk caller, not as the ticket's user.
+        JsonNode asUser = bulk(makeAlfrescoBaseurl(USERWITHOUTRIGHTS, USERWITHOUTRIGHTS) + "/apix/v1/bulk",
+                json(String.format("[{'url':'/people?userName=-me-','method':'get'},"
+                        + "{'url':'/people?userName=-me-&alf_ticket=%s','method':'get'}]", adminTicket)));
+        assertEquals(USERWITHOUTRIGHTS,
+                assertSubResult(asUser.get(0), 200).get("body").get("userName").asText());
+        assertEquals(USERWITHOUTRIGHTS,
+                assertSubResult(asUser.get(1), 200).get("body").get("userName").asText());
+
+        // Authenticated by a ticket on the bulk URL: the sub-request URL needs no credentials of its own.
+        JsonNode withTicket = bulk(makeBulkUrlWithTicket(), meUrl);
+        assertEquals("admin", assertSubResult(withTicket.get(0), 200).get("body").get("userName").asText());
+    }
+
+    @Test
+    public void testErrorsAreReportedPerSubRequest() throws IOException {
+        String unknownUser = "Україна";
+        JsonNode results = bulk(makeBulkUrl(), json(String.format("[{'url':'/people?userName=%s','method':'get'},"
+                        + "{'url':'/people','method':'get'},"
+                        + "{'url':'/does/not/exist','method':'get'},"
+                        + "{'url':'/category/aspect/cm:titled','method':'get'},"
+                        + "{'url':'/version','method':'get'}]",
+                URLEncoder.encode(unknownUser, StandardCharsets.UTF_8))));
+
+        // A plain-text error: the body is reported as a string, decoded as UTF-8, with the response's headers.
+        JsonNode notFound = assertSubResult(results.get(0), 404);
+        assertEquals("User " + unknownUser + " does not exist", notFound.get("body").asText());
+        assertEquals("text/plain;charset=UTF-8", notFound.get("headers").get("Content-Type").asText());
+        assertEquals("no-cache", notFound.get("headers").get("Cache-Control").asText());
+
+        // An error status from a web script is rendered as for a direct request: a JSON status document.
+        assertEquals(400, assertSubResult(results.get(1), 400).get("body").get("status").get("code").asInt());
+
+        assertSubResult(results.get(2), 404);
+
+        // An unexpected exception: a 500 with the exception message and no headers, as before.
+        JsonNode failed = assertSubResult(results.get(3), 500);
+        assertTrue(failed.toString(), failed.get("body").asText().startsWith("Exception found: "));
+        assertEquals(0, failed.get("headers").size());
+
+        // Sub-requests after a failed one still run.
+        assertSubResult(results.get(4), 200);
+    }
+
+    @Test
+    public void testAFailedSubRequestIsRolledBackWithoutAffectingTheOthers() throws IOException {
+        final HashMap<String, NodeRef> nodes = init();
+        NodeRef first = nodes.get(RestV1BaseTest.TESTFILE_NAME);
+        NodeRef failing = nodes.get(RestV1BaseTest.TESTFILE2_NAME);
+        NodeRef last = nodes.get(RestV1BaseTest.TESTFILE3_NAME);
+        // Adds cm:titled, then fails: the system aspect sys:pendingDelete cannot be removed.
+        String failingBody = String.format("{'aspectsToAdd':['%s'],'aspectsToRemove':['%s']}",
+                ContentModel.ASPECT_TITLED, ContentModel.ASPECT_PENDING_DELETE);
+
+        JsonNode results = bulk(makeBulkUrl(), json(String.format(
+                "[{'url':'%s','method':'post','body':%s},{'url':'%s','method':'post','body':%s},"
+                        + "{'url':'%s','method':'post','body':%s}]",
+                removePrefixAndAuthenticate(makeNodesUrl(first, "/metadata", "admin", "admin")),
+                renameBody("bulkFirst"),
+                removePrefixAndAuthenticate(makeNodesUrl(failing, "/metadata", "admin", "admin")), failingBody,
+                removePrefixAndAuthenticate(makeNodesUrl(last, "/metadata", "admin", "admin")),
+                renameBody("bulkLast"))));
+
+        assertSubResult(results.get(0), 200);
+        assertTrue(results.get(1).toString(), results.get(1).get("statusCode").asInt() >= 400);
+        assertSubResult(results.get(2), 200);
+        transactionService.getRetryingTransactionHelper().doInTransaction(() -> {
+            // Each sub-request has its own transaction: the failed one is rolled back, the others are committed.
+            assertFalse(alfrescoNodeService.hasAspect(alfresco(failing), ContentModel.ASPECT_TITLED));
+            assertEquals("bulkFirst", alfrescoNodeService.getProperty(alfresco(first), ContentModel.PROP_NAME));
+            assertEquals("bulkLast", alfrescoNodeService.getProperty(alfresco(last), ContentModel.PROP_NAME));
+            return null;
+        }, true, true);
+    }
+
+    private static String renameBody(String name) {
+        return String.format("{'propertiesToSet':{'%s':['%s']}}", ContentModel.PROP_NAME, name);
+    }
+
+    private static org.alfresco.service.cmr.repository.NodeRef alfresco(NodeRef nodeRef) {
+        return new org.alfresco.service.cmr.repository.NodeRef(nodeRef.getValue());
+    }
+
+    /** Posts a bulk request, checks the bulk response itself and returns the sub-results. */
+    private static JsonNode bulk(String bulkUrl, String body) throws IOException {
+        JsonNode results = RestCall.assertJson(RestCall.post(bulkUrl, ContentType.APPLICATION_JSON, body));
+        assertTrue(results.toString(), results.isArray());
+        return results;
+    }
+
+    private static JsonNode assertSubResult(JsonNode result, int status) {
+        assertEquals(result.toString(), status, result.get("statusCode").asInt());
+        return result;
     }
 
     @After
